@@ -17,23 +17,23 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { buildPageHead } from "@/lib/seo";
 
 const META_TITLE = "Comment Ça Marche | SoumissionsComptables.ci";
 const META_DESC =
   "Découvrez comment obtenir jusqu'à 5 soumissions gratuites de cabinets comptables agréés en Côte d'Ivoire en moins de 48h. Processus simple en 3 étapes.";
 
 export const Route = createFileRoute("/comment-ca-marche")({
-  head: () => ({
-    meta: [
-      { title: META_TITLE },
-      { name: "description", content: META_DESC },
-      { property: "og:title", content: META_TITLE },
-      { property: "og:description", content: META_DESC },
-      { property: "og:url", content: "/comment-ca-marche" },
-      { property: "og:type", content: "website" },
-    ],
-    links: [{ rel: "canonical", href: "/comment-ca-marche" }],
-  }),
+  head: () =>
+    buildPageHead({
+      path: "/comment-ca-marche",
+      title: META_TITLE,
+      description: META_DESC,
+      breadcrumb: [
+        { name: "Accueil", path: "/" },
+        { name: "Comment ça marche", path: "/comment-ca-marche" },
+      ],
+    }),
   component: Page,
 });
 
