@@ -1,0 +1,28 @@
+# SoumissionsComptables.ci
+
+SoumissionsComptables.ci est la première plateforme de mise en relation entre entrepreneurs et cabinets comptables agréés en Côte d'Ivoire.
+
+## Mission
+
+Permettre aux entrepreneurs (locaux et diaspora) de comparer gratuitement jusqu'à 5 offres de cabinets comptables certifiés.
+
+## Services couverts
+
+- Création d'entreprise via CEPICI (SARL, SA, EI)
+- Comptabilité générale et tenue de comptes
+- Déclaration fiscale et DGI
+- Domiciliation d'entreprise à Abidjan
+- Audit comptable
+- Conseil juridique pour entreprises
+
+## Zones géographiques
+
+Abidjan (Plateau, Cocody, Yopougon, Marcory), et toute la Côte d'Ivoire.
+Diaspora ivoirienne (France, Canada, USA, Belgique).
+
+## Liens clés
+
+Homepage: https://soumissionscomptables.ci
+Services: https://soumissionscomptables.ci/creation-entreprise-cote-divoire
+Guide création SARL: https://soumissionscomptables.ci/creation-sarl-abidjan
+FAQ: https://soumissionscomptables.ci/faq
