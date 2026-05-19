@@ -24,6 +24,7 @@ import { Route as CabinetComptableAbidjanRouteImport } from './routes/cabinet-co
 import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EnIndexRouteImport } from './routes/en/index'
+import { Route as GuidesSlugRouteImport } from './routes/guides.$slug'
 import { Route as EnGetQuotesRouteImport } from './routes/en/get-quotes'
 import { Route as EnCompanyRegistrationIvoryCoastRouteImport } from './routes/en/company-registration-ivory-coast'
 import { Route as EnAccountingFirmAbidjanRouteImport } from './routes/en/accounting-firm-abidjan'
@@ -110,6 +111,11 @@ const EnIndexRoute = EnIndexRouteImport.update({
   path: '/en/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GuidesSlugRoute = GuidesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => GuidesRoute,
+} as any)
 const EnGetQuotesRoute = EnGetQuotesRouteImport.update({
   id: '/en/get-quotes',
   path: '/en/get-quotes',
@@ -145,12 +151,13 @@ export interface FileRoutesByFullPath {
   '/demande-soumissions': typeof DemandeSoumissionsRoute
   '/domiciliation-entreprise-abidjan': typeof DomiciliationEntrepriseAbidjanRoute
   '/faq': typeof FaqRoute
-  '/guides': typeof GuidesRoute
+  '/guides': typeof GuidesRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
   '/en/get-quotes': typeof EnGetQuotesRoute
+  '/guides/$slug': typeof GuidesSlugRoute
   '/en/': typeof EnIndexRoute
 }
 export interface FileRoutesByTo {
@@ -166,12 +173,13 @@ export interface FileRoutesByTo {
   '/demande-soumissions': typeof DemandeSoumissionsRoute
   '/domiciliation-entreprise-abidjan': typeof DomiciliationEntrepriseAbidjanRoute
   '/faq': typeof FaqRoute
-  '/guides': typeof GuidesRoute
+  '/guides': typeof GuidesRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
   '/en/get-quotes': typeof EnGetQuotesRoute
+  '/guides/$slug': typeof GuidesSlugRoute
   '/en': typeof EnIndexRoute
 }
 export interface FileRoutesById {
@@ -188,12 +196,13 @@ export interface FileRoutesById {
   '/demande-soumissions': typeof DemandeSoumissionsRoute
   '/domiciliation-entreprise-abidjan': typeof DomiciliationEntrepriseAbidjanRoute
   '/faq': typeof FaqRoute
-  '/guides': typeof GuidesRoute
+  '/guides': typeof GuidesRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
   '/en/get-quotes': typeof EnGetQuotesRoute
+  '/guides/$slug': typeof GuidesSlugRoute
   '/en/': typeof EnIndexRoute
 }
 export interface FileRouteTypes {
@@ -217,6 +226,7 @@ export interface FileRouteTypes {
     | '/en/accounting-firm-abidjan'
     | '/en/company-registration-ivory-coast'
     | '/en/get-quotes'
+    | '/guides/$slug'
     | '/en/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -238,6 +248,7 @@ export interface FileRouteTypes {
     | '/en/accounting-firm-abidjan'
     | '/en/company-registration-ivory-coast'
     | '/en/get-quotes'
+    | '/guides/$slug'
     | '/en'
   id:
     | '__root__'
@@ -259,6 +270,7 @@ export interface FileRouteTypes {
     | '/en/accounting-firm-abidjan'
     | '/en/company-registration-ivory-coast'
     | '/en/get-quotes'
+    | '/guides/$slug'
     | '/en/'
   fileRoutesById: FileRoutesById
 }
@@ -275,7 +287,7 @@ export interface RootRouteChildren {
   DemandeSoumissionsRoute: typeof DemandeSoumissionsRoute
   DomiciliationEntrepriseAbidjanRoute: typeof DomiciliationEntrepriseAbidjanRoute
   FaqRoute: typeof FaqRoute
-  GuidesRoute: typeof GuidesRoute
+  GuidesRoute: typeof GuidesRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   EnAboutRoute: typeof EnAboutRoute
   EnAccountingFirmAbidjanRoute: typeof EnAccountingFirmAbidjanRoute
@@ -391,6 +403,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EnIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/guides/$slug': {
+      id: '/guides/$slug'
+      path: '/$slug'
+      fullPath: '/guides/$slug'
+      preLoaderRoute: typeof GuidesSlugRouteImport
+      parentRoute: typeof GuidesRoute
+    }
     '/en/get-quotes': {
       id: '/en/get-quotes'
       path: '/en/get-quotes'
@@ -422,6 +441,17 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface GuidesRouteChildren {
+  GuidesSlugRoute: typeof GuidesSlugRoute
+}
+
+const GuidesRouteChildren: GuidesRouteChildren = {
+  GuidesSlugRoute: GuidesSlugRoute,
+}
+
+const GuidesRouteWithChildren =
+  GuidesRoute._addFileChildren(GuidesRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AProposRoute: AProposRoute,
@@ -436,7 +466,7 @@ const rootRouteChildren: RootRouteChildren = {
   DemandeSoumissionsRoute: DemandeSoumissionsRoute,
   DomiciliationEntrepriseAbidjanRoute: DomiciliationEntrepriseAbidjanRoute,
   FaqRoute: FaqRoute,
-  GuidesRoute: GuidesRoute,
+  GuidesRoute: GuidesRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   EnAboutRoute: EnAboutRoute,
   EnAccountingFirmAbidjanRoute: EnAccountingFirmAbidjanRoute,
