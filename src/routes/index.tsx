@@ -20,6 +20,8 @@ import {
 } from "@/components/ui/accordion";
 import { LeadFormCard } from "@/components/home/LeadFormCard";
 import { buildPageHead } from "@/lib/seo";
+import { useLanguage } from "@/lib/language-context";
+import { getCounterpart } from "@/lib/route-map";
 
 const TITLE =
   "Cabinet Comptable Côte d'Ivoire | Comparez 5 Soumissions Gratuitement | SoumissionsComptables.ci";
@@ -33,124 +35,43 @@ export const Route = createFileRoute("/")({
       title: TITLE,
       description: DESCRIPTION,
       includeWebSite: true,
+      altPath: "/en",
     }),
   component: Index,
 });
 
-const STEPS = [
-  {
-    icon: FileText,
-    n: "1",
-    title: "Décrivez votre besoin",
-    desc: "Remplissez notre formulaire en 2 minutes. Dites-nous quel service vous cherchez et où vous êtes situé.",
-  },
-  {
-    icon: Users,
-    n: "2",
-    title: "Recevez jusqu'à 5 offres",
-    desc: "Nos cabinets partenaires agréés vous contactent dans les 48h avec une soumission personnalisée.",
-  },
-  {
-    icon: CheckCircle,
-    n: "3",
-    title: "Choisissez le meilleur",
-    desc: "Comparez les offres, posez vos questions, et choisissez le cabinet qui correspond à votre budget et vos besoins.",
-  },
-];
-
-const SERVICES = [
-  {
-    icon: Building2,
-    title: "Création d'entreprise",
-    desc: "SARL, SAS, entreprise individuelle — constitution complète et accompagnement OHADA.",
-    href: "/creation-entreprise-cote-divoire",
-  },
-  {
-    icon: Calculator,
-    title: "Comptabilité générale",
-    desc: "Tenue, révision, états financiers conformes au SYSCOHADA pour votre activité.",
-    href: "/comptabilite-entreprise-abidjan",
-  },
-  {
-    icon: FileCheck,
-    title: "Déclaration fiscale",
-    desc: "TVA, IS, ITS, BIC — déclarations en ligne et optimisation fiscale légale.",
-    href: "/declaration-fiscale-cote-divoire",
-  },
-  {
-    icon: MapPin,
-    title: "Domiciliation Abidjan",
-    desc: "Adresse professionnelle à Abidjan avec gestion du courrier et services associés.",
-    href: "/domiciliation-entreprise-abidjan",
-  },
-  {
-    icon: Search,
-    title: "Audit comptable",
-    desc: "Audit légal, contractuel ou financier réalisé par un commissaire aux comptes.",
-    href: "/audit-comptable-cote-divoire",
-  },
-  {
-    icon: Scale,
-    title: "Conseil juridique",
-    desc: "Statuts, pactes d'associés, contrats commerciaux et accompagnement juridique.",
-    href: "/conseil-juridique-abidjan",
-  },
-];
-
-const AUDIENCES = [
-  {
-    emoji: "🏢",
-    title: "Entrepreneurs locaux",
-    desc: "Abidjan, Bouaké, San-Pédro et partout en Côte d'Ivoire.",
-  },
-  {
-    emoji: "✈️",
-    title: "Diaspora ivoirienne",
-    desc: "Créez votre entreprise depuis la France, le Canada ou les USA.",
-  },
-  {
-    emoji: "🌍",
-    title: "Expatriés en CI",
-    desc: "Des cabinets qui parlent votre langue et connaissent vos contraintes.",
-  },
-  {
-    emoji: "🏭",
-    title: "Entreprises francophones",
-    desc: "Implantation et accompagnement complet en Côte d'Ivoire.",
-  },
-];
-
-const STATS = [
-  { value: "127+", label: "Soumissions envoyées ce mois" },
-  { value: "48h", label: "Délai de réponse moyen" },
-  { value: "5", label: "Soumissions max par demande" },
-  { value: "100%", label: "Gratuit pour les prospects" },
-];
-
-const FAQS = [
-  {
-    q: "Est-ce vraiment gratuit pour moi ?",
-    a: "Oui, totalement. SoumissionsComptables.ci est entièrement gratuit pour les entrepreneurs. Ce sont les cabinets comptables partenaires qui financent la plateforme en payant pour accéder aux demandes qualifiées.",
-  },
-  {
-    q: "Combien de temps avant de recevoir une réponse ?",
-    a: "Vous recevrez vos premières soumissions dans les 48 heures suivant votre demande. En moyenne, nos utilisateurs reçoivent 3 à 5 réponses en moins de 24h.",
-  },
-  {
-    q: "Les cabinets sont-ils vérifiés et agréés ?",
-    a: "Oui. Tous nos cabinets partenaires sont des cabinets d'expertise comptable agréés et inscrits à l'Ordre des Experts-Comptables de Côte d'Ivoire (OECCA-CI).",
-  },
-  {
-    q: "Je suis en France, puis-je créer une entreprise en CI via votre plateforme ?",
-    a: "Absolument. De nombreux Ivoiriens de la diaspora utilisent notre plateforme pour trouver un cabinet qui les aide à créer leur entreprise en Côte d'Ivoire à distance, sans avoir besoin de se déplacer.",
-  },
-  {
-    q: "Suis-je obligé de choisir un des cabinets proposés ?",
-    a: "Non. Vous êtes libre de comparer toutes les soumissions reçues et de choisir ou non. Il n'y a aucun engagement de votre part.",
-  },
-];
-
-function Index() {
+export function Index() {
+  const { language, t } = useLanguage();
+  const quotesHref = getCounterpart(
+    language === "en" ? "/demande-soumissions" : "/en/get-quotes",
+    language,
+  );
+  const STEPS = [
+    { icon: FileText, n: "1", title: t.process.s1Title, desc: t.process.s1Desc },
+    { icon: Users, n: "2", title: t.process.s2Title, desc: t.process.s2Desc },
+    { icon: CheckCircle, n: "3", title: t.process.s3Title, desc: t.process.s3Desc },
+  ];
+  const SERVICES = [
+    { icon: Building2, title: t.services.creation, desc: t.servicesSection.d1, href: getCounterpart("/creation-entreprise-cote-divoire", language) },
+    { icon: Calculator, title: t.services.accounting, desc: t.servicesSection.d2, href: "/comptabilite-entreprise-abidjan" },
+    { icon: FileCheck, title: t.services.tax, desc: t.servicesSection.d3, href: "/declaration-fiscale-cote-divoire" },
+    { icon: MapPin, title: t.services.domiciliation, desc: t.servicesSection.d4, href: "/domiciliation-entreprise-abidjan" },
+    { icon: Search, title: t.services.audit, desc: t.servicesSection.d5, href: "/audit-comptable-cote-divoire" },
+    { icon: Scale, title: t.services.legal, desc: t.servicesSection.d6, href: "/conseil-juridique-abidjan" },
+  ];
+  const AUDIENCES = [
+    { emoji: "🏢", title: t.audience.a1Title, desc: t.audience.a1Desc },
+    { emoji: "✈️", title: t.audience.a2Title, desc: t.audience.a2Desc },
+    { emoji: "🌍", title: t.audience.a3Title, desc: t.audience.a3Desc },
+    { emoji: "🏭", title: t.audience.a4Title, desc: t.audience.a4Desc },
+  ];
+  const STATS = [
+    { value: "127+", label: t.stats.s1 },
+    { value: "48h", label: t.stats.s2 },
+    { value: "5", label: t.stats.s3 },
+    { value: "100%", label: t.stats.s4 },
+  ];
+  const FAQS = t.homeFaq.items;
   return (
     <>
       {/* ====== HERO ====== */}
@@ -162,27 +83,22 @@ function Index() {
         <div className="container-app section grid gap-10 lg:grid-cols-5 lg:items-center">
           <div className="lg:col-span-3">
             <span className="inline-block rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground">
-              🇨🇮 Côte d'Ivoire · Abidjan · Diaspora
+              {t.hero.badge}
             </span>
             <h1
               id="hero-title"
               className="mt-4 font-heading font-bold leading-tight text-3xl md:text-5xl"
             >
-              Trouvez le Meilleur Cabinet Comptable en Côte d'Ivoire
+              {t.hero.h1}
             </h1>
             <p className="mt-4 text-lg md:text-xl text-white/80">
-              Remplissez un formulaire en 2 minutes. Recevez jusqu'à 5 soumissions gratuites
-              de cabinets agréés en 48h. Comparez et choisissez.
+              {t.hero.sub}
             </p>
             <ul className="mt-6 flex flex-wrap gap-x-6 gap-y-3 text-sm font-medium">
-              {[
-                "100% Gratuit pour vous",
-                "Cabinets vérifiés",
-                "Réponse en 48h",
-              ].map((t) => (
-                <li key={t} className="flex items-center gap-2">
+              {[t.hero.bullet1, t.hero.bullet2, t.hero.bullet3].map((label) => (
+                <li key={label} className="flex items-center gap-2">
                   <CheckCircle className="h-5 w-5 text-accent" />
-                  {t}
+                  {label}
                 </li>
               ))}
             </ul>
@@ -191,7 +107,7 @@ function Index() {
           <div className="lg:col-span-2">
             <LeadFormCard />
             <p className="mt-3 text-center text-sm text-white/80">
-              ⭐ 4.8/5 · 127 soumissions envoyées ce mois
+              {t.hero.rating}
             </p>
           </div>
         </div>
@@ -202,10 +118,10 @@ function Index() {
         <div className="container-app section">
           <div className="mx-auto max-w-2xl text-center">
             <h2 id="how-title" className="font-heading text-3xl md:text-4xl font-bold text-primary">
-              Comment Obtenir vos Soumissions en 3 Étapes
+              {t.process.title}
             </h2>
             <p className="mt-3 text-muted-foreground text-lg">
-              Simple, rapide et 100% gratuit pour vous
+              {t.process.sub}
             </p>
           </div>
           <div className="mt-12 grid gap-6 md:grid-cols-3">
@@ -227,10 +143,10 @@ function Index() {
           </div>
           <div className="mt-10 text-center">
             <Link
-              to="/demande-soumissions"
+              to={quotesHref}
               className="inline-flex items-center gap-2 rounded-md bg-secondary px-6 py-3 text-sm font-semibold text-secondary-foreground hover:bg-secondary-dark"
             >
-              Commencer maintenant <ArrowRight className="h-4 w-4" />
+              {t.cta.startNow} <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
         </div>
@@ -241,10 +157,10 @@ function Index() {
         <div className="container-app section">
           <div className="mx-auto max-w-2xl text-center">
             <h2 id="services-title" className="font-heading text-3xl md:text-4xl font-bold text-primary">
-              Tous les Services Couverts
+              {t.servicesSection.title}
             </h2>
             <p className="mt-3 text-muted-foreground text-lg">
-              Création d'entreprise, comptabilité, fiscalité — on couvre tout.
+              {t.servicesSection.sub}
             </p>
           </div>
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -263,7 +179,7 @@ function Index() {
                   href={href}
                   className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary group-hover:underline"
                 >
-                  En savoir plus <ArrowRight className="h-4 w-4" />
+                  {t.cta.learnMore} <ArrowRight className="h-4 w-4" />
                 </a>
               </article>
             ))}
@@ -276,7 +192,7 @@ function Index() {
         <div className="container-app section">
           <div className="mx-auto max-w-2xl text-center">
             <h2 id="audience-title" className="font-heading text-3xl md:text-4xl font-bold text-primary">
-              Que vous soyez en CI ou à l'étranger
+              {t.audience.title}
             </h2>
           </div>
           <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
@@ -321,7 +237,7 @@ function Index() {
               id="faq-title"
               className="font-heading text-3xl md:text-4xl font-bold text-primary text-center"
             >
-              Questions Fréquentes
+              {t.homeFaq.title}
             </h2>
             <Accordion type="single" collapsible className="mt-8">
               {FAQS.map((item, i) => (
@@ -340,7 +256,7 @@ function Index() {
                 to="/faq"
                 className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
               >
-                Voir toutes les questions <ArrowRight className="h-4 w-4" />
+                {t.cta.viewAllFaq} <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
           </div>
@@ -351,16 +267,16 @@ function Index() {
       <section aria-labelledby="cta-title" className="bg-secondary text-secondary-foreground">
         <div className="container-app section text-center">
           <h2 id="cta-title" className="font-heading text-3xl md:text-4xl font-bold">
-            Prêt à trouver votre cabinet comptable ?
+            {t.finalCta.title}
           </h2>
           <p className="mt-3 text-lg text-white/90">
-            Remplissez le formulaire en 2 minutes. C'est gratuit.
+            {t.finalCta.sub}
           </p>
           <Link
-            to="/demande-soumissions"
+            to={quotesHref}
             className="mt-8 inline-flex items-center gap-2 rounded-md bg-white px-7 py-3.5 text-base font-semibold text-secondary hover:bg-white/90"
           >
-            Obtenir mes soumissions maintenant <ArrowRight className="h-4 w-4" />
+            {t.finalCta.button} <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
       </section>
