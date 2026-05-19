@@ -4,96 +4,17 @@ import { ArrowRight, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { buildPageHead } from "@/lib/seo";
+import {
+  ARTICLES_SORTED,
+  FILTERS,
+  type Article,
+  type Category,
+} from "@/lib/guides-data";
 
 const META_TITLE =
   "Guides & Ressources | Création d'Entreprise & Comptabilité en CI";
 const META_DESC =
   "Tous nos guides sur la création d'entreprise, la comptabilité et la fiscalité en Côte d'Ivoire. Des ressources gratuites pour les entrepreneurs ivoiriens.";
-
-type Category = "Création d'entreprise" | "Comptabilité" | "Fiscalité" | "Diaspora";
-
-type Article = {
-  slug: string;
-  title: string;
-  excerpt: string;
-  categories: Category[];
-  readTime: string;
-};
-
-const ARTICLES: Article[] = [
-  {
-    slug: "creer-sarl-cepici-2026",
-    title: "Comment créer une SARL au CEPICI en 2026 — Guide Complet",
-    excerpt:
-      "Toutes les étapes pour créer votre SARL via le guichet unique CEPICI : documents, capital, délais et coûts.",
-    categories: ["Création d'entreprise"],
-    readTime: "8 min",
-  },
-  {
-    slug: "sarl-sa-ei-comparatif",
-    title: "SARL vs SA vs Entreprise Individuelle en CI : quel statut choisir ?",
-    excerpt:
-      "Comparatif détaillé des trois formes juridiques les plus courantes en Côte d'Ivoire pour bien choisir.",
-    categories: ["Création d'entreprise"],
-    readTime: "6 min",
-  },
-  {
-    slug: "obligations-comptables-sarl-ci",
-    title: "Les obligations comptables d'une SARL en Côte d'Ivoire",
-    excerpt:
-      "Tenue de comptes SYSCOHADA, états financiers, DSF, audit : vos obligations annuelles expliquées simplement.",
-    categories: ["Comptabilité"],
-    readTime: "7 min",
-  },
-  {
-    slug: "calendrier-fiscal-2026-ci",
-    title: "Calendrier fiscal 2026 de la Côte d'Ivoire",
-    excerpt:
-      "Toutes les échéances fiscales 2026 : TVA, IS, DSF, CNPS, patente. Ne ratez aucune déclaration.",
-    categories: ["Fiscalité"],
-    readTime: "5 min",
-  },
-  {
-    slug: "choisir-cabinet-comptable-abidjan",
-    title: "Comment choisir son cabinet comptable à Abidjan ?",
-    excerpt:
-      "Les 5 critères essentiels pour sélectionner un cabinet comptable fiable et adapté à votre activité.",
-    categories: ["Comptabilité"],
-    readTime: "6 min",
-  },
-  {
-    slug: "creer-entreprise-ci-depuis-france",
-    title: "Créer son entreprise en CI depuis la France : guide étape par étape",
-    excerpt:
-      "Procuration, mandataire, CEPICI en ligne : comment monter votre société ivoirienne sans quitter la France.",
-    categories: ["Création d'entreprise", "Diaspora"],
-    readTime: "9 min",
-  },
-  {
-    slug: "domiciliation-entreprise-abidjan-guide",
-    title: "Domiciliation d'entreprise à Abidjan : tout ce qu'il faut savoir",
-    excerpt:
-      "Quartiers, tarifs, prestations incluses : guide complet pour domicilier votre société à Abidjan.",
-    categories: ["Comptabilité"],
-    readTime: "6 min",
-  },
-  {
-    slug: "impots-entreprise-cote-divoire",
-    title: "Quels impôts paye une entreprise en Côte d'Ivoire ?",
-    excerpt:
-      "IS, TVA, ITS, patente, CNPS : tour d'horizon complet de la fiscalité applicable aux sociétés en CI.",
-    categories: ["Fiscalité"],
-    readTime: "7 min",
-  },
-];
-
-const FILTERS: Array<{ key: string; label: string }> = [
-  { key: "all", label: "Tous" },
-  { key: "Création d'entreprise", label: "Création d'entreprise" },
-  { key: "Comptabilité", label: "Comptabilité" },
-  { key: "Fiscalité", label: "Fiscalité" },
-  { key: "Diaspora", label: "Diaspora" },
-];
 
 export const Route = createFileRoute("/guides")({
   head: () =>
@@ -167,8 +88,8 @@ function Page() {
 
   const filtered =
     filter === "all"
-      ? ARTICLES
-      : ARTICLES.filter((a) => a.categories.includes(filter as Category));
+      ? ARTICLES_SORTED
+      : ARTICLES_SORTED.filter((a) => a.categories.includes(filter as Category));
 
   const [featured, ...rest] = filtered;
 
