@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as GuidesRouteImport } from './routes/guides'
 import { Route as FaqRouteImport } from './routes/faq'
+import { Route as DomiciliationEntrepriseAbidjanRouteImport } from './routes/domiciliation-entreprise-abidjan'
 import { Route as DemandeSoumissionsRouteImport } from './routes/demande-soumissions'
 import { Route as DeclarationFiscaleCoteDivoireRouteImport } from './routes/declaration-fiscale-cote-divoire'
 import { Route as CreationEntrepriseDiasporaIvoirienneRouteImport } from './routes/creation-entreprise-diaspora-ivoirienne'
@@ -31,6 +32,12 @@ const FaqRoute = FaqRouteImport.update({
   path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DomiciliationEntrepriseAbidjanRoute =
+  DomiciliationEntrepriseAbidjanRouteImport.update({
+    id: '/domiciliation-entreprise-abidjan',
+    path: '/domiciliation-entreprise-abidjan',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const DemandeSoumissionsRoute = DemandeSoumissionsRouteImport.update({
   id: '/demande-soumissions',
   path: '/demande-soumissions',
@@ -92,6 +99,7 @@ export interface FileRoutesByFullPath {
   '/creation-entreprise-diaspora-ivoirienne': typeof CreationEntrepriseDiasporaIvoirienneRoute
   '/declaration-fiscale-cote-divoire': typeof DeclarationFiscaleCoteDivoireRoute
   '/demande-soumissions': typeof DemandeSoumissionsRoute
+  '/domiciliation-entreprise-abidjan': typeof DomiciliationEntrepriseAbidjanRoute
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRoute
 }
@@ -105,6 +113,7 @@ export interface FileRoutesByTo {
   '/creation-entreprise-diaspora-ivoirienne': typeof CreationEntrepriseDiasporaIvoirienneRoute
   '/declaration-fiscale-cote-divoire': typeof DeclarationFiscaleCoteDivoireRoute
   '/demande-soumissions': typeof DemandeSoumissionsRoute
+  '/domiciliation-entreprise-abidjan': typeof DomiciliationEntrepriseAbidjanRoute
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRoute
 }
@@ -119,6 +128,7 @@ export interface FileRoutesById {
   '/creation-entreprise-diaspora-ivoirienne': typeof CreationEntrepriseDiasporaIvoirienneRoute
   '/declaration-fiscale-cote-divoire': typeof DeclarationFiscaleCoteDivoireRoute
   '/demande-soumissions': typeof DemandeSoumissionsRoute
+  '/domiciliation-entreprise-abidjan': typeof DomiciliationEntrepriseAbidjanRoute
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRoute
 }
@@ -134,6 +144,7 @@ export interface FileRouteTypes {
     | '/creation-entreprise-diaspora-ivoirienne'
     | '/declaration-fiscale-cote-divoire'
     | '/demande-soumissions'
+    | '/domiciliation-entreprise-abidjan'
     | '/faq'
     | '/guides'
   fileRoutesByTo: FileRoutesByTo
@@ -147,6 +158,7 @@ export interface FileRouteTypes {
     | '/creation-entreprise-diaspora-ivoirienne'
     | '/declaration-fiscale-cote-divoire'
     | '/demande-soumissions'
+    | '/domiciliation-entreprise-abidjan'
     | '/faq'
     | '/guides'
   id:
@@ -160,6 +172,7 @@ export interface FileRouteTypes {
     | '/creation-entreprise-diaspora-ivoirienne'
     | '/declaration-fiscale-cote-divoire'
     | '/demande-soumissions'
+    | '/domiciliation-entreprise-abidjan'
     | '/faq'
     | '/guides'
   fileRoutesById: FileRoutesById
@@ -174,6 +187,7 @@ export interface RootRouteChildren {
   CreationEntrepriseDiasporaIvoirienneRoute: typeof CreationEntrepriseDiasporaIvoirienneRoute
   DeclarationFiscaleCoteDivoireRoute: typeof DeclarationFiscaleCoteDivoireRoute
   DemandeSoumissionsRoute: typeof DemandeSoumissionsRoute
+  DomiciliationEntrepriseAbidjanRoute: typeof DomiciliationEntrepriseAbidjanRoute
   FaqRoute: typeof FaqRoute
   GuidesRoute: typeof GuidesRoute
 }
@@ -192,6 +206,13 @@ declare module '@tanstack/react-router' {
       path: '/faq'
       fullPath: '/faq'
       preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/domiciliation-entreprise-abidjan': {
+      id: '/domiciliation-entreprise-abidjan'
+      path: '/domiciliation-entreprise-abidjan'
+      fullPath: '/domiciliation-entreprise-abidjan'
+      preLoaderRoute: typeof DomiciliationEntrepriseAbidjanRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/demande-soumissions': {
@@ -271,6 +292,7 @@ const rootRouteChildren: RootRouteChildren = {
     CreationEntrepriseDiasporaIvoirienneRoute,
   DeclarationFiscaleCoteDivoireRoute: DeclarationFiscaleCoteDivoireRoute,
   DemandeSoumissionsRoute: DemandeSoumissionsRoute,
+  DomiciliationEntrepriseAbidjanRoute: DomiciliationEntrepriseAbidjanRoute,
   FaqRoute: FaqRoute,
   GuidesRoute: GuidesRoute,
 }
