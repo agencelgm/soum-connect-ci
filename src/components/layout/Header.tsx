@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Menu, X, BarChart2, ChevronDown } from "lucide-react";
 import { useLanguage } from "@/lib/language-context";
+import { getCounterpart } from "@/lib/route-map";
+import { useRouterState } from "@tanstack/react-router";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -9,19 +11,6 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-
-const SERVICES = [
-  { to: "/creation-entreprise-cote-divoire", label: "Création d'entreprise" },
-  { to: "/comptabilite-entreprise-abidjan", label: "Comptabilité générale" },
-  { to: "/declaration-fiscale-cote-divoire", label: "Déclaration fiscale" },
-  { to: "/domiciliation-entreprise-abidjan", label: "Domiciliation Abidjan" },
-] as const;
-
-const NAV = [
-  { to: "/comment-ca-marche", label: "Comment ça marche" },
-  { to: "/faq", label: "FAQ" },
-  { to: "/a-propos", label: "À propos" },
-] as const;
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -55,11 +44,33 @@ function LangToggle() {
 export function Header() {
   const [open, setOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
+  const { language, t } = useLanguage();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const homeHref = language === "en" ? "/en" : "/";
+  const quotesHref = getCounterpart(
+    language === "en" ? "/demande-soumissions" : "/en/get-quotes",
+    language,
+  );
+
+  const SERVICES = [
+    { to: getCounterpart("/creation-entreprise-cote-divoire", language), label: t.services.creation },
+    { to: "/comptabilite-entreprise-abidjan", label: t.services.accounting },
+    { to: "/declaration-fiscale-cote-divoire", label: t.services.tax },
+    { to: "/domiciliation-entreprise-abidjan", label: t.services.domiciliation },
+  ];
+
+  const NAV = [
+    { to: "/comment-ca-marche", label: t.nav.howItWorks },
+    { to: "/faq", label: t.nav.faq },
+    { to: "/a-propos", label: t.nav.about },
+  ];
+  // keep pathname referenced for re-render correctness
+  void pathname;
 
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-border shadow-sm">
       <div className="max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between gap-4">
-        <Link to="/" className="flex items-center gap-2 shrink-0">
+        <Link to={homeHref} className="flex items-center gap-2 shrink-0">
           <BarChart2 className="h-5 w-5 text-secondary" />
           <span className="font-heading font-bold text-primary text-base sm:text-lg">
             Soumissions <span className="text-secondary">Comptables</span>
@@ -69,7 +80,7 @@ export function Header() {
         <nav className="hidden lg:flex items-center gap-6 font-sans text-sm font-medium">
           <DropdownMenu>
             <DropdownMenuTrigger className="inline-flex items-center gap-1 text-foreground hover:text-primary outline-none">
-              Services <ChevronDown className="h-4 w-4" />
+              {t.nav.services} <ChevronDown className="h-4 w-4" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-64">
               {SERVICES.map((s) => (
@@ -79,8 +90,8 @@ export function Header() {
               ))}
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
-                <Link to="/cabinet-comptable-abidjan" className="text-secondary font-semibold">
-                  Tous les services →
+                <Link to={getCounterpart("/cabinet-comptable-abidjan", language)} className="text-secondary font-semibold">
+                  {t.nav.allServices}
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -109,17 +120,17 @@ export function Header() {
             +225 07 67 00 96 29
           </a>
           <Link
-            to="/demande-soumissions"
+            to={quotesHref}
             className="inline-flex items-center justify-center rounded-lg bg-secondary text-white px-4 py-2 text-sm font-semibold hover:bg-secondary-dark transition-colors"
           >
-            Obtenir mes soumissions
+            {t.nav.getQuotes}
           </Link>
         </div>
 
         <button
           onClick={() => setOpen((v) => !v)}
           className="lg:hidden inline-flex items-center justify-center rounded-md p-2 text-foreground"
-          aria-label="Menu"
+          aria-label={t.nav.menu}
         >
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
@@ -132,7 +143,7 @@ export function Header() {
               onClick={() => setMobileServicesOpen((v) => !v)}
               className="flex items-center justify-between rounded-md px-3 py-2 text-sm font-medium text-foreground hover:bg-muted"
             >
-              Services
+              {t.nav.services}
               <ChevronDown className={`h-4 w-4 transition-transform ${mobileServicesOpen ? "rotate-180" : ""}`} />
             </button>
             {mobileServicesOpen && (
@@ -148,11 +159,11 @@ export function Header() {
                   </Link>
                 ))}
                 <Link
-                  to="/cabinet-comptable-abidjan"
+                  to={getCounterpart("/cabinet-comptable-abidjan", language)}
                   onClick={() => setOpen(false)}
                   className="rounded-md px-3 py-2 text-sm font-semibold text-secondary"
                 >
-                  Tous les services →
+                  {t.nav.allServices}
                 </Link>
               </div>
             )}
@@ -179,11 +190,11 @@ export function Header() {
               +225 07 67 00 96 29
             </a>
             <Link
-              to="/demande-soumissions"
+              to={quotesHref}
               onClick={() => setOpen(false)}
               className="mt-2 inline-flex items-center justify-center rounded-lg bg-secondary text-white px-4 py-2 text-sm font-semibold hover:bg-secondary-dark"
             >
-              Obtenir mes soumissions
+              {t.nav.getQuotes}
             </Link>
           </div>
         </div>
