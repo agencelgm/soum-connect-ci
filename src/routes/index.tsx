@@ -1,16 +1,30 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
 import {
-  FileText,
-  Users,
   CheckCircle,
+  ArrowRight,
+  Truck,
+  ClipboardList,
+  MapPin,
+  Quote,
+  ShieldCheck,
   Building2,
   Calculator,
   FileCheck,
-  MapPin,
   Search,
   Scale,
-  ArrowRight,
+  Users,
+  Briefcase,
+  Wallet,
+  BarChart3,
+  Landmark,
+  AlertTriangle,
+  ShieldAlert,
+  Globe2,
+  FileText,
+  Zap,
+  Award,
+  Smartphone,
 } from "lucide-react";
 import {
   Accordion,
@@ -22,6 +36,8 @@ import { LeadFormCard } from "@/components/home/LeadFormCard";
 import { buildPageHead } from "@/lib/seo";
 import { useLanguage } from "@/lib/language-context";
 import { getCounterpart } from "@/lib/route-map";
+import heroAccountant from "@/assets/home/hero-accountant.png";
+import processCouple from "@/assets/home/process-couple.png";
 
 const TITLE =
   "Cabinet Comptable Côte d'Ivoire | Comparez 5 Soumissions Gratuitement | SoumissionsComptables.ci";
@@ -42,242 +58,467 @@ export const Route = createFileRoute("/")({
 
 export function Index() {
   const { language, t } = useLanguage();
+  const h = t.home2;
   const quotesHref = getCounterpart(
     language === "en" ? "/demande-soumissions" : "/en/get-quotes",
     language,
   );
-  const STEPS = [
-    { icon: FileText, n: "1", title: t.process.s1Title, desc: t.process.s1Desc },
-    { icon: Users, n: "2", title: t.process.s2Title, desc: t.process.s2Desc },
-    { icon: CheckCircle, n: "3", title: t.process.s3Title, desc: t.process.s3Desc },
+
+  const FEATURE_ICONS = [MapPin, ShieldCheck, Briefcase];
+  const STAT_ICONS = [Truck, ClipboardList, MapPin];
+  const SERVICE_ICONS = [
+    Calculator, Building2, FileCheck, Search, Users, Scale,
+    MapPin, Globe2, BarChart3, Landmark, AlertTriangle, ShieldAlert,
   ];
-  const SERVICES = [
-    { icon: Building2, title: t.services.creation, desc: t.servicesSection.d1, href: getCounterpart("/creation-entreprise-cote-divoire", language) },
-    { icon: Calculator, title: t.services.accounting, desc: t.servicesSection.d2, href: "/comptabilite-entreprise-abidjan" },
-    { icon: FileCheck, title: t.services.tax, desc: t.servicesSection.d3, href: "/declaration-fiscale-cote-divoire" },
-    { icon: MapPin, title: t.services.domiciliation, desc: t.servicesSection.d4, href: "/domiciliation-entreprise-abidjan" },
-    { icon: Search, title: t.services.audit, desc: t.servicesSection.d5, href: "/audit-comptable-cote-divoire" },
-    { icon: Scale, title: t.services.legal, desc: t.servicesSection.d6, href: "/conseil-juridique-abidjan" },
-  ];
-  const AUDIENCES = [
-    { emoji: "🏢", title: t.audience.a1Title, desc: t.audience.a1Desc },
-    { emoji: "✈️", title: t.audience.a2Title, desc: t.audience.a2Desc },
-    { emoji: "🌍", title: t.audience.a3Title, desc: t.audience.a3Desc },
-    { emoji: "🏭", title: t.audience.a4Title, desc: t.audience.a4Desc },
-  ];
-  const STATS = [
-    { value: "127+", label: t.stats.s1 },
-    { value: "48h", label: t.stats.s2 },
-    { value: "5", label: t.stats.s3 },
-    { value: "100%", label: t.stats.s4 },
-  ];
-  const FAQS = t.homeFaq.items;
+  const STEP_ICONS = [FileText, ClipboardList, CheckCircle];
+  const TRUST_ICONS = [ClipboardList, Users, Award, Smartphone];
+
   return (
     <>
-      {/* ====== HERO ====== */}
+      {/* ====== 1. HERO SPLIT ====== */}
       <section
         aria-labelledby="hero-title"
-        className="text-white"
-        style={{ background: "linear-gradient(135deg,#1B3A6B,#1a2f5a)" }}
+        className="relative overflow-hidden bg-[#F5F1EA]"
       >
-        <div className="container-app section grid gap-10 lg:grid-cols-5 lg:items-center">
-          <div className="lg:col-span-3">
-            <span className="inline-block rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground">
-              {t.hero.badge}
-            </span>
-            <h1
-              id="hero-title"
-              className="mt-4 font-heading font-bold leading-tight text-3xl md:text-5xl"
-            >
-              {t.hero.h1}
-            </h1>
-            <p className="mt-4 text-lg md:text-xl text-white/80">
-              {t.hero.sub}
-            </p>
-            <ul className="mt-6 flex flex-wrap gap-x-6 gap-y-3 text-sm font-medium">
-              {[t.hero.bullet1, t.hero.bullet2, t.hero.bullet3].map((label) => (
-                <li key={label} className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-accent" />
-                  {label}
-                </li>
-              ))}
-            </ul>
+        <div className="container-app py-10 md:py-16 grid gap-8 lg:grid-cols-12 lg:items-center">
+          {/* Left: character + value props */}
+          <div className="lg:col-span-5 relative">
+            <div className="hidden lg:block">
+              <img
+                src={heroAccountant}
+                alt=""
+                width={768}
+                height={1024}
+                className="w-full max-w-md mx-auto"
+              />
+            </div>
+            <div className="lg:hidden text-center">
+              <span className="inline-block rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground">
+                {t.hero.badge}
+              </span>
+              <h1 id="hero-title" className="mt-3 font-heading text-3xl font-bold text-primary">
+                {t.hero.h1}
+              </h1>
+            </div>
           </div>
 
-          <div className="lg:col-span-2">
-            <LeadFormCard />
-            <p className="mt-3 text-center text-sm text-white/80">
-              {t.hero.rating}
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ====== COMMENT ÇA MARCHE ====== */}
-      <section aria-labelledby="how-title" className="bg-white">
-        <div className="container-app section">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 id="how-title" className="font-heading text-3xl md:text-4xl font-bold text-primary">
-              {t.process.title}
-            </h2>
-            <p className="mt-3 text-muted-foreground text-lg">
-              {t.process.sub}
-            </p>
-          </div>
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {STEPS.map(({ icon: Icon, n, title, desc }) => (
-              <article
-                key={n}
-                className="relative rounded-xl border border-border bg-white p-8 text-center shadow-sm"
+          {/* Right: orange form card */}
+          <div className="lg:col-span-7 relative">
+            <div className="hidden lg:block mb-4">
+              <span className="inline-block rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground">
+                {t.hero.badge}
+              </span>
+              <h1 id="hero-title" className="mt-3 font-heading text-3xl xl:text-4xl font-bold text-primary leading-tight">
+                {t.hero.h1}
+              </h1>
+              <p className="mt-2 text-base text-muted-foreground max-w-xl">
+                {t.hero.sub}
+              </p>
+            </div>
+            <div className="relative rounded-2xl bg-secondary p-5 md:p-7 shadow-2xl text-white">
+              {/* ribbon badge */}
+              <div
+                aria-hidden
+                className="absolute -top-3 -right-3 hidden sm:flex h-20 w-20 items-center justify-center rounded-full bg-white text-primary shadow-lg border-4 border-white text-[10px] font-bold text-center leading-tight px-1 rotate-12"
               >
-                <span className="absolute -top-4 right-6 flex h-9 w-9 items-center justify-center rounded-full bg-secondary text-secondary-foreground font-heading font-bold">
-                  {n}
-                </span>
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  <Icon className="h-7 w-7" />
-                </div>
-                <h3 className="mt-5 font-heading text-xl font-semibold text-primary">{title}</h3>
-                <p className="mt-2 text-muted-foreground">{desc}</p>
-              </article>
-            ))}
-          </div>
-          <div className="mt-10 text-center">
-            <Link
-              to={quotesHref}
-              className="inline-flex items-center gap-2 rounded-md bg-secondary px-6 py-3 text-sm font-semibold text-secondary-foreground hover:bg-secondary-dark"
-            >
-              {t.cta.startNow} <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ====== NOS SERVICES ====== */}
-      <section aria-labelledby="services-title" className="bg-[#F8FAFC]">
-        <div className="container-app section">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 id="services-title" className="font-heading text-3xl md:text-4xl font-bold text-primary">
-              {t.servicesSection.title}
-            </h2>
-            <p className="mt-3 text-muted-foreground text-lg">
-              {t.servicesSection.sub}
-            </p>
-          </div>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {SERVICES.map(({ icon: Icon, title, desc, href }) => (
-              <article
-                key={title}
-                className="group rounded-xl border border-border bg-white p-6 transition-shadow hover:shadow-lg"
-              >
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary/10 text-secondary">
-                  <Icon className="h-6 w-6" />
-                </div>
-                <h3 className="mt-4 font-heading text-lg font-semibold text-primary">{title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground line-clamp-2">{desc}</p>
-                {/* TODO: some target routes (audit, conseil) not yet created */}
-                <a
-                  href={href}
-                  className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary group-hover:underline"
-                >
-                  {t.cta.learnMore} <ArrowRight className="h-4 w-4" />
-                </a>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ====== POUR QUI ====== */}
-      <section aria-labelledby="audience-title" className="bg-white">
-        <div className="container-app section">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 id="audience-title" className="font-heading text-3xl md:text-4xl font-bold text-primary">
-              {t.audience.title}
-            </h2>
-          </div>
-          <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {AUDIENCES.map(({ emoji, title, desc }) => (
-              <article key={title} className="text-center">
-                <div className="mx-auto text-4xl" aria-hidden>
-                  {emoji}
-                </div>
-                <h3 className="mt-3 font-heading text-lg font-semibold text-primary">{title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{desc}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ====== STATS ====== */}
-      <section
-        aria-label="Statistiques"
-        className="text-white"
-        style={{ background: "linear-gradient(135deg,#1B3A6B,#1a2f5a)" }}
-      >
-        <div className="container-app section">
-          <div className="grid grid-cols-2 gap-8 text-center md:grid-cols-4">
-            {STATS.map(({ value, label }) => (
-              <div key={label}>
-                <div className="font-heading text-4xl md:text-5xl font-bold text-secondary">
-                  {value}
-                </div>
-                <p className="mt-2 text-sm md:text-base text-white/80">{label}</p>
+                <span>CABINETS<br/>AGRÉÉS<br/>OECCA-CI</span>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ====== FAQ ====== */}
-      <section aria-labelledby="faq-title" className="bg-[#F8FAFC]">
-        <div className="container-app section">
-          <div className="mx-auto max-w-3xl">
-            <h2
-              id="faq-title"
-              className="font-heading text-3xl md:text-4xl font-bold text-primary text-center"
-            >
-              {t.homeFaq.title}
-            </h2>
-            <Accordion type="single" collapsible className="mt-8">
-              {FAQS.map((item, i) => (
-                <AccordionItem key={i} value={`item-${i}`}>
-                  <AccordionTrigger className="text-base font-semibold text-primary">
-                    {item.q}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
-                    {item.a}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-            <div className="mt-8 text-center">
-              <Link
-                to="/faq"
-                className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
-              >
-                {t.cta.viewAllFaq} <ArrowRight className="h-4 w-4" />
-              </Link>
+              <h2 className="font-heading text-xl md:text-2xl font-bold uppercase">
+                {language === "fr" ? "Obtenez 5 soumissions gratuites de cabinets comptables" : "Get 5 free quotes from accounting firms"}
+              </h2>
+              <p className="mt-1 text-white/90 font-semibold">
+                {language === "fr" ? "Comparez prix et services et choisissez le meilleur" : "Compare prices and services and choose the best"}
+              </p>
+              <p className="mt-2 text-sm text-white/85">
+                {language === "fr"
+                  ? "Complétez simplement le formulaire ci-dessous pour obtenir vos soumissions dans les prochaines 24 à 48 heures."
+                  : "Simply fill out the form below to receive your quotes within 24 to 48 hours."}
+              </p>
+              <div className="mt-5">
+                <LeadFormCard />
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ====== CTA FINAL ====== */}
-      <section aria-labelledby="cta-title" className="bg-secondary text-secondary-foreground">
-        <div className="container-app section text-center">
-          <h2 id="cta-title" className="font-heading text-3xl md:text-4xl font-bold">
-            {t.finalCta.title}
+      {/* ====== 2. STATS BAR ====== */}
+      <section aria-label="Stats" className="bg-white border-y border-border">
+        <div className="container-app py-8 grid grid-cols-1 sm:grid-cols-3 gap-6">
+          {h.statsBar.map((s, i) => {
+            const Icon = STAT_ICONS[i];
+            return (
+              <div key={i} className="flex items-center gap-4 justify-center sm:justify-start">
+                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-secondary text-secondary-foreground shrink-0">
+                  <Icon className="h-7 w-7" aria-hidden="true" />
+                </div>
+                <div>
+                  <div className="font-heading text-2xl font-bold text-primary leading-none">
+                    {s.value}
+                  </div>
+                  <div className="text-sm text-muted-foreground mt-1">{s.label}</div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* ====== 3. FEATURES ROW ====== */}
+      <section aria-label="Features" className="bg-[#F8FAFC]">
+        <div className="container-app section grid gap-8 md:grid-cols-3">
+          {h.featuresRow.map((text, i) => {
+            const Icon = FEATURE_ICONS[i];
+            return (
+              <div key={i} className="flex flex-col items-center text-center">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <Icon className="h-8 w-8" aria-hidden="true" />
+                </div>
+                <p className="mt-4 text-sm font-medium text-foreground max-w-xs">{text}</p>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* ====== 4. TESTIMONIALS ====== */}
+      <section aria-label="Témoignages" className="bg-white">
+        <div className="container-app section grid gap-8 md:grid-cols-3">
+          {h.testimonials.map((tt, i) => (
+            <figure key={i} className="text-center px-4">
+              <Quote className="mx-auto h-8 w-8 text-secondary" aria-hidden="true" />
+              <blockquote className="mt-4 text-sm md:text-base text-muted-foreground italic leading-relaxed">
+                "{tt.quote}"
+              </blockquote>
+              <figcaption className="mt-3 font-bold text-primary">{tt.name}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </section>
+
+      {/* ====== 5. HIGHLIGHT CARDS ====== */}
+      <section aria-label="Couverture" className="bg-[#F8FAFC]">
+        <div className="container-app section grid gap-6 md:grid-cols-3">
+          {h.highlights.map((card, i) => {
+            const Icon = [Globe2, Award, Building2][i];
+            return (
+              <article key={i} className="bg-white rounded-xl overflow-hidden shadow-sm border border-border">
+                <div className="relative h-44 bg-gradient-to-br from-primary to-[#1a2f5a] flex items-center justify-center">
+                  <Icon className="h-20 w-20 text-white/20" aria-hidden="true" />
+                  <div className="absolute -bottom-6 left-6 flex h-12 w-12 items-center justify-center rounded-full bg-secondary text-secondary-foreground shadow-lg ring-4 ring-white">
+                    <Icon className="h-6 w-6" aria-hidden="true" />
+                  </div>
+                </div>
+                <div className="p-6 pt-9">
+                  <h3 className="font-heading text-base font-bold text-primary uppercase leading-snug">
+                    {card.title}
+                  </h3>
+                  <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{card.text}</p>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* ====== 6. SERVICES GRID (12 cards) ====== */}
+      <section aria-labelledby="services-title" className="bg-white">
+        <div className="container-app section">
+          <div className="text-center max-w-3xl mx-auto">
+            <h2 id="services-title" className="font-heading text-3xl md:text-4xl font-bold text-primary uppercase">
+              {language === "fr" ? "Services" : "Services"}
+            </h2>
+            <p className="mt-3 text-muted-foreground">{h.servicesIntroSub}</p>
+          </div>
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {h.services12.map((s, i) => {
+              const Icon = SERVICE_ICONS[i];
+              return (
+                <article key={i} className="rounded-xl bg-white overflow-hidden border border-border shadow-sm hover:shadow-md transition-shadow">
+                  <div className="aspect-[4/3] bg-gradient-to-br from-secondary/15 to-primary/10 flex items-center justify-center">
+                    <Icon className="h-14 w-14 text-primary" aria-hidden="true" />
+                  </div>
+                  <div className="p-5">
+                    <h3 className="font-heading text-base font-bold text-primary uppercase">{s.title}</h3>
+                    <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.text}</p>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ====== 7. PRESS CAROUSEL ====== */}
+      <section aria-label="Presse" className="bg-[#F8FAFC] border-y border-border overflow-hidden">
+        <div className="container-app py-10">
+          <h2 className="text-center font-heading text-lg font-semibold text-primary mb-6">
+            {h.pressTitle}
           </h2>
-          <p className="mt-3 text-lg text-white/90">
-            {t.finalCta.sub}
+          <div className="press-marquee">
+            <div className="press-track">
+              {[...h.pressLogos, ...h.pressLogos].map((logo, i) => (
+                <div
+                  key={i}
+                  className="shrink-0 mx-6 flex items-center justify-center h-16 px-6 rounded-md bg-white border border-border text-muted-foreground font-heading font-semibold italic"
+                >
+                  {logo}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <style>{`
+          .press-marquee { overflow: hidden; width: 100%; }
+          .press-track { display: flex; width: max-content; animation: press-scroll 40s linear infinite; }
+          @keyframes press-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        `}</style>
+      </section>
+
+      {/* ====== 8. 3 STEPS PROCESS ====== */}
+      <section aria-labelledby="steps-title" className="bg-white">
+        <div className="container-app section">
+          <div className="text-center max-w-3xl mx-auto">
+            <h2 id="steps-title" className="font-heading text-2xl md:text-3xl font-bold text-primary uppercase">
+              {h.stepsKicker}
+            </h2>
+            <p className="mt-2 font-semibold text-muted-foreground uppercase tracking-wide">{h.stepsSub}</p>
+            <p className="mt-4 font-heading text-4xl md:text-5xl font-extrabold text-secondary">{h.stepsTitle}</p>
+          </div>
+
+          <div className="mt-10 flex justify-center">
+            <img
+              src={processCouple}
+              alt=""
+              width={768}
+              height={768}
+              loading="lazy"
+              className="w-full max-w-sm"
+            />
+          </div>
+
+          <div className="mt-8 grid gap-8 md:grid-cols-3">
+            {h.steps3.map((s, i) => {
+              const Icon = STEP_ICONS[i];
+              return (
+                <article key={i} className="text-center">
+                  <div className="relative mx-auto h-36 w-36 rounded-full bg-gradient-to-br from-primary to-[#1a2f5a] flex items-center justify-center">
+                    <span className="font-heading text-5xl font-bold text-white/15">{i + 1}</span>
+                    <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-secondary text-secondary-foreground ring-4 ring-white shadow">
+                      <Icon className="h-6 w-6" aria-hidden="true" />
+                    </div>
+                  </div>
+                  <p className="mt-6 font-heading font-extrabold text-secondary text-xl">{s.tag}</p>
+                  <p className="mt-1 font-heading font-bold text-primary text-base">{s.title}</p>
+                  <p className="mt-3 text-sm text-muted-foreground leading-relaxed px-2">{s.text}</p>
+                  <p className="mt-3 text-xs uppercase tracking-wider text-muted-foreground/80 italic">{s.footer}</p>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ====== 9. PROMO BANNER ====== */}
+      <section aria-label="Promo" className="bg-primary text-white">
+        <div className="container-app py-10 grid gap-6 md:grid-cols-2 items-center">
+          <div className="flex items-center gap-4">
+            <Zap className="h-12 w-12 text-secondary shrink-0" aria-hidden="true" />
+            <div>
+              <p className="font-heading text-2xl font-bold">
+                {language === "fr" ? "Réponse rapide en 24 à 48h" : "Quick reply within 24 to 48h"}
+              </p>
+              <p className="text-white/80 text-sm mt-1">
+                {language === "fr"
+                  ? "Nos cabinets agréés vous contactent en moins de 2 jours ouvrés."
+                  : "Our certified firms reach out in under 2 working days."}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <ShieldCheck className="h-12 w-12 text-secondary shrink-0" aria-hidden="true" />
+            <div>
+              <p className="font-heading text-2xl font-bold">
+                {language === "fr" ? "100 % gratuit, sans engagement" : "100% free, no commitment"}
+              </p>
+              <p className="text-white/80 text-sm mt-1">
+                {language === "fr"
+                  ? "Comparez sans risque. Choisissez le cabinet qui vous convient."
+                  : "Compare risk-free. Pick the firm that suits you."}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ====== 10. SEO ARTICLE ====== */}
+      <section aria-labelledby="seo-title" className="bg-white">
+        <div className="container-app section max-w-5xl">
+          <h2 id="seo-title" className="font-heading text-2xl md:text-3xl font-bold text-primary">
+            {h.seoTitle}
+          </h2>
+          <p className="mt-2 text-muted-foreground italic">{h.seoSubtitle}</p>
+
+          <div className="mt-8 grid gap-8 md:grid-cols-[160px_1fr] items-start">
+            <div className="hidden md:flex h-40 rounded-lg bg-gradient-to-br from-primary to-[#1a2f5a] items-center justify-center">
+              <Building2 className="h-16 w-16 text-white/30" aria-hidden="true" />
+            </div>
+            <p className="text-sm md:text-base text-muted-foreground leading-relaxed">{h.seoP1}</p>
+          </div>
+
+          <div className="mt-8 grid gap-8 md:grid-cols-[1fr_160px] items-start">
+            <div>
+              <p className="text-sm md:text-base text-muted-foreground leading-relaxed">{h.seoP2}</p>
+              <h3 className="mt-6 font-heading text-base font-bold text-primary">{h.seoTypesTitle}</h3>
+              <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+                {h.seoTypes.map((tt, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <CheckCircle className="h-4 w-4 text-accent mt-0.5 shrink-0" aria-hidden="true" />
+                    <span>{tt}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-4 text-sm md:text-base text-muted-foreground leading-relaxed">
+                <strong className="text-primary">{h.seoP3Strong}</strong>{h.seoP3}
+              </p>
+            </div>
+            <div className="hidden md:flex h-40 rounded-lg bg-gradient-to-br from-secondary/20 to-secondary/10 items-center justify-center">
+              <FileCheck className="h-16 w-16 text-secondary" aria-hidden="true" />
+            </div>
+          </div>
+
+          <div className="mt-8 grid gap-8 md:grid-cols-[160px_1fr] items-start">
+            <div className="hidden md:flex h-40 rounded-lg bg-gradient-to-br from-accent/20 to-accent/10 items-center justify-center">
+              <Globe2 className="h-16 w-16 text-accent" aria-hidden="true" />
+            </div>
+            <div>
+              <h3 className="font-heading text-base font-bold text-primary">{h.seoNeedsTitle}</h3>
+              <ul className="mt-3 grid sm:grid-cols-2 gap-2 text-sm text-muted-foreground">
+                {h.seoNeeds.map((nn, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <CheckCircle className="h-4 w-4 text-accent mt-0.5 shrink-0" aria-hidden="true" />
+                    <span>{nn}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-5 text-sm md:text-base text-muted-foreground leading-relaxed font-semibold text-primary">
+                {h.seoLocation}
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-8 grid gap-8 md:grid-cols-[1fr_160px] items-start">
+            <div>
+              <h3 className="font-heading text-base font-bold text-primary">{h.seoAdvantagesTitle}</h3>
+              <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+                {h.seoAdvantages.map((aa, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <CheckCircle className="h-4 w-4 text-accent mt-0.5 shrink-0" aria-hidden="true" />
+                    <span>{aa}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="hidden md:flex h-40 rounded-lg bg-gradient-to-br from-primary to-[#1a2f5a] items-center justify-center">
+              <ShieldCheck className="h-16 w-16 text-white/30" aria-hidden="true" />
+            </div>
+          </div>
+
+          <blockquote className="mt-10 border-l-4 border-secondary bg-[#F8FAFC] p-6 rounded-r-lg italic text-muted-foreground leading-relaxed">
+            {h.mission}
+          </blockquote>
+
+          <p className="mt-6 text-center font-heading text-base font-bold text-primary">
+            {h.seoFinalCta}
           </p>
-          <Link
-            to={quotesHref}
-            className="mt-8 inline-flex items-center gap-2 rounded-md bg-white px-7 py-3.5 text-base font-semibold text-secondary hover:bg-white/90"
-          >
-            {t.finalCta.button} <ArrowRight className="h-4 w-4" />
-          </Link>
+        </div>
+      </section>
+
+      {/* ====== 11. TRUST BADGES ====== */}
+      <section aria-label="Garanties" className="bg-[#F8FAFC]">
+        <div className="container-app section grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {h.trustBadges.map((b, i) => {
+            const Icon = TRUST_ICONS[i];
+            return (
+              <div key={i} className="flex flex-col items-center text-center">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
+                  <Icon className="h-8 w-8" aria-hidden="true" />
+                </div>
+                <p className="mt-4 text-sm font-medium text-primary max-w-[220px]">{b}</p>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* ====== 12. FAQ ====== */}
+      <section aria-labelledby="faq-title" className="bg-white">
+        <div className="container-app section max-w-3xl">
+          <h2 id="faq-title" className="font-heading text-3xl md:text-4xl font-bold text-primary text-center">
+            {t.homeFaq.title}
+          </h2>
+          <Accordion type="single" collapsible className="mt-8">
+            {t.homeFaq.items.map((item, i) => (
+              <AccordionItem key={i} value={`item-${i}`}>
+                <AccordionTrigger className="text-base font-semibold text-primary">
+                  {item.q}
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  {item.a}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+          <div className="mt-6 text-center">
+            <Link to="/faq" className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline">
+              {t.cta.viewAllFaq} <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ====== 13. FINAL CTA REPEAT ====== */}
+      <section aria-labelledby="final-title" className="bg-[#F5F1EA]">
+        <div className="container-app section">
+          <h2 id="final-title" className="text-center font-heading text-2xl md:text-3xl font-bold text-primary max-w-3xl mx-auto">
+            {h.finalRepeatTitle}
+          </h2>
+          <div className="mt-10 grid gap-8 lg:grid-cols-12 lg:items-center">
+            <div className="lg:col-span-5 hidden lg:block">
+              <img
+                src={heroAccountant}
+                alt=""
+                width={768}
+                height={1024}
+                loading="lazy"
+                className="w-full max-w-sm mx-auto"
+              />
+            </div>
+            <div className="lg:col-span-7">
+              <div className="relative rounded-2xl bg-secondary p-5 md:p-7 shadow-2xl text-white">
+                <h3 className="font-heading text-xl md:text-2xl font-bold uppercase">
+                  {language === "fr" ? "Obtenez 5 soumissions gratuites" : "Get 5 free quotes"}
+                </h3>
+                <p className="mt-1 text-white/90 text-sm">
+                  {language === "fr" ? "Comparez prix et services et choisissez le meilleur" : "Compare prices and services and choose the best"}
+                </p>
+                <div className="mt-5">
+                  <LeadFormCard />
+                </div>
+              </div>
+              <p className="mt-4 text-center font-bold text-primary">
+                {h.finalRepeatTagline}
+              </p>
+              <div className="mt-6 text-center">
+                <Link
+                  to={quotesHref}
+                  className="inline-flex items-center gap-2 rounded-md bg-primary px-7 py-3.5 text-base font-semibold text-primary-foreground hover:bg-primary-dark"
+                >
+                  {t.finalCta.button} <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </>
