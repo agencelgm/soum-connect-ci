@@ -62,7 +62,7 @@ export function Header() {
         <Link to="/" className="flex items-center gap-2 shrink-0">
           <BarChart2 className="h-5 w-5 text-secondary" />
           <span className="font-heading font-bold text-primary text-base sm:text-lg">
-            SoumissionsComptables
+            Soumissions <span className="text-secondary">Comptables</span>
           </span>
         </Link>
 
