@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Calculator, Building2, Receipt, MapPin, TrendingDown, GraduationCap, Target } from "lucide-react";
 import { ServicePage, type Faq, type RelatedService } from "@/components/service/ServicePage";
+import { buildPageHead, faqSchema } from "@/lib/seo";
 
 const META_TITLE = "Comptabilité Entreprise Abidjan | Tenue de Comptes | SoumissionsComptables.ci";
 const META_DESC =
@@ -41,30 +42,18 @@ const RELATED: RelatedService[] = [
 ];
 
 export const Route = createFileRoute("/comptabilite-entreprise-abidjan")({
-  head: () => ({
-    meta: [
-      { title: META_TITLE },
-      { name: "description", content: META_DESC },
-      { property: "og:title", content: META_TITLE },
-      { property: "og:description", content: META_DESC },
-      { property: "og:url", content: "/comptabilite-entreprise-abidjan" },
-    ],
-    links: [{ rel: "canonical", href: "/comptabilite-entreprise-abidjan" }],
-    scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          mainEntity: FAQS.map((f) => ({
-            "@type": "Question",
-            name: f.question,
-            acceptedAnswer: { "@type": "Answer", text: f.answer },
-          })),
-        }),
-      },
-    ],
-  }),
+  head: () =>
+    buildPageHead({
+      path: "/comptabilite-entreprise-abidjan",
+      title: META_TITLE,
+      description: META_DESC,
+      breadcrumb: [
+        { name: "Accueil", path: "/" },
+        { name: "Services", path: "/cabinet-comptable-abidjan" },
+        { name: "Comptabilité générale", path: "/comptabilite-entreprise-abidjan" },
+      ],
+      extraSchemas: [faqSchema(FAQS)],
+    }),
   component: Page,
 });
 
