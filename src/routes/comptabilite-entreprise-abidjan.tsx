@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Calculator, Building2, Receipt, MapPin, TrendingDown, GraduationCap, Target } from "lucide-react";
 import { ServicePage, type Faq, type RelatedService } from "@/components/service/ServicePage";
-import { buildPageHead, faqSchema } from "@/lib/seo";
+import { buildPageHead, faqSchema, LOCAL_BUSINESS_SCHEMA } from "@/lib/seo";
 
 const META_TITLE = "Comptabilité Entreprise Abidjan | Tenue de Comptes | SoumissionsComptables.ci";
 const META_DESC =
@@ -52,7 +52,7 @@ export const Route = createFileRoute("/comptabilite-entreprise-abidjan")({
         { name: "Services", path: "/cabinet-comptable-abidjan" },
         { name: "Comptabilité générale", path: "/comptabilite-entreprise-abidjan" },
       ],
-      extraSchemas: [faqSchema(FAQS)],
+      extraSchemas: [LOCAL_BUSINESS_SCHEMA, faqSchema(FAQS)],
     }),
   component: Page,
 });

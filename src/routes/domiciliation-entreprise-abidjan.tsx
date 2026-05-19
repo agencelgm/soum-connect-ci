@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { MapPin, Building2, Calculator, Receipt, Mail, Briefcase, Globe2 } from "lucide-react";
 import { ServicePage, type Faq, type RelatedService } from "@/components/service/ServicePage";
-import { buildPageHead, faqSchema } from "@/lib/seo";
+import { buildPageHead, faqSchema, LOCAL_BUSINESS_SCHEMA } from "@/lib/seo";
 
 const META_TITLE = "Domiciliation Entreprise Abidjan | Adresse Professionnelle | SoumissionsComptables.ci";
 const META_DESC =
@@ -47,7 +47,7 @@ export const Route = createFileRoute("/domiciliation-entreprise-abidjan")({
         { name: "Services", path: "/cabinet-comptable-abidjan" },
         { name: "Domiciliation Abidjan", path: "/domiciliation-entreprise-abidjan" },
       ],
-      extraSchemas: [faqSchema(FAQS)],
+      extraSchemas: [LOCAL_BUSINESS_SCHEMA, faqSchema(FAQS)],
     }),
   component: Page,
 });

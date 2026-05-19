@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { buildPageHead } from "@/lib/seo";
+import { buildPageHead, LOCAL_BUSINESS_SCHEMA } from "@/lib/seo";
 import { Index } from "../index";
 
 const TITLE =
@@ -16,6 +16,7 @@ export const Route = createFileRoute("/en/")({
       includeWebSite: true,
       lang: "en",
       altPath: "/",
+      extraSchemas: [LOCAL_BUSINESS_SCHEMA],
     }),
   component: Index,
 });
