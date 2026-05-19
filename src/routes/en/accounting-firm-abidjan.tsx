@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { buildPageHead } from "@/lib/seo";
+import { buildPageHead, LOCAL_BUSINESS_SCHEMA } from "@/lib/seo";
 import { Route as FrRoute } from "../cabinet-comptable-abidjan";
 
 export const Route = createFileRoute("/en/accounting-firm-abidjan")({
@@ -15,6 +15,7 @@ export const Route = createFileRoute("/en/accounting-firm-abidjan")({
         { name: "Cities", path: "/en/accounting-firm-abidjan" },
         { name: "Abidjan", path: "/en/accounting-firm-abidjan" },
       ],
+      extraSchemas: [LOCAL_BUSINESS_SCHEMA],
     }),
   component: FrRoute.options.component,
 });
