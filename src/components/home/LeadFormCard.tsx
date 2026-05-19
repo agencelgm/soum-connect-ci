@@ -12,9 +12,10 @@ import {
 import { toast } from "sonner";
 import { Lock } from "lucide-react";
 import { useLanguage } from "@/lib/language-context";
+import { trackEvent } from "@/lib/analytics";
 
 export function LeadFormCard() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [service, setService] = useState("");
   const [city, setCity] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -28,12 +29,13 @@ export function LeadFormCard() {
   ];
   const CITIES = t.leadForm.cities;
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const formEl = e.currentTarget;
     const form = new FormData(e.currentTarget);
     const payload = {
       service,
-      city,
+      localisation: city,
       fullName: form.get("fullName"),
       whatsapp: form.get("whatsapp"),
       email: form.get("email"),
@@ -43,15 +45,40 @@ export function LeadFormCard() {
       return;
     }
     setSubmitting(true);
-    // TODO: backend wiring (out of scope)
-    console.log("Lead form submission", payload);
-    setTimeout(() => {
+    try {
+      const whatsappRaw = String(payload.whatsapp ?? "").trim();
+      const whatsapp = whatsappRaw.startsWith("+") ? whatsappRaw : `+225 ${whatsappRaw}`;
+      const res = await fetch("/api/public/lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          source: "home-lead-form",
+          language,
+          service: payload.service,
+          localisation: payload.localisation,
+          nom: payload.fullName,
+          whatsapp,
+          email: payload.email,
+          consent: true,
+        }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      trackEvent("soumission_envoyee", {
+        service: payload.service,
+        localisation: String(payload.localisation ?? ""),
+        language,
+        source: "home-lead-form",
+      });
       toast.success(t.leadForm.success);
-      setSubmitting(false);
-      (e.target as HTMLFormElement).reset();
+      formEl.reset();
       setService("");
       setCity("");
-    }, 600);
+    } catch (err) {
+      console.error("Lead form submission failed", err);
+      toast.error(t.leadForm.errAll);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
