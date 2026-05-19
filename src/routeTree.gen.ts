@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as GuidesRouteImport } from './routes/guides'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as DomiciliationEntrepriseAbidjanRouteImport } from './routes/domiciliation-entreprise-abidjan'
@@ -28,6 +29,11 @@ import { Route as EnCompanyRegistrationIvoryCoastRouteImport } from './routes/en
 import { Route as EnAccountingFirmAbidjanRouteImport } from './routes/en/accounting-firm-abidjan'
 import { Route as EnAboutRouteImport } from './routes/en/about'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GuidesRoute = GuidesRouteImport.update({
   id: '/guides',
   path: '/guides',
@@ -140,6 +146,7 @@ export interface FileRoutesByFullPath {
   '/domiciliation-entreprise-abidjan': typeof DomiciliationEntrepriseAbidjanRoute
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
@@ -160,6 +167,7 @@ export interface FileRoutesByTo {
   '/domiciliation-entreprise-abidjan': typeof DomiciliationEntrepriseAbidjanRoute
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
@@ -181,6 +189,7 @@ export interface FileRoutesById {
   '/domiciliation-entreprise-abidjan': typeof DomiciliationEntrepriseAbidjanRoute
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
@@ -203,6 +212,7 @@ export interface FileRouteTypes {
     | '/domiciliation-entreprise-abidjan'
     | '/faq'
     | '/guides'
+    | '/sitemap.xml'
     | '/en/about'
     | '/en/accounting-firm-abidjan'
     | '/en/company-registration-ivory-coast'
@@ -223,6 +233,7 @@ export interface FileRouteTypes {
     | '/domiciliation-entreprise-abidjan'
     | '/faq'
     | '/guides'
+    | '/sitemap.xml'
     | '/en/about'
     | '/en/accounting-firm-abidjan'
     | '/en/company-registration-ivory-coast'
@@ -243,6 +254,7 @@ export interface FileRouteTypes {
     | '/domiciliation-entreprise-abidjan'
     | '/faq'
     | '/guides'
+    | '/sitemap.xml'
     | '/en/about'
     | '/en/accounting-firm-abidjan'
     | '/en/company-registration-ivory-coast'
@@ -264,6 +276,7 @@ export interface RootRouteChildren {
   DomiciliationEntrepriseAbidjanRoute: typeof DomiciliationEntrepriseAbidjanRoute
   FaqRoute: typeof FaqRoute
   GuidesRoute: typeof GuidesRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   EnAboutRoute: typeof EnAboutRoute
   EnAccountingFirmAbidjanRoute: typeof EnAccountingFirmAbidjanRoute
   EnCompanyRegistrationIvoryCoastRoute: typeof EnCompanyRegistrationIvoryCoastRoute
@@ -273,6 +286,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/guides': {
       id: '/guides'
       path: '/guides'
@@ -417,6 +437,7 @@ const rootRouteChildren: RootRouteChildren = {
   DomiciliationEntrepriseAbidjanRoute: DomiciliationEntrepriseAbidjanRoute,
   FaqRoute: FaqRoute,
   GuidesRoute: GuidesRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   EnAboutRoute: EnAboutRoute,
   EnAccountingFirmAbidjanRoute: EnAccountingFirmAbidjanRoute,
   EnCompanyRegistrationIvoryCoastRoute: EnCompanyRegistrationIvoryCoastRoute,
