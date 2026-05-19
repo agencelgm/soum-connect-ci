@@ -60,6 +60,7 @@ export const Route = createFileRoute("/creation-entreprise-cote-divoire")({
         { name: "Accueil", path: "/" },
         { name: "Création d'entreprise", path: "/creation-entreprise-cote-divoire" },
       ],
+      altPath: "/en/company-registration-ivory-coast",
       extraSchemas: [
         howToSchema("Comment créer une entreprise en Côte d'Ivoire en 5 étapes", STEPS),
         faqSchema(FAQS),
