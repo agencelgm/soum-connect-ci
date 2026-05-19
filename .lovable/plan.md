@@ -1,51 +1,50 @@
-Implémenter 4 pages en réutilisant `ServicePage`. Chaque route définit son propre `head()` (meta + canonical + JSON-LD).
+## Plan: Page Diaspora + Hub Guides
 
-## 1. `/comptabilite-entreprise-abidjan`
-- Icône `Calculator`, breadcrumb : Accueil › Services › Comptabilité générale.
-- Sections :
-  - **Pourquoi externaliser** : 3 cartes (coût maîtrisé, expertise OHADA/SYSCOHADA, focus métier).
-  - **Services inclus** : liste à puces (tenue de livres, états financiers, bilan annuel, déclarations mensuelles TVA/CNPS, conseil).
-  - **Tableau** comparatif Interne vs Externalisé (Coût, Compétence, Flexibilité, Risque, Idéal pour).
-  - **Fourchette de prix** : 50 000 – 300 000 FCFA / mois.
-- FAQs (5) dont "Est-ce obligatoire d'avoir un comptable pour une SARL en CI ?".
-- JSON-LD : `FAQPage`.
-- Related : Création d'entreprise, Déclaration fiscale, Domiciliation.
+### Page 1 — `/creation-entreprise-diaspora-ivoirienne`
 
-## 2. `/declaration-fiscale-cote-divoire`
-- Icône `Receipt`, breadcrumb : Accueil › Services › Déclaration fiscale.
-- Sections :
-  - **Calendrier fiscal CI** : tableau (DSF annuelle avant 30 juin, TVA mensuelle 15, IS acomptes, CNPS, ITS).
-  - **Principaux impôts** : cartes IS, TVA, CNPS, TPS/Patente.
-  - **Risques de non-conformité** : pénalités DGI (intérêts de retard, majorations, redressements).
-- FAQs (5) dont "Quand doit-on soumettre la DSF en Côte d'Ivoire ?".
-- JSON-LD : `FAQPage`.
-- Related : Comptabilité, Création d'entreprise, Cabinet Abidjan.
+Réécriture complète du fichier existant en réutilisant le composant `ServicePage` (déjà utilisé pour les autres pages services) pour rester cohérent.
 
-## 3. `/domiciliation-entreprise-abidjan`
-- Icône `MapPin`, breadcrumb : Accueil › Services › Domiciliation Abidjan.
-- Sections :
-  - **Définition** (50 mots) : la domiciliation = attribution d'une adresse légale par un prestataire agréé pour le siège social.
-  - **Pourquoi domicilier** : diaspora, expatriés, startups, image professionnelle, mobilité.
-  - **Ce qu'on obtient** : adresse légale, réception/scan courrier, accès bureaux/salles de réunion à la demande.
-  - **Fourchette de prix** : 30 000 – 100 000 FCFA / mois selon quartier (Plateau premium, Cocody intermédiaire, Marcory/Yopougon économique).
-- FAQs (4).
-- JSON-LD : `FAQPage`.
-- Related : Création d'entreprise, Comptabilité, Cabinet Abidjan.
+Props passées à `ServicePage` :
+- `title` : "Créer votre Entreprise en Côte d'Ivoire depuis la France, Canada ou les USA"
+- `metaTitle` / `metaDescription` : exactement le texte fourni
+- `serviceIcon` : `Globe` (lucide)
+- `heroSubtitle` : intro courte diaspora
+- `relatedServices` : Création entreprise CI, Comptabilité Abidjan, Domiciliation Abidjan
+- `faqs` : 5 FAQ diaspora (paiement à distance, présence physique, choix de banque, délais, frais cabinet mandataire) + injection JSON-LD `FAQPage`
+- `mainContent` (JSX) avec les sections demandées :
+  - A) Bloc rassurant "Oui, c'est possible depuis l'étranger" (~100 mots)
+  - B) Liste "Ce que le CEPICI permet en ligne"
+  - C) Bloc "Le rôle du cabinet mandataire"
+  - D) Étapes 1→6 sous forme de timeline numérotée (réutilise le style steps déjà présent)
+  - E) "Documents requis" — liste avec `CheckSquare` icônes (visuel checkbox, non interactif)
+  - G) CTA bloc orange interne pointant vers `/demande-soumissions` ("Trouvez votre cabinet mandataire en CI")
 
-## 4. `/cabinet-comptable-abidjan` (page géographique)
-Adaptation : pour rester DRY on **réutilise `ServicePage`** mais on adapte la prop `breadcrumb` (Accueil › Villes › Abidjan) et le contenu. Pas de nouveau composant.
-- Icône `Building` (ou `MapPin`).
-- Sections :
-  - **Pourquoi Abidjan concentre les cabinets** : capitale économique, sièges sociaux, CEPICI, OECCA-CI.
-  - **Quartiers business** : paragraphe Plateau (CBD), Cocody (résidentiel/standing), Marcory (Zone 4, PME/import-export).
-  - **Tableau** Quartier × Type de cabinet × Profil clientèle.
-  - **Comment choisir** : 4 critères (agrément OECCA-CI, spécialisation sectorielle, tarifs transparents, disponibilité/proximité).
-- FAQs (5) sur la recherche de cabinet à Abidjan.
-- JSON-LD : `LocalBusiness` (name "SoumissionsComptables.ci", areaServed Abidjan, address locality Abidjan, region CI) + `FAQPage`.
-- Related : Création d'entreprise, Comptabilité, Déclaration fiscale.
+Breadcrumb : Accueil > Création d'entreprise > Diaspora.
 
-## Technique
-- Tous les fichiers route existent déjà (placeholders) — on les **réécrit**.
-- Imports communs : `createFileRoute`, `Calculator`, `Receipt`, `MapPin`, `Building2`, `ServicePage`, types `Faq`/`RelatedService`.
-- Tokens du design system uniquement.
-- Aucune modif du composant `ServicePage`, du Header ni du Footer.
+### Page 2 — `/guides` (Hub blog)
+
+Réécriture du fichier `src/routes/guides.tsx` (placeholder actuel).
+
+Structure :
+- `head()` avec title/description fournis + canonical + og:url
+- Hero compact (H1 + sous-titre)
+- Tabs de filtre catégorie (composant shadcn `Tabs`) : Tous · Création d'entreprise · Comptabilité · Fiscalité · Diaspora
+  - État local `useState` pour la catégorie active, filtrage côté client de la liste d'articles
+- Article featured (le premier de la liste filtrée) : carte large avec badge catégorie, titre H2, excerpt, read time, lien "Lire la suite →"
+- Grille 2 colonnes (desktop) / 1 colonne (mobile) pour les 7 autres
+- Données : tableau `ARTICLES` statique avec les 8 entrées listées, chacune `{ slug, title, excerpt, category, readTime }`
+  - Les liens "Lire la suite" pointent vers un `href` placeholder (`/guides/<slug>`) — les pages individuelles ne sont pas créées dans ce plan, seul le hub est demandé
+- Catégories mappées : 1,2,6 = Création ; 3,5,7 = Comptabilité ; 4,8 = Fiscalité ; 6 = aussi Diaspora (l'article 6 sera marqué Diaspora pour que le filtre fonctionne)
+
+### Détails techniques
+
+- Composants shadcn utilisés : `Tabs`, `Card`, `Badge`, `Button`, `Accordion` (déjà installés)
+- Icônes lucide : `Globe`, `CheckSquare`, `ArrowRight`, `Clock`, `MapPin`
+- Pas de backend, pas de migration. Pas d'images (pas d'`og:image`).
+- Tokens : `bg-primary`, `bg-secondary` (orange), `bg-background-alt`, `text-muted-foreground` — aucune couleur en dur.
+- SSR-safe : pas d'accès `window` côté module ; `useState` est dans le composant client.
+
+### Fichiers touchés
+
+- `src/routes/creation-entreprise-diaspora-ivoirienne.tsx` (réécriture)
+- `src/routes/guides.tsx` (réécriture)
