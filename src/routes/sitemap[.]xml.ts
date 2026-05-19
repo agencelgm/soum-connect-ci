@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
+import { ARTICLES } from "@/lib/guides-data";
 
 const BASE_URL = "https://soumissionscomptables.ci";
 
@@ -18,20 +19,30 @@ export const Route = createFileRoute("/sitemap.xml")({
 
         const entries: SitemapEntry[] = [
           { path: "/", changefreq: "weekly", priority: "1.0", lastmod: today },
-          // Service pages
+          // Page de conversion principale
+          { path: "/demande-soumissions", changefreq: "monthly", priority: "0.9", lastmod: today },
+          // Pages services (priorité 0.8)
           { path: "/creation-entreprise-cote-divoire", changefreq: "monthly", priority: "0.8", lastmod: today },
-          { path: "/cabinet-comptable-abidjan", changefreq: "monthly", priority: "0.8", lastmod: today },
           { path: "/comptabilite-entreprise-abidjan", changefreq: "monthly", priority: "0.8", lastmod: today },
           { path: "/declaration-fiscale-cote-divoire", changefreq: "monthly", priority: "0.8", lastmod: today },
           { path: "/domiciliation-entreprise-abidjan", changefreq: "monthly", priority: "0.8", lastmod: today },
+          // Pages géographiques + diaspora + partenaires + FAQ (priorité 0.7)
+          { path: "/cabinet-comptable-abidjan", changefreq: "monthly", priority: "0.7", lastmod: today },
           { path: "/creation-entreprise-diaspora-ivoirienne", changefreq: "monthly", priority: "0.7", lastmod: today },
-          // Conversion + info pages
-          { path: "/demande-soumissions", changefreq: "monthly", priority: "0.9", lastmod: today },
-          { path: "/comment-ca-marche", changefreq: "monthly", priority: "0.7", lastmod: today },
           { path: "/cabinets-comptables-partenaires", changefreq: "monthly", priority: "0.7", lastmod: today },
-          { path: "/a-propos", changefreq: "monthly", priority: "0.6", lastmod: today },
           { path: "/faq", changefreq: "monthly", priority: "0.7", lastmod: today },
+          // Blog + pages secondaires (priorité 0.6)
           { path: "/guides", changefreq: "monthly", priority: "0.6", lastmod: today },
+          { path: "/comment-ca-marche", changefreq: "monthly", priority: "0.6", lastmod: today },
+          // À propos
+          { path: "/a-propos", changefreq: "monthly", priority: "0.5", lastmod: today },
+          // Guides dynamiques
+          ...ARTICLES.map((a) => ({
+            path: `/guides/${a.slug}`,
+            changefreq: "monthly" as const,
+            priority: "0.5",
+            lastmod: today,
+          })),
           // English mirrors
           { path: "/en", changefreq: "weekly", priority: "0.8", lastmod: today },
           { path: "/en/get-quotes", changefreq: "monthly", priority: "0.7", lastmod: today },
