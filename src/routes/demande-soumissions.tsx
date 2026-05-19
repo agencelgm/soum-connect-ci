@@ -223,7 +223,8 @@ const COPY = {
   },
 } as const;
 
-function makeSchema(c: (typeof COPY)["fr"]) {
+type Copy = (typeof COPY)["fr"];
+function makeSchema(c: Copy) {
   return z.object({
     service: z.string().min(1, c.errService),
     statut: z.string().min(1, c.errStatut),
@@ -249,7 +250,7 @@ const STEP_FIELDS: Record<1 | 2 | 3, (keyof FormValues)[]> = {
 
 function Page() {
   const { language } = useLanguage();
-  const c = COPY[language];
+  const c = COPY[language] as Copy;
   const SERVICES = language === "en" ? SERVICES_EN : SERVICES_FR;
   const STATUTS = language === "en" ? STATUTS_EN : STATUTS_FR;
   const LOCALISATIONS = language === "en" ? LOCALISATIONS_EN : LOCALISATIONS_FR;
