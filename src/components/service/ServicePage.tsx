@@ -3,6 +3,8 @@ import { Link } from "@tanstack/react-router";
 import type { LucideIcon } from "lucide-react";
 import { ArrowRight, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/lib/language-context";
+import { getCounterpart } from "@/lib/route-map";
 import {
   Accordion,
   AccordionContent,
@@ -40,11 +42,16 @@ export function ServicePage({
   faqs,
   relatedServices,
 }: Props) {
+  const { language, t } = useLanguage();
+  const quotesHref = getCounterpart(
+    language === "en" ? "/demande-soumissions" : "/en/get-quotes",
+    language,
+  );
   return (
     <main>
       <section className="bg-[#F8FAFC] border-b border-border">
         <div className="container-app py-10 md:py-16">
-          <nav aria-label="Fil d'Ariane" className="mb-6">
+          <nav aria-label={t.servicePage.breadcrumb} className="mb-6">
             <ol className="flex flex-wrap items-center gap-1 text-sm text-muted-foreground">
               {breadcrumb.map((c, i) => {
                 const last = i === breadcrumb.length - 1;
@@ -83,8 +90,8 @@ export function ServicePage({
                   size="lg"
                   className="bg-secondary hover:bg-secondary-dark text-white"
                 >
-                  <Link to="/demande-soumissions">
-                    Obtenir mes soumissions gratuitement
+                  <Link to={quotesHref}>
+                    {t.servicePage.heroBtn}
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
@@ -104,7 +111,7 @@ export function ServicePage({
                 id="faq-title"
                 className="font-heading font-bold text-primary text-2xl md:text-3xl mb-4"
               >
-                Questions Fréquentes
+                {t.servicePage.faqHeading}
               </h2>
               <Accordion type="single" collapsible className="w-full">
                 {faqs.map((f, i) => (
@@ -121,25 +128,25 @@ export function ServicePage({
             </section>
 
             <div className="lg:hidden mt-12">
-              <RelatedBlock items={relatedServices} />
+              <RelatedBlock items={relatedServices} title={t.servicePage.relatedTitle} />
             </div>
           </div>
 
           <aside className="hidden lg:flex flex-col gap-5 sticky top-24">
-            <RelatedBlock items={relatedServices} />
+            <RelatedBlock items={relatedServices} title={t.servicePage.relatedTitle} />
             <div className="rounded-2xl bg-secondary text-white p-5 shadow-sm">
               <p className="font-heading font-semibold leading-snug">
-                Prêt à comparer des cabinets ?
+                {t.servicePage.asideTitle}
               </p>
               <p className="mt-1 text-sm text-white/90">
-                Recevez jusqu'à 5 soumissions gratuites en 48h.
+                {t.servicePage.asideSub}
               </p>
               <Button
                 asChild
                 variant="secondary"
                 className="mt-4 w-full bg-white text-secondary hover:bg-white/90"
               >
-                <Link to="/demande-soumissions">Demander maintenant →</Link>
+                <Link to={quotesHref}>{t.servicePage.asideBtn}</Link>
               </Button>
             </div>
           </aside>
@@ -149,10 +156,10 @@ export function ServicePage({
       <section className="bg-secondary text-white">
         <div className="container-app py-12 md:py-16 text-center">
           <h2 className="font-heading font-bold text-2xl md:text-3xl">
-            Besoin d'un cabinet pour créer votre entreprise ?
+            {t.servicePage.finalTitle}
           </h2>
           <p className="mt-2 text-white/90">
-            Gratuit · Sans engagement · Réponse en 48h
+            {t.servicePage.finalSub}
           </p>
           <div className="mt-6">
             <Button
@@ -160,8 +167,8 @@ export function ServicePage({
               size="lg"
               className="bg-white text-secondary hover:bg-white/90 font-semibold"
             >
-              <Link to="/demande-soumissions">
-                Obtenir mes soumissions gratuitement →
+              <Link to={quotesHref}>
+                {t.servicePage.finalBtn}
               </Link>
             </Button>
           </div>
@@ -171,11 +178,11 @@ export function ServicePage({
   );
 }
 
-function RelatedBlock({ items }: { items: RelatedService[] }) {
+function RelatedBlock({ items, title }: { items: RelatedService[]; title: string }) {
   return (
     <div className="rounded-2xl bg-white border border-border shadow-sm p-5">
       <p className="font-heading font-semibold text-primary mb-3">
-        Services associés
+        {title}
       </p>
       <ul className="space-y-2">
         {items.map((s) => {
