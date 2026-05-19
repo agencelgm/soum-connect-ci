@@ -1,95 +1,59 @@
-# Plan — SoumissionsComptables (scaffold initial)
+# Plan — Header & Footer SoumissionsComptables
 
-Mise en place du squelette de l'application : design system, routing complet, placeholders par page, et état de langue FR/EN.
+Refonte des composants `Header` et `Footer` existants pour matcher exactement la spec demandée. Le layout racine (`__root.tsx`) les wrappe déjà autour de toutes les routes — pas besoin de toucher au routing.
 
-## Note technique importante
+## Note technique
 
-Ce projet utilise **TanStack Start** (pas React Router DOM, pas Vite+CRA classique). Tailwind v4 est configuré via `src/styles.css` (pas de `tailwind.config.js`). J'adapte donc la demande au stack réel sans changer l'intention :
+Le projet utilise **TanStack Start** (pas React Router DOM, pas d'`App.tsx`). Le « Layout wrapper appliqué à toutes les routes » est déjà en place dans `src/routes/__root.tsx` (Header + `<Outlet />` + Footer dans `RootComponent`). J'y touche uniquement si besoin de réglage mineur.
 
-- Routing : fichiers sous `src/routes/` (file-based routing TanStack), navigation via `<Link>` de `@tanstack/react-router`
-- Design tokens : déclarés dans `src/styles.css` via `@theme` + variables CSS (équivalent fonctionnel de la config Tailwind demandée)
-- Polices Poppins + Inter : importées via Google Fonts dans `src/styles.css`
-- Toutes les autres libs demandées (React Hook Form, Lucide, Shadcn/UI) sont déjà disponibles ou installables
+## 1. Header (`src/components/layout/Header.tsx` — réécriture)
 
-Si tu préfères absolument React Router DOM + tailwind.config.js, dis-le moi avant que je lance le build (cela impliquerait de remplacer toute la couche routing).
+Structure (sticky, fond blanc, border-bottom `#E2E8F0`, shadow légère au scroll-state via classe statique `shadow-sm`) :
 
-## 1. Design system (`src/styles.css`)
+- Container `max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between gap-4`
+- **Gauche — Logo** : `<Link to="/">` avec icône Lucide `BarChart2` couleur `text-secondary` (#F4732A) + texte "SoumissionsComptables" en `font-heading font-bold text-primary`
+- **Centre (desktop ≥ lg)** : `<nav>` `font-sans text-sm font-medium` avec :
+  - Dropdown **Services** (shadcn `NavigationMenu` ou `DropdownMenu` — je pars sur `DropdownMenu` plus simple et plus prévisible visuellement) ouvert au hover/click, items :
+    - Création d'entreprise → `/creation-entreprise-cote-divoire`
+    - Comptabilité générale → `/comptabilite-entreprise-abidjan`
+    - Déclaration fiscale → `/declaration-fiscale-cote-divoire`
+    - Domiciliation Abidjan → `/domiciliation-entreprise-abidjan`
+    - Séparateur + "Tous les services →" (lien vers `/cabinet-comptable-abidjan` qui fait office de hub services existant ; à confirmer s'il faut une vraie page `/services`)
+  - Lien "Comment ça marche" → `/comment-ca-marche`
+  - Lien "FAQ" → `/faq`
+  - Lien "À propos" → `/a-propos`
+- **Droite (desktop)** :
+  - Toggle langue `FR | EN` (texte petit `text-xs text-muted-foreground`, langue active en `text-primary font-semibold`, séparateur `|`), branché sur `useLanguage().toggleLanguage()`
+  - Bouton WhatsApp : fond vert `#25D366`, icône WhatsApp (Lucide n'a pas d'icône WhatsApp officielle → j'utilise `MessageCircle` colorée OU une petite SVG inline du logo WhatsApp ; je pars sur **SVG inline du glyphe WhatsApp** pour rester fidèle à la marque sans dépendance), texte "+225 XX XX XX XX", `rounded-lg`, `<a href="https://wa.me/225XXXXXXXX">`
+  - CTA "Obtenir mes soumissions" : `bg-secondary text-white rounded-lg px-4 py-2 font-semibold hover:bg-secondary-dark`, lien vers `/demande-soumissions`
+- **Mobile (< lg)** :
+  - Hamburger (`Menu` / `X` Lucide) qui ouvre un **panneau slide-down** sous le header (animation `data-[state=open]:slide-in-from-top`, fond blanc, full width)
+  - Le panneau liste : Services (sous-items dépliés en accordéon shadcn `Accordion` ou simple `<details>`), Comment ça marche, FAQ, À propos, le toggle FR/EN, le bouton WhatsApp et la CTA en pleine largeur
 
-Ajout des tokens demandés, convertis en `oklch` pour rester cohérent avec le template :
+## 2. Footer (`src/components/layout/Footer.tsx` — réécriture)
 
-- `--primary` (#1B3A6B), `--primary-dark` (#152D55)
-- `--secondary` (#F4732A — utilisé comme CTA), `--secondary-dark` (#E05B15)
-- `--accent` (#10B981)
-- `--background` (#F8FAFC), `--background-alt` (#F1F5F9)
-- `--foreground` (#0F172A), `--muted-foreground` (#475569)
-- `--border` (#E2E8F0)
-- Foregrounds adaptés (blanc sur primary/secondary/accent)
-- Polices : `--font-heading: "Poppins"`, `--font-sans: "Inter"`, déclarées dans `@theme inline` pour exposer `font-heading` / `font-sans` côté Tailwind
-- Import Google Fonts (Poppins 400/600/700, Inter 400/500/600) en haut de `styles.css`
-- Application globale : `body` en Inter, `h1–h6` en Poppins
-- Variable `--container-max: 1200px` + utilitaire `.container-app` (max-width 1200px, padding responsive)
-- Variable `--section-py` (80px desktop / 40px mobile) + utilitaire `.section`
+- Fond `bg-[#0F172A]` (dark navy), texte `text-slate-300`, titres `text-white font-semibold`
+- Container `max-w-[1200px] mx-auto px-6 py-12`
+- Grille `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8` :
+  - **Colonne 1 — Marque** : Logo (BarChart2 orange + nom blanc), tagline "Trouvez le meilleur cabinet comptable en Côte d'Ivoire", icônes sociales `Facebook`, `Linkedin` (Lucide) + WhatsApp (SVG inline) dans une rangée, chacune `hover:text-secondary`
+  - **Colonne 2 — Nos Services** : 6 liens (Création d'entreprise, Comptabilité, Déclaration fiscale, Domiciliation Abidjan, Audit comptable, Conseil juridique). Les deux derniers n'ont pas de route dédiée → liens vers `/cabinet-comptable-abidjan` (ou `#` si tu préfères ne rien casser ; je propose `/cabinet-comptable-abidjan` pour rester fonctionnel)
+  - **Colonne 3 — Liens utiles** : Comment ça marche, FAQ, À propos, Cabinets partenaires, Guides & Ressources
+  - **Colonne 4 — Contact** : icône `MessageCircle`/WhatsApp + "+225 XX XX XX XX", icône `Mail` + "contact@soumissionscomptables.ci", icône `MapPin` + "Abidjan, Côte d'Ivoire"
+- **Barre du bas** :
+  - `border-t border-slate-700`, container `py-4 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-slate-400`
+  - Gauche : "© 2026 SoumissionsComptables.ci — Tous droits réservés"
+  - Centre : "Politique de confidentialité | Conditions d'utilisation" (liens `#` placeholders puisque aucune route dédiée n'existe — je peux créer `/politique-confidentialite` et `/conditions-utilisation` si tu veux, dis-le moi)
+  - Droite : "Une réalisation de LGM — Les Gens du Marketing"
 
-## 2. Contexte de langue (FR par défaut)
+## 3. Layout racine
 
-Création de `src/lib/language-context.tsx` :
+`src/routes/__root.tsx` enveloppe déjà toutes les routes avec `<Header />` + `<main><Outlet /></main>` + `<Footer />` à l'intérieur du `LanguageProvider`. **Aucun changement nécessaire** sauf si l'audit révèle un souci.
 
-- `type Language = "fr" | "en"`
-- `LanguageProvider` avec état `language` (default `"fr"`) + `toggleLanguage()` + `setLanguage()`
-- Hook `useLanguage()`
-- Provider monté dans `src/routes/__root.tsx` autour du `<Outlet />` (à l'intérieur du `QueryClientProvider` existant)
-- Persistance simple dans `localStorage` (clé `lang`)
+## Hors scope
 
-## 3. Layout racine partagé
-
-Mise à jour de `src/routes/__root.tsx` pour wrapper l'`<Outlet />` dans un layout commun :
-
-- `<Header />` : logo "SoumissionsComptables", nav vers les pages principales, bouton CTA "Demander des soumissions" (→ `/demande-soumissions`), toggle langue FR/EN à droite
-- `<Footer />` : liens secondaires (À propos, FAQ, Guides, Cabinets partenaires), mentions
-- Composants extraits dans `src/components/layout/Header.tsx` et `Footer.tsx`
-- Nav responsive (menu hamburger mobile via Sheet de shadcn)
-
-Toute l'UI est en français.
-
-## 4. Routes (file-based, `src/routes/`)
-
-Création d'un fichier par route, chacun avec :
-
-- `createFileRoute("/...")` + `head()` (title + description FR uniques, pertinents SEO local Côte d'Ivoire)
-- Un composant placeholder structuré : `<section class="section container-app">` avec `<h1>` = nom lisible de la page + courte phrase descriptive en français
-
-Liste des fichiers à créer / mettre à jour :
-
-| Fichier | URL |
-|---|---|
-| `src/routes/index.tsx` (remplace placeholder) | `/` |
-| `src/routes/comment-ca-marche.tsx` | `/comment-ca-marche` |
-| `src/routes/demande-soumissions.tsx` | `/demande-soumissions` |
-| `src/routes/faq.tsx` | `/faq` |
-| `src/routes/a-propos.tsx` | `/a-propos` |
-| `src/routes/creation-entreprise-cote-divoire.tsx` | service |
-| `src/routes/comptabilite-entreprise-abidjan.tsx` | service |
-| `src/routes/declaration-fiscale-cote-divoire.tsx` | service |
-| `src/routes/domiciliation-entreprise-abidjan.tsx` | service |
-| `src/routes/cabinet-comptable-abidjan.tsx` | géo |
-| `src/routes/creation-entreprise-diaspora-ivoirienne.tsx` | diaspora |
-| `src/routes/cabinets-comptables-partenaires.tsx` | partenaires |
-| `src/routes/guides.tsx` | blog hub |
-
-`routeTree.gen.ts` est régénéré automatiquement par le plugin Vite — je n'y touche pas.
-
-## 5. Page `/demande-soumissions` (placeholder un peu plus complet)
-
-Comme c'est la page de conversion principale, je pose dès maintenant la structure d'accueil (h1, sous-titre, encart "formulaire à venir") sans implémenter encore le vrai formulaire React Hook Form — ce sera un milestone dédié pour respecter le scope demandé ici (scaffold uniquement).
-
-## 6. Hors scope de ce milestone
-
-Pour rester strictement dans la demande "scaffold + routing + design system" :
-
-- Pas de formulaire de soumission fonctionnel (juste la page placeholder)
-- Pas de contenu rédactionnel détaillé par page
-- Pas de backend / Lovable Cloud
-- Pas de vraies traductions EN (le toggle est branché, mais les chaînes restent FR — les traductions viendront avec le contenu)
-- Pas encore de modèle de données (Produit/Site, Opportunité, Initiative, Demande de support) — à traiter dans un milestone "data model" séparé
+- Pas de vraies pages "Politique de confidentialité" / "Conditions d'utilisation" (liens `#` pour l'instant)
+- Pas de vrai numéro WhatsApp (placeholder "+225 XX XX XX XX")
+- Pas de page `/services` hub (le lien "Tous les services →" pointe sur `/cabinet-comptable-abidjan`, à arbitrer)
+- Pas de traduction EN des libellés du header/footer (le toggle est branché, libellés restent FR comme convenu au scaffold)
 
 Confirme et je lance l'implémentation.
