@@ -1,50 +1,81 @@
-## Plan: Page Diaspora + Hub Guides
+## Plan : Page À Propos + SEO technique global
 
-### Page 1 — `/creation-entreprise-diaspora-ivoirienne`
+### PART A — `/a-propos`
 
-Réécriture complète du fichier existant en réutilisant le composant `ServicePage` (déjà utilisé pour les autres pages services) pour rester cohérent.
+Réécriture du fichier placeholder existant en une vraie page :
 
-Props passées à `ServicePage` :
-- `title` : "Créer votre Entreprise en Côte d'Ivoire depuis la France, Canada ou les USA"
-- `metaTitle` / `metaDescription` : exactement le texte fourni
-- `serviceIcon` : `Globe` (lucide)
-- `heroSubtitle` : intro courte diaspora
-- `relatedServices` : Création entreprise CI, Comptabilité Abidjan, Domiciliation Abidjan
-- `faqs` : 5 FAQ diaspora (paiement à distance, présence physique, choix de banque, délais, frais cabinet mandataire) + injection JSON-LD `FAQPage`
-- `mainContent` (JSX) avec les sections demandées :
-  - A) Bloc rassurant "Oui, c'est possible depuis l'étranger" (~100 mots)
-  - B) Liste "Ce que le CEPICI permet en ligne"
-  - C) Bloc "Le rôle du cabinet mandataire"
-  - D) Étapes 1→6 sous forme de timeline numérotée (réutilise le style steps déjà présent)
-  - E) "Documents requis" — liste avec `CheckSquare` icônes (visuel checkbox, non interactif)
-  - G) CTA bloc orange interne pointant vers `/demande-soumissions` ("Trouvez votre cabinet mandataire en CI")
+- `head()` avec title/description fournis exactement + og:* + canonical `/a-propos`
+- 5 sections H2 sur une mise en page centrée (`container-app`, sections ~`py-12`) :
+  1. **Qui nous sommes** — paragraphe ~150 mots
+  2. **Notre Constat** — 3 cartes problèmes/solutions avec icônes lucide (`Search`, `ShieldCheck`, `Clock`) : opacité du marché, méfiance vis-à-vis des cabinets non agréés, démarches CEPICI complexes
+  3. **Nos Valeurs** — 3 cartes (Transparence, Fiabilité, Accessibilité) avec icônes (`Eye`, `Award`, `Heart`)
+  4. **L'Équipe Derrière le Projet** — bloc avec crédit LGM et lien externe `target="_blank" rel="noopener nofollow"` vers `https://lgm.ci`
+  5. **Contact** — 3 cartes (Email `contact@soumissionscomptables.ci`, WhatsApp `+225 07 00 00 00 00`, Adresse `Plateau, Abidjan, Côte d'Ivoire`) avec icônes `Mail`, `MessageCircle`, `MapPin`
+- CTA final orange vers `/demande-soumissions`
 
-Breadcrumb : Accueil > Création d'entreprise > Diaspora.
+### PART B — SEO technique global
 
-### Page 2 — `/guides` (Hub blog)
+#### 1. Helper centralisé `src/lib/seo.ts`
 
-Réécriture du fichier `src/routes/guides.tsx` (placeholder actuel).
+Nouveau module exportant :
 
-Structure :
-- `head()` avec title/description fournis + canonical + og:url
-- Hero compact (H1 + sous-titre)
-- Tabs de filtre catégorie (composant shadcn `Tabs`) : Tous · Création d'entreprise · Comptabilité · Fiscalité · Diaspora
-  - État local `useState` pour la catégorie active, filtrage côté client de la liste d'articles
-- Article featured (le premier de la liste filtrée) : carte large avec badge catégorie, titre H2, excerpt, read time, lien "Lire la suite →"
-- Grille 2 colonnes (desktop) / 1 colonne (mobile) pour les 7 autres
-- Données : tableau `ARTICLES` statique avec les 8 entrées listées, chacune `{ slug, title, excerpt, category, readTime }`
-  - Les liens "Lire la suite" pointent vers un `href` placeholder (`/guides/<slug>`) — les pages individuelles ne sont pas créées dans ce plan, seul le hub est demandé
-- Catégories mappées : 1,2,6 = Création ; 3,5,7 = Comptabilité ; 4,8 = Fiscalité ; 6 = aussi Diaspora (l'article 6 sera marqué Diaspora pour que le filtre fonctionne)
+```ts
+const SITE_URL = "https://soumissionscomptables.ci";
 
-### Détails techniques
+buildPageHead({
+  path,            // ex: "/a-propos"
+  title,
+  description,
+  ogImage?,        // défaut "/og-image.png"
+  type?,           // défaut "website"
+  breadcrumb?,     // [{name, path}]
+  extraSchemas?,   // [Article, FAQPage, HowTo, …]
+})
+```
 
-- Composants shadcn utilisés : `Tabs`, `Card`, `Badge`, `Button`, `Accordion` (déjà installés)
-- Icônes lucide : `Globe`, `CheckSquare`, `ArrowRight`, `Clock`, `MapPin`
-- Pas de backend, pas de migration. Pas d'images (pas d'`og:image`).
-- Tokens : `bg-primary`, `bg-secondary` (orange), `bg-background-alt`, `text-muted-foreground` — aucune couleur en dur.
-- SSR-safe : pas d'accès `window` côté module ; `useState` est dans le composant client.
+Retourne un objet `{ meta, links, scripts }` prêt à être renvoyé par `head()` contenant :
+
+- title (meta entry, jamais top-level)
+- description
+- og:title, og:description, og:type, og:url (absolu), og:image (absolu), og:locale = `fr_CI`, og:site_name
+- twitter:card = `summary_large_image`, twitter:title, twitter:description, twitter:image
+- canonical → `${SITE_URL}${path}` (uniquement sur la feuille, jamais root)
+- alternates `hreflang="fr"` (`${SITE_URL}${path}`), `hreflang="en"` (`${SITE_URL}/en${path}`), `hreflang="x-default"` (FR)
+- JSON-LD Organization (toujours)
+- JSON-LD BreadcrumbList si `breadcrumb` fourni
+- N'importe quel schéma additionnel passé via `extraSchemas`
+
+Le fichier exporte aussi `ORG_SCHEMA` brut pour réutilisation. Une seconde fonction `buildHomeHead(...)` ajoute le schéma `WebSite` + `SearchAction` (cible `/?q={search_term_string}`).
+
+#### 2. Migration des routes existantes
+
+Modification des `head()` de toutes les routes pour appeler `buildPageHead` :
+
+- `src/routes/__root.tsx` — retire title/description/og placeholders "Lovable". Garde uniquement viewport + charset + `og:site_name` + `og:locale` par défaut (le helper réinjectera per-page). Pas de canonical au root (caveat dedupe).
+- `src/routes/index.tsx` — `buildHomeHead(...)` (Organization + WebSite/SearchAction). Pas de breadcrumb (homepage exclue).
+- Autres routes (a-propos, faq, comment-ca-marche, demande-soumissions, guides, cabinets-comptables-partenaires, cabinet-comptable-abidjan, comptabilite-entreprise-abidjan, declaration-fiscale-cote-divoire, domiciliation-entreprise-abidjan, creation-entreprise-cote-divoire, creation-entreprise-diaspora-ivoirienne) — `buildPageHead(...)` avec breadcrumb adapté.
+- Les `scripts` JSON-LD existants (FAQPage, HowTo, LocalBusiness) sont passés via `extraSchemas` au lieu d'être déclarés à la main → un seul `<script type="application/ld+json">` par schéma, sans duplication d'Organization.
+
+Aucun changement de contenu textuel : on conserve les title/description déjà définis par page (consigne du prompt).
+
+#### 3. Fichier `public/og-image.png`
+
+Placeholder créé (image générée 1200×630 simple, branding SoumissionsComptables.ci). Référence absolue dans le helper.
+
+#### 4. Langue HTML
+
+`__root.tsx` : `<html lang="fr">` au lieu de `"en"`.
 
 ### Fichiers touchés
 
-- `src/routes/creation-entreprise-diaspora-ivoirienne.tsx` (réécriture)
-- `src/routes/guides.tsx` (réécriture)
+- `src/lib/seo.ts` (nouveau)
+- `src/routes/__root.tsx` (head + lang)
+- `src/routes/a-propos.tsx` (réécriture complète)
+- `src/routes/index.tsx` (head via buildHomeHead)
+- `src/routes/{faq, comment-ca-marche, demande-soumissions, guides, cabinets-comptables-partenaires, cabinet-comptable-abidjan, comptabilite-entreprise-abidjan, declaration-fiscale-cote-divoire, domiciliation-entreprise-abidjan, creation-entreprise-cote-divoire, creation-entreprise-diaspora-ivoirienne}.tsx` (head migrés vers helper, contenu inchangé)
+- `public/og-image.png` (nouveau, généré)
+
+### Hors scope
+
+- Pages `/en/*` réelles. Le hreflang anglais pointe vers une URL prévisible mais les pages n'existent pas encore. À créer dans un prompt dédié bilingue (mentionné dans le prompt comme PROMPT 12).
+- Implémentation backend de la recherche du SearchAction (URL convention `?q=` posée pour Google, UI à venir).

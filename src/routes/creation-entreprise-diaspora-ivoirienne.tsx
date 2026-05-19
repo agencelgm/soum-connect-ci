@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { Globe, Building2, Calculator, MapPin, CheckSquare, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ServicePage, type Faq, type RelatedService } from "@/components/service/ServicePage";
+import { buildPageHead, faqSchema } from "@/lib/seo";
 
 const META_TITLE =
   "Créer une Entreprise en Côte d'Ivoire depuis l'Étranger | Diaspora Ivoirienne";
@@ -82,30 +83,18 @@ const RELATED: RelatedService[] = [
 ];
 
 export const Route = createFileRoute("/creation-entreprise-diaspora-ivoirienne")({
-  head: () => ({
-    meta: [
-      { title: META_TITLE },
-      { name: "description", content: META_DESC },
-      { property: "og:title", content: META_TITLE },
-      { property: "og:description", content: META_DESC },
-      { property: "og:url", content: "/creation-entreprise-diaspora-ivoirienne" },
-    ],
-    links: [{ rel: "canonical", href: "/creation-entreprise-diaspora-ivoirienne" }],
-    scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          mainEntity: FAQS.map((f) => ({
-            "@type": "Question",
-            name: f.question,
-            acceptedAnswer: { "@type": "Answer", text: f.answer },
-          })),
-        }),
-      },
-    ],
-  }),
+  head: () =>
+    buildPageHead({
+      path: "/creation-entreprise-diaspora-ivoirienne",
+      title: META_TITLE,
+      description: META_DESC,
+      breadcrumb: [
+        { name: "Accueil", path: "/" },
+        { name: "Création d'entreprise", path: "/creation-entreprise-cote-divoire" },
+        { name: "Diaspora ivoirienne", path: "/creation-entreprise-diaspora-ivoirienne" },
+      ],
+      extraSchemas: [faqSchema(FAQS)],
+    }),
   component: Page,
 });
 

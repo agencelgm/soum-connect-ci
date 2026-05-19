@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ArrowRight, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { buildPageHead } from "@/lib/seo";
 
 const META_TITLE =
   "Guides & Ressources | Création d'Entreprise & Comptabilité en CI";
@@ -95,16 +96,16 @@ const FILTERS: Array<{ key: string; label: string }> = [
 ];
 
 export const Route = createFileRoute("/guides")({
-  head: () => ({
-    meta: [
-      { title: META_TITLE },
-      { name: "description", content: META_DESC },
-      { property: "og:title", content: META_TITLE },
-      { property: "og:description", content: META_DESC },
-      { property: "og:url", content: "/guides" },
-    ],
-    links: [{ rel: "canonical", href: "/guides" }],
-  }),
+  head: () =>
+    buildPageHead({
+      path: "/guides",
+      title: META_TITLE,
+      description: META_DESC,
+      breadcrumb: [
+        { name: "Accueil", path: "/" },
+        { name: "Guides", path: "/guides" },
+      ],
+    }),
   component: Page,
 });
 

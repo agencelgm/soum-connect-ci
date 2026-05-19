@@ -19,6 +19,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { LeadFormCard } from "@/components/home/LeadFormCard";
+import { buildPageHead } from "@/lib/seo";
 
 const TITLE =
   "Cabinet Comptable Côte d'Ivoire | Comparez 5 Soumissions Gratuitement | SoumissionsComptables.ci";
@@ -26,16 +27,13 @@ const DESCRIPTION =
   "Trouvez le meilleur cabinet comptable en Côte d'Ivoire. Remplissez un formulaire, recevez jusqu'à 5 soumissions gratuites de cabinets agréés en 48h. Création d'entreprise, comptabilité, fiscalité.";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: TITLE },
-      { name: "description", content: DESCRIPTION },
-      { property: "og:title", content: TITLE },
-      { property: "og:description", content: DESCRIPTION },
-      { property: "og:url", content: "/" },
-    ],
-    links: [{ rel: "canonical", href: "/" }],
-  }),
+  head: () =>
+    buildPageHead({
+      path: "/",
+      title: TITLE,
+      description: DESCRIPTION,
+      includeWebSite: true,
+    }),
   component: Index,
 });
 

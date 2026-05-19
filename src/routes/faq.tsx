@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/accordion";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { buildPageHead, faqSchema } from "@/lib/seo";
 
 type FaqItem = { question: string; answer: string };
 type FaqCategory = { id: string; title: string; items: FaqItem[] };
@@ -155,35 +156,22 @@ const categories: FaqCategory[] = [
   },
 ];
 
-const faqSchema = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: categories.flatMap((c) =>
-    c.items.map((it) => ({
-      "@type": "Question",
-      name: it.question,
-      acceptedAnswer: { "@type": "Answer", text: it.answer },
-    })),
-  ),
-};
+const ALL_FAQS = categories.flatMap((c) => c.items);
 
 export const Route = createFileRoute("/faq")({
-  head: () => ({
-    meta: [
-      { title: "FAQ — Questions sur les Cabinets Comptables en CI | SoumissionsComptables.ci" },
-      { name: "description", content: "Toutes vos questions sur les cabinets comptables en Côte d'Ivoire, la création d'entreprise via CEPICI, les impôts et la comptabilité. Réponses claires et détaillées." },
-      { property: "og:title", content: "FAQ — Questions sur les Cabinets Comptables en CI" },
-      { property: "og:description", content: "Toutes vos questions sur les cabinets comptables en Côte d'Ivoire, la création d'entreprise via CEPICI, les impôts et la comptabilité." },
-      { property: "og:url", content: "/faq" },
-    ],
-    links: [{ rel: "canonical", href: "/faq" }],
-    scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify(faqSchema),
-      },
-    ],
-  }),
+  head: () =>
+    buildPageHead({
+      path: "/faq",
+      title:
+        "FAQ — Questions sur les Cabinets Comptables en CI | SoumissionsComptables.ci",
+      description:
+        "Toutes vos questions sur les cabinets comptables en Côte d'Ivoire, la création d'entreprise via CEPICI, les impôts et la comptabilité. Réponses claires et détaillées.",
+      breadcrumb: [
+        { name: "Accueil", path: "/" },
+        { name: "FAQ", path: "/faq" },
+      ],
+      extraSchemas: [faqSchema(ALL_FAQS.map((i) => ({ question: i.question, answer: i.answer })))],
+    }),
   component: Page,
 });
 
