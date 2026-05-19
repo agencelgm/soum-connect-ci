@@ -27,7 +27,12 @@ export function AboutPage() {
     language,
   );
 
-  const contacts = [
+  const contacts: Array<{
+    icon: typeof Mail;
+    label: string;
+    value: string;
+    href?: string;
+  }> = [
     {
       icon: Mail,
       label: a.contactEmail,
@@ -45,7 +50,7 @@ export function AboutPage() {
       label: a.contactAddress,
       value: a.contactAddressValue,
     },
-  ] as const;
+  ];
 
   return (
     <main>
