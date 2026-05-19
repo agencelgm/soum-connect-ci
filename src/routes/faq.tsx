@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Link } from "@tanstack/react-router";
 import { Search, ArrowRight } from "lucide-react";
 import {
   Accordion,
@@ -269,10 +268,10 @@ function Page() {
           </p>
           <div className="mt-6">
             <Button asChild size="lg" variant="secondary">
-              <Link to="/nous-contacter">
+              <a href="/nous-contacter">
                 Nous contacter
                 <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
+              </a>
             </Button>
           </div>
         </div>
