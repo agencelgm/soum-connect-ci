@@ -144,6 +144,13 @@ export function Header() {
       {open && (
         <div className="lg:hidden border-t border-border bg-white animate-in slide-in-from-top-2 duration-200">
           <div className="max-w-[1200px] mx-auto px-6 py-4 flex flex-col gap-1">
+            <Link
+              to={homeHref}
+              onClick={() => setOpen(false)}
+              className="rounded-md px-3 py-2 text-sm font-medium text-foreground hover:bg-muted hover:text-primary"
+            >
+              {t.nav.home}
+            </Link>
             <button
               onClick={() => setMobileServicesOpen((v) => !v)}
               className="flex items-center justify-between rounded-md px-3 py-2 text-sm font-medium text-foreground hover:bg-muted"

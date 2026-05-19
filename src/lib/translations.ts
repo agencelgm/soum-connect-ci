@@ -14,6 +14,7 @@ export const translations = {
       allServices: "Tous les services →",
       getQuotes: "Obtenir mes soumissions",
       menu: "Menu",
+      home: "Accueil",
     },
     services: {
       creation: "Création d'entreprise",
@@ -337,6 +338,7 @@ export const translations = {
       allServices: "All services →",
       getQuotes: "Get my quotes",
       menu: "Menu",
+      home: "Home",
     },
     services: {
       creation: "Company registration",
