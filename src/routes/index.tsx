@@ -33,7 +33,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { LeadFormCard } from "@/components/home/LeadFormCard";
-import { buildPageHead } from "@/lib/seo";
+import { buildPageHead, LOCAL_BUSINESS_SCHEMA } from "@/lib/seo";
 import { useLanguage } from "@/lib/language-context";
 import { getCounterpart } from "@/lib/route-map";
 import heroAccountant from "@/assets/home/hero-accountant.png";
@@ -52,6 +52,7 @@ export const Route = createFileRoute("/")({
       description: DESCRIPTION,
       includeWebSite: true,
       altPath: "/en",
+      extraSchemas: [LOCAL_BUSINESS_SCHEMA],
     }),
   component: Index,
 });
