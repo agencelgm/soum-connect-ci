@@ -23,6 +23,9 @@ import { Route as CabinetComptableAbidjanRouteImport } from './routes/cabinet-co
 import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EnIndexRouteImport } from './routes/en/index'
+import { Route as EnGetQuotesRouteImport } from './routes/en/get-quotes'
+import { Route as EnCompanyRegistrationIvoryCoastRouteImport } from './routes/en/company-registration-ivory-coast'
+import { Route as EnAccountingFirmAbidjanRouteImport } from './routes/en/accounting-firm-abidjan'
 
 const GuidesRoute = GuidesRouteImport.update({
   id: '/guides',
@@ -100,6 +103,22 @@ const EnIndexRoute = EnIndexRouteImport.update({
   path: '/en/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EnGetQuotesRoute = EnGetQuotesRouteImport.update({
+  id: '/en/get-quotes',
+  path: '/en/get-quotes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EnCompanyRegistrationIvoryCoastRoute =
+  EnCompanyRegistrationIvoryCoastRouteImport.update({
+    id: '/en/company-registration-ivory-coast',
+    path: '/en/company-registration-ivory-coast',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const EnAccountingFirmAbidjanRoute = EnAccountingFirmAbidjanRouteImport.update({
+  id: '/en/accounting-firm-abidjan',
+  path: '/en/accounting-firm-abidjan',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -115,6 +134,9 @@ export interface FileRoutesByFullPath {
   '/domiciliation-entreprise-abidjan': typeof DomiciliationEntrepriseAbidjanRoute
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRoute
+  '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
+  '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
+  '/en/get-quotes': typeof EnGetQuotesRoute
   '/en/': typeof EnIndexRoute
 }
 export interface FileRoutesByTo {
@@ -131,6 +153,9 @@ export interface FileRoutesByTo {
   '/domiciliation-entreprise-abidjan': typeof DomiciliationEntrepriseAbidjanRoute
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRoute
+  '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
+  '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
+  '/en/get-quotes': typeof EnGetQuotesRoute
   '/en': typeof EnIndexRoute
 }
 export interface FileRoutesById {
@@ -148,6 +173,9 @@ export interface FileRoutesById {
   '/domiciliation-entreprise-abidjan': typeof DomiciliationEntrepriseAbidjanRoute
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRoute
+  '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
+  '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
+  '/en/get-quotes': typeof EnGetQuotesRoute
   '/en/': typeof EnIndexRoute
 }
 export interface FileRouteTypes {
@@ -166,6 +194,9 @@ export interface FileRouteTypes {
     | '/domiciliation-entreprise-abidjan'
     | '/faq'
     | '/guides'
+    | '/en/accounting-firm-abidjan'
+    | '/en/company-registration-ivory-coast'
+    | '/en/get-quotes'
     | '/en/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -182,6 +213,9 @@ export interface FileRouteTypes {
     | '/domiciliation-entreprise-abidjan'
     | '/faq'
     | '/guides'
+    | '/en/accounting-firm-abidjan'
+    | '/en/company-registration-ivory-coast'
+    | '/en/get-quotes'
     | '/en'
   id:
     | '__root__'
@@ -198,6 +232,9 @@ export interface FileRouteTypes {
     | '/domiciliation-entreprise-abidjan'
     | '/faq'
     | '/guides'
+    | '/en/accounting-firm-abidjan'
+    | '/en/company-registration-ivory-coast'
+    | '/en/get-quotes'
     | '/en/'
   fileRoutesById: FileRoutesById
 }
@@ -215,6 +252,9 @@ export interface RootRouteChildren {
   DomiciliationEntrepriseAbidjanRoute: typeof DomiciliationEntrepriseAbidjanRoute
   FaqRoute: typeof FaqRoute
   GuidesRoute: typeof GuidesRoute
+  EnAccountingFirmAbidjanRoute: typeof EnAccountingFirmAbidjanRoute
+  EnCompanyRegistrationIvoryCoastRoute: typeof EnCompanyRegistrationIvoryCoastRoute
+  EnGetQuotesRoute: typeof EnGetQuotesRoute
   EnIndexRoute: typeof EnIndexRoute
 }
 
@@ -318,6 +358,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EnIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/en/get-quotes': {
+      id: '/en/get-quotes'
+      path: '/en/get-quotes'
+      fullPath: '/en/get-quotes'
+      preLoaderRoute: typeof EnGetQuotesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/en/company-registration-ivory-coast': {
+      id: '/en/company-registration-ivory-coast'
+      path: '/en/company-registration-ivory-coast'
+      fullPath: '/en/company-registration-ivory-coast'
+      preLoaderRoute: typeof EnCompanyRegistrationIvoryCoastRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/en/accounting-firm-abidjan': {
+      id: '/en/accounting-firm-abidjan'
+      path: '/en/accounting-firm-abidjan'
+      fullPath: '/en/accounting-firm-abidjan'
+      preLoaderRoute: typeof EnAccountingFirmAbidjanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -336,6 +397,9 @@ const rootRouteChildren: RootRouteChildren = {
   DomiciliationEntrepriseAbidjanRoute: DomiciliationEntrepriseAbidjanRoute,
   FaqRoute: FaqRoute,
   GuidesRoute: GuidesRoute,
+  EnAccountingFirmAbidjanRoute: EnAccountingFirmAbidjanRoute,
+  EnCompanyRegistrationIvoryCoastRoute: EnCompanyRegistrationIvoryCoastRoute,
+  EnGetQuotesRoute: EnGetQuotesRoute,
   EnIndexRoute: EnIndexRoute,
 }
 export const routeTree = rootRouteImport
