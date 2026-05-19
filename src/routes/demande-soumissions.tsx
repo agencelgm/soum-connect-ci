@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { buildPageHead } from "@/lib/seo";
 
 const META_TITLE =
   "Demande de Soumissions | Cabinets Comptables CI | SoumissionsComptables.ci";
@@ -16,16 +17,16 @@ const META_DESC =
   "Recevez jusqu'à 5 soumissions gratuites de cabinets comptables agréés en Côte d'Ivoire. Formulaire simple, réponse en 48h. Création d'entreprise, comptabilité, déclaration fiscale.";
 
 export const Route = createFileRoute("/demande-soumissions")({
-  head: () => ({
-    meta: [
-      { title: META_TITLE },
-      { name: "description", content: META_DESC },
-      { property: "og:title", content: META_TITLE },
-      { property: "og:description", content: META_DESC },
-      { property: "og:url", content: "/demande-soumissions" },
-    ],
-    links: [{ rel: "canonical", href: "/demande-soumissions" }],
-  }),
+  head: () =>
+    buildPageHead({
+      path: "/demande-soumissions",
+      title: META_TITLE,
+      description: META_DESC,
+      breadcrumb: [
+        { name: "Accueil", path: "/" },
+        { name: "Demande de soumissions", path: "/demande-soumissions" },
+      ],
+    }),
   component: Page,
 });
 
