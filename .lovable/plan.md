@@ -1,81 +1,75 @@
-## Plan : Page À Propos + SEO technique global
+## Bilingual FR/EN System
 
-### PART A — `/a-propos`
+Build on the existing `LanguageProvider` + `LangToggle` (already in `__root.tsx` and `Header`). Add a translations dictionary, mirror priority pages under `/en/*`, and sync language ↔ URL so the FR/EN toggle navigates between mirrored routes.
 
-Réécriture du fichier placeholder existant en une vraie page :
-
-- `head()` avec title/description fournis exactement + og:* + canonical `/a-propos`
-- 5 sections H2 sur une mise en page centrée (`container-app`, sections ~`py-12`) :
-  1. **Qui nous sommes** — paragraphe ~150 mots
-  2. **Notre Constat** — 3 cartes problèmes/solutions avec icônes lucide (`Search`, `ShieldCheck`, `Clock`) : opacité du marché, méfiance vis-à-vis des cabinets non agréés, démarches CEPICI complexes
-  3. **Nos Valeurs** — 3 cartes (Transparence, Fiabilité, Accessibilité) avec icônes (`Eye`, `Award`, `Heart`)
-  4. **L'Équipe Derrière le Projet** — bloc avec crédit LGM et lien externe `target="_blank" rel="noopener nofollow"` vers `https://lgm.ci`
-  5. **Contact** — 3 cartes (Email `contact@soumissionscomptables.ci`, WhatsApp `+225 07 00 00 00 00`, Adresse `Plateau, Abidjan, Côte d'Ivoire`) avec icônes `Mail`, `MessageCircle`, `MapPin`
-- CTA final orange vers `/demande-soumissions`
-
-### PART B — SEO technique global
-
-#### 1. Helper centralisé `src/lib/seo.ts`
-
-Nouveau module exportant :
-
-```ts
-const SITE_URL = "https://soumissionscomptables.ci";
-
-buildPageHead({
-  path,            // ex: "/a-propos"
-  title,
-  description,
-  ogImage?,        // défaut "/og-image.png"
-  type?,           // défaut "website"
-  breadcrumb?,     // [{name, path}]
-  extraSchemas?,   // [Article, FAQPage, HowTo, …]
-})
+### 1. Translations dictionary — `src/lib/translations.ts`
+Strongly typed `t(key, lang)` helper backed by a single object:
 ```
+translations = {
+  nav: { services, howItWorks, faq, about, partners, guides, getQuotes },
+  services: { creation, accounting, tax, domiciliation, allServices },
+  cta: { getQuotes, getQuotesNow, contactUs, submitRequest, readMore, ... },
+  hero: { homeH1, homeSub, homeCTA, ... },
+  process: { step1Title/Desc, step2..., step3... },
+  form: { name, email, phone, company, service, message, placeholderX, submit, success, error },
+  faq: { q1..qN, a1..aN },  // bilingual Q&A pairs
+  footer: { tagline, rights, ... },
+  common: { loading, required, ... }
+}
+```
+French = current copy. English uses the glossary provided (Cabinet comptable → Accounting firm, CEPICI → Investment Promotion Center, etc.).
 
-Retourne un objet `{ meta, links, scripts }` prêt à être renvoyé par `head()` contenant :
+### 2. Language ↔ route mapping — `src/lib/route-map.ts`
+Bidirectional table for the 4 priority pages + future ones:
+```
+fr "/"                               ↔ en "/en"
+fr "/creation-entreprise-cote-divoire" ↔ en "/en/company-registration-ivory-coast"
+fr "/cabinet-comptable-abidjan"      ↔ en "/en/accounting-firm-abidjan"
+fr "/demande-soumissions"            ↔ en "/en/get-quotes"
+```
+Helpers: `getCounterpart(path, targetLang)`, `getLangFromPath(path)`.
 
-- title (meta entry, jamais top-level)
-- description
-- og:title, og:description, og:type, og:url (absolu), og:image (absolu), og:locale = `fr_CI`, og:site_name
-- twitter:card = `summary_large_image`, twitter:title, twitter:description, twitter:image
-- canonical → `${SITE_URL}${path}` (uniquement sur la feuille, jamais root)
-- alternates `hreflang="fr"` (`${SITE_URL}${path}`), `hreflang="en"` (`${SITE_URL}/en${path}`), `hreflang="x-default"` (FR)
-- JSON-LD Organization (toujours)
-- JSON-LD BreadcrumbList si `breadcrumb` fourni
-- N'importe quel schéma additionnel passé via `extraSchemas`
+### 3. Update `LanguageProvider`
+- Derive language from URL pathname (`/en/*` → en, else fr) on every navigation, falling back to localStorage for ambiguous cases.
+- `setLanguage(lang)` now also navigates to the counterpart route via `useRouter().navigate`.
+- Expose `t(key)` shortcut bound to current language.
 
-Le fichier exporte aussi `ORG_SCHEMA` brut pour réutilisation. Une seconde fonction `buildHomeHead(...)` ajoute le schéma `WebSite` + `SearchAction` (cible `/?q={search_term_string}`).
+### 4. Header / LangToggle
+- Toggle calls `setLanguage` which navigates to the mapped URL.
+- Nav labels switch via `t()`. EN nav points to `/en/*` for the 4 mirrored routes; non-mirrored items keep FR routes (or are hidden in EN until translated).
 
-#### 2. Migration des routes existantes
+### 5. English route files (mirror approach)
+Create 4 thin route files that reuse the existing page components, passing `lang="en"`:
+```
+src/routes/en/index.tsx                              → "/en"
+src/routes/en/company-registration-ivory-coast.tsx   → "/en/company-registration-ivory-coast"
+src/routes/en/accounting-firm-abidjan.tsx            → "/en/accounting-firm-abidjan"
+src/routes/en/get-quotes.tsx                         → "/en/get-quotes"
+```
+Each has its own `head()` built via `buildPageHead` with English title/description and `inLanguage: "en"`.
 
-Modification des `head()` de toutes les routes pour appeler `buildPageHead` :
+Refactor the 4 corresponding FR page components so all visible strings come from `t()` (currently hard-coded French). The same component renders both FR and EN — driven by `useLanguage()`. No content duplication.
 
-- `src/routes/__root.tsx` — retire title/description/og placeholders "Lovable". Garde uniquement viewport + charset + `og:site_name` + `og:locale` par défaut (le helper réinjectera per-page). Pas de canonical au root (caveat dedupe).
-- `src/routes/index.tsx` — `buildHomeHead(...)` (Organization + WebSite/SearchAction). Pas de breadcrumb (homepage exclue).
-- Autres routes (a-propos, faq, comment-ca-marche, demande-soumissions, guides, cabinets-comptables-partenaires, cabinet-comptable-abidjan, comptabilite-entreprise-abidjan, declaration-fiscale-cote-divoire, domiciliation-entreprise-abidjan, creation-entreprise-cote-divoire, creation-entreprise-diaspora-ivoirienne) — `buildPageHead(...)` avec breadcrumb adapté.
-- Les `scripts` JSON-LD existants (FAQPage, HowTo, LocalBusiness) sont passés via `extraSchemas` au lieu d'être déclarés à la main → un seul `<script type="application/ld+json">` par schéma, sans duplication d'Organization.
+English homepage H1: "Find the Best Accounting Firm in Côte d'Ivoire". English primary CTA: "Get My Free Quotes Now →".
 
-Aucun changement de contenu textuel : on conserve les title/description déjà définis par page (consigne du prompt).
+### 6. hreflang alternates — extend `buildPageHead`
+Add `alternates?: { fr?: string; en?: string }` option. For every mirrored page, emit:
+```html
+<link rel="alternate" hreflang="fr-CI" href={SITE_URL + frPath} />
+<link rel="alternate" hreflang="en" href={SITE_URL + enPath} />
+<link rel="alternate" hreflang="x-default" href={SITE_URL + frPath} />
+```
+Set `<html lang>` dynamically in `RootShell` via `useLanguage()` (fr-CI / en).
 
-#### 3. Fichier `public/og-image.png`
+### 7. Schema localisation
+- `WEBSITE_SCHEMA.inLanguage` becomes per-page (fr-CI default, en on /en/*).
+- `FAQPage` schema on `/faq` stays FR; if EN FAQ added later, separate schema.
 
-Placeholder créé (image générée 1200×630 simple, branding SoumissionsComptables.ci). Référence absolue dans le helper.
+### Out of scope (this milestone)
+- Translating FAQ, Guides, About, Partner, Diaspora, Comment ça marche, other service pages, Footer copy — only the 4 priority pages get full EN. Other pages stay FR-only; EN visitors landing on them see FR content (acceptable per brief).
+- Backend search action.
+- Sitemap.xml regeneration.
 
-#### 4. Langue HTML
-
-`__root.tsx` : `<html lang="fr">` au lieu de `"en"`.
-
-### Fichiers touchés
-
-- `src/lib/seo.ts` (nouveau)
-- `src/routes/__root.tsx` (head + lang)
-- `src/routes/a-propos.tsx` (réécriture complète)
-- `src/routes/index.tsx` (head via buildHomeHead)
-- `src/routes/{faq, comment-ca-marche, demande-soumissions, guides, cabinets-comptables-partenaires, cabinet-comptable-abidjan, comptabilite-entreprise-abidjan, declaration-fiscale-cote-divoire, domiciliation-entreprise-abidjan, creation-entreprise-cote-divoire, creation-entreprise-diaspora-ivoirienne}.tsx` (head migrés vers helper, contenu inchangé)
-- `public/og-image.png` (nouveau, généré)
-
-### Hors scope
-
-- Pages `/en/*` réelles. Le hreflang anglais pointe vers une URL prévisible mais les pages n'existent pas encore. À créer dans un prompt dédié bilingue (mentionné dans le prompt comme PROMPT 12).
-- Implémentation backend de la recherche du SearchAction (URL convention `?q=` posée pour Google, UI à venir).
+### Files
+- New: `src/lib/translations.ts`, `src/lib/route-map.ts`, `src/routes/en/index.tsx`, `src/routes/en/company-registration-ivory-coast.tsx`, `src/routes/en/accounting-firm-abidjan.tsx`, `src/routes/en/get-quotes.tsx`
+- Edit: `src/lib/language-context.tsx` (URL sync + `t` helper), `src/lib/seo.ts` (hreflang + inLanguage), `src/routes/__root.tsx` (dynamic `<html lang>`), `src/components/layout/Header.tsx` (translated labels, mapped toggle), `src/components/layout/Footer.tsx` (translated labels), and the 4 FR page components to consume `t()`.
