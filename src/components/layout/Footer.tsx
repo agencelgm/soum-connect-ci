@@ -16,7 +16,7 @@ export function Footer() {
         <div>
           <div className="flex items-center gap-2">
             <BarChart2 className="h-5 w-5 text-secondary" />
-            <span className="font-heading font-bold text-white text-base">SoumissionsComptables</span>
+          <span className="font-heading font-bold text-white text-base">Soumissions <span className="text-secondary">Comptables</span></span>
           </div>
           <p className="mt-3 text-sm text-slate-400">
             Trouvez le meilleur cabinet comptable en Côte d'Ivoire
