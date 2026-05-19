@@ -22,6 +22,7 @@ import { Route as CabinetsComptablesPartenairesRouteImport } from './routes/cabi
 import { Route as CabinetComptableAbidjanRouteImport } from './routes/cabinet-comptable-abidjan'
 import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as EnIndexRouteImport } from './routes/en/index'
 
 const GuidesRoute = GuidesRouteImport.update({
   id: '/guides',
@@ -94,6 +95,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EnIndexRoute = EnIndexRouteImport.update({
+  id: '/en/',
+  path: '/en/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -109,6 +115,7 @@ export interface FileRoutesByFullPath {
   '/domiciliation-entreprise-abidjan': typeof DomiciliationEntrepriseAbidjanRoute
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRoute
+  '/en/': typeof EnIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -124,6 +131,7 @@ export interface FileRoutesByTo {
   '/domiciliation-entreprise-abidjan': typeof DomiciliationEntrepriseAbidjanRoute
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRoute
+  '/en': typeof EnIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -140,6 +148,7 @@ export interface FileRoutesById {
   '/domiciliation-entreprise-abidjan': typeof DomiciliationEntrepriseAbidjanRoute
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRoute
+  '/en/': typeof EnIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -157,6 +166,7 @@ export interface FileRouteTypes {
     | '/domiciliation-entreprise-abidjan'
     | '/faq'
     | '/guides'
+    | '/en/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -172,6 +182,7 @@ export interface FileRouteTypes {
     | '/domiciliation-entreprise-abidjan'
     | '/faq'
     | '/guides'
+    | '/en'
   id:
     | '__root__'
     | '/'
@@ -187,6 +198,7 @@ export interface FileRouteTypes {
     | '/domiciliation-entreprise-abidjan'
     | '/faq'
     | '/guides'
+    | '/en/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -203,6 +215,7 @@ export interface RootRouteChildren {
   DomiciliationEntrepriseAbidjanRoute: typeof DomiciliationEntrepriseAbidjanRoute
   FaqRoute: typeof FaqRoute
   GuidesRoute: typeof GuidesRoute
+  EnIndexRoute: typeof EnIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -298,6 +311,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/en/': {
+      id: '/en/'
+      path: '/en'
+      fullPath: '/en/'
+      preLoaderRoute: typeof EnIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -316,7 +336,18 @@ const rootRouteChildren: RootRouteChildren = {
   DomiciliationEntrepriseAbidjanRoute: DomiciliationEntrepriseAbidjanRoute,
   FaqRoute: FaqRoute,
   GuidesRoute: GuidesRoute,
+  EnIndexRoute: EnIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
