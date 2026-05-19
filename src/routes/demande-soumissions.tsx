@@ -12,6 +12,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { buildPageHead } from "@/lib/seo";
 import { useLanguage } from "@/lib/language-context";
 import { getCounterpart } from "@/lib/route-map";
+import { trackEvent } from "@/lib/analytics";
+import { toast } from "sonner";
 
 const META_TITLE =
   "Demande de Soumissions | Cabinets Comptables CI | SoumissionsComptables.ci";
@@ -286,10 +288,32 @@ function Page() {
     if (ok) setStep((s) => ((s < 3 ? s + 1 : s) as 1 | 2 | 3 | 4));
   };
 
-  const onSubmit = async (_values: FormValues) => {
-    // TODO: brancher l'envoi backend (Lovable Cloud) ici.
-    await new Promise((r) => setTimeout(r, 500));
-    setStep(4);
+  const onSubmit = async (values: FormValues) => {
+    try {
+      const res = await fetch("/api/public/lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...values,
+          source: "demande-soumissions",
+          language,
+        }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      trackEvent("soumission_envoyee", {
+        service: values.service,
+        localisation: values.localisation,
+        language,
+      });
+      setStep(4);
+    } catch (err) {
+      console.error("Lead submission failed", err);
+      toast.error(
+        language === "en"
+          ? "Submission failed. Please try again or reach us on WhatsApp."
+          : "Échec de l'envoi. Réessayez ou contactez-nous sur WhatsApp.",
+      );
+    }
   };
 
   const progress = step === 4 ? 100 : (step / 3) * 100;
