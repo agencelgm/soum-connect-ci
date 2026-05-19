@@ -1,22 +1,27 @@
-## Corrections à apporter
+## Vérification FAQPage JSON-LD
 
-### 1. Adresse de contact
-Remplacer l'adresse du siège **« Plateau, Abidjan, Côte d'Ivoire »** par **« Angré Château, camp militaire, Abidjan, Côte d'Ivoire »**.
+Bonne nouvelle : le schéma JSON-LD `FAQPage` est **déjà implémenté** sur toutes les pages concernées via le helper `faqSchema()` de `src/lib/seo.ts` :
 
-Fichiers à modifier :
-- `src/lib/translations.ts` — clé `contactAddressValue` (FR ligne 238, EN ligne 561)
+| Page | Schéma FAQPage |
+|---|---|
+| `/faq` | ✅ déjà présent (toutes les FAQ agrégées) |
+| `/cabinet-comptable-abidjan` | ✅ |
+| `/comptabilite-entreprise-abidjan` | ✅ |
+| `/declaration-fiscale-cote-divoire` | ✅ |
+| `/domiciliation-entreprise-abidjan` | ✅ |
+| `/creation-entreprise-cote-divoire` | ✅ (+ HowTo) |
+| `/creation-entreprise-diaspora-ivoirienne` | ✅ |
+| `/cabinets-comptables-partenaires` | ❌ manquant (a une FAQ partenaires non sérialisée) |
 
-Note : les autres mentions de « Plateau » dans le site (FAQ, page Cabinet Abidjan, Domiciliation, liste des quartiers couverts par les cabinets partenaires, etc.) **restent inchangées** — elles décrivent les quartiers où se trouvent les cabinets partenaires, pas l'adresse de SoumissionsComptables.ci.
+## Seul changement à faire
 
-### 2. Logo officiel
-Intégrer le logo fourni (cercle jaune + texte cyan « Soumission Comptable ») dans le Header et le Footer, à la place de l'icône `BarChart2` actuellement utilisée comme placeholder.
+Ajouter `faqSchema` sur `/cabinets-comptables-partenaires`, qui contient bien 3 questions/réponses dans `PARTNER_FAQS` mais n'émet pas de JSON-LD.
 
-Étapes :
-1. Copier `user-uploads://WhatsApp_Image_2026-05-19_at_12.41.07.jpeg` vers `src/assets/brand/logo-soumissions-comptables.jpg`.
-2. `src/components/layout/Header.tsx` : remplacer le bloc `<BarChart2 …/> + texte` par `<img src={logo} alt="SoumissionsComptables.ci" width={160} height={40} className="h-9 w-auto" />`. Garder le `<Link>` parent vers l'accueil.
-3. `src/components/layout/Footer.tsx` : même remplacement dans la colonne marque (logo un peu plus grand, ex. `h-10`).
-4. Retirer les imports `BarChart2` devenus inutilisés.
+**Fichier à modifier :** `src/routes/cabinets-comptables-partenaires.tsx`
+- Importer `faqSchema` depuis `@/lib/seo`.
+- Ajouter `extraSchemas: [faqSchema(PARTNER_FAQS.map(f => ({ question: f.q, answer: f.a })))]` dans le `buildPageHead` du `head()`.
+- Déplacer la constante `PARTNER_FAQS` au-dessus du `createFileRoute(...)` (elle est actuellement définie après, mais utilisée dans `head()`).
 
-### Hors périmètre
-- Pas de changement sur le favicon ni les images Open Graph (peut être fait dans une autre passe si souhaité).
-- Pas de modification du contenu éditorial existant.
+## Hors périmètre
+- Aucun changement aux autres pages : leur FAQPage JSON-LD est déjà conforme à la structure schema.org demandée.
+- Pas de nouveau template HowTo à ajouter ici (déjà présent sur la page création d'entreprise).
