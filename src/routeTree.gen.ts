@@ -19,6 +19,7 @@ import { Route as CreationEntrepriseCoteDivoireRouteImport } from './routes/crea
 import { Route as ComptabiliteEntrepriseAbidjanRouteImport } from './routes/comptabilite-entreprise-abidjan'
 import { Route as CommentCaMarcheRouteImport } from './routes/comment-ca-marche'
 import { Route as CabinetsComptablesPartenairesRouteImport } from './routes/cabinets-comptables-partenaires'
+import { Route as CabinetComptableAbidjanRouteImport } from './routes/cabinet-comptable-abidjan'
 import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as IndexRouteImport } from './routes/index'
 
@@ -78,6 +79,11 @@ const CabinetsComptablesPartenairesRoute =
     path: '/cabinets-comptables-partenaires',
     getParentRoute: () => rootRouteImport,
   } as any)
+const CabinetComptableAbidjanRoute = CabinetComptableAbidjanRouteImport.update({
+  id: '/cabinet-comptable-abidjan',
+  path: '/cabinet-comptable-abidjan',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AProposRoute = AProposRouteImport.update({
   id: '/a-propos',
   path: '/a-propos',
@@ -92,6 +98,7 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
+  '/cabinet-comptable-abidjan': typeof CabinetComptableAbidjanRoute
   '/cabinets-comptables-partenaires': typeof CabinetsComptablesPartenairesRoute
   '/comment-ca-marche': typeof CommentCaMarcheRoute
   '/comptabilite-entreprise-abidjan': typeof ComptabiliteEntrepriseAbidjanRoute
@@ -106,6 +113,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
+  '/cabinet-comptable-abidjan': typeof CabinetComptableAbidjanRoute
   '/cabinets-comptables-partenaires': typeof CabinetsComptablesPartenairesRoute
   '/comment-ca-marche': typeof CommentCaMarcheRoute
   '/comptabilite-entreprise-abidjan': typeof ComptabiliteEntrepriseAbidjanRoute
@@ -121,6 +129,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
+  '/cabinet-comptable-abidjan': typeof CabinetComptableAbidjanRoute
   '/cabinets-comptables-partenaires': typeof CabinetsComptablesPartenairesRoute
   '/comment-ca-marche': typeof CommentCaMarcheRoute
   '/comptabilite-entreprise-abidjan': typeof ComptabiliteEntrepriseAbidjanRoute
@@ -137,6 +146,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/a-propos'
+    | '/cabinet-comptable-abidjan'
     | '/cabinets-comptables-partenaires'
     | '/comment-ca-marche'
     | '/comptabilite-entreprise-abidjan'
@@ -151,6 +161,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/a-propos'
+    | '/cabinet-comptable-abidjan'
     | '/cabinets-comptables-partenaires'
     | '/comment-ca-marche'
     | '/comptabilite-entreprise-abidjan'
@@ -165,6 +176,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/a-propos'
+    | '/cabinet-comptable-abidjan'
     | '/cabinets-comptables-partenaires'
     | '/comment-ca-marche'
     | '/comptabilite-entreprise-abidjan'
@@ -180,6 +192,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AProposRoute: typeof AProposRoute
+  CabinetComptableAbidjanRoute: typeof CabinetComptableAbidjanRoute
   CabinetsComptablesPartenairesRoute: typeof CabinetsComptablesPartenairesRoute
   CommentCaMarcheRoute: typeof CommentCaMarcheRoute
   ComptabiliteEntrepriseAbidjanRoute: typeof ComptabiliteEntrepriseAbidjanRoute
@@ -264,6 +277,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CabinetsComptablesPartenairesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cabinet-comptable-abidjan': {
+      id: '/cabinet-comptable-abidjan'
+      path: '/cabinet-comptable-abidjan'
+      fullPath: '/cabinet-comptable-abidjan'
+      preLoaderRoute: typeof CabinetComptableAbidjanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/a-propos': {
       id: '/a-propos'
       path: '/a-propos'
@@ -284,6 +304,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AProposRoute: AProposRoute,
+  CabinetComptableAbidjanRoute: CabinetComptableAbidjanRoute,
   CabinetsComptablesPartenairesRoute: CabinetsComptablesPartenairesRoute,
   CommentCaMarcheRoute: CommentCaMarcheRoute,
   ComptabiliteEntrepriseAbidjanRoute: ComptabiliteEntrepriseAbidjanRoute,
