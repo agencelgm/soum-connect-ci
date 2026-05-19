@@ -29,7 +29,7 @@ export function Footer() {
               <Linkedin className="h-5 w-5" />
             </a>
             <a
-              href="https://wa.me/22500000000"
+              href="https://wa.me/2250767009629"
               aria-label="WhatsApp"
               className="text-slate-400 hover:text-secondary"
             >
@@ -66,7 +66,7 @@ export function Footer() {
           <ul className="space-y-3 text-sm">
             <li className="flex items-center gap-2">
               <WhatsAppIcon className="h-4 w-4 text-[#25D366] shrink-0" />
-              <a href="https://wa.me/22500000000" className="hover:text-secondary">+225 XX XX XX XX</a>
+              <a href="https://wa.me/2250767009629" className="hover:text-secondary">+225 07 67 00 96 29</a>
             </li>
             <li className="flex items-center gap-2">
               <Mail className="h-4 w-4 shrink-0" />
