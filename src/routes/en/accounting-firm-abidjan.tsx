@@ -1,0 +1,20 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { buildPageHead } from "@/lib/seo";
+import { Route as FrRoute } from "../cabinet-comptable-abidjan";
+
+export const Route = createFileRoute("/en/accounting-firm-abidjan")({
+  head: () =>
+    buildPageHead({
+      path: "/en/accounting-firm-abidjan",
+      title: "Accounting Firm in Abidjan | Compare 5 Free Offers | SoumissionsComptables.ci",
+      description: "Find the best accounting firm in Abidjan (Plateau, Cocody, Marcory). OECCA-CI certified firms. Get 5 free quotes within 48h.",
+      lang: "en",
+      altPath: "/cabinet-comptable-abidjan",
+      breadcrumb: [
+        { name: "Home", path: "/en" },
+        { name: "Cities", path: "/en/accounting-firm-abidjan" },
+        { name: "Abidjan", path: "/en/accounting-firm-abidjan" },
+      ],
+    }),
+  component: FrRoute.options.component,
+});

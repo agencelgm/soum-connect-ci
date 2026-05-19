@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -13,6 +14,7 @@ import { LanguageProvider } from "@/lib/language-context";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Toaster } from "@/components/ui/sonner";
+import { getLangFromPath } from "@/lib/route-map";
 
 function NotFoundComponent() {
   return (
@@ -95,8 +97,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: React.ReactNode }) {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const lang = getLangFromPath(pathname);
   return (
-    <html lang="fr">
+    <html lang={lang === "en" ? "en" : "fr"}>
       <head>
         <HeadContent />
       </head>

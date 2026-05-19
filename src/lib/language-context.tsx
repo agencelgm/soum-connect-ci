@@ -1,4 +1,7 @@
-import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useMemo, type ReactNode } from "react";
+import { useRouter, useRouterState } from "@tanstack/react-router";
+import { getCounterpart, getLangFromPath } from "./route-map";
+import { getTranslations, type TranslationDict } from "./translations";
 
 export type Language = "fr" | "en";
 
@@ -6,31 +9,34 @@ type LanguageContextValue = {
   language: Language;
   setLanguage: (lang: Language) => void;
   toggleLanguage: () => void;
+  t: TranslationDict;
 };
 
 const LanguageContext = createContext<LanguageContextValue | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguageState] = useState<Language>("fr");
+  const router = useRouter();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const language: Language = getLangFromPath(pathname);
 
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem("lang");
-      if (stored === "fr" || stored === "en") setLanguageState(stored);
-    } catch {}
-  }, []);
-
-  const setLanguage = useCallback((lang: Language) => {
-    setLanguageState(lang);
-    try { localStorage.setItem("lang", lang); } catch {}
-  }, []);
+  const setLanguage = useCallback(
+    (lang: Language) => {
+      if (lang === language) return;
+      const target = getCounterpart(pathname, lang);
+      try { localStorage.setItem("lang", lang); } catch {}
+      router.navigate({ to: target });
+    },
+    [language, pathname, router],
+  );
 
   const toggleLanguage = useCallback(() => {
     setLanguage(language === "fr" ? "en" : "fr");
   }, [language, setLanguage]);
 
+  const t = useMemo(() => getTranslations(language), [language]);
+
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, toggleLanguage }}>
+    <LanguageContext.Provider value={{ language, setLanguage, toggleLanguage, t }}>
       {children}
     </LanguageContext.Provider>
   );

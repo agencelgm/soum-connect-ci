@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { BarChart2, Facebook, Linkedin, Mail, MapPin } from "lucide-react";
+import { useLanguage } from "@/lib/language-context";
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -10,6 +11,7 @@ function WhatsAppIcon({ className }: { className?: string }) {
 }
 
 export function Footer() {
+  const { t } = useLanguage();
   return (
     <footer className="bg-[#0F172A] text-slate-300 mt-12">
       <div className="max-w-[1200px] mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -18,9 +20,7 @@ export function Footer() {
             <BarChart2 className="h-5 w-5 text-secondary" />
           <span className="font-heading font-bold text-white text-base">Soumissions <span className="text-secondary">Comptables</span></span>
           </div>
-          <p className="mt-3 text-sm text-slate-400">
-            Trouvez le meilleur cabinet comptable en Côte d'Ivoire
-          </p>
+          <p className="mt-3 text-sm text-slate-400">{t.footer.tagline}</p>
           <div className="mt-4 flex items-center gap-3">
             <a
               href="https://www.facebook.com/profile.php?id=61572845235281"
@@ -45,30 +45,30 @@ export function Footer() {
         </div>
 
         <div>
-          <div className="text-white font-semibold mb-3">Nos Services</div>
+          <div className="text-white font-semibold mb-3">{t.footer.ourServices}</div>
           <ul className="space-y-2 text-sm">
-            <li><Link to="/creation-entreprise-cote-divoire" className="hover:text-secondary">Création d'entreprise</Link></li>
-            <li><Link to="/comptabilite-entreprise-abidjan" className="hover:text-secondary">Comptabilité</Link></li>
-            <li><Link to="/declaration-fiscale-cote-divoire" className="hover:text-secondary">Déclaration fiscale</Link></li>
-            <li><Link to="/domiciliation-entreprise-abidjan" className="hover:text-secondary">Domiciliation Abidjan</Link></li>
-            <li><Link to="/cabinet-comptable-abidjan" className="hover:text-secondary">Audit comptable</Link></li>
-            <li><Link to="/cabinet-comptable-abidjan" className="hover:text-secondary">Conseil juridique</Link></li>
+            <li><Link to="/creation-entreprise-cote-divoire" className="hover:text-secondary">{t.services.creation}</Link></li>
+            <li><Link to="/comptabilite-entreprise-abidjan" className="hover:text-secondary">{t.services.accounting}</Link></li>
+            <li><Link to="/declaration-fiscale-cote-divoire" className="hover:text-secondary">{t.services.tax}</Link></li>
+            <li><Link to="/domiciliation-entreprise-abidjan" className="hover:text-secondary">{t.services.domiciliation}</Link></li>
+            <li><Link to="/cabinet-comptable-abidjan" className="hover:text-secondary">{t.services.audit}</Link></li>
+            <li><Link to="/cabinet-comptable-abidjan" className="hover:text-secondary">{t.services.legal}</Link></li>
           </ul>
         </div>
 
         <div>
-          <div className="text-white font-semibold mb-3">Liens utiles</div>
+          <div className="text-white font-semibold mb-3">{t.footer.usefulLinks}</div>
           <ul className="space-y-2 text-sm">
-            <li><Link to="/comment-ca-marche" className="hover:text-secondary">Comment ça marche</Link></li>
-            <li><Link to="/faq" className="hover:text-secondary">FAQ</Link></li>
-            <li><Link to="/a-propos" className="hover:text-secondary">À propos</Link></li>
-            <li><Link to="/cabinets-comptables-partenaires" className="hover:text-secondary">Cabinets partenaires</Link></li>
-            <li><Link to="/guides" className="hover:text-secondary">Guides &amp; Ressources</Link></li>
+            <li><Link to="/comment-ca-marche" className="hover:text-secondary">{t.footer.links.howItWorks}</Link></li>
+            <li><Link to="/faq" className="hover:text-secondary">{t.footer.links.faq}</Link></li>
+            <li><Link to="/a-propos" className="hover:text-secondary">{t.footer.links.about}</Link></li>
+            <li><Link to="/cabinets-comptables-partenaires" className="hover:text-secondary">{t.footer.links.partners}</Link></li>
+            <li><Link to="/guides" className="hover:text-secondary">{t.footer.links.guides}</Link></li>
           </ul>
         </div>
 
         <div>
-          <div className="text-white font-semibold mb-3">Contact</div>
+          <div className="text-white font-semibold mb-3">{t.footer.contact}</div>
           <ul className="space-y-3 text-sm">
             <li className="flex items-center gap-2">
               <WhatsAppIcon className="h-4 w-4 text-[#25D366] shrink-0" />
@@ -82,7 +82,7 @@ export function Footer() {
             </li>
             <li className="flex items-center gap-2">
               <MapPin className="h-4 w-4 shrink-0" />
-              Abidjan, Côte d'Ivoire
+              {t.footer.location}
             </li>
           </ul>
         </div>
@@ -90,13 +90,13 @@ export function Footer() {
 
       <div className="border-t border-slate-700">
         <div className="max-w-[1200px] mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-slate-400">
-          <div>© 2026 SoumissionsComptables.ci — Tous droits réservés</div>
+          <div>{t.footer.rights}</div>
           <div className="flex items-center gap-2">
-            <a href="#" className="hover:text-secondary">Politique de confidentialité</a>
+            <a href="#" className="hover:text-secondary">{t.footer.privacy}</a>
             <span>|</span>
-            <a href="#" className="hover:text-secondary">Conditions d'utilisation</a>
+            <a href="#" className="hover:text-secondary">{t.footer.terms}</a>
           </div>
-          <div>Une réalisation de LGM — Les Gens du Marketing</div>
+          <div>{t.footer.byLgm}</div>
         </div>
       </div>
     </footer>

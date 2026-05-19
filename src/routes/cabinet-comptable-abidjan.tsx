@@ -52,6 +52,7 @@ export const Route = createFileRoute("/cabinet-comptable-abidjan")({
         { name: "Villes", path: "/cabinet-comptable-abidjan" },
         { name: "Abidjan", path: "/cabinet-comptable-abidjan" },
       ],
+      altPath: "/en/accounting-firm-abidjan",
       extraSchemas: [
         {
           "@context": "https://schema.org",
