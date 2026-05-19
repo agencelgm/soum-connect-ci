@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Building2, Calculator, Receipt, MapPin } from "lucide-react";
 import { ServicePage, type Faq, type RelatedService } from "@/components/service/ServicePage";
+import { buildPageHead, faqSchema, howToSchema } from "@/lib/seo";
 
 const META_TITLE =
   "Création d'Entreprise en Côte d'Ivoire | Trouvez votre Cabinet | SoumissionsComptables.ci";
@@ -50,43 +51,20 @@ const RELATED: RelatedService[] = [
 ];
 
 export const Route = createFileRoute("/creation-entreprise-cote-divoire")({
-  head: () => ({
-    meta: [
-      { title: META_TITLE },
-      { name: "description", content: META_DESC },
-      { property: "og:title", content: META_TITLE },
-      { property: "og:description", content: META_DESC },
-      { property: "og:url", content: "/creation-entreprise-cote-divoire" },
-    ],
-    links: [{ rel: "canonical", href: "/creation-entreprise-cote-divoire" }],
-    scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "HowTo",
-          name: "Comment créer une entreprise en Côte d'Ivoire en 5 étapes",
-          step: STEPS.map((s, i) => ({
-            "@type": "HowToStep",
-            position: i + 1,
-            name: s,
-          })),
-        }),
-      },
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          mainEntity: FAQS.map((f) => ({
-            "@type": "Question",
-            name: f.question,
-            acceptedAnswer: { "@type": "Answer", text: f.answer },
-          })),
-        }),
-      },
-    ],
-  }),
+  head: () =>
+    buildPageHead({
+      path: "/creation-entreprise-cote-divoire",
+      title: META_TITLE,
+      description: META_DESC,
+      breadcrumb: [
+        { name: "Accueil", path: "/" },
+        { name: "Création d'entreprise", path: "/creation-entreprise-cote-divoire" },
+      ],
+      extraSchemas: [
+        howToSchema("Comment créer une entreprise en Côte d'Ivoire en 5 étapes", STEPS),
+        faqSchema(FAQS),
+      ],
+    }),
   component: Page,
 });
 
