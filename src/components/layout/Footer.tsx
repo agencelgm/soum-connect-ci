@@ -22,7 +22,13 @@ export function Footer() {
             Trouvez le meilleur cabinet comptable en Côte d'Ivoire
           </p>
           <div className="mt-4 flex items-center gap-3">
-            <a href="#" aria-label="Facebook" className="text-slate-400 hover:text-secondary">
+            <a
+              href="https://www.facebook.com/profile.php?id=61572845235281"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook"
+              className="text-slate-400 hover:text-secondary"
+            >
               <Facebook className="h-5 w-5" />
             </a>
             <a href="#" aria-label="LinkedIn" className="text-slate-400 hover:text-secondary">
