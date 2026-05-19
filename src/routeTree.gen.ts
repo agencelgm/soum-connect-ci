@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as GuidesRouteImport } from './routes/guides'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as DemandeSoumissionsRouteImport } from './routes/demande-soumissions'
+import { Route as DeclarationFiscaleCoteDivoireRouteImport } from './routes/declaration-fiscale-cote-divoire'
 import { Route as CreationEntrepriseDiasporaIvoirienneRouteImport } from './routes/creation-entreprise-diaspora-ivoirienne'
 import { Route as CreationEntrepriseCoteDivoireRouteImport } from './routes/creation-entreprise-cote-divoire'
 import { Route as ComptabiliteEntrepriseAbidjanRouteImport } from './routes/comptabilite-entreprise-abidjan'
@@ -35,6 +36,12 @@ const DemandeSoumissionsRoute = DemandeSoumissionsRouteImport.update({
   path: '/demande-soumissions',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DeclarationFiscaleCoteDivoireRoute =
+  DeclarationFiscaleCoteDivoireRouteImport.update({
+    id: '/declaration-fiscale-cote-divoire',
+    path: '/declaration-fiscale-cote-divoire',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const CreationEntrepriseDiasporaIvoirienneRoute =
   CreationEntrepriseDiasporaIvoirienneRouteImport.update({
     id: '/creation-entreprise-diaspora-ivoirienne',
@@ -83,6 +90,7 @@ export interface FileRoutesByFullPath {
   '/comptabilite-entreprise-abidjan': typeof ComptabiliteEntrepriseAbidjanRoute
   '/creation-entreprise-cote-divoire': typeof CreationEntrepriseCoteDivoireRoute
   '/creation-entreprise-diaspora-ivoirienne': typeof CreationEntrepriseDiasporaIvoirienneRoute
+  '/declaration-fiscale-cote-divoire': typeof DeclarationFiscaleCoteDivoireRoute
   '/demande-soumissions': typeof DemandeSoumissionsRoute
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRoute
@@ -95,6 +103,7 @@ export interface FileRoutesByTo {
   '/comptabilite-entreprise-abidjan': typeof ComptabiliteEntrepriseAbidjanRoute
   '/creation-entreprise-cote-divoire': typeof CreationEntrepriseCoteDivoireRoute
   '/creation-entreprise-diaspora-ivoirienne': typeof CreationEntrepriseDiasporaIvoirienneRoute
+  '/declaration-fiscale-cote-divoire': typeof DeclarationFiscaleCoteDivoireRoute
   '/demande-soumissions': typeof DemandeSoumissionsRoute
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRoute
@@ -108,6 +117,7 @@ export interface FileRoutesById {
   '/comptabilite-entreprise-abidjan': typeof ComptabiliteEntrepriseAbidjanRoute
   '/creation-entreprise-cote-divoire': typeof CreationEntrepriseCoteDivoireRoute
   '/creation-entreprise-diaspora-ivoirienne': typeof CreationEntrepriseDiasporaIvoirienneRoute
+  '/declaration-fiscale-cote-divoire': typeof DeclarationFiscaleCoteDivoireRoute
   '/demande-soumissions': typeof DemandeSoumissionsRoute
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRoute
@@ -122,6 +132,7 @@ export interface FileRouteTypes {
     | '/comptabilite-entreprise-abidjan'
     | '/creation-entreprise-cote-divoire'
     | '/creation-entreprise-diaspora-ivoirienne'
+    | '/declaration-fiscale-cote-divoire'
     | '/demande-soumissions'
     | '/faq'
     | '/guides'
@@ -134,6 +145,7 @@ export interface FileRouteTypes {
     | '/comptabilite-entreprise-abidjan'
     | '/creation-entreprise-cote-divoire'
     | '/creation-entreprise-diaspora-ivoirienne'
+    | '/declaration-fiscale-cote-divoire'
     | '/demande-soumissions'
     | '/faq'
     | '/guides'
@@ -146,6 +158,7 @@ export interface FileRouteTypes {
     | '/comptabilite-entreprise-abidjan'
     | '/creation-entreprise-cote-divoire'
     | '/creation-entreprise-diaspora-ivoirienne'
+    | '/declaration-fiscale-cote-divoire'
     | '/demande-soumissions'
     | '/faq'
     | '/guides'
@@ -159,6 +172,7 @@ export interface RootRouteChildren {
   ComptabiliteEntrepriseAbidjanRoute: typeof ComptabiliteEntrepriseAbidjanRoute
   CreationEntrepriseCoteDivoireRoute: typeof CreationEntrepriseCoteDivoireRoute
   CreationEntrepriseDiasporaIvoirienneRoute: typeof CreationEntrepriseDiasporaIvoirienneRoute
+  DeclarationFiscaleCoteDivoireRoute: typeof DeclarationFiscaleCoteDivoireRoute
   DemandeSoumissionsRoute: typeof DemandeSoumissionsRoute
   FaqRoute: typeof FaqRoute
   GuidesRoute: typeof GuidesRoute
@@ -185,6 +199,13 @@ declare module '@tanstack/react-router' {
       path: '/demande-soumissions'
       fullPath: '/demande-soumissions'
       preLoaderRoute: typeof DemandeSoumissionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/declaration-fiscale-cote-divoire': {
+      id: '/declaration-fiscale-cote-divoire'
+      path: '/declaration-fiscale-cote-divoire'
+      fullPath: '/declaration-fiscale-cote-divoire'
+      preLoaderRoute: typeof DeclarationFiscaleCoteDivoireRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/creation-entreprise-diaspora-ivoirienne': {
@@ -248,6 +269,7 @@ const rootRouteChildren: RootRouteChildren = {
   CreationEntrepriseCoteDivoireRoute: CreationEntrepriseCoteDivoireRoute,
   CreationEntrepriseDiasporaIvoirienneRoute:
     CreationEntrepriseDiasporaIvoirienneRoute,
+  DeclarationFiscaleCoteDivoireRoute: DeclarationFiscaleCoteDivoireRoute,
   DemandeSoumissionsRoute: DemandeSoumissionsRoute,
   FaqRoute: FaqRoute,
   GuidesRoute: GuidesRoute,
