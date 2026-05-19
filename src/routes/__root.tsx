@@ -54,28 +54,47 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
-    meta: [
+  head: () => {
+    const ga4Id = import.meta.env.VITE_GA4_ID as string | undefined;
+    const gscToken = import.meta.env.VITE_GSC_VERIFICATION as string | undefined;
+
+    const meta: Array<Record<string, string>> = [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "robots", content: "index,follow" },
       { property: "og:site_name", content: "SoumissionsComptables.ci" },
       { property: "og:locale", content: "fr_CI" },
       { property: "og:type", content: "website" },
-    ],
-    links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      {
-        rel: "preconnect",
-        href: "https://fonts.gstatic.com",
-        crossOrigin: "anonymous",
-      },
-    ],
-  }),
+    ];
+    if (gscToken) {
+      meta.push({ name: "google-site-verification", content: gscToken });
+    }
+
+    const scripts: Array<Record<string, string>> = [];
+    if (ga4Id) {
+      scripts.push({
+        src: `https://www.googletagmanager.com/gtag/js?id=${ga4Id}`,
+        async: "true",
+      });
+      scripts.push({
+        children: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${ga4Id}');`,
+      });
+    }
+
+    return {
+      meta,
+      links: [
+        { rel: "stylesheet", href: appCss },
+        { rel: "preconnect", href: "https://fonts.googleapis.com" },
+        {
+          rel: "preconnect",
+          href: "https://fonts.gstatic.com",
+          crossOrigin: "anonymous",
+        },
+      ],
+      scripts,
+    };
+  },
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundPage,
