@@ -30,35 +30,23 @@ export function NotFoundPage() {
       <div className="mx-auto max-w-md text-center">
         <svg
           viewBox="0 0 200 160"
-          className="mx-auto h-40 w-40"
+          className="mx-auto h-40 w-40 text-foreground"
           aria-hidden="true"
         >
-          <circle cx="100" cy="90" r="50" fill="hsl(var(--muted))" />
-          <circle cx="84" cy="82" r="4" fill="hsl(var(--foreground))" />
-          <circle cx="116" cy="82" r="4" fill="hsl(var(--foreground))" />
+          <circle cx="100" cy="90" r="50" className="fill-muted" />
+          <circle cx="84" cy="82" r="4" fill="currentColor" />
+          <circle cx="116" cy="82" r="4" fill="currentColor" />
           <path
             d="M82 110 Q100 100 118 110"
-            stroke="hsl(var(--foreground))"
+            stroke="currentColor"
             strokeWidth="3"
             fill="none"
             strokeLinecap="round"
           />
-          <text
-            x="150"
-            y="55"
-            fontSize="40"
-            fontWeight="700"
-            fill="hsl(var(--secondary))"
-          >
+          <text x="150" y="55" fontSize="40" fontWeight="700" className="fill-secondary">
             ?
           </text>
-          <text
-            x="40"
-            y="50"
-            fontSize="28"
-            fontWeight="700"
-            fill="hsl(var(--primary))"
-          >
+          <text x="40" y="50" fontSize="28" fontWeight="700" className="fill-primary">
             ?
           </text>
         </svg>
