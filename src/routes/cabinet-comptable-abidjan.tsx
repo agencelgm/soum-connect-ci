@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Building2, Calculator, Receipt, MapPin, BadgeCheck, Sparkles, Wallet, Clock } from "lucide-react";
 import { ServicePage, type Faq, type RelatedService } from "@/components/service/ServicePage";
+import { buildPageHead, faqSchema } from "@/lib/seo";
 
 const META_TITLE = "Cabinet Comptable à Abidjan | Comparez 5 Offres Gratuitement | SoumissionsComptables.ci";
 const META_DESC =
@@ -41,19 +42,18 @@ const RELATED: RelatedService[] = [
 ];
 
 export const Route = createFileRoute("/cabinet-comptable-abidjan")({
-  head: () => ({
-    meta: [
-      { title: META_TITLE },
-      { name: "description", content: META_DESC },
-      { property: "og:title", content: META_TITLE },
-      { property: "og:description", content: META_DESC },
-      { property: "og:url", content: "/cabinet-comptable-abidjan" },
-    ],
-    links: [{ rel: "canonical", href: "/cabinet-comptable-abidjan" }],
-    scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
+  head: () =>
+    buildPageHead({
+      path: "/cabinet-comptable-abidjan",
+      title: META_TITLE,
+      description: META_DESC,
+      breadcrumb: [
+        { name: "Accueil", path: "/" },
+        { name: "Villes", path: "/cabinet-comptable-abidjan" },
+        { name: "Abidjan", path: "/cabinet-comptable-abidjan" },
+      ],
+      extraSchemas: [
+        {
           "@context": "https://schema.org",
           "@type": "LocalBusiness",
           name: "SoumissionsComptables.ci — Cabinets Comptables à Abidjan",
@@ -66,22 +66,10 @@ export const Route = createFileRoute("/cabinet-comptable-abidjan")({
             addressCountry: "CI",
           },
           telephone: "+225 07 67 00 96 29",
-        }),
-      },
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          mainEntity: FAQS.map((f) => ({
-            "@type": "Question",
-            name: f.question,
-            acceptedAnswer: { "@type": "Answer", text: f.answer },
-          })),
-        }),
-      },
-    ],
-  }),
+        },
+        faqSchema(FAQS),
+      ],
+    }),
   component: Page,
 });
 
