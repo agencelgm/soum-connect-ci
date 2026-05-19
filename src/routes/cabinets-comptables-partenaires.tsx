@@ -20,35 +20,21 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { buildPageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/cabinets-comptables-partenaires")({
-  head: () => ({
-    meta: [
-      {
-        title:
-          "Rejoignez notre Réseau | Cabinets Comptables Partenaires | SoumissionsComptables.ci",
-      },
-      {
-        name: "description",
-        content:
-          "Vous êtes cabinet comptable agréé en Côte d'Ivoire ? Rejoignez SoumissionsComptables.ci et recevez des leads qualifiés d'entrepreneurs qui cherchent vos services. Inscription simple.",
-      },
-      {
-        property: "og:title",
-        content:
-          "Rejoignez notre Réseau | Cabinets Comptables Partenaires",
-      },
-      {
-        property: "og:description",
-        content:
-          "Recevez des leads qualifiés d'entrepreneurs ivoiriens. Inscription simple et gratuite pour cabinets agréés OECCA-CI.",
-      },
-      { property: "og:url", content: "/cabinets-comptables-partenaires" },
-    ],
-    links: [
-      { rel: "canonical", href: "/cabinets-comptables-partenaires" },
-    ],
-  }),
+  head: () =>
+    buildPageHead({
+      path: "/cabinets-comptables-partenaires",
+      title:
+        "Rejoignez notre Réseau | Cabinets Comptables Partenaires | SoumissionsComptables.ci",
+      description:
+        "Vous êtes cabinet comptable agréé en Côte d'Ivoire ? Rejoignez SoumissionsComptables.ci et recevez des leads qualifiés d'entrepreneurs qui cherchent vos services. Inscription simple.",
+      breadcrumb: [
+        { name: "Accueil", path: "/" },
+        { name: "Cabinets partenaires", path: "/cabinets-comptables-partenaires" },
+      ],
+    }),
   component: Page,
 });
 
