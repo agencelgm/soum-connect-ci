@@ -20,7 +20,22 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { buildPageHead } from "@/lib/seo";
+import { buildPageHead, faqSchema } from "@/lib/seo";
+
+const PARTNER_FAQS = [
+  {
+    q: "Y a-t-il des frais d'inscription ?",
+    a: "Non. L'inscription et la création de votre profil cabinet sont 100% gratuites. Nous facturons uniquement les leads qualifiés que vous décidez d'acquérir, selon une grille tarifaire transparente communiquée à l'activation de votre compte.",
+  },
+  {
+    q: "Comment sont sélectionnés les leads qui me sont envoyés ?",
+    a: "Chaque demande est filtrée selon vos critères : services proposés, zones desservies, type de client et budget indicatif. Vous ne recevez que les prospects compatibles avec votre activité, ce qui maximise votre taux de signature.",
+  },
+  {
+    q: "Puis-je contrôler le volume de leads que je reçois ?",
+    a: "Oui. Vous fixez un volume maximum mensuel et pouvez mettre votre compte en pause à tout moment depuis votre tableau de bord, par exemple en période de forte charge ou de congés.",
+  },
+];
 
 export const Route = createFileRoute("/cabinets-comptables-partenaires")({
   head: () =>
@@ -33,6 +48,9 @@ export const Route = createFileRoute("/cabinets-comptables-partenaires")({
       breadcrumb: [
         { name: "Accueil", path: "/" },
         { name: "Cabinets partenaires", path: "/cabinets-comptables-partenaires" },
+      ],
+      extraSchemas: [
+        faqSchema(PARTNER_FAQS.map((f) => ({ question: f.q, answer: f.a }))),
       ],
     }),
   component: Page,
@@ -78,21 +96,6 @@ const STEPS = [
   { n: 2, title: "Définissez vos critères", text: "Services, zones géographiques, taille des clients ciblés." },
   { n: 3, title: "Recevez des leads correspondants", text: "Notifications email et WhatsApp dès qu'une demande matche votre profil." },
   { n: 4, title: "Contactez et soumettez votre offre", text: "Vous échangez directement avec le prospect et envoyez votre proposition." },
-];
-
-const PARTNER_FAQS = [
-  {
-    q: "Y a-t-il des frais d'inscription ?",
-    a: "Non. L'inscription et la création de votre profil cabinet sont 100% gratuites. Nous facturons uniquement les leads qualifiés que vous décidez d'acquérir, selon une grille tarifaire transparente communiquée à l'activation de votre compte.",
-  },
-  {
-    q: "Comment sont sélectionnés les leads qui me sont envoyés ?",
-    a: "Chaque demande est filtrée selon vos critères : services proposés, zones desservies, type de client et budget indicatif. Vous ne recevez que les prospects compatibles avec votre activité, ce qui maximise votre taux de signature.",
-  },
-  {
-    q: "Puis-je contrôler le volume de leads que je reçois ?",
-    a: "Oui. Vous fixez un volume maximum mensuel et pouvez mettre votre compte en pause à tout moment depuis votre tableau de bord, par exemple en période de forte charge ou de congés.",
-  },
 ];
 
 const partnerSchema = z.object({
