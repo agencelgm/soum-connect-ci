@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Receipt, Building2, Calculator, MapPin, AlertTriangle } from "lucide-react";
 import { ServicePage, type Faq, type RelatedService } from "@/components/service/ServicePage";
+import { buildPageHead, faqSchema } from "@/lib/seo";
 
 const META_TITLE = "Déclaration Fiscale Côte d'Ivoire | DSF, TVA, IS | SoumissionsComptables.ci";
 const META_DESC =
@@ -41,30 +42,18 @@ const RELATED: RelatedService[] = [
 ];
 
 export const Route = createFileRoute("/declaration-fiscale-cote-divoire")({
-  head: () => ({
-    meta: [
-      { title: META_TITLE },
-      { name: "description", content: META_DESC },
-      { property: "og:title", content: META_TITLE },
-      { property: "og:description", content: META_DESC },
-      { property: "og:url", content: "/declaration-fiscale-cote-divoire" },
-    ],
-    links: [{ rel: "canonical", href: "/declaration-fiscale-cote-divoire" }],
-    scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          mainEntity: FAQS.map((f) => ({
-            "@type": "Question",
-            name: f.question,
-            acceptedAnswer: { "@type": "Answer", text: f.answer },
-          })),
-        }),
-      },
-    ],
-  }),
+  head: () =>
+    buildPageHead({
+      path: "/declaration-fiscale-cote-divoire",
+      title: META_TITLE,
+      description: META_DESC,
+      breadcrumb: [
+        { name: "Accueil", path: "/" },
+        { name: "Services", path: "/cabinet-comptable-abidjan" },
+        { name: "Déclaration fiscale", path: "/declaration-fiscale-cote-divoire" },
+      ],
+      extraSchemas: [faqSchema(FAQS)],
+    }),
   component: Page,
 });
 
