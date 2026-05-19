@@ -338,6 +338,7 @@ export const translations = {
       allServices: "All services →",
       getQuotes: "Get my quotes",
       menu: "Menu",
+      home: "Home",
     },
     services: {
       creation: "Company registration",
