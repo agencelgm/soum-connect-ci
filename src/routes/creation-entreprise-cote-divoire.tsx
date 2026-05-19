@@ -8,12 +8,27 @@ const META_TITLE =
 const META_DESC =
   "Créez votre SARL, SA ou Entreprise Individuelle en Côte d'Ivoire avec l'aide d'un cabinet comptable agréé. Démarches CEPICI, documents requis, coûts. Obtenez 5 soumissions gratuitement.";
 
-const STEPS = [
-  "Choisir la forme juridique (SARL, SA, EI)",
-  "Préparer les documents requis (statuts, pièces d'identité, capital)",
-  "Déposer le dossier au CEPICI (en ligne ou en présentiel)",
-  "Obtenir le Numéro de Compte Contribuable (NCC) à la DGI",
-  "S'immatriculer au Registre du Commerce et du Crédit Mobilier (RCCM)",
+const STEPS: { name: string; text: string }[] = [
+  {
+    name: "Choisir la forme juridique",
+    text: "Décidez entre SARL, SA ou Entreprise Individuelle selon votre projet, votre capital et le nombre d'associés.",
+  },
+  {
+    name: "Préparer les documents requis",
+    text: "Rassemblez : CNI, acte de naissance, extrait de casier judiciaire, projet de statuts, justificatif de domicile et justificatif de dépôt du capital.",
+  },
+  {
+    name: "Déposer le dossier au CEPICI",
+    text: "Soumettez votre dossier en ligne sur e-cepici.ci ou en présentiel au guichet unique.",
+  },
+  {
+    name: "Obtenir le NCC à la DGI",
+    text: "Enregistrez-vous à la Direction Générale des Impôts pour votre Numéro de Compte Contribuable.",
+  },
+  {
+    name: "S'immatriculer au RCCM",
+    text: "Finalisez votre immatriculation au Registre du Commerce et du Crédit Mobilier.",
+  },
 ];
 
 const FAQS: Faq[] = [
@@ -62,7 +77,16 @@ export const Route = createFileRoute("/creation-entreprise-cote-divoire")({
       ],
       altPath: "/en/company-registration-ivory-coast",
       extraSchemas: [
-        howToSchema("Comment créer une entreprise en Côte d'Ivoire en 5 étapes", STEPS),
+        howToSchema(
+          "Comment créer une entreprise en Côte d'Ivoire via le CEPICI",
+          STEPS,
+          {
+            description:
+              "Guide étape par étape pour créer votre SARL, SA ou Entreprise Individuelle en Côte d'Ivoire via le CEPICI.",
+            totalTime: "P7D",
+            estimatedCost: { currency: "XOF", minValue: 150000, maxValue: 500000 },
+          },
+        ),
         faqSchema(FAQS),
       ],
     }),
@@ -108,7 +132,10 @@ function Page() {
                   <span className="shrink-0 flex h-9 w-9 items-center justify-center rounded-full bg-primary text-white text-sm font-bold">
                     {i + 1}
                   </span>
-                  <span className="text-foreground leading-relaxed pt-1.5">{s}</span>
+                  <div className="pt-1">
+                    <p className="font-semibold text-primary leading-snug">{s.name}</p>
+                    <p className="text-foreground leading-relaxed mt-1">{s.text}</p>
+                  </div>
                 </li>
               ))}
             </ol>
