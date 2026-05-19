@@ -1,59 +1,77 @@
-# Plan — Header & Footer SoumissionsComptables
+# Plan — Homepage `/` for SoumissionsComptables.ci
 
-Refonte des composants `Header` et `Footer` existants pour matcher exactement la spec demandée. Le layout racine (`__root.tsx`) les wrappe déjà autour de toutes les routes — pas besoin de toucher au routing.
+## Goal
+Replace the current placeholder `src/routes/index.tsx` with a complete French homepage matching the detailed brief: 7 ordered sections, mini lead-capture form in hero, semantic HTML, and updated SEO metadata.
 
-## Note technique
+## Files
 
-Le projet utilise **TanStack Start** (pas React Router DOM, pas d'`App.tsx`). Le « Layout wrapper appliqué à toutes les routes » est déjà en place dans `src/routes/__root.tsx` (Header + `<Outlet />` + Footer dans `RootComponent`). J'y touche uniquement si besoin de réglage mineur.
+### 1. `src/routes/index.tsx` (rewrite)
+Single route file holding all 7 sections. Updated `head()`:
+- title: "Cabinet Comptable Côte d'Ivoire | Comparez 5 Soumissions Gratuitement | SoumissionsComptables.ci"
+- description: full FR meta as specified
+- og:title / og:description / og:url=`/` / canonical=`/`
 
-## 1. Header (`src/components/layout/Header.tsx` — réécriture)
+Component renders `<main>` with 7 `<section>` blocks in order.
 
-Structure (sticky, fond blanc, border-bottom `#E2E8F0`, shadow légère au scroll-state via classe statique `shadow-sm`) :
+### 2. `src/components/home/LeadFormCard.tsx` (new)
+Extract the hero mini-form into its own client component to keep `index.tsx` readable.
+- Uses `react-hook-form` (already in stack) with local state
+- Fields: service (Select), city (Select), fullName (Input), whatsapp (Input with +225 prefix via flex-row addon), email (Input)
+- Submit handler: for now, `console.log` + toast "Demande envoyée" (no backend yet — out of scope)
+- Uses shadcn `Select`, `Input`, `Label`, `Button`
 
-- Container `max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between gap-4`
-- **Gauche — Logo** : `<Link to="/">` avec icône Lucide `BarChart2` couleur `text-secondary` (#F4732A) + texte "SoumissionsComptables" en `font-heading font-bold text-primary`
-- **Centre (desktop ≥ lg)** : `<nav>` `font-sans text-sm font-medium` avec :
-  - Dropdown **Services** (shadcn `NavigationMenu` ou `DropdownMenu` — je pars sur `DropdownMenu` plus simple et plus prévisible visuellement) ouvert au hover/click, items :
-    - Création d'entreprise → `/creation-entreprise-cote-divoire`
-    - Comptabilité générale → `/comptabilite-entreprise-abidjan`
-    - Déclaration fiscale → `/declaration-fiscale-cote-divoire`
-    - Domiciliation Abidjan → `/domiciliation-entreprise-abidjan`
-    - Séparateur + "Tous les services →" (lien vers `/cabinet-comptable-abidjan` qui fait office de hub services existant ; à confirmer s'il faut une vraie page `/services`)
-  - Lien "Comment ça marche" → `/comment-ca-marche`
-  - Lien "FAQ" → `/faq`
-  - Lien "À propos" → `/a-propos`
-- **Droite (desktop)** :
-  - Toggle langue `FR | EN` (texte petit `text-xs text-muted-foreground`, langue active en `text-primary font-semibold`, séparateur `|`), branché sur `useLanguage().toggleLanguage()`
-  - Bouton WhatsApp : fond vert `#25D366`, icône WhatsApp (Lucide n'a pas d'icône WhatsApp officielle → j'utilise `MessageCircle` colorée OU une petite SVG inline du logo WhatsApp ; je pars sur **SVG inline du glyphe WhatsApp** pour rester fidèle à la marque sans dépendance), texte "+225 XX XX XX XX", `rounded-lg`, `<a href="https://wa.me/225XXXXXXXX">`
-  - CTA "Obtenir mes soumissions" : `bg-secondary text-white rounded-lg px-4 py-2 font-semibold hover:bg-secondary-dark`, lien vers `/demande-soumissions`
-- **Mobile (< lg)** :
-  - Hamburger (`Menu` / `X` Lucide) qui ouvre un **panneau slide-down** sous le header (animation `data-[state=open]:slide-in-from-top`, fond blanc, full width)
-  - Le panneau liste : Services (sous-items dépliés en accordéon shadcn `Accordion` ou simple `<details>`), Comment ça marche, FAQ, À propos, le toggle FR/EN, le bouton WhatsApp et la CTA en pleine largeur
+## Section breakdown
 
-## 2. Footer (`src/components/layout/Footer.tsx` — réécriture)
+### S1 — Hero
+- `<section>` full-bleed, `bg-[linear-gradient(135deg,#1B3A6B,#1a2f5a)]`, white text
+- `.container-app` grid `lg:grid-cols-5`: left col `lg:col-span-3` (60%), right col `lg:col-span-2` (40%)
+- Left: orange pill badge, H1 (text-3xl md:text-5xl font-heading font-bold), subtitle (text-lg/xl opacity-80), 3 trust badges (flex-wrap gap-4 with CheckCircle icons)
+- Right: `<LeadFormCard />` (card hidden `lg:block` per spec — note: spec says "hidden on mobile in hero — show below"; we'll render it below the left column on mobile via order classes so it still appears, just below hero text)
+- Social proof line under card: "⭐ 4.8/5 · 127 soumissions envoyées ce mois"
 
-- Fond `bg-[#0F172A]` (dark navy), texte `text-slate-300`, titres `text-white font-semibold`
-- Container `max-w-[1200px] mx-auto px-6 py-12`
-- Grille `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8` :
-  - **Colonne 1 — Marque** : Logo (BarChart2 orange + nom blanc), tagline "Trouvez le meilleur cabinet comptable en Côte d'Ivoire", icônes sociales `Facebook`, `Linkedin` (Lucide) + WhatsApp (SVG inline) dans une rangée, chacune `hover:text-secondary`
-  - **Colonne 2 — Nos Services** : 6 liens (Création d'entreprise, Comptabilité, Déclaration fiscale, Domiciliation Abidjan, Audit comptable, Conseil juridique). Les deux derniers n'ont pas de route dédiée → liens vers `/cabinet-comptable-abidjan` (ou `#` si tu préfères ne rien casser ; je propose `/cabinet-comptable-abidjan` pour rester fonctionnel)
-  - **Colonne 3 — Liens utiles** : Comment ça marche, FAQ, À propos, Cabinets partenaires, Guides & Ressources
-  - **Colonne 4 — Contact** : icône `MessageCircle`/WhatsApp + "+225 XX XX XX XX", icône `Mail` + "contact@soumissionscomptables.ci", icône `MapPin` + "Abidjan, Côte d'Ivoire"
-- **Barre du bas** :
-  - `border-t border-slate-700`, container `py-4 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-slate-400`
-  - Gauche : "© 2026 SoumissionsComptables.ci — Tous droits réservés"
-  - Centre : "Politique de confidentialité | Conditions d'utilisation" (liens `#` placeholders puisque aucune route dédiée n'existe — je peux créer `/politique-confidentialite` et `/conditions-utilisation` si tu veux, dis-le moi)
-  - Droite : "Une réalisation de LGM — Les Gens du Marketing"
+### S2 — Comment ça marche
+- White bg, `.section .container-app`
+- H2 centered + subtitle
+- Grid `md:grid-cols-3 gap-6`, each card: white, border, rounded-xl, p-8, centered
+- Number badge (absolute top-right orange circle), Lucide icon (FileText / Users / CheckCircle) in navy circle bg
+- Centered orange CTA button below → `/demande-soumissions`
 
-## 3. Layout racine
+### S3 — Nos Services
+- `bg-[#F8FAFC]`
+- H2 + subtitle centered
+- Grid `md:grid-cols-2 lg:grid-cols-3 gap-6`, 6 cards
+- Each: white, rounded-xl, border `#E2E8F0`, hover:shadow-lg transition, icon in orange-100 circle with orange icon, title, 2-line description, "En savoir plus →" Link in primary
+- Note: routes `/audit-comptable-cote-divoire` and `/conseil-juridique-abidjan` do not exist yet — links will 404. Listed as out-of-scope; will use plain `<a>` href to avoid TS errors from typed `<Link to>` and add a TODO comment.
 
-`src/routes/__root.tsx` enveloppe déjà toutes les routes avec `<Header />` + `<main><Outlet /></main>` + `<Footer />` à l'intérieur du `LanguageProvider`. **Aucun changement nécessaire** sauf si l'audit révèle un souci.
+### S4 — Pour Qui
+- White bg
+- H2 centered
+- Grid `md:grid-cols-2 lg:grid-cols-4 gap-6`, 4 columns, each with large emoji, bold title, description
 
-## Hors scope
+### S5 — Statistiques
+- Same navy gradient as hero, white text
+- Grid `grid-cols-2 md:grid-cols-4`, each stat: large number (text-4xl font-bold orange), label below
 
-- Pas de vraies pages "Politique de confidentialité" / "Conditions d'utilisation" (liens `#` pour l'instant)
-- Pas de vrai numéro WhatsApp (placeholder "+225 XX XX XX XX")
-- Pas de page `/services` hub (le lien "Tous les services →" pointe sur `/cabinet-comptable-abidjan`, à arbitrer)
-- Pas de traduction EN des libellés du header/footer (le toggle est branché, libellés restent FR comme convenu au scaffold)
+### S6 — FAQ Rapide
+- `bg-[#F8FAFC]`
+- H2 centered
+- shadcn `Accordion type="single" collapsible` with 5 items (Q1–Q5 verbatim)
+- Link below: "Voir toutes les questions →" → `/faq`
 
-Confirme et je lance l'implémentation.
+### S7 — CTA Final
+- `bg-secondary` (#F4732A), white text, centered
+- H2 + subtitle + white button with orange text → `/demande-soumissions`
+
+## Technical details
+
+- Use existing design tokens where possible (`text-primary`, `bg-secondary`, `.container-app`, `.section`). Hard-coded hex values only where the spec explicitly requires the gradient/bg color.
+- All icons from `lucide-react`: `FileText, Users, CheckCircle, Building2, Calculator, FileCheck, MapPin, Search, Scale, ShieldCheck`.
+- Mobile-first responsive: tested at 831px viewport (current preview) and below.
+- Semantic: `<main>` is already in `__root.tsx`; page wraps each section in `<section aria-labelledby="...">` with H2s carrying matching ids. Step cards wrapped in `<article>`.
+- No backend wiring — form submit is a stub.
+
+## Out of scope (not built in this plan)
+- Real form submission to a backend / database
+- Translations (EN strings) — page is FR only per global rule
+- Pages for `/audit-comptable-cote-divoire` and `/conseil-juridique-abidjan` (links present but will 404 until those routes are created)
+- Real social-proof counter (hardcoded "127" / "4.8/5")
