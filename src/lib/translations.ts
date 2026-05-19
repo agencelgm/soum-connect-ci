@@ -350,7 +350,7 @@ export const translations = {
 export type TranslationDict = (typeof translations)["fr"];
 
 export function getTranslations(lang: Language): TranslationDict {
-  return translations[lang];
+  return translations[lang] as TranslationDict;
 }
 
 /** OG locale + html lang values per language. */
