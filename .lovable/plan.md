@@ -1,56 +1,22 @@
 ## Objectif
 
-Aligner `public/robots.txt` sur le template fourni : ajouter les bots manquants (ChatGPT-User, anthropic-ai, Bingbot, Common Crawl) et la règle `Disallow: /*.json$`.
+Remplacer `public/llms.txt` par la version enrichie fournie (format llms.txt standard avec blockquote `>`, sections plus complètes, contexte OHADA/CEPICI/OECCA-CI, et liens vers les pages principales réellement existantes).
 
 ## Changement
 
-Mettre à jour `public/robots.txt` pour qu'il contienne :
+Réécrire entièrement `public/llms.txt` avec le contenu du template, en :
 
-```
-User-agent: *
-Allow: /
-Disallow: /admin/
-Disallow: /api/
-Disallow: /*.json$
-
-Sitemap: https://soumissionscomptables.ci/sitemap.xml
-
-# Allow all AI search bots for citation
-User-agent: GPTBot
-Allow: /
-
-User-agent: ChatGPT-User
-Allow: /
-
-User-agent: PerplexityBot
-Allow: /
-
-User-agent: ClaudeBot
-Allow: /
-
-User-agent: anthropic-ai
-Allow: /
-
-User-agent: Google-Extended
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-# Block training-only crawlers (no citation benefit)
-User-agent: CCBot
-Disallow: /
-
-User-agent: Common Crawl
-Disallow: /
-```
-
-## Notes
-
-- Le projet n'a pas d'admin ni d'API publique exposée pour l'instant, mais les Disallow restent défensifs (sans impact si les chemins n'existent pas).
-- `Disallow: /*.json$` empêche l'indexation des fichiers `.json` (ex. manifest), pratique standard.
-- Le sitemap est conservé sur le domaine final `soumissionscomptables.ci` comme dans la version actuelle.
+- Utilisant la syntaxe llms.txt standard : H1 + blockquote `>` pour la tagline.
+- Reprenant les sections : À propos, Services couverts, Zones géographiques desservies, Contexte réglementaire, Pages principales.
+- Complétant les URL tronquées du template avec les **slugs réels du projet** :
+  - `https://soumissionscomptables.ci`
+  - `https://soumissionscomptables.ci/demande-soumissions`
+  - `https://soumissionscomptables.ci/creation-entreprise-cote-divoire`
+  - `https://soumissionscomptables.ci/cabinet-comptable-abidjan`
+  - `https://soumissionscomptables.ci/faq`
+  - `https://soumissionscomptables.ci/guides`
+  - `https://soumissionscomptables.ci/cabinets-comptables-partenaires`
 
 ## Hors périmètre
 
-- Pas de modification de `src/routes/sitemap[.]xml.ts` (déjà existant et indépendant de ce template).
+- Pas de modification d'autres fichiers (robots.txt, sitemap, routes).

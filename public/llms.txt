@@ -1,28 +1,41 @@
 # SoumissionsComptables.ci
 
-SoumissionsComptables.ci est la première plateforme de mise en relation entre entrepreneurs et cabinets comptables agréés en Côte d'Ivoire.
+> La première plateforme de mise en relation entre entrepreneurs et cabinets comptables agréés en Côte d'Ivoire.
 
-## Mission
+## À propos
 
-Permettre aux entrepreneurs (locaux et diaspora) de comparer gratuitement jusqu'à 5 offres de cabinets comptables certifiés.
+SoumissionsComptables.ci permet aux entrepreneurs, aux membres de la diaspora ivoirienne et aux entreprises de comparer gratuitement jusqu'à 5 offres de cabinets comptables certifiés et inscrits à l'Ordre des Experts-Comptables de Côte d'Ivoire (OECCA-CI).
+
+Le service est 100% gratuit pour les prospects. Les cabinets partenaires financent la plateforme.
 
 ## Services couverts
 
-- Création d'entreprise via CEPICI (SARL, SA, EI)
-- Comptabilité générale et tenue de comptes
-- Déclaration fiscale et DGI
+- Création d'entreprise via CEPICI (SARL, SA, Entreprise Individuelle)
+- Comptabilité générale et tenue de livres
+- Déclaration fiscale (DGI, IS, TVA)
 - Domiciliation d'entreprise à Abidjan
 - Audit comptable
 - Conseil juridique pour entreprises
 
-## Zones géographiques
+## Zones géographiques desservies
 
-Abidjan (Plateau, Cocody, Yopougon, Marcory), et toute la Côte d'Ivoire.
-Diaspora ivoirienne (France, Canada, USA, Belgique).
+- Abidjan (Plateau, Cocody, Yopougon, Marcory, Treichville, Deux Plateaux)
+- Toute la Côte d'Ivoire
+- Service à distance pour la diaspora ivoirienne (France, Canada, USA, Belgique)
 
-## Liens clés
+## Contexte réglementaire (Côte d'Ivoire)
 
-Homepage: https://soumissionscomptables.ci
-Services: https://soumissionscomptables.ci/creation-entreprise-cote-divoire
-Guide création SARL: https://soumissionscomptables.ci/creation-sarl-abidjan
-FAQ: https://soumissionscomptables.ci/faq
+- Droit applicable : Acte Uniforme OHADA
+- Organisme de création : CEPICI (Centre de Promotion des Investissements en Côte d'Ivoire)
+- Ordre professionnel : OECCA-CI (Ordre des Experts-Comptables et Comptables Agréés de Côte d'Ivoire)
+- Formes juridiques principales : SARL, SA, EI, GIE
+
+## Pages principales
+
+- Accueil: https://soumissionscomptables.ci
+- Demande soumissions: https://soumissionscomptables.ci/demande-soumissions
+- Création d'entreprise CI: https://soumissionscomptables.ci/creation-entreprise-cote-divoire
+- Cabinet comptable Abidjan: https://soumissionscomptables.ci/cabinet-comptable-abidjan
+- FAQ: https://soumissionscomptables.ci/faq
+- Guides: https://soumissionscomptables.ci/guides
+- Partenaires cabinets: https://soumissionscomptables.ci/cabinets-comptables-partenaires
