@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Building2, Calculator, Receipt, MapPin, BadgeCheck, Sparkles, Wallet, Clock } from "lucide-react";
 import { ServicePage, type Faq, type RelatedService } from "@/components/service/ServicePage";
-import { buildPageHead, faqSchema } from "@/lib/seo";
+import { buildPageHead, faqSchema, LOCAL_BUSINESS_SCHEMA } from "@/lib/seo";
 
 const META_TITLE = "Cabinet Comptable à Abidjan | Comparez 5 Offres Gratuitement | SoumissionsComptables.ci";
 const META_DESC =
@@ -54,20 +54,7 @@ export const Route = createFileRoute("/cabinet-comptable-abidjan")({
       ],
       altPath: "/en/accounting-firm-abidjan",
       extraSchemas: [
-        {
-          "@context": "https://schema.org",
-          "@type": "LocalBusiness",
-          name: "SoumissionsComptables.ci — Cabinets Comptables à Abidjan",
-          description: META_DESC,
-          areaServed: { "@type": "City", name: "Abidjan" },
-          address: {
-            "@type": "PostalAddress",
-            addressLocality: "Abidjan",
-            addressRegion: "Abidjan",
-            addressCountry: "CI",
-          },
-          telephone: "+225 07 67 00 96 29",
-        },
+        LOCAL_BUSINESS_SCHEMA,
         faqSchema(FAQS),
       ],
     }),
