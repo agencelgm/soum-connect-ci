@@ -11,6 +11,7 @@ type ScriptEntry = { type?: string; children?: string; src?: string };
 
 type Crumb = { name: string; path: string };
 type Schema = Record<string, unknown>;
+type Lang = "fr" | "en";
 
 export const ORG_SCHEMA: Schema = {
   "@context": "https://schema.org",
@@ -31,18 +32,20 @@ export const ORG_SCHEMA: Schema = {
   },
 };
 
-const WEBSITE_SCHEMA: Schema = {
+function websiteSchema(lang: Lang): Schema {
+  return {
   "@context": "https://schema.org",
   "@type": "WebSite",
   name: SITE_NAME,
   url: SITE_URL,
-  inLanguage: "fr-CI",
+    inLanguage: lang === "en" ? "en" : "fr-CI",
   potentialAction: {
     "@type": "SearchAction",
     target: `${SITE_URL}/?q={search_term_string}`,
     "query-input": "required name=search_term_string",
   },
-};
+  };
+}
 
 function absolute(path: string): string {
   if (path.startsWith("http")) return path;
@@ -71,6 +74,9 @@ type BuildPageHeadInput = {
   breadcrumb?: Crumb[];
   extraSchemas?: Schema[];
   includeWebSite?: boolean;
+  lang?: Lang;
+  /** Counterpart path in the other language; enables hreflang alternates. */
+  altPath?: string;
 };
 
 export function buildPageHead({
@@ -82,6 +88,8 @@ export function buildPageHead({
   breadcrumb,
   extraSchemas = [],
   includeWebSite = false,
+  lang = "fr",
+  altPath,
 }: BuildPageHeadInput): {
   meta: MetaEntry[];
   links: LinkEntry[];
@@ -89,6 +97,7 @@ export function buildPageHead({
 } {
   const url = absolute(path);
   const image = absolute(ogImage);
+  const ogLocale = lang === "en" ? "en_US" : "fr_CI";
 
   const meta: MetaEntry[] = [
     { title },
@@ -99,7 +108,7 @@ export function buildPageHead({
     { property: "og:type", content: ogType },
     { property: "og:url", content: url },
     { property: "og:image", content: image },
-    { property: "og:locale", content: "fr_CI" },
+    { property: "og:locale", content: ogLocale },
     { property: "og:site_name", content: SITE_NAME },
 
     { name: "twitter:card", content: "summary_large_image" },
@@ -108,15 +117,15 @@ export function buildPageHead({
     { name: "twitter:image", content: image },
   ];
 
-  const links: LinkEntry[] = [
-    { rel: "canonical", href: url },
-    { rel: "alternate", hreflang: "fr", href: url },
-    { rel: "alternate", hreflang: "en", href: absolute(`/en${path === "/" ? "" : path}`) },
-    { rel: "alternate", hreflang: "x-default", href: url },
-  ];
+  const frUrl = lang === "fr" ? url : altPath ? absolute(altPath) : url;
+  const enUrl = lang === "en" ? url : altPath ? absolute(altPath) : "";
+  const links: LinkEntry[] = [{ rel: "canonical", href: url }];
+  links.push({ rel: "alternate", hreflang: "fr-CI", href: frUrl });
+  if (enUrl) links.push({ rel: "alternate", hreflang: "en", href: enUrl });
+  links.push({ rel: "alternate", hreflang: "x-default", href: frUrl });
 
   const schemas: Schema[] = [ORG_SCHEMA];
-  if (includeWebSite) schemas.push(WEBSITE_SCHEMA);
+  if (includeWebSite) schemas.push(websiteSchema(lang));
   if (breadcrumb && breadcrumb.length > 0)
     schemas.push(breadcrumbSchema(breadcrumb));
   schemas.push(...extraSchemas);
