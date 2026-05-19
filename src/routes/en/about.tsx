@@ -3,18 +3,18 @@ import { buildPageHead } from "@/lib/seo";
 import { AboutPage } from "@/components/pages/AboutPage";
 import { getTranslations } from "@/lib/translations";
 
-export const Route = createFileRoute("/a-propos")({
+export const Route = createFileRoute("/en/about")({
   head: () => {
-    const a = getTranslations("fr").about;
+    const a = getTranslations("en").about;
     return buildPageHead({
-      path: "/a-propos",
+      path: "/en/about",
       title: a.metaTitle,
       description: a.metaDescription,
-      lang: "fr",
-      altPath: "/en/about",
+      lang: "en",
+      altPath: "/a-propos",
       breadcrumb: [
-        { name: a.breadcrumbHome, path: "/" },
-        { name: a.breadcrumbAbout, path: "/a-propos" },
+        { name: a.breadcrumbHome, path: "/en" },
+        { name: a.breadcrumbAbout, path: "/en/about" },
       ],
     });
   },

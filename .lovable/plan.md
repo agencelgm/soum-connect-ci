@@ -1,75 +1,58 @@
-## Bilingual FR/EN System
+## Objectif
 
-Build on the existing `LanguageProvider` + `LangToggle` (already in `__root.tsx` and `Header`). Add a translations dictionary, mirror priority pages under `/en/*`, and sync language ↔ URL so the FR/EN toggle navigates between mirrored routes.
+Étendre le système bilingue déjà en place pour que le toggle FR/EN dans l'en-tête traduise réellement le contenu de la page **À propos** (et ses métadonnées SEO), au lieu de renvoyer l'utilisateur sur `/en`. La même mécanique servira de patron pour les autres pages texte par la suite.
 
-### 1. Translations dictionary — `src/lib/translations.ts`
-Strongly typed `t(key, lang)` helper backed by a single object:
-```
-translations = {
-  nav: { services, howItWorks, faq, about, partners, guides, getQuotes },
-  services: { creation, accounting, tax, domiciliation, allServices },
-  cta: { getQuotes, getQuotesNow, contactUs, submitRequest, readMore, ... },
-  hero: { homeH1, homeSub, homeCTA, ... },
-  process: { step1Title/Desc, step2..., step3... },
-  form: { name, email, phone, company, service, message, placeholderX, submit, success, error },
-  faq: { q1..qN, a1..aN },  // bilingual Q&A pairs
-  footer: { tagline, rights, ... },
-  common: { loading, required, ... }
-}
-```
-French = current copy. English uses the glossary provided (Cabinet comptable → Accounting firm, CEPICI → Investment Promotion Center, etc.).
+## Constat
 
-### 2. Language ↔ route mapping — `src/lib/route-map.ts`
-Bidirectional table for the 4 priority pages + future ones:
-```
-fr "/"                               ↔ en "/en"
-fr "/creation-entreprise-cote-divoire" ↔ en "/en/company-registration-ivory-coast"
-fr "/cabinet-comptable-abidjan"      ↔ en "/en/accounting-firm-abidjan"
-fr "/demande-soumissions"            ↔ en "/en/get-quotes"
-```
-Helpers: `getCounterpart(path, targetLang)`, `getLangFromPath(path)`.
+- Le toggle FR/EN existe déjà dans `Header.tsx` et appelle `setLanguage`, qui navigue vers la contrepartie via `getCounterpart`.
+- `/a-propos` n'est pas dans `ROUTE_PAIRS`, donc cliquer sur EN renvoie sur `/en` (perte de contexte).
+- Le contenu de `/a-propos` est entièrement en français codé en dur dans `src/routes/a-propos.tsx`.
+- L'infrastructure i18n (`translations.ts`, `useLanguage`, `buildPageHead` avec `lang` + `altPath`) est prête — il manque seulement le contenu et le routage miroir pour cette page.
 
-### 3. Update `LanguageProvider`
-- Derive language from URL pathname (`/en/*` → en, else fr) on every navigation, falling back to localStorage for ambiguous cases.
-- `setLanguage(lang)` now also navigates to the counterpart route via `useRouter().navigate`.
-- Expose `t(key)` shortcut bound to current language.
+## Changements
 
-### 4. Header / LangToggle
-- Toggle calls `setLanguage` which navigates to the mapped URL.
-- Nav labels switch via `t()`. EN nav points to `/en/*` for the 4 mirrored routes; non-mirrored items keep FR routes (or are hidden in EN until translated).
+### 1. Contenu traduit centralisé
+Dans `src/lib/translations.ts`, ajouter une section `about` (FR + EN) couvrant :
+- Hero (h1, sous-titre)
+- "Qui nous sommes" (titre + 3 paragraphes)
+- "Notre Constat" (titre, intro, 3 cartes problème)
+- "Nos Valeurs" (titre, intro, 3 cartes valeur)
+- "L'Équipe" (titre, paragraphe LGM, lien)
+- "Contact" (titre, intro, labels Email / WhatsApp / Adresse)
+- CTA final (titre, sous-titre, bouton)
+- Fil d'Ariane ("Accueil" / "Home", "À propos" / "About")
+- Méta SEO (`metaTitle`, `metaDescription`)
 
-### 5. English route files (mirror approach)
-Create 4 thin route files that reuse the existing page components, passing `lang="en"`:
-```
-src/routes/en/index.tsx                              → "/en"
-src/routes/en/company-registration-ivory-coast.tsx   → "/en/company-registration-ivory-coast"
-src/routes/en/accounting-firm-abidjan.tsx            → "/en/accounting-firm-abidjan"
-src/routes/en/get-quotes.tsx                         → "/en/get-quotes"
-```
-Each has its own `head()` built via `buildPageHead` with English title/description and `inLanguage: "en"`.
+Glossaire respecté : Accounting firm, CEPICI = Investment Promotion Center, OECCA-CI conservé tel quel.
 
-Refactor the 4 corresponding FR page components so all visible strings come from `t()` (currently hard-coded French). The same component renders both FR and EN — driven by `useLanguage()`. No content duplication.
+### 2. Routage miroir
+- Ajouter la paire `{ fr: "/a-propos", en: "/en/about" }` dans `src/lib/route-map.ts`.
+- Créer `src/routes/en/about.tsx` qui réutilise le même composant page que `/a-propos` mais en mode EN.
 
-English homepage H1: "Find the Best Accounting Firm in Côte d'Ivoire". English primary CTA: "Get My Free Quotes Now →".
+### 3. Composant page partagé
+Extraire le JSX actuel de `src/routes/a-propos.tsx` dans un composant partagé `src/components/pages/AboutPage.tsx` qui :
+- Consomme `useLanguage()` pour récupérer `t.about` et l'utilise pour tout le texte visible.
+- Les icônes Lucide, structure et styles restent inchangés.
+- Le lien CTA final pointe vers `getCounterpart("/demande-soumissions", language)`.
 
-### 6. hreflang alternates — extend `buildPageHead`
-Add `alternates?: { fr?: string; en?: string }` option. For every mirrored page, emit:
-```html
-<link rel="alternate" hreflang="fr-CI" href={SITE_URL + frPath} />
-<link rel="alternate" hreflang="en" href={SITE_URL + enPath} />
-<link rel="alternate" hreflang="x-default" href={SITE_URL + frPath} />
-```
-Set `<html lang>` dynamically in `RootShell` via `useLanguage()` (fr-CI / en).
+Les deux fichiers de route (`/a-propos` et `/en/about`) restent fins :
+- chacun appelle `buildPageHead` avec sa langue, son `path`, son `altPath`, son `breadcrumb` localisé, ses `metaTitle`/`metaDescription` traduits ;
+- chacun rend `<AboutPage />`.
 
-### 7. Schema localisation
-- `WEBSITE_SCHEMA.inLanguage` becomes per-page (fr-CI default, en on /en/*).
-- `FAQPage` schema on `/faq` stays FR; if EN FAQ added later, separate schema.
+### 4. SEO
+- Réutiliser `buildPageHead` existant. Sur `/a-propos` : `lang: "fr"`, `altPath: "/en/about"`. Sur `/en/about` : `lang: "en"`, `altPath: "/a-propos"`. Cela génère automatiquement `hreflang fr-CI / en / x-default` et `og:locale` corrects.
+- Le titre EN suivra le format : *About SoumissionsComptables.ci | Our Mission*.
+- La description EN reprendra la promesse : plateforme de mise en relation entre entrepreneurs et cabinets comptables agréés en CI.
 
-### Out of scope (this milestone)
-- Translating FAQ, Guides, About, Partner, Diaspora, Comment ça marche, other service pages, Footer copy — only the 4 priority pages get full EN. Other pages stay FR-only; EN visitors landing on them see FR content (acceptable per brief).
-- Backend search action.
-- Sitemap.xml regeneration.
+## Hors scope (à ce stade)
 
-### Files
-- New: `src/lib/translations.ts`, `src/lib/route-map.ts`, `src/routes/en/index.tsx`, `src/routes/en/company-registration-ivory-coast.tsx`, `src/routes/en/accounting-firm-abidjan.tsx`, `src/routes/en/get-quotes.tsx`
-- Edit: `src/lib/language-context.tsx` (URL sync + `t` helper), `src/lib/seo.ts` (hreflang + inLanguage), `src/routes/__root.tsx` (dynamic `<html lang>`), `src/components/layout/Header.tsx` (translated labels, mapped toggle), `src/components/layout/Footer.tsx` (translated labels), and the 4 FR page components to consume `t()`.
+- Pas de traduction des autres pages encore FR-only (FAQ, Guides, Comment ça marche, pages services secondaires, Diaspora, Partenaires) — elles continuent de retomber sur `/en` lors du switch, comportement actuel inchangé.
+- Pas de modification du Header / Footer / formulaires (déjà bilingues).
+
+## Fichiers touchés
+
+- `src/lib/translations.ts` — ajout du bloc `about` FR + EN.
+- `src/lib/route-map.ts` — nouvelle paire `/a-propos` ↔ `/en/about`.
+- `src/components/pages/AboutPage.tsx` *(nouveau)* — composant rendu, lit `t.about`.
+- `src/routes/a-propos.tsx` — devient un fichier mince : `head()` FR + render `<AboutPage />`.
+- `src/routes/en/about.tsx` *(nouveau)* — pendant EN.

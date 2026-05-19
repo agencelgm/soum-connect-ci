@@ -174,6 +174,73 @@ export const translations = {
       finalSub: "Gratuit · Sans engagement · Réponse en 48h",
       finalBtn: "Obtenir mes soumissions gratuitement →",
     },
+    about: {
+      metaTitle: "À Propos de SoumissionsComptables.ci | Notre Mission",
+      metaDescription:
+        "SoumissionsComptables.ci est la première plateforme de mise en relation entre entrepreneurs et cabinets comptables agréés en Côte d'Ivoire. Découvrez notre mission.",
+      breadcrumbHome: "Accueil",
+      breadcrumbAbout: "À propos",
+      heroTitle:
+        "Notre Mission : Faciliter l'Accès aux Services Comptables en Côte d'Ivoire",
+      heroSub:
+        "Connecter entrepreneurs, diaspora et cabinets agréés OECCA-CI en toute transparence.",
+      whoTitle: "Qui nous sommes",
+      whoP1Strong: "SoumissionsComptables.ci",
+      whoP1: " est la première plateforme de mise en relation comptable en Côte d'Ivoire. Nous connectons les entrepreneurs, les membres de la diaspora ivoirienne et les entreprises avec des cabinets comptables agréés et vérifiés.",
+      whoP2: "Notre rôle est simple : qualifier vos besoins en quelques minutes, les transmettre à des cabinets agréés OECCA-CI sélectionnés, et vous laisser comparer jusqu'à cinq propositions claires — gratuitement, en 48 heures. Nous ne facturons rien aux entrepreneurs : ce sont les cabinets partenaires qui financent la plateforme en accédant aux demandes qualifiées.",
+      whoP3: "Notre ambition est d'apporter au marché comptable ivoirien la transparence et la simplicité qui font défaut aujourd'hui, et de devenir le réflexe naturel de tout entrepreneur cherchant un partenaire comptable de confiance — qu'il soit à Abidjan, en région ou à l'étranger.",
+      problemsTitle: "Notre Constat",
+      problemsSub:
+        "Trois problèmes que rencontrent chaque jour les entrepreneurs ivoiriens — et que nous résolvons.",
+      problems: [
+        {
+          title: "Un marché opaque",
+          text: "Difficile pour un entrepreneur de comparer les cabinets comptables ivoiriens, leurs tarifs et leurs spécialisations.",
+        },
+        {
+          title: "Le risque du non-agréé",
+          text: "Beaucoup de prestataires se disent « comptables » sans être inscrits à l'OECCA-CI, ce qui expose l'entreprise à des sanctions DGI.",
+        },
+        {
+          title: "Des démarches CEPICI complexes",
+          text: "Les entrepreneurs et la diaspora perdent du temps faute de connaître les bons interlocuteurs locaux.",
+        },
+      ],
+      valuesTitle: "Nos Valeurs",
+      valuesSub:
+        "Trois principes qui guident chaque décision produit et chaque partenariat.",
+      values: [
+        {
+          title: "Transparence",
+          text: "Des tarifs clairs, des cabinets vérifiés, aucune commission cachée à l'utilisateur.",
+        },
+        {
+          title: "Fiabilité",
+          text: "Tous nos cabinets partenaires sont agréés OECCA-CI et passent une validation manuelle.",
+        },
+        {
+          title: "Accessibilité",
+          text: "Gratuit pour les entrepreneurs, ouvert à la diaspora, disponible en français et en anglais.",
+        },
+      ],
+      teamTitle: "L'Équipe Derrière le Projet",
+      teamTextBefore: "SoumissionsComptables.ci est une réalisation de ",
+      teamTextStrong: "LGM — Les Gens du Marketing",
+      teamTextAfter:
+        ", agence de marketing digital spécialisée dans la performance commerciale.",
+      teamCta: "Découvrir LGM",
+      contactTitle: "Contact",
+      contactSub:
+        "Une question, un partenariat, une presse ? Voici comment nous joindre.",
+      contactEmail: "Email",
+      contactWhatsapp: "WhatsApp",
+      contactAddress: "Adresse",
+      contactAddressValue: "Plateau, Abidjan, Côte d'Ivoire",
+      ctaTitle: "Prêt à trouver votre cabinet comptable ?",
+      ctaSub:
+        "Recevez jusqu'à 5 soumissions de cabinets agréés OECCA-CI. Gratuit, sous 48h.",
+      ctaButton: "Obtenir mes soumissions gratuitement",
+    },
   },
   en: {
     nav: {
@@ -343,6 +410,73 @@ export const translations = {
       finalTitle: "Need a firm for this service?",
       finalSub: "Free · No commitment · Reply within 48h",
       finalBtn: "Get my free quotes →",
+    },
+    about: {
+      metaTitle: "About SoumissionsComptables.ci | Our Mission",
+      metaDescription:
+        "SoumissionsComptables.ci is the leading platform connecting entrepreneurs with certified accounting firms in Côte d'Ivoire. Discover our mission.",
+      breadcrumbHome: "Home",
+      breadcrumbAbout: "About",
+      heroTitle:
+        "Our Mission: Making Accounting Services Accessible in Côte d'Ivoire",
+      heroSub:
+        "Connecting entrepreneurs, the diaspora and OECCA-CI certified accounting firms — with full transparency.",
+      whoTitle: "Who we are",
+      whoP1Strong: "SoumissionsComptables.ci",
+      whoP1: " is the leading accounting matchmaking platform in Côte d'Ivoire. We connect entrepreneurs, members of the Ivorian diaspora and businesses with certified, vetted accounting firms.",
+      whoP2: "Our role is simple: qualify your needs in a few minutes, forward them to selected OECCA-CI certified accounting firms, and let you compare up to five clear proposals — free of charge, within 48 hours. We never charge entrepreneurs: our partner firms fund the platform by accessing qualified leads.",
+      whoP3: "Our ambition is to bring the Ivorian accounting market the transparency and simplicity it currently lacks, and to become the natural first stop for any entrepreneur looking for a trusted accounting partner — whether based in Abidjan, in the regions, or abroad.",
+      problemsTitle: "What We Observed",
+      problemsSub:
+        "Three problems Ivorian entrepreneurs face every day — and that we solve.",
+      problems: [
+        {
+          title: "An opaque market",
+          text: "It's hard for an entrepreneur to compare Ivorian accounting firms, their pricing and their areas of expertise.",
+        },
+        {
+          title: "The risk of unlicensed providers",
+          text: "Many providers call themselves \"accountants\" without being registered with OECCA-CI, exposing the business to DGI tax sanctions.",
+        },
+        {
+          title: "Complex Investment Promotion Center (CEPICI) procedures",
+          text: "Entrepreneurs and the diaspora lose time when they don't know the right local contacts.",
+        },
+      ],
+      valuesTitle: "Our Values",
+      valuesSub:
+        "Three principles guiding every product decision and every partnership.",
+      values: [
+        {
+          title: "Transparency",
+          text: "Clear pricing, vetted accounting firms, no hidden fees for users.",
+        },
+        {
+          title: "Reliability",
+          text: "All our partner firms are OECCA-CI certified and pass a manual validation.",
+        },
+        {
+          title: "Accessibility",
+          text: "Free for entrepreneurs, open to the diaspora, available in French and English.",
+        },
+      ],
+      teamTitle: "The Team Behind the Project",
+      teamTextBefore: "SoumissionsComptables.ci is built by ",
+      teamTextStrong: "LGM — Les Gens du Marketing",
+      teamTextAfter:
+        ", a digital marketing agency specialised in commercial performance.",
+      teamCta: "Discover LGM",
+      contactTitle: "Contact",
+      contactSub:
+        "Have a question, partnership or press request? Here's how to reach us.",
+      contactEmail: "Email",
+      contactWhatsapp: "WhatsApp",
+      contactAddress: "Address",
+      contactAddressValue: "Plateau, Abidjan, Côte d'Ivoire",
+      ctaTitle: "Ready to find your accounting firm?",
+      ctaSub:
+        "Receive up to 5 quotes from OECCA-CI certified firms. Free, within 48h.",
+      ctaButton: "Get my free quotes",
     },
   },
 } as const;

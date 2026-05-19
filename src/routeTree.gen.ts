@@ -26,6 +26,7 @@ import { Route as EnIndexRouteImport } from './routes/en/index'
 import { Route as EnGetQuotesRouteImport } from './routes/en/get-quotes'
 import { Route as EnCompanyRegistrationIvoryCoastRouteImport } from './routes/en/company-registration-ivory-coast'
 import { Route as EnAccountingFirmAbidjanRouteImport } from './routes/en/accounting-firm-abidjan'
+import { Route as EnAboutRouteImport } from './routes/en/about'
 
 const GuidesRoute = GuidesRouteImport.update({
   id: '/guides',
@@ -119,6 +120,11 @@ const EnAccountingFirmAbidjanRoute = EnAccountingFirmAbidjanRouteImport.update({
   path: '/en/accounting-firm-abidjan',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EnAboutRoute = EnAboutRouteImport.update({
+  id: '/en/about',
+  path: '/en/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -134,6 +140,7 @@ export interface FileRoutesByFullPath {
   '/domiciliation-entreprise-abidjan': typeof DomiciliationEntrepriseAbidjanRoute
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRoute
+  '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
   '/en/get-quotes': typeof EnGetQuotesRoute
@@ -153,6 +160,7 @@ export interface FileRoutesByTo {
   '/domiciliation-entreprise-abidjan': typeof DomiciliationEntrepriseAbidjanRoute
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRoute
+  '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
   '/en/get-quotes': typeof EnGetQuotesRoute
@@ -173,6 +181,7 @@ export interface FileRoutesById {
   '/domiciliation-entreprise-abidjan': typeof DomiciliationEntrepriseAbidjanRoute
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRoute
+  '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
   '/en/get-quotes': typeof EnGetQuotesRoute
@@ -194,6 +203,7 @@ export interface FileRouteTypes {
     | '/domiciliation-entreprise-abidjan'
     | '/faq'
     | '/guides'
+    | '/en/about'
     | '/en/accounting-firm-abidjan'
     | '/en/company-registration-ivory-coast'
     | '/en/get-quotes'
@@ -213,6 +223,7 @@ export interface FileRouteTypes {
     | '/domiciliation-entreprise-abidjan'
     | '/faq'
     | '/guides'
+    | '/en/about'
     | '/en/accounting-firm-abidjan'
     | '/en/company-registration-ivory-coast'
     | '/en/get-quotes'
@@ -232,6 +243,7 @@ export interface FileRouteTypes {
     | '/domiciliation-entreprise-abidjan'
     | '/faq'
     | '/guides'
+    | '/en/about'
     | '/en/accounting-firm-abidjan'
     | '/en/company-registration-ivory-coast'
     | '/en/get-quotes'
@@ -252,6 +264,7 @@ export interface RootRouteChildren {
   DomiciliationEntrepriseAbidjanRoute: typeof DomiciliationEntrepriseAbidjanRoute
   FaqRoute: typeof FaqRoute
   GuidesRoute: typeof GuidesRoute
+  EnAboutRoute: typeof EnAboutRoute
   EnAccountingFirmAbidjanRoute: typeof EnAccountingFirmAbidjanRoute
   EnCompanyRegistrationIvoryCoastRoute: typeof EnCompanyRegistrationIvoryCoastRoute
   EnGetQuotesRoute: typeof EnGetQuotesRoute
@@ -379,6 +392,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EnAccountingFirmAbidjanRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/en/about': {
+      id: '/en/about'
+      path: '/en/about'
+      fullPath: '/en/about'
+      preLoaderRoute: typeof EnAboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -397,6 +417,7 @@ const rootRouteChildren: RootRouteChildren = {
   DomiciliationEntrepriseAbidjanRoute: DomiciliationEntrepriseAbidjanRoute,
   FaqRoute: FaqRoute,
   GuidesRoute: GuidesRoute,
+  EnAboutRoute: EnAboutRoute,
   EnAccountingFirmAbidjanRoute: EnAccountingFirmAbidjanRoute,
   EnCompanyRegistrationIvoryCoastRoute: EnCompanyRegistrationIvoryCoastRoute,
   EnGetQuotesRoute: EnGetQuotesRoute,
@@ -405,3 +426,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
