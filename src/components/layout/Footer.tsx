@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { BarChart2, Facebook, Linkedin, Mail, MapPin } from "lucide-react";
+import { Facebook, Linkedin, Mail, MapPin } from "lucide-react";
 import { useLanguage } from "@/lib/language-context";
+import logo from "@/assets/brand/logo-soumissions-comptables.jpg";
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -16,9 +17,14 @@ export function Footer() {
     <footer className="bg-[#0F172A] text-slate-300 mt-12">
       <div className="max-w-[1200px] mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         <div>
-          <div className="flex items-center gap-2">
-            <BarChart2 className="h-5 w-5 text-secondary" />
-          <span className="font-heading font-bold text-white text-base">Soumissions <span className="text-secondary">Comptables</span></span>
+          <div className="inline-flex items-center bg-white rounded-md p-2">
+            <img
+              src={logo}
+              alt="SoumissionsComptables.ci"
+              width={200}
+              height={56}
+              className="h-12 w-auto"
+            />
           </div>
           <p className="mt-3 text-sm text-slate-400">{t.footer.tagline}</p>
           <div className="mt-4 flex items-center gap-3">
