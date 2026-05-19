@@ -71,7 +71,7 @@ export const translations = {
     servicesSection: {
       title: "Tous les Services Couverts",
       sub: "Création d'entreprise, comptabilité, fiscalité — on couvre tout.",
-      d1: "SARL, SAS, entreprise individuelle — constitution complète et accompagnement OHADA.",
+      d1: "SARL, SA, entreprise individuelle, GIE — constitution complète et accompagnement OHADA.",
       d2: "Tenue, révision, états financiers conformes au SYSCOHADA pour votre activité.",
       d3: "TVA, IS, ITS, BIC — déclarations en ligne et optimisation fiscale légale.",
       d4: "Adresse professionnelle à Abidjan avec gestion du courrier et services associés.",
@@ -265,7 +265,7 @@ export const translations = {
       servicesIntroSub: "Nos cabinets offrent des services professionnels à Abidjan, Bouaké, San-Pédro, Yamoussoukro, Korhogo, Daloa, Man, Gagnoa et partout en Côte d'Ivoire — pour les PME, grandes entreprises et la diaspora !",
       services12: [
         { title: "Comptabilité générale", text: "Tenue, révision et états financiers SYSCOHADA pour PME et grandes entreprises à Abidjan et partout en CI." },
-        { title: "Création d'entreprise", text: "SARL, SAS, entreprise individuelle. Constitution complète, démarches CEPICI et accompagnement OHADA." },
+        { title: "Création d'entreprise", text: "SARL, SA, entreprise individuelle, GIE. Constitution complète, démarches CEPICI et accompagnement OHADA." },
         { title: "Fiscalité & déclarations", text: "TVA, IS, ITS, BIC, patente : déclarations DGI en ligne et optimisation fiscale légale." },
         { title: "Audit & commissariat aux comptes", text: "Audit légal, contractuel ou financier réalisé par un commissaire aux comptes inscrit." },
         { title: "Paie & social CNPS", text: "Gestion complète de la paie, bulletins, déclarations CNPS et conformité au Code du Travail ivoirien." },
@@ -297,7 +297,7 @@ export const translations = {
       seoP3: " Notre service permet aux cabinets sérieux d'avoir plus de visibilité. La demande de soumissions est gratuite pour vous : ce sont nos partenaires cabinets qui financent la plateforme.",
       seoNeedsTitle: "Ce service, sans engagement de votre part, convient à tous les besoins :",
       seoNeeds: [
-        "Création d'entreprise (SARL, SAS, SARLU, entreprise individuelle)",
+        "Création d'entreprise (SARL, SARLU, SA, entreprise individuelle, GIE)",
         "Comptabilité générale et tenue mensuelle",
         "Déclarations fiscales DGI (TVA, IS, ITS, BIC, patente)",
         "Paie et déclarations CNPS",
@@ -394,7 +394,7 @@ export const translations = {
     servicesSection: {
       title: "All Services Covered",
       sub: "Company registration, accounting, tax — we cover it all.",
-      d1: "SARL, SAS, sole proprietorship — full incorporation and OHADA-compliant support.",
+      d1: "SARL, SA, sole proprietorship, GIE — full incorporation and OHADA-compliant support.",
       d2: "Bookkeeping, review and SYSCOHADA-compliant financial statements for your business.",
       d3: "VAT, corporate tax, payroll tax — online filings and legal tax optimisation.",
       d4: "Professional address in Abidjan with mail handling and related services.",
@@ -588,7 +588,7 @@ export const translations = {
       servicesIntroSub: "Our firms offer professional services in Abidjan, Bouaké, San-Pédro, Yamoussoukro, Korhogo, Daloa, Man, Gagnoa and across Côte d'Ivoire — for SMEs, large companies and the diaspora!",
       services12: [
         { title: "General accounting", text: "Bookkeeping, review and SYSCOHADA financial statements for SMEs and large companies." },
-        { title: "Company registration", text: "SARL, SAS, sole proprietorship. Full incorporation, CEPICI steps and OHADA support." },
+        { title: "Company registration", text: "SARL, SA, sole proprietorship, GIE. Full incorporation, CEPICI steps and OHADA support." },
         { title: "Tax & filings", text: "VAT, corporate tax, payroll tax, business tax: online DGI filings and legal tax optimisation." },
         { title: "Audit & statutory auditor", text: "Statutory, contractual or financial audit by a registered chartered auditor." },
         { title: "Payroll & CNPS", text: "Full payroll management, payslips, CNPS filings and Ivorian Labour Code compliance." },
@@ -620,7 +620,7 @@ export const translations = {
       seoP3: " Our service gives serious firms more visibility. Quote requests are free for you: our partner firms fund the platform.",
       seoNeedsTitle: "This service, with no commitment on your side, suits every need:",
       seoNeeds: [
-        "Company registration (SARL, SAS, SARLU, sole proprietorship)",
+        "Company registration (SARL, SARLU, SA, sole proprietorship, GIE)",
         "General accounting and monthly bookkeeping",
         "DGI tax filings (VAT, corporate tax, payroll tax)",
         "Payroll and CNPS filings",
