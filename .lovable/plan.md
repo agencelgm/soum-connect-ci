@@ -1,62 +1,59 @@
-Réécrire `src/routes/demande-soumissions.tsx` en page de conversion focalisée avec un formulaire multi-étapes.
+## Nouveau composant `src/components/service/ServicePage.tsx`
 
-## SEO
-- Title : "Demande de Soumissions | Cabinets Comptables CI | SoumissionsComptables.ci"
-- Meta description fournie + og:title / og:description / og:url
-- Canonical `/demande-soumissions`
+Composant réutilisable pour toutes les pages de service. Props :
+- `title: string` (H1)
+- `heroSubtitle: string`
+- `serviceIcon: LucideIcon`
+- `mainContent: ReactNode`
+- `faqs: { question: string; answer: string }[]`
+- `relatedServices: { title: string; link: string; icon: LucideIcon }[]`
+- `breadcrumb: { label: string; to?: string }[]` (pour affichage générique)
 
-## Layout
-- Hero minimal (fond `bg-[#F8FAFC]`, H1 + sous-titre centrés, pas d'image)
-- Bloc principal `.container-app .section` en grille `lg:grid-cols-[1fr_320px]` :
-  - Colonne gauche (max-w-[640px]) : carte formulaire blanche, ombrée, arrondie
-  - Colonne droite (desktop only, `hidden lg:block`) : sidebar trust signals
+Note : `metaTitle` / `metaDescription` ne sont **pas** props du composant. En TanStack Start, le `head()` doit être défini dans le fichier route (`createFileRoute(...).head()`). On expose donc plutôt depuis le route file, et `ServicePage` ne gère que le visuel. Je le signale dans le code (commentaire) pour le pattern à réutiliser.
 
-## Formulaire multi-étapes (client component)
-- État local `step` (1→4) + `react-hook-form` avec `zodResolver` (zod déjà compatible)
-- Schéma zod en 3 sous-schémas (un par étape) ; validation par étape via `trigger(['champs…'])`
-- Barre de progression en haut de la carte : "Étape X sur 3" + barre `bg-secondary` largeur 33/66/100 %
-- Transitions : wrapper avec `key={step}` et classe `animate-fade-in` (utilitaire existant) — léger slide via `translate-x` Tailwind
+### Structure visuelle
+- **Hero** `bg-[#F8FAFC]` :
+  - shadcn `Breadcrumb` (Accueil > Services > …)
+  - Icône (rond navy 56×56 avec `serviceIcon` blanc)
+  - H1 (Poppins bold, `text-3xl md:text-5xl`, `text-primary`)
+  - Sous-titre (`text-muted-foreground`, max-w-2xl)
+  - CTA orange → `/demande-soumissions` : "Obtenir mes soumissions gratuitement →"
+- **Layout principal** `.container-app .section grid lg:grid-cols-[1fr_300px] gap-10` :
+  - Colonne gauche : `<article className="prose-like">{mainContent}</article>` puis bloc FAQ
+  - Sidebar droite (`hidden lg:block sticky top-24`) : carte "Services associés" listant `relatedServices`, + mini carte CTA orange compacte
+- **FAQ** : shadcn `Accordion` (type single, collapsible). Chaque item rendu avec ids stables. Schéma `FAQPage` JSON-LD injecté dans la route (pas le composant) via `head().scripts`.
+- **Bannière CTA bas** : section pleine largeur `bg-secondary text-white`, H2 + bouton blanc texte orange.
 
-### Étape 1 — Votre besoin
-- Select `service` (Required) avec les 7 options (emoji + libellé)
-- Select `statut` (Required) — 3 options
-- Textarea `description` (optionnel, placeholder fourni)
-- Bouton "Suivant →" (orange)
+### Bloc "Services associés" mobile
+Sous le `mainContent`, en `lg:hidden`, on rend le même bloc pour ne pas pénaliser mobile.
 
-### Étape 2 — Localisation
-- Select `localisation` (Required) — 12 options (quartiers Abidjan, autre ville, diaspora)
-- Select `delai` (Required) — 4 options
-- Select `budget` (optionnel) — 5 options
-- Boutons "← Retour" (outline) + "Suivant →" (orange)
+## Route `src/routes/creation-entreprise-cote-divoire.tsx`
 
-### Étape 3 — Coordonnées
-- Petit texte rassurant
-- `nom` (text, Required, min 2)
-- `whatsapp` (tel, Required, regex chiffres/espaces/+, min 8)
-- `email` (email, Required)
-- `entreprise` (text, optionnel)
-- Checkbox `consent` (Required)
-- Boutons "← Retour" + "Envoyer ma demande →" (gros bouton orange, full width)
-- Sous le bouton : "🔒 Vos données sont confidentielles…"
+Réécriture : utilise `ServicePage` + définit `head()` avec :
+- title, description fournis
+- og:title, og:description, og:url, og:type "article" (page de service éditoriale — laisser défaut website convient aussi ; on garde `website`)
+- `<link rel="canonical">`
+- `scripts` JSON-LD : `HowTo` (5 étapes) + `FAQPage` (5 Q/R)
 
-### Étape 4 — Confirmation
-- Affichée après submit réussi (pas de backend ici → simule `await new Promise` 500 ms, passe à step 4)
-- Cercle vert avec icône `CheckCircle2` (Lucide)
-- H2 "✅ Votre demande a été envoyée !"
-- Paragraphe 48h WhatsApp + email
-- Liste numérotée 3 étapes "Ce qui se passe ensuite"
-- Boutons : Link "/" + Link "/cabinet-comptable-abidjan"
-
-### Validation & UX
-- Erreurs sous chaque champ en `text-destructive text-sm`
-- Composants shadcn : `Input`, `Textarea`, `Select`, `Checkbox`, `Label`, `Button`
-- Tous les labels en français, ARIA via `htmlFor`/`id`
-
-## Sidebar trust (desktop)
-- Carte blanche shadow avec liste : ⭐ 4.8/5, 🔒 données sécurisées, ✅ OECCA-CI, 📞 WhatsApp `+225 07 67 00 96 29` (lien `wa.me/2250767009629`)
-- Carte témoignage Aya K., Abidjan
+Props passées :
+- `title` : "Création d'Entreprise en Côte d'Ivoire"
+- `heroSubtitle` : texte fourni
+- `serviceIcon` : `Building2` (Lucide)
+- `breadcrumb` : Accueil → Services (`/cabinet-comptable-abidjan`) → Création d'entreprise
+- `mainContent` : JSX avec Sections A→E :
+  - A : paragraphe intro (CEPICI, OHADA, expertise comptable)
+  - B : H2 + `<ol>` numérotée 5 étapes
+  - C : H2 + tableau responsive (`<table>` stylé Tailwind, scroll-x sur mobile) SARL/SA/EI
+  - D : H2 + liste à puces documents requis
+  - E : H2 + paragraphe coût avec note CEPICI
+- `faqs` : 5 Q/R fournies
+- `relatedServices` :
+  - Comptabilité générale → `/comptabilite-entreprise-abidjan` (icône `Calculator`)
+  - Déclaration fiscale → `/declaration-fiscale-cote-divoire` (icône `Receipt`)
+  - Domiciliation Abidjan → `/domiciliation-entreprise-abidjan` (icône `MapPin`)
 
 ## Aspects techniques
-- Aucune modification du Header/Footer (la consigne "no footer navigation" concerne la mise en page interne ; on garde le layout global du site)
-- Aucune dépendance nouvelle (`react-hook-form`, `zod`, `@hookform/resolvers`, Lucide, shadcn déjà présents — à vérifier rapidement avant écriture, sinon `bun add` ce qui manque)
-- Aucun appel backend : submit local + step 4. Une note de commentaire indiquera le point d'intégration futur.
+- Tokens du design system uniquement (`text-primary`, `bg-secondary`, `border-border`, `text-muted-foreground`, `.container-app`, `.section`).
+- shadcn déjà disponibles : `Breadcrumb`, `Accordion`, `Button`. Lucide déjà installé.
+- HTML sémantique : `<main>` au niveau route (déjà géré par layout ?) → on enveloppe dans `<main>` dans `ServicePage`, sections en `<section aria-labelledby>`.
+- Aucune dépendance ajoutée. Aucune modif Header/Footer.
