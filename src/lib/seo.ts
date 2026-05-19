@@ -151,15 +151,49 @@ export function faqSchema(items: { question: string; answer: string }[]): Schema
   };
 }
 
-export function howToSchema(name: string, steps: string[]): Schema {
-  return {
+export type HowToStepInput = string | { name: string; text?: string };
+export type HowToOptions = {
+  description?: string;
+  totalTime?: string;
+  estimatedCost?: {
+    currency: string;
+    minValue: string | number;
+    maxValue?: string | number;
+  };
+};
+
+export function howToSchema(
+  name: string,
+  steps: HowToStepInput[],
+  options: HowToOptions = {},
+): Schema {
+  const schema: Schema = {
     "@context": "https://schema.org",
     "@type": "HowTo",
     name,
-    step: steps.map((s, i) => ({
-      "@type": "HowToStep",
-      position: i + 1,
-      name: s,
-    })),
+    step: steps.map((s, i) => {
+      const base = typeof s === "string" ? { name: s } : s;
+      const step: Record<string, unknown> = {
+        "@type": "HowToStep",
+        position: i + 1,
+        name: base.name,
+      };
+      if (typeof s !== "string" && s.text) step.text = s.text;
+      return step;
+    }),
   };
+  if (options.description) schema.description = options.description;
+  if (options.totalTime) schema.totalTime = options.totalTime;
+  if (options.estimatedCost) {
+    const cost: Record<string, unknown> = {
+      "@type": "MonetaryAmount",
+      currency: options.estimatedCost.currency,
+      minValue: String(options.estimatedCost.minValue),
+    };
+    if (options.estimatedCost.maxValue !== undefined) {
+      cost.maxValue = String(options.estimatedCost.maxValue);
+    }
+    schema.estimatedCost = cost;
+  }
+  return schema;
 }
