@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Menu, X, BarChart2, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import { useLanguage } from "@/lib/language-context";
 import { getCounterpart } from "@/lib/route-map";
 import { useRouterState } from "@tanstack/react-router";
+import logo from "@/assets/brand/logo-soumissions-comptables.jpg";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -70,11 +71,14 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-border shadow-sm">
       <div className="max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between gap-4">
-        <Link to={homeHref} className="flex items-center gap-2 shrink-0">
-          <BarChart2 className="h-5 w-5 text-secondary" />
-          <span className="font-heading font-bold text-primary text-base sm:text-lg">
-            Soumissions <span className="text-secondary">Comptables</span>
-          </span>
+        <Link to={homeHref} aria-label="SoumissionsComptables.ci — Accueil" className="flex items-center shrink-0">
+          <img
+            src={logo}
+            alt="SoumissionsComptables.ci"
+            width={180}
+            height={48}
+            className="h-10 w-auto"
+          />
         </Link>
 
         <nav className="hidden lg:flex items-center gap-6 font-sans text-sm font-medium">

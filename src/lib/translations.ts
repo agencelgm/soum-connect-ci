@@ -235,7 +235,7 @@ export const translations = {
       contactEmail: "Email",
       contactWhatsapp: "WhatsApp",
       contactAddress: "Adresse",
-      contactAddressValue: "Plateau, Abidjan, Côte d'Ivoire",
+      contactAddressValue: "Angré Château, camp militaire, Abidjan, Côte d'Ivoire",
       ctaTitle: "Prêt à trouver votre cabinet comptable ?",
       ctaSub:
         "Recevez jusqu'à 5 soumissions de cabinets agréés OECCA-CI. Gratuit, sous 48h.",
@@ -558,7 +558,7 @@ export const translations = {
       contactEmail: "Email",
       contactWhatsapp: "WhatsApp",
       contactAddress: "Address",
-      contactAddressValue: "Plateau, Abidjan, Côte d'Ivoire",
+      contactAddressValue: "Angré Château, camp militaire, Abidjan, Côte d'Ivoire",
       ctaTitle: "Ready to find your accounting firm?",
       ctaSub:
         "Receive up to 5 quotes from OECCA-CI certified firms. Free, within 48h.",
