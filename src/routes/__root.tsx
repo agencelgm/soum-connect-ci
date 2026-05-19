@@ -12,6 +12,7 @@ import appCss from "../styles.css?url";
 import { LanguageProvider } from "@/lib/language-context";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
   return (
@@ -123,6 +124,7 @@ function RootComponent() {
             <Outlet />
           </main>
           <Footer />
+          <Toaster />
         </div>
       </LanguageProvider>
     </QueryClientProvider>
