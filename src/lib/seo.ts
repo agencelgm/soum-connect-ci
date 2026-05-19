@@ -32,6 +32,23 @@ export const ORG_SCHEMA: Schema = {
   },
 };
 
+export const LOCAL_BUSINESS_SCHEMA: Schema = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  name: SITE_NAME,
+  "@id": SITE_URL,
+  description:
+    "Plateforme de mise en relation entre entrepreneurs et cabinets comptables agréés en Côte d'Ivoire.",
+  url: SITE_URL,
+  areaServed: [
+    { "@type": "City", name: "Abidjan" },
+    { "@type": "Country", name: "Côte d'Ivoire" },
+  ],
+  availableLanguage: ["French", "English"],
+  priceRange: "Gratuit",
+  serviceType: "Mise en relation cabinets comptables",
+};
+
 function websiteSchema(lang: Lang): Schema {
   return {
   "@context": "https://schema.org",
