@@ -51,6 +51,9 @@ export function Header() {
     { to: "/comptabilite-entreprise-abidjan", label: t.services.accounting },
     { to: "/declaration-fiscale-cote-divoire", label: t.services.tax },
     { to: "/domiciliation-entreprise-abidjan", label: t.services.domiciliation },
+    { to: getCounterpart("/cabinet-comptable-abidjan", language), label: "Cabinet comptable à Abidjan" },
+    { to: "/creation-entreprise-diaspora-ivoirienne", label: "Création — diaspora ivoirienne" },
+    { to: "/cabinets-comptables-partenaires", label: "Cabinets partenaires" },
   ];
 
   const NAV = [
