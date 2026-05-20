@@ -15,6 +15,11 @@ const LeadSchema = z.object({
   email: z.string().trim().email().max(255),
   entreprise: z.string().max(120).optional().default(""),
   consent: z.boolean().refine((v) => v === true, "Consent required"),
+  nbAssocies: z.coerce.number().int().min(1).max(50).optional(),
+  bureau: z.enum(["oui", "non"]).optional(),
+  logo: z.enum(["oui", "non"]).optional(),
+  siteWeb: z.enum(["oui", "non"]).optional(),
+  publicite: z.enum(["oui", "non"]).optional(),
 });
 
 export const Route = createFileRoute("/api/public/lead")({
