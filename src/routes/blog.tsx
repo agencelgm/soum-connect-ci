@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { BookOpen, Sparkles } from "lucide-react";
 import { buildPageHead } from "@/lib/seo";
+import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+import { RelatedLinks } from "@/components/seo/RelatedLinks";
+import { getPageRelations } from "@/lib/page-relations";
 
 const META_TITLE =
   "Blog | Entrepreneuriat, comptabilité et fiscalité en Côte d'Ivoire";
@@ -33,8 +36,10 @@ type BlogPost = {
 const POSTS: BlogPost[] = [];
 
 function BlogPage() {
+  const rel = getPageRelations("/blog");
   return (
     <main>
+      {rel && <Breadcrumbs items={rel.breadcrumb} />}
       {/* Hero */}
       <section className="bg-[#F8FAFC] border-b border-border">
         <div className="container-app py-14 md:py-20 text-center">
@@ -107,6 +112,7 @@ function BlogPage() {
           </div>
         )}
       </section>
+      {rel && <RelatedLinks items={rel.related} />}
     </main>
   );
 }
