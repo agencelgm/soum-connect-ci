@@ -13,6 +13,7 @@ export const ROUTE_PAIRS: Array<{ fr: string; en: string }> = [
   { fr: "/cabinet-comptable-abidjan", en: "/en/accounting-firm-abidjan" },
   { fr: "/demande-soumissions", en: "/en/get-quotes" },
   { fr: "/a-propos", en: "/en/about" },
+  { fr: "/merci", en: "/en/thank-you" },
 ];
 
 export function getLangFromPath(pathname: string): Language {
