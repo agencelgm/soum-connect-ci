@@ -18,6 +18,8 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { buildPageHead } from "@/lib/seo";
+import { RelatedLinks } from "@/components/seo/RelatedLinks";
+import { getPageRelations } from "@/lib/page-relations";
 
 const META_TITLE = "Comment Ça Marche | SoumissionsComptables.ci";
 const META_DESC =
@@ -284,6 +286,10 @@ function Page() {
           </div>
         </div>
       </section>
+      {(() => {
+        const rel = getPageRelations("/comment-ca-marche");
+        return rel ? <RelatedLinks items={rel.related} /> : null;
+      })()}
     </>
   );
 }
