@@ -70,14 +70,15 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-border shadow-sm">
-      <div className="max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between gap-4">
+      <div className="max-w-[1200px] mx-auto px-6 h-32 flex items-center justify-between gap-4">
         <Link to={homeHref} aria-label="SoumissionsComptables.ci — Accueil" className="flex items-center shrink-0">
           <img
             src={logo}
             alt="SoumissionsComptables.ci"
-            width={180}
-            height={48}
-            className="h-10 w-auto"
+            width={540}
+            height={144}
+            className="h-30 w-auto"
+            style={{ height: "120px" }}
           />
         </Link>
 
