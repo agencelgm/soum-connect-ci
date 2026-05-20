@@ -21,6 +21,7 @@ import { Route as ComptabiliteEntrepriseAbidjanRouteImport } from './routes/comp
 import { Route as CommentCaMarcheRouteImport } from './routes/comment-ca-marche'
 import { Route as CabinetsComptablesPartenairesRouteImport } from './routes/cabinets-comptables-partenaires'
 import { Route as CabinetComptableAbidjanRouteImport } from './routes/cabinet-comptable-abidjan'
+import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EnIndexRouteImport } from './routes/en/index'
@@ -97,6 +98,11 @@ const CabinetComptableAbidjanRoute = CabinetComptableAbidjanRouteImport.update({
   path: '/cabinet-comptable-abidjan',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AProposRoute = AProposRouteImport.update({
   id: '/a-propos',
   path: '/a-propos',
@@ -147,6 +153,7 @@ const ApiPublicLeadRoute = ApiPublicLeadRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
+  '/blog': typeof BlogRoute
   '/cabinet-comptable-abidjan': typeof CabinetComptableAbidjanRoute
   '/cabinets-comptables-partenaires': typeof CabinetsComptablesPartenairesRoute
   '/comment-ca-marche': typeof CommentCaMarcheRoute
@@ -170,6 +177,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
+  '/blog': typeof BlogRoute
   '/cabinet-comptable-abidjan': typeof CabinetComptableAbidjanRoute
   '/cabinets-comptables-partenaires': typeof CabinetsComptablesPartenairesRoute
   '/comment-ca-marche': typeof CommentCaMarcheRoute
@@ -194,6 +202,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
+  '/blog': typeof BlogRoute
   '/cabinet-comptable-abidjan': typeof CabinetComptableAbidjanRoute
   '/cabinets-comptables-partenaires': typeof CabinetsComptablesPartenairesRoute
   '/comment-ca-marche': typeof CommentCaMarcheRoute
@@ -219,6 +228,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/a-propos'
+    | '/blog'
     | '/cabinet-comptable-abidjan'
     | '/cabinets-comptables-partenaires'
     | '/comment-ca-marche'
@@ -242,6 +252,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/a-propos'
+    | '/blog'
     | '/cabinet-comptable-abidjan'
     | '/cabinets-comptables-partenaires'
     | '/comment-ca-marche'
@@ -265,6 +276,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/a-propos'
+    | '/blog'
     | '/cabinet-comptable-abidjan'
     | '/cabinets-comptables-partenaires'
     | '/comment-ca-marche'
@@ -289,6 +301,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AProposRoute: typeof AProposRoute
+  BlogRoute: typeof BlogRoute
   CabinetComptableAbidjanRoute: typeof CabinetComptableAbidjanRoute
   CabinetsComptablesPartenairesRoute: typeof CabinetsComptablesPartenairesRoute
   CommentCaMarcheRoute: typeof CommentCaMarcheRoute
@@ -395,6 +408,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CabinetComptableAbidjanRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/a-propos': {
       id: '/a-propos'
       path: '/a-propos'
@@ -475,6 +495,7 @@ const GuidesRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AProposRoute: AProposRoute,
+  BlogRoute: BlogRoute,
   CabinetComptableAbidjanRoute: CabinetComptableAbidjanRoute,
   CabinetsComptablesPartenairesRoute: CabinetsComptablesPartenairesRoute,
   CommentCaMarcheRoute: CommentCaMarcheRoute,
