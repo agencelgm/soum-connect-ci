@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as MerciRouteImport } from './routes/merci'
 import { Route as GuidesRouteImport } from './routes/guides'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as DomiciliationEntrepriseAbidjanRouteImport } from './routes/domiciliation-entreprise-abidjan'
@@ -26,6 +27,7 @@ import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EnIndexRouteImport } from './routes/en/index'
 import { Route as GuidesSlugRouteImport } from './routes/guides.$slug'
+import { Route as EnThankYouRouteImport } from './routes/en/thank-you'
 import { Route as EnGetQuotesRouteImport } from './routes/en/get-quotes'
 import { Route as EnCompanyRegistrationIvoryCoastRouteImport } from './routes/en/company-registration-ivory-coast'
 import { Route as EnAccountingFirmAbidjanRouteImport } from './routes/en/accounting-firm-abidjan'
@@ -35,6 +37,11 @@ import { Route as ApiPublicLeadRouteImport } from './routes/api/public/lead'
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MerciRoute = MerciRouteImport.update({
+  id: '/merci',
+  path: '/merci',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GuidesRoute = GuidesRouteImport.update({
@@ -123,6 +130,11 @@ const GuidesSlugRoute = GuidesSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => GuidesRoute,
 } as any)
+const EnThankYouRoute = EnThankYouRouteImport.update({
+  id: '/en/thank-you',
+  path: '/en/thank-you',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EnGetQuotesRoute = EnGetQuotesRouteImport.update({
   id: '/en/get-quotes',
   path: '/en/get-quotes',
@@ -165,11 +177,13 @@ export interface FileRoutesByFullPath {
   '/domiciliation-entreprise-abidjan': typeof DomiciliationEntrepriseAbidjanRoute
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRouteWithChildren
+  '/merci': typeof MerciRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
   '/en/get-quotes': typeof EnGetQuotesRoute
+  '/en/thank-you': typeof EnThankYouRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/en/': typeof EnIndexRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
@@ -189,11 +203,13 @@ export interface FileRoutesByTo {
   '/domiciliation-entreprise-abidjan': typeof DomiciliationEntrepriseAbidjanRoute
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRouteWithChildren
+  '/merci': typeof MerciRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
   '/en/get-quotes': typeof EnGetQuotesRoute
+  '/en/thank-you': typeof EnThankYouRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/en': typeof EnIndexRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
@@ -214,11 +230,13 @@ export interface FileRoutesById {
   '/domiciliation-entreprise-abidjan': typeof DomiciliationEntrepriseAbidjanRoute
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRouteWithChildren
+  '/merci': typeof MerciRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
   '/en/get-quotes': typeof EnGetQuotesRoute
+  '/en/thank-you': typeof EnThankYouRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/en/': typeof EnIndexRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
@@ -240,11 +258,13 @@ export interface FileRouteTypes {
     | '/domiciliation-entreprise-abidjan'
     | '/faq'
     | '/guides'
+    | '/merci'
     | '/sitemap.xml'
     | '/en/about'
     | '/en/accounting-firm-abidjan'
     | '/en/company-registration-ivory-coast'
     | '/en/get-quotes'
+    | '/en/thank-you'
     | '/guides/$slug'
     | '/en/'
     | '/api/public/lead'
@@ -264,11 +284,13 @@ export interface FileRouteTypes {
     | '/domiciliation-entreprise-abidjan'
     | '/faq'
     | '/guides'
+    | '/merci'
     | '/sitemap.xml'
     | '/en/about'
     | '/en/accounting-firm-abidjan'
     | '/en/company-registration-ivory-coast'
     | '/en/get-quotes'
+    | '/en/thank-you'
     | '/guides/$slug'
     | '/en'
     | '/api/public/lead'
@@ -288,11 +310,13 @@ export interface FileRouteTypes {
     | '/domiciliation-entreprise-abidjan'
     | '/faq'
     | '/guides'
+    | '/merci'
     | '/sitemap.xml'
     | '/en/about'
     | '/en/accounting-firm-abidjan'
     | '/en/company-registration-ivory-coast'
     | '/en/get-quotes'
+    | '/en/thank-you'
     | '/guides/$slug'
     | '/en/'
     | '/api/public/lead'
@@ -313,11 +337,13 @@ export interface RootRouteChildren {
   DomiciliationEntrepriseAbidjanRoute: typeof DomiciliationEntrepriseAbidjanRoute
   FaqRoute: typeof FaqRoute
   GuidesRoute: typeof GuidesRouteWithChildren
+  MerciRoute: typeof MerciRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   EnAboutRoute: typeof EnAboutRoute
   EnAccountingFirmAbidjanRoute: typeof EnAccountingFirmAbidjanRoute
   EnCompanyRegistrationIvoryCoastRoute: typeof EnCompanyRegistrationIvoryCoastRoute
   EnGetQuotesRoute: typeof EnGetQuotesRoute
+  EnThankYouRoute: typeof EnThankYouRoute
   EnIndexRoute: typeof EnIndexRoute
   ApiPublicLeadRoute: typeof ApiPublicLeadRoute
 }
@@ -329,6 +355,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/merci': {
+      id: '/merci'
+      path: '/merci'
+      fullPath: '/merci'
+      preLoaderRoute: typeof MerciRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/guides': {
@@ -443,6 +476,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuidesSlugRouteImport
       parentRoute: typeof GuidesRoute
     }
+    '/en/thank-you': {
+      id: '/en/thank-you'
+      path: '/en/thank-you'
+      fullPath: '/en/thank-you'
+      preLoaderRoute: typeof EnThankYouRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/en/get-quotes': {
       id: '/en/get-quotes'
       path: '/en/get-quotes'
@@ -508,11 +548,13 @@ const rootRouteChildren: RootRouteChildren = {
   DomiciliationEntrepriseAbidjanRoute: DomiciliationEntrepriseAbidjanRoute,
   FaqRoute: FaqRoute,
   GuidesRoute: GuidesRouteWithChildren,
+  MerciRoute: MerciRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   EnAboutRoute: EnAboutRoute,
   EnAccountingFirmAbidjanRoute: EnAccountingFirmAbidjanRoute,
   EnCompanyRegistrationIvoryCoastRoute: EnCompanyRegistrationIvoryCoastRoute,
   EnGetQuotesRoute: EnGetQuotesRoute,
+  EnThankYouRoute: EnThankYouRoute,
   EnIndexRoute: EnIndexRoute,
   ApiPublicLeadRoute: ApiPublicLeadRoute,
 }
