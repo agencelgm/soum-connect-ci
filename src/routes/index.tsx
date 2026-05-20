@@ -43,6 +43,18 @@ import seoAccountantDesk from "@/assets/home/seo-accountant-desk.jpg";
 import seoHandshake from "@/assets/home/seo-handshake-client.jpg";
 import seoOfficeAbidjan from "@/assets/home/seo-office-abidjan.jpg";
 import seoEntrepreneurs from "@/assets/home/seo-entrepreneurs.jpg";
+import svcComptaGenerale from "@/assets/services/comptabilite-generale.jpg";
+import svcCreationEntreprise from "@/assets/services/creation-entreprise.jpg";
+import svcFiscalite from "@/assets/services/fiscalite.jpg";
+import svcAudit from "@/assets/services/audit.jpg";
+import svcPaieCnps from "@/assets/services/paie-cnps.jpg";
+import svcConseilJuridique from "@/assets/services/conseil-juridique.jpg";
+import svcDomiciliation from "@/assets/services/domiciliation.jpg";
+import svcDiaspora from "@/assets/services/diaspora.jpg";
+import svcReporting from "@/assets/services/reporting.jpg";
+import svcBancaire from "@/assets/services/bancaire.jpg";
+import svcConformiteFiscale from "@/assets/services/conformite-fiscale.jpg";
+import svcAuditInterne from "@/assets/services/audit-interne.jpg";
 
 const TITLE =
   "Cabinet Comptable Côte d'Ivoire | Comparez 5 Soumissions Gratuitement | SoumissionsComptables.ci";
@@ -75,6 +87,11 @@ export function Index() {
   const SERVICE_ICONS = [
     Calculator, Building2, FileCheck, Search, Users, Scale,
     MapPin, Globe2, BarChart3, Landmark, AlertTriangle, ShieldAlert,
+  ];
+  const SERVICE_IMAGES = [
+    svcComptaGenerale, svcCreationEntreprise, svcFiscalite, svcAudit,
+    svcPaieCnps, svcConseilJuridique, svcDomiciliation, svcDiaspora,
+    svcReporting, svcBancaire, svcConformiteFiscale, svcAuditInterne,
   ];
   const STEP_ICONS = [FileText, ClipboardList, CheckCircle];
   const TRUST_ICONS = [ClipboardList, Users, Award, Smartphone];
@@ -239,10 +256,21 @@ export function Index() {
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {h.services12.map((s, i) => {
               const Icon = SERVICE_ICONS[i];
+              const img = SERVICE_IMAGES[i];
               return (
                 <article key={i} className="rounded-xl bg-white overflow-hidden border border-border shadow-sm hover:shadow-md transition-shadow">
-                  <div className="aspect-[4/3] bg-gradient-to-br from-secondary/15 to-primary/10 flex items-center justify-center">
-                    <Icon className="h-14 w-14 text-primary" aria-hidden="true" />
+                  <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+                    <img
+                      src={img}
+                      alt={s.title}
+                      loading="lazy"
+                      width={800}
+                      height={600}
+                      className="absolute inset-0 h-full w-full object-cover"
+                    />
+                    <div className="absolute top-3 left-3 h-10 w-10 rounded-lg bg-white/95 backdrop-blur flex items-center justify-center shadow-sm">
+                      <Icon className="h-5 w-5 text-primary" aria-hidden="true" />
+                    </div>
                   </div>
                   <div className="p-5">
                     <h3 className="font-heading text-base font-bold text-primary uppercase">{s.title}</h3>
