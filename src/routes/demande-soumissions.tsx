@@ -3,7 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useForm, type FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { CheckCircle2, Shield, Star, Phone, BadgeCheck } from "lucide-react";
+import { CheckCircle2, Shield, Star, BadgeCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -310,8 +310,8 @@ function Page() {
       console.error("Lead submission failed", err);
       toast.error(
         language === "en"
-          ? "Submission failed. Please try again or reach us on WhatsApp."
-          : "Échec de l'envoi. Réessayez ou contactez-nous sur WhatsApp.",
+          ? "Submission failed. Please try again or contact us by email."
+          : "Échec de l'envoi. Réessayez ou contactez-nous par email.",
       );
     }
   };
