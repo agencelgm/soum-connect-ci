@@ -397,6 +397,10 @@ function Page() {
           </Accordion>
         </div>
       </section>
+      {(() => {
+        const rel = getPageRelations("/cabinets-comptables-partenaires");
+        return rel ? <RelatedLinks items={rel.related} /> : null;
+      })()}
     </main>
   );
 }
