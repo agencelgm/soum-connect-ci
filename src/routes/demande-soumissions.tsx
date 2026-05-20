@@ -374,8 +374,7 @@ function Page() {
         <div className="grid lg:grid-cols-[1fr_320px] gap-8 items-start">
           <div className="mx-auto w-full max-w-[640px]">
             <div className="rounded-2xl bg-white shadow-lg border border-border p-6 md:p-8">
-              {step < 5 && (
-                <div className="mb-6">
+              <div className="mb-6">
                   <div className="flex items-center justify-between text-sm font-medium text-muted-foreground mb-2">
                     <span>{c.stepOf(step)}</span>
                     <span>{Math.round(progress)}%</span>
@@ -386,8 +385,7 @@ function Page() {
                       style={{ width: `${progress}%` }}
                     />
                   </div>
-                </div>
-              )}
+              </div>
 
               <form onSubmit={handleSubmit(onSubmit)} noValidate>
                 {step === 1 && (
