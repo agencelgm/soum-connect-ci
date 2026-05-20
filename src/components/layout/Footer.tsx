@@ -32,13 +32,6 @@ export function Footer() {
             <a href="#" aria-label="LinkedIn" className="text-slate-400 hover:text-secondary">
               <Linkedin className="h-5 w-5" />
             </a>
-            <a
-              href="https://wa.me/2250767009629"
-              aria-label="WhatsApp"
-              className="text-slate-400 hover:text-secondary"
-            >
-              <WhatsAppIcon className="h-5 w-5" />
-            </a>
           </div>
         </div>
 
