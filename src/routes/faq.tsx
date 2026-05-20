@@ -9,6 +9,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { buildPageHead, faqSchema } from "@/lib/seo";
+import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+import { RelatedLinks } from "@/components/seo/RelatedLinks";
+import { getPageRelations } from "@/lib/page-relations";
 
 type FaqItem = { question: string; answer: string };
 type FaqCategory = { id: string; title: string; items: FaqItem[] };
@@ -176,8 +179,10 @@ export const Route = createFileRoute("/faq")({
 });
 
 function Page() {
+  const rel = getPageRelations("/faq");
   return (
     <>
+      {rel && <Breadcrumbs items={rel.breadcrumb} className="container-app pt-6" />}
       {/* Hero */}
       <section className="bg-background-alt border-b border-border">
         <div className="container-app py-16 md:py-20 text-center">
