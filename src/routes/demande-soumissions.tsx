@@ -825,3 +825,37 @@ function Field({
     </div>
   );
 }
+
+function RadioYesNo({
+  name,
+  register,
+  yes,
+  no,
+}: {
+  name: "bureau" | "logo" | "siteWeb" | "publicite";
+  register: ReturnType<typeof useForm<FormValues>>["register"];
+  yes: string;
+  no: string;
+}) {
+  return (
+    <div className="flex gap-3">
+      {[
+        { v: "oui", label: yes },
+        { v: "non", label: no },
+      ].map((opt) => (
+        <label
+          key={opt.v}
+          className="flex-1 cursor-pointer rounded-md border border-input bg-white px-3 py-2.5 text-sm flex items-center justify-center gap-2 hover:border-secondary has-[:checked]:border-secondary has-[:checked]:bg-secondary/5 has-[:checked]:text-secondary-dark transition-colors"
+        >
+          <input
+            type="radio"
+            value={opt.v}
+            className="accent-secondary"
+            {...register(name)}
+          />
+          <span className="font-medium">{opt.label}</span>
+        </label>
+      ))}
+    </div>
+  );
+}
