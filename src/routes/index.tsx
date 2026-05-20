@@ -38,6 +38,11 @@ import { useLanguage } from "@/lib/language-context";
 import { getCounterpart } from "@/lib/route-map";
 import heroAccountant from "@/assets/home/hero-accountant.png";
 import processCouple from "@/assets/home/process-couple.png";
+import seoTeamMeeting from "@/assets/home/seo-team-meeting.jpg";
+import seoAccountantDesk from "@/assets/home/seo-accountant-desk.jpg";
+import seoHandshake from "@/assets/home/seo-handshake-client.jpg";
+import seoOfficeAbidjan from "@/assets/home/seo-office-abidjan.jpg";
+import seoEntrepreneurs from "@/assets/home/seo-entrepreneurs.jpg";
 
 const TITLE =
   "Cabinet Comptable Côte d'Ivoire | Comparez 5 Soumissions Gratuitement | SoumissionsComptables.ci";
