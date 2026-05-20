@@ -62,10 +62,6 @@ export function Footer() {
           <div className="text-white font-semibold mb-3">{t.footer.contact}</div>
           <ul className="space-y-3 text-sm">
             <li className="flex items-center gap-2">
-              <WhatsAppIcon className="h-4 w-4 text-[#25D366] shrink-0" />
-              <a href="https://wa.me/2250767009629" className="hover:text-secondary">+225 07 67 00 96 29</a>
-            </li>
-            <li className="flex items-center gap-2">
               <Mail className="h-4 w-4 shrink-0" />
               <a href="mailto:contact@soumissionscomptables.ci" className="hover:text-secondary">
                 contact@soumissionscomptables.ci
