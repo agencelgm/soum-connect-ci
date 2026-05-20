@@ -7,7 +7,6 @@ import {
   Award,
   Heart,
   Mail,
-  MessageCircle,
   MapPin,
   ArrowRight,
   ExternalLink,
@@ -38,12 +37,6 @@ export function AboutPage() {
       label: a.contactEmail,
       value: "contact@soumissionscomptables.ci",
       href: "mailto:contact@soumissionscomptables.ci",
-    },
-    {
-      icon: MessageCircle,
-      label: a.contactWhatsapp,
-      value: "+225 07 67 00 96 29",
-      href: "https://wa.me/2250767009629",
     },
     {
       icon: MapPin,

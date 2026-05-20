@@ -3,7 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useForm, type FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { CheckCircle2, Shield, Star, Phone, BadgeCheck } from "lucide-react";
+import { CheckCircle2, Shield, Star, BadgeCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -135,19 +135,19 @@ const COPY = {
     lDelai: "Dans quel délai souhaitez-vous démarrer ?",
     lBudget: "Quel est votre budget mensuel estimé ?",
     lNom: "Votre nom complet",
-    lWhats: "Numéro WhatsApp",
+    lWhats: "Numéro de téléphone",
     whatsPh: "+225 XX XX XX XX",
     lEmail: "Adresse email",
     lEnt: "Nom de votre entreprise",
     entPh: "Si déjà créée",
-    consent: "J'accepte de recevoir les soumissions par email et WhatsApp",
+    consent: "J'accepte de recevoir les soumissions par email et SMS",
     back: "← Retour",
     next: "Suivant →",
     submit: "Envoyer ma demande →",
     sending: "Envoi…",
     secNote: "🔒 Vos données sont confidentielles et ne seront jamais vendues.",
     okTitle: "✅ Votre demande a été envoyée !",
-    okText: "Vous recevrez vos premières soumissions dans les 48 heures sur votre WhatsApp et votre email.",
+    okText: "Vous recevrez vos premières soumissions dans les 48 heures par email et téléphone.",
     okNextTitle: "Ce qui se passe ensuite :",
     okStep1: "Nos cabinets partenaires examinent votre demande",
     okStep2: "Ils vous préparent une soumission personnalisée",
@@ -158,7 +158,7 @@ const COPY = {
     asideSat: "4.8/5 satisfaction",
     asideData: "Données sécurisées",
     asideAccred: "Cabinets agréés OECCA-CI",
-    asideWaLabel: "WhatsApp : +225 07 67 00 96 29",
+    asideWaLabel: "",
     quote: "« J'ai reçu 4 soumissions en 24h. J'ai économisé 40 % par rapport à mon ancien cabinet. »",
     quoteAuthor: "— Aya K., Abidjan",
     errService: "Veuillez choisir un service",
@@ -166,8 +166,8 @@ const COPY = {
     errLoc: "Veuillez choisir votre localisation",
     errDelai: "Veuillez choisir un délai",
     errNom: "Nom requis",
-    errWhats: "Numéro WhatsApp invalide",
-    errWhatsFmt: "Chiffres, espaces et + uniquement",
+    errWhats: "Numéro de téléphone invalide",
+    errMobileFmt: "Chiffres, espaces et + uniquement",
     errEmail: "Email invalide",
     errConsent: "Vous devez accepter pour continuer",
   },
@@ -187,19 +187,19 @@ const COPY = {
     lDelai: "When do you want to start?",
     lBudget: "What's your estimated monthly budget?",
     lNom: "Your full name",
-    lWhats: "WhatsApp number",
+    lWhats: "Phone number",
     whatsPh: "+225 XX XX XX XX",
     lEmail: "Email address",
     lEnt: "Your company name",
     entPh: "If already registered",
-    consent: "I agree to receive quotes by email and WhatsApp",
+    consent: "I agree to receive quotes by email and SMS",
     back: "← Back",
     next: "Next →",
     submit: "Send my request →",
     sending: "Sending…",
     secNote: "🔒 Your data is confidential and will never be sold.",
     okTitle: "✅ Your request has been sent!",
-    okText: "You'll receive your first quotes within 48 hours on your WhatsApp and email.",
+    okText: "You'll receive your first quotes within 48 hours by email and phone.",
     okNextTitle: "What happens next:",
     okStep1: "Our partner firms review your request",
     okStep2: "They prepare a personalised quote for you",
@@ -210,7 +210,7 @@ const COPY = {
     asideSat: "4.8/5 satisfaction",
     asideData: "Secure data",
     asideAccred: "OECCA-CI certified firms",
-    asideWaLabel: "WhatsApp: +225 07 67 00 96 29",
+    asideWaLabel: "",
     quote: "\"I received 4 quotes within 24h. I saved 40% compared to my previous firm.\"",
     quoteAuthor: "— Aya K., Abidjan",
     errService: "Please choose a service",
@@ -218,8 +218,8 @@ const COPY = {
     errLoc: "Please choose your location",
     errDelai: "Please choose a timeframe",
     errNom: "Name required",
-    errWhats: "Invalid WhatsApp number",
-    errWhatsFmt: "Digits, spaces and + only",
+    errWhats: "Invalid phone number",
+    errMobileFmt: "Digits, spaces and + only",
     errEmail: "Invalid email",
     errConsent: "You must accept to continue",
   },
@@ -235,7 +235,7 @@ function makeSchema(c: Copy) {
     delai: z.string().min(1, c.errDelai),
     budget: z.string().optional().or(z.literal("")),
     nom: z.string().trim().min(2, c.errNom).max(100),
-    whatsapp: z.string().trim().min(8, c.errWhats).max(25).regex(/^[+0-9 ]+$/, c.errWhatsFmt),
+    mobile: z.string().trim().min(8, c.errWhats).max(25).regex(/^[+0-9 ]+$/, c.errMobileFmt),
     email: z.string().trim().email(c.errEmail).max(255),
     entreprise: z.string().max(120).optional().or(z.literal("")),
     consent: z.literal(true, { errorMap: () => ({ message: c.errConsent }) }),
@@ -247,7 +247,7 @@ type FormValues = z.infer<ReturnType<typeof makeSchema>>;
 const STEP_FIELDS: Record<1 | 2 | 3, (keyof FormValues)[]> = {
   1: ["service", "statut", "description"],
   2: ["localisation", "delai", "budget"],
-  3: ["nom", "whatsapp", "email", "entreprise", "consent"],
+  3: ["nom", "mobile", "email", "entreprise", "consent"],
 };
 
 function Page() {
@@ -273,7 +273,7 @@ function Page() {
       delai: "",
       budget: "",
       nom: "",
-      whatsapp: "",
+      mobile: "",
       email: "",
       entreprise: "",
       consent: false as unknown as true,
@@ -310,8 +310,8 @@ function Page() {
       console.error("Lead submission failed", err);
       toast.error(
         language === "en"
-          ? "Submission failed. Please try again or reach us on WhatsApp."
-          : "Échec de l'envoi. Réessayez ou contactez-nous sur WhatsApp.",
+          ? "Submission failed. Please try again or contact us by email."
+          : "Échec de l'envoi. Réessayez ou contactez-nous par email.",
       );
     }
   };
@@ -523,17 +523,17 @@ function Page() {
                     </Field>
 
                     <Field
-                      id="whatsapp"
+                      id="mobile"
                       label={c.lWhats}
                       required
-                      error={errors.whatsapp?.message}
+                      error={errors.mobile?.message}
                     >
                       <Input
-                        id="whatsapp"
+                        id="mobile"
                         type="tel"
                         placeholder={c.whatsPh}
                         autoComplete="tel"
-                        {...register("whatsapp")}
+                        {...register("mobile")}
                       />
                     </Field>
 
@@ -654,15 +654,6 @@ function Page() {
                 </li>
                 <li className="flex items-center gap-2">
                   <BadgeCheck className="w-4 h-4 text-accent" /> {c.asideAccred}
-                </li>
-                <li className="flex items-center gap-2">
-                  <Phone className="w-4 h-4 text-[#25D366]" />
-                  <a
-                    href="https://wa.me/2250767009629"
-                    className="hover:text-secondary"
-                  >
-                    {c.asideWaLabel}
-                  </a>
                 </li>
               </ul>
             </div>

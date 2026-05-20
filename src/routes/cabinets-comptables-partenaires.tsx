@@ -94,7 +94,7 @@ const VALUE_PROPS = [
 const STEPS = [
   { n: 1, title: "Inscrivez votre cabinet", text: "5 minutes pour créer votre profil et joindre votre agrément OECCA-CI." },
   { n: 2, title: "Définissez vos critères", text: "Services, zones géographiques, taille des clients ciblés." },
-  { n: 3, title: "Recevez des leads correspondants", text: "Notifications email et WhatsApp dès qu'une demande matche votre profil." },
+  { n: 3, title: "Recevez des leads correspondants", text: "Notifications email et SMS dès qu'une demande matche votre profil." },
   { n: 4, title: "Contactez et soumettez votre offre", text: "Vous échangez directement avec le prospect et envoyez votre proposition." },
 ];
 
@@ -103,12 +103,12 @@ const partnerSchema = z.object({
   director: z.string().trim().min(2, "Nom du directeur requis").max(120),
   agrement: z.string().trim().min(3, "Numéro d'agrément requis").max(60),
   email: z.string().trim().email("Email invalide").max(255),
-  whatsapp: z
+  mobile: z
     .string()
     .trim()
-    .min(8, "Numéro WhatsApp invalide")
+    .min(8, "Numéro de téléphone invalide")
     .max(25)
-    .regex(/^[0-9 +()-]+$/, "Numéro WhatsApp invalide"),
+    .regex(/^[0-9 +()-]+$/, "Numéro de téléphone invalide"),
   services: z.array(z.string()).min(1, "Sélectionnez au moins un service"),
   zones: z.array(z.string()).min(1, "Sélectionnez au moins une zone"),
 });
@@ -134,7 +134,7 @@ function Page() {
       director: String(form.get("director") ?? ""),
       agrement: String(form.get("agrement") ?? ""),
       email: String(form.get("email") ?? ""),
-      whatsapp: String(form.get("whatsapp") ?? ""),
+      mobile: String(form.get("mobile") ?? ""),
       services,
       zones,
     };
@@ -288,10 +288,10 @@ function Page() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="whatsapp">Numéro WhatsApp *</Label>
+                <Label htmlFor="mobile">Numéro de téléphone *</Label>
                 <Input
-                  id="whatsapp"
-                  name="whatsapp"
+                  id="mobile"
+                  name="mobile"
                   type="tel"
                   placeholder="+225 07 00 00 00 00"
                   required
