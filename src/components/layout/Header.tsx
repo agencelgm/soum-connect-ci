@@ -108,15 +108,6 @@ export function Header() {
 
         <div className="hidden lg:flex items-center gap-3">
           <LangToggle />
-          <a
-            href="https://wa.me/2250767009629"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg bg-[#25D366] text-white px-3 py-2 text-xs font-semibold hover:opacity-90"
-          >
-            <WhatsAppIcon className="h-4 w-4" />
-            +225 07 67 00 96 29
-          </a>
           <Link
             to={quotesHref}
             className="inline-flex items-center justify-center rounded-lg bg-secondary text-white px-4 py-2 text-sm font-semibold hover:bg-secondary-dark transition-colors"
