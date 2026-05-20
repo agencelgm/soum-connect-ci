@@ -269,6 +269,7 @@ function Page() {
           </div>
         </div>
       </section>
+      {rel && <RelatedLinks items={rel.related} />}
     </>
   );
 }
