@@ -135,7 +135,6 @@ function RootComponent() {
           </main>
           <Footer />
           <MobileCtaBar />
-          <WhatsAppFab />
           <Toaster />
         </div>
       </LanguageProvider>
