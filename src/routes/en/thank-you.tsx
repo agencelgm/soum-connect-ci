@@ -12,7 +12,6 @@ export const Route = createFileRoute("/en/thank-you")({
         "Thank you for filling out our form. A team member will contact you within 24 business hours.",
       lang: "en",
       altPath: "/merci",
-      noindex: true,
       breadcrumb: [
         { name: "Home", path: "/en" },
         { name: "Thank you", path: "/en/thank-you" },
