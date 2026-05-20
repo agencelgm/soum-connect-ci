@@ -11,7 +11,7 @@ const LeadSchema = z.object({
   delai: z.string().max(200).optional().default(""),
   budget: z.string().max(200).optional().default(""),
   nom: z.string().trim().min(2).max(100),
-  whatsapp: z.string().trim().min(6).max(32).regex(/^[+0-9 ]+$/),
+  mobile: z.string().trim().min(6).max(32).regex(/^[+0-9 ]+$/),
   email: z.string().trim().email().max(255),
   entreprise: z.string().max(120).optional().default(""),
   consent: z.boolean().refine((v) => v === true, "Consent required"),

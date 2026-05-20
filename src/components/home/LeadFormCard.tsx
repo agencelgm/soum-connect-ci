@@ -37,17 +37,17 @@ export function LeadFormCard() {
       service,
       localisation: city,
       fullName: form.get("fullName"),
-      whatsapp: form.get("whatsapp"),
+      mobile: form.get("mobile"),
       email: form.get("email"),
     };
-    if (!service || !city || !payload.fullName || !payload.whatsapp || !payload.email) {
+    if (!service || !city || !payload.fullName || !payload.mobile || !payload.email) {
       toast.error(t.leadForm.errAll);
       return;
     }
     setSubmitting(true);
     try {
-      const whatsappRaw = String(payload.whatsapp ?? "").trim();
-      const whatsapp = whatsappRaw.startsWith("+") ? whatsappRaw : `+225 ${whatsappRaw}`;
+      const mobileRaw = String(payload.mobile ?? "").trim();
+      const mobile = mobileRaw.startsWith("+") ? mobileRaw : `+225 ${mobileRaw}`;
       const res = await fetch("/api/public/lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -57,7 +57,7 @@ export function LeadFormCard() {
           service: payload.service,
           localisation: payload.localisation,
           nom: payload.fullName,
-          whatsapp,
+          mobile,
           email: payload.email,
           consent: true,
         }),
@@ -125,17 +125,17 @@ export function LeadFormCard() {
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="whatsapp">{t.leadForm.whatsapp}</Label>
+          <Label htmlFor="mobile">{t.leadForm.mobile}</Label>
           <div className="flex">
             <span className="inline-flex items-center rounded-l-md border border-r-0 border-input bg-muted px-3 text-sm text-muted-foreground">
               +225
             </span>
             <Input
-              id="whatsapp"
-              name="whatsapp"
+              id="mobile"
+              name="mobile"
               type="tel"
               inputMode="tel"
-              placeholder={t.leadForm.whatsappPh}
+              placeholder={t.leadForm.mobilePh}
               className="rounded-l-none"
               required
             />
