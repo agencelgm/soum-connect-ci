@@ -365,16 +365,39 @@ export function Index() {
           </h2>
           <p className="mt-2 text-muted-foreground italic">{h.seoSubtitle}</p>
 
-          <div className="mt-8 grid gap-8 md:grid-cols-[160px_1fr] items-start">
-            <div className="hidden md:flex h-40 rounded-lg bg-gradient-to-br from-primary to-[#1a2f5a] items-center justify-center">
-              <Building2 className="h-16 w-16 text-white/30" aria-hidden="true" />
+          {/* Bloc 1 — intro + image team meeting */}
+          <div className="mt-10 grid gap-8 md:grid-cols-2 md:items-center">
+            <p className="text-sm md:text-base text-muted-foreground leading-relaxed order-2 md:order-1">
+              {h.seoP1}
+            </p>
+            <div className="order-1 md:order-2">
+              <img
+                src={seoTeamMeeting}
+                alt="Équipe de cabinet comptable en réunion à Abidjan"
+                width={1280}
+                height={896}
+                loading="lazy"
+                className="w-full h-auto rounded-xl shadow-md object-cover aspect-[4/3]"
+              />
             </div>
-            <p className="text-sm md:text-base text-muted-foreground leading-relaxed">{h.seoP1}</p>
           </div>
 
-          <div className="mt-8 grid gap-8 md:grid-cols-[1fr_160px] items-start">
+          {/* Bloc 2 — image portrait + 3 types */}
+          <div className="mt-12 grid gap-8 md:grid-cols-[minmax(0,_2fr)_minmax(0,_3fr)] md:items-center">
             <div>
-              <p className="text-sm md:text-base text-muted-foreground leading-relaxed">{h.seoP2}</p>
+              <img
+                src={seoAccountantDesk}
+                alt="Comptable au travail dans un cabinet à Abidjan"
+                width={896}
+                height={1280}
+                loading="lazy"
+                className="w-full h-auto rounded-xl shadow-md object-cover aspect-[3/4]"
+              />
+            </div>
+            <div>
+              <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                {h.seoP2}
+              </p>
               <h3 className="mt-6 font-heading text-base font-bold text-primary">{h.seoTypesTitle}</h3>
               <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
                 {h.seoTypes.map((tt, i) => (
@@ -388,18 +411,13 @@ export function Index() {
                 <strong className="text-primary">{h.seoP3Strong}</strong>{h.seoP3}
               </p>
             </div>
-            <div className="hidden md:flex h-40 rounded-lg bg-gradient-to-br from-secondary/20 to-secondary/10 items-center justify-center">
-              <FileCheck className="h-16 w-16 text-secondary" aria-hidden="true" />
-            </div>
           </div>
 
-          <div className="mt-8 grid gap-8 md:grid-cols-[160px_1fr] items-start">
-            <div className="hidden md:flex h-40 rounded-lg bg-gradient-to-br from-accent/20 to-accent/10 items-center justify-center">
-              <Globe2 className="h-16 w-16 text-accent" aria-hidden="true" />
-            </div>
+          {/* Bloc 3 — besoins + image bureau */}
+          <div className="mt-12 grid gap-8 md:grid-cols-2 md:items-start">
             <div>
               <h3 className="font-heading text-base font-bold text-primary">{h.seoNeedsTitle}</h3>
-              <ul className="mt-3 grid sm:grid-cols-2 gap-2 text-sm text-muted-foreground">
+              <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
                 {h.seoNeeds.map((nn, i) => (
                   <li key={i} className="flex items-start gap-2">
                     <CheckCircle className="h-4 w-4 text-accent mt-0.5 shrink-0" aria-hidden="true" />
@@ -411,9 +429,30 @@ export function Index() {
                 {h.seoLocation}
               </p>
             </div>
+            <div>
+              <img
+                src={seoOfficeAbidjan}
+                alt="Intérieur d'un cabinet d'expertise comptable à Abidjan"
+                width={1280}
+                height={896}
+                loading="lazy"
+                className="w-full h-auto rounded-xl shadow-md object-cover aspect-[4/3]"
+              />
+            </div>
           </div>
 
-          <div className="mt-8 grid gap-8 md:grid-cols-[1fr_160px] items-start">
+          {/* Bloc 4 — image entrepreneurs + avantages */}
+          <div className="mt-12 grid gap-8 md:grid-cols-[minmax(0,_2fr)_minmax(0,_3fr)] md:items-center">
+            <div>
+              <img
+                src={seoEntrepreneurs}
+                alt="Entrepreneurs ivoiriens accompagnés par un cabinet comptable"
+                width={896}
+                height={1280}
+                loading="lazy"
+                className="w-full h-auto rounded-xl shadow-md object-cover aspect-[3/4]"
+              />
+            </div>
             <div>
               <h3 className="font-heading text-base font-bold text-primary">{h.seoAdvantagesTitle}</h3>
               <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
@@ -425,35 +464,45 @@ export function Index() {
                 ))}
               </ul>
             </div>
-            <div className="hidden md:flex h-40 rounded-lg bg-gradient-to-br from-primary to-[#1a2f5a] items-center justify-center">
-              <ShieldCheck className="h-16 w-16 text-white/30" aria-hidden="true" />
-            </div>
           </div>
 
-          <blockquote className="mt-10 border-l-4 border-secondary bg-[#F8FAFC] p-6 rounded-r-lg italic text-muted-foreground leading-relaxed">
-            {h.mission}
-          </blockquote>
+          {/* Mission + handshake image */}
+          <div className="mt-12 grid gap-8 md:grid-cols-2 md:items-center">
+            <div>
+              <img
+                src={seoHandshake}
+                alt="Mise en relation réussie entre un cabinet comptable et son client"
+                width={1280}
+                height={896}
+                loading="lazy"
+                className="w-full h-auto rounded-xl shadow-md object-cover aspect-[4/3]"
+              />
+            </div>
+            <blockquote className="border-l-4 border-secondary bg-[#F8FAFC] p-6 rounded-r-lg italic text-muted-foreground leading-relaxed">
+              {h.mission}
+            </blockquote>
+          </div>
 
-          <p className="mt-6 text-center font-heading text-base font-bold text-primary">
+          <p className="mt-10 text-center font-heading text-lg font-bold text-primary">
             {h.seoFinalCta}
           </p>
         </div>
-      </section>
 
-      {/* ====== 11. TRUST BADGES ====== */}
-      <section aria-label="Garanties" className="bg-[#F8FAFC]">
-        <div className="container-app section grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {h.trustBadges.map((b, i) => {
-            const Icon = TRUST_ICONS[i];
-            return (
-              <div key={i} className="flex flex-col items-center text-center">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
-                  <Icon className="h-8 w-8" aria-hidden="true" />
+        {/* Bandeau orange — trust badges fusionnés */}
+        <div className="bg-secondary text-secondary-foreground">
+          <div className="container-app py-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {h.trustBadges.map((b, i) => {
+              const Icon = TRUST_ICONS[i];
+              return (
+                <div key={i} className="flex flex-col items-center text-center">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-white/80 text-white">
+                    <Icon className="h-8 w-8" aria-hidden="true" />
+                  </div>
+                  <p className="mt-4 text-sm font-semibold max-w-[220px] leading-snug">{b}</p>
                 </div>
-                <p className="mt-4 text-sm font-medium text-primary max-w-[220px]">{b}</p>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </section>
 
