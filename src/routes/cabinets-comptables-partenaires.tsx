@@ -159,6 +159,10 @@ function Page() {
 
   return (
     <main>
+      {(() => {
+        const rel = getPageRelations("/cabinets-comptables-partenaires");
+        return rel ? <Breadcrumbs items={rel.breadcrumb} /> : null;
+      })()}
       {/* HERO */}
       <section className="bg-primary text-primary-foreground">
         <div className="container-app py-20 md:py-28 text-center">
