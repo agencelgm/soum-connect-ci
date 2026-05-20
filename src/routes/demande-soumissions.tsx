@@ -694,11 +694,19 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <div>
+    <div data-invalid={error ? "true" : undefined} className="group">
       <Label htmlFor={id} className="mb-1.5 block text-sm font-medium">
         {label} {required && <span className="text-destructive">*</span>}
       </Label>
-      {children}
+      <div
+        className={
+          error
+            ? "[&_input]:border-destructive [&_input]:ring-1 [&_input]:ring-destructive/40 [&_textarea]:border-destructive [&_textarea]:ring-1 [&_textarea]:ring-destructive/40 [&_select]:border-destructive [&_select]:ring-1 [&_select]:ring-destructive/40"
+            : undefined
+        }
+      >
+        {children}
+      </div>
       {error && <p className="mt-1 text-sm text-destructive">{error}</p>}
     </div>
   );
