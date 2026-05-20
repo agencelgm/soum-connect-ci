@@ -177,15 +177,6 @@ export function Header() {
             <div className="mt-3 flex items-center justify-between px-3">
               <LangToggle />
             </div>
-            <a
-              href="https://wa.me/2250767009629"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-2 inline-flex items-center justify-center gap-2 rounded-lg bg-[#25D366] text-white px-4 py-2 text-sm font-semibold"
-            >
-              <WhatsAppIcon className="h-4 w-4" />
-              +225 07 67 00 96 29
-            </a>
             <Link
               to={quotesHref}
               onClick={() => setOpen(false)}
