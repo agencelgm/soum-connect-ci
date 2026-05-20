@@ -255,33 +255,6 @@ export function Index() {
         </div>
       </section>
 
-      {/* ====== 7. PRESS CAROUSEL ====== */}
-      <section aria-label="Presse" className="bg-[#F8FAFC] border-y border-border overflow-hidden">
-        <div className="container-app py-10">
-          <h2 className="text-center font-heading text-lg font-semibold text-primary mb-6">
-            {h.pressTitle}
-          </h2>
-          <div className="press-marquee">
-            <div className="press-track">
-              {[...h.pressLogos, ...h.pressLogos].map((logo, i) => (
-                <div
-                  key={i}
-                  className="shrink-0 mx-6 flex items-center justify-center h-16 px-6 rounded-md bg-white border border-border text-muted-foreground font-heading font-semibold italic"
-                >
-                  {logo}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-        <style>{`
-          .press-marquee { overflow: hidden; width: 100%; }
-          .press-track { display: flex; width: max-content; animation: press-scroll 40s linear infinite; }
-          @keyframes press-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-        `}</style>
-      </section>
-
-      {/* ====== 8. 3 STEPS PROCESS ====== */}
       <section aria-labelledby="steps-title" className="bg-white">
         <div className="container-app section">
           <div className="text-center max-w-3xl mx-auto">
