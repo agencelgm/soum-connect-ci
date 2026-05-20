@@ -122,15 +122,23 @@ const COPY = {
   fr: {
     h1: "Recevez jusqu'à 5 Soumissions de Cabinets Comptables Agréés",
     sub: "Gratuit · Sans engagement · Réponse en 48h",
-    stepOf: (n: number) => `Étape ${n} sur 3`,
-    s1Title: "Étape 1 sur 3 — Décrivez votre besoin",
-    s2Title: "Étape 2 sur 3 — Votre localisation",
-    s3Title: "Étape 3 sur 3 — Vos coordonnées",
-    s3Note: "Ces informations sont transmises uniquement aux cabinets sélectionnés.",
+    stepOf: (n: number) => `Étape ${n} sur 4`,
+    s1Title: "Étape 1 sur 4 — Décrivez votre besoin",
+    s2Title: "Étape 2 sur 4 — Votre présence commerciale",
+    s3Title: "Étape 3 sur 4 — Votre localisation",
+    s4Title: "Étape 4 sur 4 — Vos coordonnées",
+    s4Note: "Ces informations sont transmises uniquement aux cabinets sélectionnés.",
     lService: "Quel service recherchez-vous ?",
     lStatut: "Quel est votre statut actuel ?",
-    lDescription: "Décrivez brièvement votre besoin",
+    lDescription: "Pouvons-nous avoir des détails sur votre projet ?",
     descPh: "Ex: Je veux créer une SARL à Abidjan avec 2 associés. Capital de 1 000 000 FCFA...",
+    lAssocies: "Combien d'associés avez-vous ?",
+    lBureau: "Avez-vous un bureau ?",
+    lLogo: "Avez-vous un logo ?",
+    lSite: "Avez-vous un site internet ?",
+    lPub: "Faites-vous de la publicité ?",
+    yes: "Oui",
+    no: "Non",
     lLoc: "Où êtes-vous situé ?",
     lDelai: "Dans quel délai souhaitez-vous démarrer ?",
     lBudget: "Quel est votre budget mensuel estimé ?",
@@ -173,19 +181,32 @@ const COPY = {
     errDescription: "Veuillez décrire brièvement votre besoin",
     errBudget: "Veuillez choisir un budget",
     errEnt: "Nom de votre entreprise requis",
+    errAssocies: "Indiquez un nombre entre 1 et 50",
+    errBureau: "Veuillez répondre",
+    errLogo: "Veuillez répondre",
+    errSite: "Veuillez répondre",
+    errPub: "Veuillez répondre",
   },
   en: {
     h1: "Get up to 5 Quotes from Certified Accounting Firms",
     sub: "Free · No commitment · Reply within 48h",
-    stepOf: (n: number) => `Step ${n} of 3`,
-    s1Title: "Step 1 of 3 — Describe your need",
-    s2Title: "Step 2 of 3 — Your location",
-    s3Title: "Step 3 of 3 — Your contact details",
-    s3Note: "These details are only shared with the selected firms.",
+    stepOf: (n: number) => `Step ${n} of 4`,
+    s1Title: "Step 1 of 4 — Describe your need",
+    s2Title: "Step 2 of 4 — Your business presence",
+    s3Title: "Step 3 of 4 — Your location",
+    s4Title: "Step 4 of 4 — Your contact details",
+    s4Note: "These details are only shared with the selected firms.",
     lService: "Which service are you looking for?",
     lStatut: "What's your current status?",
-    lDescription: "Briefly describe your need",
+    lDescription: "Can you share details about your project?",
     descPh: "E.g. I want to register a SARL in Abidjan with 2 partners. Capital of 1,000,000 FCFA...",
+    lAssocies: "How many business partners do you have?",
+    lBureau: "Do you have an office?",
+    lLogo: "Do you have a logo?",
+    lSite: "Do you have a website?",
+    lPub: "Do you run any advertising?",
+    yes: "Yes",
+    no: "No",
     lLoc: "Where are you based?",
     lDelai: "When do you want to start?",
     lBudget: "What's your estimated monthly budget?",
@@ -228,6 +249,11 @@ const COPY = {
     errDescription: "Please briefly describe your need",
     errBudget: "Please choose a budget",
     errEnt: "Company name required",
+    errAssocies: "Enter a number between 1 and 50",
+    errBureau: "Please answer",
+    errLogo: "Please answer",
+    errSite: "Please answer",
+    errPub: "Please answer",
   },
 } as const;
 
@@ -237,6 +263,11 @@ function makeSchema(c: Copy) {
     service: z.string().min(1, c.errService),
     statut: z.string().min(1, c.errStatut),
     description: z.string().trim().min(10, c.errDescription).max(1000),
+    nbAssocies: z.coerce.number({ invalid_type_error: c.errAssocies }).int().min(1, c.errAssocies).max(50, c.errAssocies),
+    bureau: z.enum(["oui", "non"], { errorMap: () => ({ message: c.errBureau }) }),
+    logo: z.enum(["oui", "non"], { errorMap: () => ({ message: c.errLogo }) }),
+    siteWeb: z.enum(["oui", "non"], { errorMap: () => ({ message: c.errSite }) }),
+    publicite: z.enum(["oui", "non"], { errorMap: () => ({ message: c.errPub }) }),
     localisation: z.string().min(1, c.errLoc),
     delai: z.string().min(1, c.errDelai),
     budget: z.string().min(1, c.errBudget),
@@ -250,10 +281,11 @@ function makeSchema(c: Copy) {
 
 type FormValues = z.infer<ReturnType<typeof makeSchema>>;
 
-const STEP_FIELDS: Record<1 | 2 | 3, (keyof FormValues)[]> = {
-  1: ["service", "statut", "description"],
-  2: ["localisation", "delai", "budget"],
-  3: ["nom", "mobile", "email", "entreprise", "consent"],
+const STEP_FIELDS: Record<1 | 2 | 3 | 4, (keyof FormValues)[]> = {
+  1: ["service", "statut", "description", "nbAssocies", "bureau"],
+  2: ["logo", "siteWeb", "publicite"],
+  3: ["localisation", "delai", "budget"],
+  4: ["nom", "mobile", "email", "entreprise", "consent"],
 };
 
 function Page() {
@@ -266,7 +298,7 @@ function Page() {
   const BUDGETS = language === "en" ? BUDGETS_EN : BUDGETS_FR;
   const homeHref = language === "en" ? "/en" : "/";
   const allServicesHref = getCounterpart("/cabinet-comptable-abidjan", language);
-  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
+  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(makeSchema(c)),
@@ -275,6 +307,11 @@ function Page() {
       service: "",
       statut: "",
       description: "",
+      nbAssocies: "" as unknown as number,
+      bureau: "" as unknown as "oui",
+      logo: "" as unknown as "oui",
+      siteWeb: "" as unknown as "oui",
+      publicite: "" as unknown as "oui",
       localisation: "",
       delai: "",
       budget: "",
@@ -290,8 +327,8 @@ function Page() {
   const errors: FieldErrors<FormValues> = formState.errors;
 
   const next = async () => {
-    const ok = await trigger(STEP_FIELDS[step as 1 | 2]);
-    if (ok) setStep((s) => ((s < 3 ? s + 1 : s) as 1 | 2 | 3 | 4));
+    const ok = await trigger(STEP_FIELDS[step as 1 | 2 | 3]);
+    if (ok) setStep((s) => ((s < 4 ? s + 1 : s) as 1 | 2 | 3 | 4 | 5));
   };
 
   const onSubmit = async (values: FormValues) => {
@@ -311,7 +348,7 @@ function Page() {
         localisation: values.localisation,
         language,
       });
-      setStep(4);
+      setStep(5);
     } catch (err) {
       console.error("Lead submission failed", err);
       toast.error(
@@ -322,7 +359,7 @@ function Page() {
     }
   };
 
-  const progress = step === 4 ? 100 : (step / 3) * 100;
+  const progress = step === 5 ? 100 : (step / 4) * 100;
 
   return (
     <main className="bg-[#F8FAFC] min-h-screen">
@@ -339,7 +376,7 @@ function Page() {
         <div className="grid lg:grid-cols-[1fr_320px] gap-8 items-start">
           <div className="mx-auto w-full max-w-[640px]">
             <div className="rounded-2xl bg-white shadow-lg border border-border p-6 md:p-8">
-              {step < 4 && (
+              {step < 5 && (
                 <div className="mb-6">
                   <div className="flex items-center justify-between text-sm font-medium text-muted-foreground mb-2">
                     <span>{c.stepOf(step)}</span>
@@ -415,6 +452,31 @@ function Page() {
                       />
                     </Field>
 
+                    <Field
+                      id="nbAssocies"
+                      label={c.lAssocies}
+                      required
+                      error={errors.nbAssocies?.message}
+                    >
+                      <Input
+                        id="nbAssocies"
+                        type="number"
+                        min={1}
+                        max={50}
+                        inputMode="numeric"
+                        {...register("nbAssocies")}
+                      />
+                    </Field>
+
+                    <Field
+                      id="bureau"
+                      label={c.lBureau}
+                      required
+                      error={errors.bureau?.message}
+                    >
+                      <RadioYesNo name="bureau" register={register} yes={c.yes} no={c.no} />
+                    </Field>
+
                     <div className="flex justify-end pt-2">
                       <Button
                         type="button"
@@ -431,6 +493,58 @@ function Page() {
                   <div key="s2" className="animate-fade-in space-y-5">
                     <h2 className="font-heading text-xl font-semibold text-primary">
                       {c.s2Title}
+                    </h2>
+
+                    <Field
+                      id="logo"
+                      label={c.lLogo}
+                      required
+                      error={errors.logo?.message}
+                    >
+                      <RadioYesNo name="logo" register={register} yes={c.yes} no={c.no} />
+                    </Field>
+
+                    <Field
+                      id="siteWeb"
+                      label={c.lSite}
+                      required
+                      error={errors.siteWeb?.message}
+                    >
+                      <RadioYesNo name="siteWeb" register={register} yes={c.yes} no={c.no} />
+                    </Field>
+
+                    <Field
+                      id="publicite"
+                      label={c.lPub}
+                      required
+                      error={errors.publicite?.message}
+                    >
+                      <RadioYesNo name="publicite" register={register} yes={c.yes} no={c.no} />
+                    </Field>
+
+                    <div className="flex justify-between pt-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setStep(1)}
+                      >
+                        {c.back}
+                      </Button>
+                      <Button
+                        type="button"
+                        onClick={next}
+                        className="bg-secondary hover:bg-secondary-dark text-white"
+                      >
+                        {c.next}
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {step === 3 && (
+                  <div key="s3" className="animate-fade-in space-y-5">
+                    <h2 className="font-heading text-xl font-semibold text-primary">
+                      {c.s3Title}
                     </h2>
 
                     <Field
@@ -497,7 +611,7 @@ function Page() {
                       <Button
                         type="button"
                         variant="outline"
-                        onClick={() => setStep(1)}
+                        onClick={() => setStep(2)}
                       >
                         {c.back}
                       </Button>
@@ -512,13 +626,13 @@ function Page() {
                   </div>
                 )}
 
-                {step === 3 && (
-                  <div key="s3" className="animate-fade-in space-y-5">
+                {step === 4 && (
+                  <div key="s4" className="animate-fade-in space-y-5">
                     <h2 className="font-heading text-xl font-semibold text-primary">
-                      {c.s3Title}
+                      {c.s4Title}
                     </h2>
                     <p className="text-sm text-muted-foreground">
-                      {c.s3Note}
+                      {c.s4Note}
                     </p>
 
                     <Field
@@ -595,7 +709,7 @@ function Page() {
                         <Button
                           type="button"
                           variant="outline"
-                          onClick={() => setStep(2)}
+                          onClick={() => setStep(3)}
                         >
                           {c.back}
                         </Button>
@@ -614,8 +728,8 @@ function Page() {
                   </div>
                 )}
 
-                {step === 4 && (
-                  <div key="s4" className="animate-fade-in text-center py-6">
+                {step === 5 && (
+                  <div key="s5" className="animate-fade-in text-center py-6">
                     <div className="mx-auto w-16 h-16 rounded-full bg-accent/15 flex items-center justify-center">
                       <CheckCircle2 className="w-10 h-10 text-accent" />
                     </div>
@@ -708,6 +822,40 @@ function Field({
         {children}
       </div>
       {error && <p className="mt-1 text-sm text-destructive">{error}</p>}
+    </div>
+  );
+}
+
+function RadioYesNo({
+  name,
+  register,
+  yes,
+  no,
+}: {
+  name: "bureau" | "logo" | "siteWeb" | "publicite";
+  register: ReturnType<typeof useForm<FormValues>>["register"];
+  yes: string;
+  no: string;
+}) {
+  return (
+    <div className="flex gap-3">
+      {[
+        { v: "oui", label: yes },
+        { v: "non", label: no },
+      ].map((opt) => (
+        <label
+          key={opt.v}
+          className="flex-1 cursor-pointer rounded-md border border-input bg-white px-3 py-2.5 text-sm flex items-center justify-center gap-2 hover:border-secondary has-[:checked]:border-secondary has-[:checked]:bg-secondary/5 has-[:checked]:text-secondary-dark transition-colors"
+        >
+          <input
+            type="radio"
+            value={opt.v}
+            className="accent-secondary"
+            {...register(name)}
+          />
+          <span className="font-medium">{opt.label}</span>
+        </label>
+      ))}
     </div>
   );
 }

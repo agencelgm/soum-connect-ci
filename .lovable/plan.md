@@ -1,71 +1,74 @@
 ## Objectif
 
-Rendre **tous** les champs des formulaires du site obligatoires, et signaler clairement à la soumission chaque champ vide, mal rempli ou invalide avec :
-- une **étoile rouge `*`** à droite du libellé de chaque champ requis,
-- une **bordure rouge** + **message d'erreur** sous le champ concerné quand l'utilisateur soumet sans le remplir correctement,
-- un **scroll automatique** vers le premier champ en erreur.
+Étoffer le formulaire **/demande-soumissions** (utilisé aussi par /en/get-quotes) en ajoutant **6 nouvelles questions obligatoires**, réparties dans des étapes du parcours multi-étapes existant (Étape 1 → 2 → 3 → …).
 
-## Formulaires concernés
+## Nouvelles questions à ajouter
 
-Trois formulaires existent dans le site :
+### Bloc « Votre projet » (en complément de l'étape 1 actuelle)
+1. **Pouvons-nous avoir des détails sur votre projet ?** — zone de texte (déjà présente comme `description`, renommer le libellé et garder le champ).
+2. **Combien d'associés avez-vous ?** — champ nombre (`number`, min 1, max 50).
+3. **Avez-vous un bureau ?** — Oui / Non (radio).
 
-1. `src/routes/demande-soumissions.tsx` — formulaire multi-étapes (utilisé aussi par `/en/get-quotes`)
-2. `src/components/home/LeadFormCard.tsx` — formulaire court sur la page d'accueil
-3. `src/routes/cabinets-comptables-partenaires.tsx` — formulaire candidature cabinet partenaire
+### Bloc « Votre présence commerciale » (nouvelle étape dédiée)
+4. **Avez-vous un logo ?** — Oui / Non (radio).
+5. **Avez-vous un site internet ?** — Oui / Non (radio).
+6. **Faites-vous de la publicité ?** — Oui / Non (radio).
 
-## Changements par formulaire
+## Nouvelle structure du parcours (4 étapes au lieu de 3)
 
-### 1. `demande-soumissions.tsx`
-État actuel : déjà sur `react-hook-form` + `zod`, le composant `Field` gère déjà l'étoile et les erreurs. Manquent uniquement :
-- `description` (étape 1), `budget` (étape 2), `entreprise` (étape 3) → marqués optionnels.
+```text
+Étape 1 / 4 — Votre besoin
+  • Service recherché *
+  • Statut actuel *
+  • Détails du projet * (anciennement « description »)
+  • Nombre d'associés *
+  • Avez-vous un bureau ? *
 
-Actions :
-- Dans le schéma Zod : passer ces 3 champs en `.min(1, "Champ requis")` (avec longueur max raisonnable).
-- Ajouter `required` sur les 3 `<Field>` correspondants → l'étoile rouge apparaît automatiquement.
-- Vérifier que la couleur de l'étoile et des messages utilise bien `text-destructive` (token oklch).
+Étape 2 / 4 — Votre présence
+  • Avez-vous un logo ? *
+  • Avez-vous un site internet ? *
+  • Faites-vous de la publicité ? *
 
-### 2. `LeadFormCard.tsx` (accueil)
-État actuel : validation native HTML + `toast.error` global, pas de signalement par champ.
+Étape 3 / 4 — Votre localisation
+  • Localisation *
+  • Délai *
+  • Budget *
 
-Actions :
-- Migrer vers `react-hook-form` + schéma Zod (service, ville, nom, mobile, email — tous requis, email validé, mobile regex `^[+0-9 ]+$` min 6).
-- Ajouter une **étoile rouge** à droite de chaque `<Label>` (composant local `RequiredLabel` ou réutilisable).
-- En cas d'erreur : `aria-invalid` + classe `border-destructive ring-destructive/40` sur le champ + message rouge dessous.
-- À la soumission, scroll vers le premier champ en erreur (`setFocus`).
-- Conserver le POST vers `/api/public/lead` et le tracking `trackEvent` actuels.
-
-### 3. `cabinets-comptables-partenaires.tsx`
-État actuel : `<Input required>` natif, étoiles `*` en texte gris dans le libellé, checkbox groups sans validation visible.
-
-Actions :
-- Passer la soumission en validation contrôlée (état local ou react-hook-form) : à la soumission, vérifier chaque champ (cabinet, directeur, agrément, email, mobile, ≥1 service coché, ≥1 zone cochée, consentement).
-- Remplacer les `*` texte par une **étoile rouge** (`<span className="text-destructive">*</span>`).
-- Champs invalides : bordure `border-destructive`, groupes checkbox invalides : libellé en rouge + petit message.
-- Message d'erreur global en haut du formulaire listant le nombre de champs à corriger.
-
-## Composant partagé
-
-Créer `src/components/ui/required-label.tsx` :
-```tsx
-export function RequiredLabel({ htmlFor, children }) {
-  return (
-    <Label htmlFor={htmlFor}>
-      {children} <span className="text-destructive" aria-hidden>*</span>
-    </Label>
-  );
-}
+Étape 4 / 4 — Vos coordonnées
+  • Nom *
+  • Téléphone *
+  • Email *
+  • Nom de l'entreprise *
+  • Consentement *
 ```
-Réutilisé par les 3 formulaires + `Field` existant de `demande-soumissions`.
 
-## Détails techniques
+La barre de progression passe de 33/66/100 % à 25/50/75/100 %. L'écran de succès reste l'étape 5 (statut interne).
 
-- Couleur étoile et bordure d'erreur : token sémantique `text-destructive` / `border-destructive` déjà défini dans `src/styles.css` (rouge oklch).
-- Messages d'erreur en français (et anglais pour `/en/get-quotes` via les `c.errXxx` déjà présents dans `demande-soumissions`).
-- `aria-invalid="true"` + `aria-describedby` vers l'id du message → accessibilité.
-- Aucune modification backend ni du schéma `LeadSchema` dans `src/routes/api/public/lead.ts` (déjà strict).
+## Changements techniques
+
+Fichier touché : `src/routes/demande-soumissions.tsx` uniquement.
+
+1. **Schéma Zod** — ajouter 5 champs requis :
+   - `nbAssocies` : `z.coerce.number().int().min(1).max(50)` avec message FR/EN.
+   - `bureau` : `z.enum(["oui","non"])` (libellés UI traduits).
+   - `logo` : `z.enum(["oui","non"])`.
+   - `siteWeb` : `z.enum(["oui","non"])`.
+   - `publicite` : `z.enum(["oui","non"])`.
+   - `description` reste, mais devient strictement obligatoire (déjà fait, libellé mis à jour).
+
+2. **COPY FR/EN** — ajouter libellés `lDetails`, `lAssocies`, `lBureau`, `lLogo`, `lSite`, `lPub` + messages d'erreur `errAssocies`, `errBureau`, `errLogo`, `errSite`, `errPub` + nouveaux titres d'étape `s1Title`…`s4Title` et fonction `stepOf` mise à jour pour `n / 4`.
+
+3. **STEP_FIELDS** — passer de 3 à 4 entrées et redistribuer les champs comme ci-dessus.
+
+4. **Composant `Page`** — ajouter le bloc `step === 2` (présence commerciale) et renuméroter les blocs existants (localisation → 3, coordonnées → 4). Mettre à jour les boutons « Retour » / « Suivant », la `progress` (= `step / 4 * 100`), et l'étape 5 (succès).
+
+5. **Composant `RadioYesNo`** (helper local) — petits boutons radio stylés via `<input type="radio">` + libellés Oui/Non (Yes/No), gérés par `register()` de react-hook-form, intégrés dans le composant `Field` existant pour bénéficier de l'étoile rouge et de la bordure d'erreur déjà en place.
+
+6. **Payload envoyé à `/api/public/lead`** — étendre le `body` avec les 5 nouveaux champs. Le schéma serveur `LeadSchema` est strict et inconnu ne traverse pas : il faut **mettre à jour `src/routes/api/public/lead.ts`** pour accepter ces 5 nouveaux champs optionnels côté serveur (longueurs/regex sécurisés), afin de ne rien casser et de transmettre les données au webhook GHL.
 
 ## Hors périmètre
 
-- Pas de modification du design global ni des couleurs du thème.
-- Pas de changement de logique d'envoi (webhook GHL inchangé).
-- Pas d'ajout de nouveaux champs.
+- Pas de modification du formulaire d'accueil `LeadFormCard` (reste court, mono-page).
+- Pas de modification du formulaire « cabinets partenaires ».
+- Pas de changement de design global, ni des étapes de succès et des asides existants.
+- Pas de nouveaux fichiers de composants ; tout reste dans `demande-soumissions.tsx` + extension de la route API existante.
