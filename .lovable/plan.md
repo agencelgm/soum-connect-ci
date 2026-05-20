@@ -1,89 +1,71 @@
-ns# Plan — Interconnexion SEO/GEO/AEO de toutes les pages
-
 ## Objectif
 
-Créer un **maillage interne fort** entre toutes les pages du site pour :
-- **SEO** : faire circuler l'autorité (PageRank interne), aider Google à découvrir et hiérarchiser les pages
-- **GEO** (Generative Engine Optimization) : donner aux LLM (ChatGPT, Perplexity, Claude) des chemins clairs pour comprendre la structure et citer le bon contenu
-- **AEO** (Answer Engine Optimization) : relier les questions/réponses aux pages services et conversion
+Rendre **tous** les champs des formulaires du site obligatoires, et signaler clairement à la soumission chaque champ vide, mal rempli ou invalide avec :
+- une **étoile rouge `*`** à droite du libellé de chaque champ requis,
+- une **bordure rouge** + **message d'erreur** sous le champ concerné quand l'utilisateur soumet sans le remplir correctement,
+- un **scroll automatique** vers le premier champ en erreur.
 
-## État actuel (audit)
+## Formulaires concernés
 
-**Pages FR existantes (16)** :
-- `/` (accueil)
-- Services : `/creation-entreprise-cote-divoire`, `/comptabilite-entreprise-abidjan`, `/declaration-fiscale-cote-divoire`, `/domiciliation-entreprise-abidjan`
-- Géo / Cabinets : `/cabinet-comptable-abidjan`, `/cabinets-comptables-partenaires`
-- Diaspora : `/creation-entreprise-diaspora-ivoirienne`
-- Conversion : `/demande-soumissions`
-- Contenu : `/blog`, `/guides`, `/guides/$slug`, `/faq`, `/comment-ca-marche`, `/a-propos`
+Trois formulaires existent dans le site :
 
-**Pages EN (5)** : `/en`, `/en/about`, `/en/get-quotes`, `/en/company-registration-ivory-coast`, `/en/accounting-firm-abidjan`
+1. `src/routes/demande-soumissions.tsx` — formulaire multi-étapes (utilisé aussi par `/en/get-quotes`)
+2. `src/components/home/LeadFormCard.tsx` — formulaire court sur la page d'accueil
+3. `src/routes/cabinets-comptables-partenaires.tsx` — formulaire candidature cabinet partenaire
 
-**Constats** :
-- Le **Header** ne liste que 4 services + 4 liens nav → toutes les pages ne sont pas atteignables en 1 clic
-- Le **Footer** couvre déjà bien les services et liens utiles ✅
-- **Aucun lien contextuel** entre pages services (ex : page Comptabilité ne renvoie pas vers Fiscalité)
-- **Pas de breadcrumbs visibles** (seulement dans JSON-LD)
-- **Pas de bloc "Pages liées" / "Voir aussi"** en bas de page
-- **FAQ** ne renvoie pas vers les pages services correspondantes
-- **Guides** ne renvoient pas vers services/conversion
-- Pas de liens entre Blog ↔ Guides ↔ Services
-- `cabinets-comptables-partenaires` orphelin (uniquement dans footer)
-- `creation-entreprise-diaspora-ivoirienne` orphelin du header
+## Changements par formulaire
 
-## Étape 1 (cette session) — Fondations du maillage
+### 1. `demande-soumissions.tsx`
+État actuel : déjà sur `react-hook-form` + `zod`, le composant `Field` gère déjà l'étoile et les erreurs. Manquent uniquement :
+- `description` (étape 1), `budget` (étape 2), `entreprise` (étape 3) → marqués optionnels.
 
-Périmètre limité et concret. On posera les briques réutilisables avant d'enrichir page par page.
+Actions :
+- Dans le schéma Zod : passer ces 3 champs en `.min(1, "Champ requis")` (avec longueur max raisonnable).
+- Ajouter `required` sur les 3 `<Field>` correspondants → l'étoile rouge apparaît automatiquement.
+- Vérifier que la couleur de l'étoile et des messages utilise bien `text-destructive` (token oklch).
 
-### 1.1 Composant `<Breadcrumbs />` visible
-- Nouveau composant `src/components/seo/Breadcrumbs.tsx`
-- Affiché en haut de chaque page intérieure (sous le header)
-- Format : `Accueil › Services › Création d'entreprise`
-- Liens cliquables (sauf le dernier)
-- Synchronisé avec le breadcrumb JSON-LD déjà présent dans `seo.ts`
+### 2. `LeadFormCard.tsx` (accueil)
+État actuel : validation native HTML + `toast.error` global, pas de signalement par champ.
 
-### 1.2 Composant `<RelatedLinks />` (bloc "Voir aussi")
-- Nouveau composant `src/components/seo/RelatedLinks.tsx`
-- Bloc en bas de chaque page avec 3–4 liens contextuels vers pages connexes + 1 CTA vers `/demande-soumissions`
-- Configurable par page (titre + liste de `{to, label, description}`)
+Actions :
+- Migrer vers `react-hook-form` + schéma Zod (service, ville, nom, mobile, email — tous requis, email validé, mobile regex `^[+0-9 ]+$` min 6).
+- Ajouter une **étoile rouge** à droite de chaque `<Label>` (composant local `RequiredLabel` ou réutilisable).
+- En cas d'erreur : `aria-invalid` + classe `border-destructive ring-destructive/40` sur le champ + message rouge dessous.
+- À la soumission, scroll vers le premier champ en erreur (`setFocus`).
+- Conserver le POST vers `/api/public/lead` et le tracking `trackEvent` actuels.
 
-### 1.3 Mapping des relations entre pages
-- Nouveau fichier `src/lib/page-relations.ts`
-- Définit pour chaque route : breadcrumb + pages liées (sémantiquement pertinentes)
-- Exemple :
-  - `/comptabilite-entreprise-abidjan` → liés : Fiscalité, Création, Cabinet Abidjan, Guides comptabilité
-  - `/faq` → liens vers chaque service mentionné dans les questions
-  - `/guides/$slug` → liens vers le service correspondant + 2 guides connexes
+### 3. `cabinets-comptables-partenaires.tsx`
+État actuel : `<Input required>` natif, étoiles `*` en texte gris dans le libellé, checkbox groups sans validation visible.
 
-### 1.4 Intégration sur les 4 pages services + page géo
-- Brancher Breadcrumbs + RelatedLinks sur :
-  - `/creation-entreprise-cote-divoire`
-  - `/comptabilite-entreprise-abidjan`
-  - `/declaration-fiscale-cote-divoire`
-  - `/domiciliation-entreprise-abidjan`
-  - `/cabinet-comptable-abidjan`
+Actions :
+- Passer la soumission en validation contrôlée (état local ou react-hook-form) : à la soumission, vérifier chaque champ (cabinet, directeur, agrément, email, mobile, ≥1 service coché, ≥1 zone cochée, consentement).
+- Remplacer les `*` texte par une **étoile rouge** (`<span className="text-destructive">*</span>`).
+- Champs invalides : bordure `border-destructive`, groupes checkbox invalides : libellé en rouge + petit message.
+- Message d'erreur global en haut du formulaire listant le nombre de champs à corriger.
 
-### 1.5 Header — menu services étendu
-- Ajouter dans le dropdown "Services" du header : `Cabinet comptable Abidjan`, `Création diaspora`, `Cabinets partenaires`
-- Garantit que les pages orphelines sont atteignables depuis n'importe où
+## Composant partagé
 
-## Étapes suivantes (sessions futures, à valider après l'étape 1)
-
-- **Étape 2** : Maillage des pages contenus (FAQ ↔ Services, Guides ↔ Services, Blog ↔ Guides)
-- **Étape 3** : Liens contextuels *dans le corps* du texte (in-content linking, le plus puissant en SEO) — réécriture light des sections clés pour intégrer des liens naturels vers les pages cibles
-- **Étape 4** : Bloc "Questions fréquentes" sur chaque page service (extrait de la FAQ ciblé) avec lien vers FAQ complète
-- **Étape 5** : Pages EN — mirrorer la même logique de maillage en anglais
-- **Étape 6** : JSON-LD avancé (`mentions`, `isPartOf`, `about`) pour expliciter les relations sémantiques aux LLM (GEO/AEO)
-- **Étape 7** : Sitemap HTML public `/plan-du-site` (utile SEO + GEO)
+Créer `src/components/ui/required-label.tsx` :
+```tsx
+export function RequiredLabel({ htmlFor, children }) {
+  return (
+    <Label htmlFor={htmlFor}>
+      {children} <span className="text-destructive" aria-hidden>*</span>
+    </Label>
+  );
+}
+```
+Réutilisé par les 3 formulaires + `Field` existant de `demande-soumissions`.
 
 ## Détails techniques
 
-- **Composants 100% frontend**, aucun changement backend
-- Liens via `<Link to=...>` de TanStack Router (type-safe, preload)
-- Tokens design existants (`text-secondary`, `bg-muted`, etc.) — pas de couleurs custom
-- Tout en français (règle projet)
-- Mapping centralisé pour éviter la duplication et faciliter l'évolution
+- Couleur étoile et bordure d'erreur : token sémantique `text-destructive` / `border-destructive` déjà défini dans `src/styles.css` (rouge oklch).
+- Messages d'erreur en français (et anglais pour `/en/get-quotes` via les `c.errXxx` déjà présents dans `demande-soumissions`).
+- `aria-invalid="true"` + `aria-describedby` vers l'id du message → accessibilité.
+- Aucune modification backend ni du schéma `LeadSchema` dans `src/routes/api/public/lead.ts` (déjà strict).
 
-## Livrable de l'étape 1
+## Hors périmètre
 
-3 nouveaux fichiers (`Breadcrumbs.tsx`, `RelatedLinks.tsx`, `page-relations.ts`) + intégration sur 5 pages + extension du header. Résultat : chaque page service devient un **hub** qui renvoie vers ses voisines sémantiques, et chaque page est atteignable en ≤ 2 clics depuis n'importe quel point du site.
+- Pas de modification du design global ni des couleurs du thème.
+- Pas de changement de logique d'envoi (webhook GHL inchangé).
+- Pas d'ajout de nouveaux champs.
