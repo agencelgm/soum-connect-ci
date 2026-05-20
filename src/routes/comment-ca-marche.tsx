@@ -46,7 +46,7 @@ const steps = [
     details: [
       "Type de service recherché",
       "Votre localisation (Abidjan, autre ville CI, ou depuis l'étranger)",
-      "Informations de contact (nom, email, WhatsApp)",
+      "Informations de contact (nom, email, téléphone)",
       "Description rapide de votre besoin (optionnel)",
     ],
     badge: "⏱ 2 minutes en moyenne",

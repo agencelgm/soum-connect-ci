@@ -135,19 +135,19 @@ const COPY = {
     lDelai: "Dans quel délai souhaitez-vous démarrer ?",
     lBudget: "Quel est votre budget mensuel estimé ?",
     lNom: "Votre nom complet",
-    lWhats: "Numéro WhatsApp",
+    lWhats: "Numéro de téléphone",
     whatsPh: "+225 XX XX XX XX",
     lEmail: "Adresse email",
     lEnt: "Nom de votre entreprise",
     entPh: "Si déjà créée",
-    consent: "J'accepte de recevoir les soumissions par email et WhatsApp",
+    consent: "J'accepte de recevoir les soumissions par email et SMS",
     back: "← Retour",
     next: "Suivant →",
     submit: "Envoyer ma demande →",
     sending: "Envoi…",
     secNote: "🔒 Vos données sont confidentielles et ne seront jamais vendues.",
     okTitle: "✅ Votre demande a été envoyée !",
-    okText: "Vous recevrez vos premières soumissions dans les 48 heures sur votre WhatsApp et votre email.",
+    okText: "Vous recevrez vos premières soumissions dans les 48 heures par email et téléphone.",
     okNextTitle: "Ce qui se passe ensuite :",
     okStep1: "Nos cabinets partenaires examinent votre demande",
     okStep2: "Ils vous préparent une soumission personnalisée",
@@ -158,7 +158,7 @@ const COPY = {
     asideSat: "4.8/5 satisfaction",
     asideData: "Données sécurisées",
     asideAccred: "Cabinets agréés OECCA-CI",
-    asideWaLabel: "WhatsApp : +225 07 67 00 96 29",
+    asideWaLabel: "",
     quote: "« J'ai reçu 4 soumissions en 24h. J'ai économisé 40 % par rapport à mon ancien cabinet. »",
     quoteAuthor: "— Aya K., Abidjan",
     errService: "Veuillez choisir un service",
@@ -166,7 +166,7 @@ const COPY = {
     errLoc: "Veuillez choisir votre localisation",
     errDelai: "Veuillez choisir un délai",
     errNom: "Nom requis",
-    errWhats: "Numéro WhatsApp invalide",
+    errWhats: "Numéro de téléphone invalide",
     errWhatsFmt: "Chiffres, espaces et + uniquement",
     errEmail: "Email invalide",
     errConsent: "Vous devez accepter pour continuer",
@@ -187,19 +187,19 @@ const COPY = {
     lDelai: "When do you want to start?",
     lBudget: "What's your estimated monthly budget?",
     lNom: "Your full name",
-    lWhats: "WhatsApp number",
+    lWhats: "Phone number",
     whatsPh: "+225 XX XX XX XX",
     lEmail: "Email address",
     lEnt: "Your company name",
     entPh: "If already registered",
-    consent: "I agree to receive quotes by email and WhatsApp",
+    consent: "I agree to receive quotes by email and SMS",
     back: "← Back",
     next: "Next →",
     submit: "Send my request →",
     sending: "Sending…",
     secNote: "🔒 Your data is confidential and will never be sold.",
     okTitle: "✅ Your request has been sent!",
-    okText: "You'll receive your first quotes within 48 hours on your WhatsApp and email.",
+    okText: "You'll receive your first quotes within 48 hours by email and phone.",
     okNextTitle: "What happens next:",
     okStep1: "Our partner firms review your request",
     okStep2: "They prepare a personalised quote for you",
@@ -210,7 +210,7 @@ const COPY = {
     asideSat: "4.8/5 satisfaction",
     asideData: "Secure data",
     asideAccred: "OECCA-CI certified firms",
-    asideWaLabel: "WhatsApp: +225 07 67 00 96 29",
+    asideWaLabel: "",
     quote: "\"I received 4 quotes within 24h. I saved 40% compared to my previous firm.\"",
     quoteAuthor: "— Aya K., Abidjan",
     errService: "Please choose a service",
@@ -218,7 +218,7 @@ const COPY = {
     errLoc: "Please choose your location",
     errDelai: "Please choose a timeframe",
     errNom: "Name required",
-    errWhats: "Invalid WhatsApp number",
+    errWhats: "Invalid phone number",
     errWhatsFmt: "Digits, spaces and + only",
     errEmail: "Invalid email",
     errConsent: "You must accept to continue",
@@ -654,15 +654,6 @@ function Page() {
                 </li>
                 <li className="flex items-center gap-2">
                   <BadgeCheck className="w-4 h-4 text-accent" /> {c.asideAccred}
-                </li>
-                <li className="flex items-center gap-2">
-                  <Phone className="w-4 h-4 text-[#25D366]" />
-                  <a
-                    href="https://wa.me/2250767009629"
-                    className="hover:text-secondary"
-                  >
-                    {c.asideWaLabel}
-                  </a>
                 </li>
               </ul>
             </div>
