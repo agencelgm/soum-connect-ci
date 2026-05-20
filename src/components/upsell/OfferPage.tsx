@@ -48,7 +48,7 @@ export function OfferPage({
     } catch (err) {
       console.error("[upsell] submit failed", err);
     }
-    navigate({ to: nextPath });
+    navigate({ to: nextPath as never });
   };
 
   return (
