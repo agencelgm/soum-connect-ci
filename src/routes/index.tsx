@@ -363,26 +363,26 @@ export function Index() {
           </h2>
           <p className="mt-2 text-muted-foreground italic">{h.seoSubtitle}</p>
 
-          <div className="mt-8 grid gap-10 md:grid-cols-[1fr_320px] items-start">
+          <div className="mt-8 grid gap-10 md:grid-cols-2 items-start">
             <p className="text-sm md:text-base text-muted-foreground leading-relaxed">{h.seoP1}</p>
             <img
               src={seoMeeting}
               alt=""
-              width={1024}
-              height={768}
+              width={1920}
+              height={1440}
               loading="lazy"
-              className="hidden md:block w-full rounded-lg shadow-md object-cover aspect-[4/3]"
+              className="hidden md:block w-full rounded-xl shadow-lg object-cover aspect-[4/3]"
             />
           </div>
 
-          <div className="mt-10 grid gap-10 md:grid-cols-[320px_1fr] items-start">
+          <div className="mt-10 grid gap-10 md:grid-cols-2 items-start">
             <img
               src={seoEntrepreneur}
               alt=""
-              width={1024}
-              height={768}
+              width={1920}
+              height={1440}
               loading="lazy"
-              className="hidden md:block w-full rounded-lg shadow-md object-cover aspect-[4/3]"
+              className="hidden md:block w-full rounded-xl shadow-lg object-cover aspect-[4/3]"
             />
             <div>
               <p className="text-sm md:text-base text-muted-foreground leading-relaxed">{h.seoP2}</p>
@@ -401,7 +401,7 @@ export function Index() {
             </div>
           </div>
 
-          <div className="mt-10 grid gap-10 md:grid-cols-[1fr_320px] items-start">
+          <div className="mt-10 grid gap-10 md:grid-cols-2 items-start">
             <div>
               <h3 className="font-heading text-base font-bold text-primary">{h.seoNeedsTitle}</h3>
               <ul className="mt-3 grid sm:grid-cols-2 gap-2 text-sm text-muted-foreground">
@@ -419,10 +419,10 @@ export function Index() {
             <img
               src={seoDiaspora}
               alt=""
-              width={1024}
-              height={768}
+              width={1920}
+              height={1440}
               loading="lazy"
-              className="hidden md:block w-full rounded-lg shadow-md object-cover aspect-[4/3]"
+              className="hidden md:block w-full rounded-xl shadow-lg object-cover aspect-[4/3]"
             />
           </div>
 
