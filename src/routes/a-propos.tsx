@@ -2,6 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { buildPageHead } from "@/lib/seo";
 import { AboutPage } from "@/components/pages/AboutPage";
 import { getTranslations } from "@/lib/translations";
+import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+import { RelatedLinks } from "@/components/seo/RelatedLinks";
+import { getPageRelations } from "@/lib/page-relations";
 
 export const Route = createFileRoute("/a-propos")({
   head: () => {
@@ -18,5 +21,16 @@ export const Route = createFileRoute("/a-propos")({
       ],
     });
   },
-  component: AboutPage,
+  component: AProposPage,
 });
+
+function AProposPage() {
+  const rel = getPageRelations("/a-propos");
+  return (
+    <>
+      {rel && <Breadcrumbs items={rel.breadcrumb} />}
+      <AboutPage />
+      {rel && <RelatedLinks items={rel.related} />}
+    </>
+  );
+}

@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { buildPageHead } from "@/lib/seo";
 import { getArticleBySlug } from "@/lib/guides-data";
 import { NotFoundPage } from "@/components/pages/NotFoundPage";
+import { RelatedLinks } from "@/components/seo/RelatedLinks";
+import { getPageRelations } from "@/lib/page-relations";
 
 export const Route = createFileRoute("/guides/$slug")({
   head: ({ params }) => {
@@ -122,6 +124,10 @@ function GuideSlugPage() {
           </div>
         </div>
       </section>
+      {(() => {
+        const rel = getPageRelations("/guides");
+        return rel ? <RelatedLinks items={rel.related} title="Pages liées" subtitle="Explorez nos services et autres ressources." /> : null;
+      })()}
     </main>
   );
 }

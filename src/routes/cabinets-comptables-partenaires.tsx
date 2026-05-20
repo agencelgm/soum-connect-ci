@@ -21,6 +21,9 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { buildPageHead, faqSchema } from "@/lib/seo";
+import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+import { RelatedLinks } from "@/components/seo/RelatedLinks";
+import { getPageRelations } from "@/lib/page-relations";
 
 const PARTNER_FAQS = [
   {
@@ -156,6 +159,10 @@ function Page() {
 
   return (
     <main>
+      {(() => {
+        const rel = getPageRelations("/cabinets-comptables-partenaires");
+        return rel ? <Breadcrumbs items={rel.breadcrumb} /> : null;
+      })()}
       {/* HERO */}
       <section className="bg-primary text-primary-foreground">
         <div className="container-app py-20 md:py-28 text-center">
@@ -390,6 +397,10 @@ function Page() {
           </Accordion>
         </div>
       </section>
+      {(() => {
+        const rel = getPageRelations("/cabinets-comptables-partenaires");
+        return rel ? <RelatedLinks items={rel.related} /> : null;
+      })()}
     </main>
   );
 }
