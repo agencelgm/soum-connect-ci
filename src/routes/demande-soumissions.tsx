@@ -726,37 +726,6 @@ function Page() {
                   </div>
                 )}
 
-                {step === 5 && (
-                  <div key="s5" className="animate-fade-in text-center py-6">
-                    <div className="mx-auto w-16 h-16 rounded-full bg-accent/15 flex items-center justify-center">
-                      <CheckCircle2 className="w-10 h-10 text-accent" />
-                    </div>
-                    <h2 className="mt-5 font-heading text-2xl font-bold text-primary">
-                      {c.okTitle}
-                    </h2>
-                    <p className="mt-3 text-muted-foreground">
-                      {c.okText}
-                    </p>
-
-                    <div className="mt-6 rounded-xl bg-[#F8FAFC] border border-border p-5 text-left">
-                      <p className="font-semibold text-primary mb-3">{c.okNextTitle}</p>
-                      <ol className="space-y-2 text-sm text-foreground list-decimal list-inside">
-                        <li>{c.okStep1}</li>
-                        <li>{c.okStep2}</li>
-                        <li>{c.okStep3}</li>
-                      </ol>
-                    </div>
-
-                    <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
-                      <Button asChild variant="outline">
-                        <Link to={homeHref}>{c.backHome}</Link>
-                      </Button>
-                      <Button asChild className="bg-secondary hover:bg-secondary-dark text-white">
-                        <Link to={allServicesHref}>{c.moreServices}</Link>
-                      </Button>
-                    </div>
-                  </div>
-                )}
               </form>
             </div>
           </div>
