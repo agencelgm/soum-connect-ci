@@ -38,9 +38,6 @@ import { useLanguage } from "@/lib/language-context";
 import { getCounterpart } from "@/lib/route-map";
 import heroAccountant from "@/assets/home/hero-accountant.png";
 import processCouple from "@/assets/home/process-couple.png";
-import seoMeeting from "@/assets/home/seo-meeting.jpg";
-import seoEntrepreneur from "@/assets/home/seo-entrepreneur.jpg";
-import seoDiaspora from "@/assets/home/seo-diaspora.jpg";
 
 const TITLE =
   "Cabinet Comptable Côte d'Ivoire | Comparez 5 Soumissions Gratuitement | SoumissionsComptables.ci";
@@ -363,27 +360,14 @@ export function Index() {
           </h2>
           <p className="mt-2 text-muted-foreground italic">{h.seoSubtitle}</p>
 
-          <div className="mt-8 grid gap-10 md:grid-cols-2 items-start">
+          <div className="mt-8 grid gap-8 md:grid-cols-[160px_1fr] items-start">
+            <div className="hidden md:flex h-40 rounded-lg bg-gradient-to-br from-primary to-[#1a2f5a] items-center justify-center">
+              <Building2 className="h-16 w-16 text-white/30" aria-hidden="true" />
+            </div>
             <p className="text-sm md:text-base text-muted-foreground leading-relaxed">{h.seoP1}</p>
-            <img
-              src={seoMeeting}
-              alt=""
-              width={1920}
-              height={1440}
-              loading="lazy"
-              className="hidden md:block w-full rounded-xl shadow-lg object-cover aspect-[4/3]"
-            />
           </div>
 
-          <div className="mt-10 grid gap-10 md:grid-cols-2 items-start">
-            <img
-              src={seoEntrepreneur}
-              alt=""
-              width={1920}
-              height={1440}
-              loading="lazy"
-              className="hidden md:block w-full rounded-xl shadow-lg object-cover aspect-[4/3]"
-            />
+          <div className="mt-8 grid gap-8 md:grid-cols-[1fr_160px] items-start">
             <div>
               <p className="text-sm md:text-base text-muted-foreground leading-relaxed">{h.seoP2}</p>
               <h3 className="mt-6 font-heading text-base font-bold text-primary">{h.seoTypesTitle}</h3>
@@ -399,9 +383,15 @@ export function Index() {
                 <strong className="text-primary">{h.seoP3Strong}</strong>{h.seoP3}
               </p>
             </div>
+            <div className="hidden md:flex h-40 rounded-lg bg-gradient-to-br from-secondary/20 to-secondary/10 items-center justify-center">
+              <FileCheck className="h-16 w-16 text-secondary" aria-hidden="true" />
+            </div>
           </div>
 
-          <div className="mt-10 grid gap-10 md:grid-cols-2 items-start">
+          <div className="mt-8 grid gap-8 md:grid-cols-[160px_1fr] items-start">
+            <div className="hidden md:flex h-40 rounded-lg bg-gradient-to-br from-accent/20 to-accent/10 items-center justify-center">
+              <Globe2 className="h-16 w-16 text-accent" aria-hidden="true" />
+            </div>
             <div>
               <h3 className="font-heading text-base font-bold text-primary">{h.seoNeedsTitle}</h3>
               <ul className="mt-3 grid sm:grid-cols-2 gap-2 text-sm text-muted-foreground">
@@ -416,26 +406,23 @@ export function Index() {
                 {h.seoLocation}
               </p>
             </div>
-            <img
-              src={seoDiaspora}
-              alt=""
-              width={1920}
-              height={1440}
-              loading="lazy"
-              className="hidden md:block w-full rounded-xl shadow-lg object-cover aspect-[4/3]"
-            />
           </div>
 
-          <div className="mt-10">
-            <h3 className="font-heading text-base font-bold text-primary">{h.seoAdvantagesTitle}</h3>
-            <ul className="mt-3 grid sm:grid-cols-2 gap-2 text-sm text-muted-foreground">
-              {h.seoAdvantages.map((aa, i) => (
-                <li key={i} className="flex items-start gap-2">
-                  <CheckCircle className="h-4 w-4 text-accent mt-0.5 shrink-0" aria-hidden="true" />
-                  <span>{aa}</span>
-                </li>
-              ))}
-            </ul>
+          <div className="mt-8 grid gap-8 md:grid-cols-[1fr_160px] items-start">
+            <div>
+              <h3 className="font-heading text-base font-bold text-primary">{h.seoAdvantagesTitle}</h3>
+              <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+                {h.seoAdvantages.map((aa, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <CheckCircle className="h-4 w-4 text-accent mt-0.5 shrink-0" aria-hidden="true" />
+                    <span>{aa}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="hidden md:flex h-40 rounded-lg bg-gradient-to-br from-primary to-[#1a2f5a] items-center justify-center">
+              <ShieldCheck className="h-16 w-16 text-white/30" aria-hidden="true" />
+            </div>
           </div>
 
           <blockquote className="mt-10 border-l-4 border-secondary bg-[#F8FAFC] p-6 rounded-r-lg italic text-muted-foreground leading-relaxed">
@@ -449,16 +436,16 @@ export function Index() {
       </section>
 
       {/* ====== 11. TRUST BADGES ====== */}
-      <section aria-label="Garanties" className="bg-secondary text-white">
-        <div className="container-app py-12 md:py-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      <section aria-label="Garanties" className="bg-[#F8FAFC]">
+        <div className="container-app section grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {h.trustBadges.map((b, i) => {
             const Icon = TRUST_ICONS[i];
             return (
               <div key={i} className="flex flex-col items-center text-center">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/15 ring-2 ring-white/40">
-                  <Icon className="h-8 w-8 text-white" aria-hidden="true" />
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
+                  <Icon className="h-8 w-8" aria-hidden="true" />
                 </div>
-                <p className="mt-4 text-sm font-semibold text-white max-w-[220px]">{b}</p>
+                <p className="mt-4 text-sm font-medium text-primary max-w-[220px]">{b}</p>
               </div>
             );
           })}
