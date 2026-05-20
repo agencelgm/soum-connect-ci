@@ -43,6 +43,18 @@ import seoAccountantDesk from "@/assets/home/seo-accountant-desk.jpg";
 import seoHandshake from "@/assets/home/seo-handshake-client.jpg";
 import seoOfficeAbidjan from "@/assets/home/seo-office-abidjan.jpg";
 import seoEntrepreneurs from "@/assets/home/seo-entrepreneurs.jpg";
+import svcComptaGenerale from "@/assets/services/comptabilite-generale.jpg";
+import svcCreationEntreprise from "@/assets/services/creation-entreprise.jpg";
+import svcFiscalite from "@/assets/services/fiscalite.jpg";
+import svcAudit from "@/assets/services/audit.jpg";
+import svcPaieCnps from "@/assets/services/paie-cnps.jpg";
+import svcConseilJuridique from "@/assets/services/conseil-juridique.jpg";
+import svcDomiciliation from "@/assets/services/domiciliation.jpg";
+import svcDiaspora from "@/assets/services/diaspora.jpg";
+import svcReporting from "@/assets/services/reporting.jpg";
+import svcBancaire from "@/assets/services/bancaire.jpg";
+import svcConformiteFiscale from "@/assets/services/conformite-fiscale.jpg";
+import svcAuditInterne from "@/assets/services/audit-interne.jpg";
 
 const TITLE =
   "Cabinet Comptable Côte d'Ivoire | Comparez 5 Soumissions Gratuitement | SoumissionsComptables.ci";
@@ -75,6 +87,11 @@ export function Index() {
   const SERVICE_ICONS = [
     Calculator, Building2, FileCheck, Search, Users, Scale,
     MapPin, Globe2, BarChart3, Landmark, AlertTriangle, ShieldAlert,
+  ];
+  const SERVICE_IMAGES = [
+    svcComptaGenerale, svcCreationEntreprise, svcFiscalite, svcAudit,
+    svcPaieCnps, svcConseilJuridique, svcDomiciliation, svcDiaspora,
+    svcReporting, svcBancaire, svcConformiteFiscale, svcAuditInterne,
   ];
   const STEP_ICONS = [FileText, ClipboardList, CheckCircle];
   const TRUST_ICONS = [ClipboardList, Users, Award, Smartphone];
