@@ -4,6 +4,9 @@ import { ArrowRight, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { buildPageHead } from "@/lib/seo";
+import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+import { RelatedLinks } from "@/components/seo/RelatedLinks";
+import { getPageRelations } from "@/lib/page-relations";
 import {
   ARTICLES_SORTED,
   FILTERS,
@@ -85,6 +88,7 @@ function ArticleCard({ article, featured = false }: { article: Article; featured
 
 function Page() {
   const [filter, setFilter] = useState<string>("all");
+  const rel = getPageRelations("/guides");
 
   const filtered =
     filter === "all"
@@ -95,6 +99,7 @@ function Page() {
 
   return (
     <main>
+      {rel && <Breadcrumbs items={rel.breadcrumb} />}
       {/* Hero */}
       <section className="bg-[#F8FAFC] border-b border-border">
         <div className="container-app py-14 md:py-20 text-center">
@@ -143,6 +148,7 @@ function Page() {
           </div>
         )}
       </section>
+      {rel && <RelatedLinks items={rel.related} />}
     </main>
   );
 }
