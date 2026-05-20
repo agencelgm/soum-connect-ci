@@ -32,9 +32,9 @@ function ThankYouPage() {
             Thank you!
           </h1>
           <p className="mt-4 text-base md:text-lg text-foreground leading-relaxed">
-            Thank you for filling out our form. A team member will contact you
-            within <strong>24 business hours</strong> to refer you to the best
-            accounting firm.
+            Thank you, all your answers have been recorded for this service as
+            well as for the additional services. An advisor will contact you
+            within the <strong>next 24 business hours</strong>.
           </p>
 
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">

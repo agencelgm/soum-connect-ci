@@ -10,6 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as OffreSiteInternetRouteImport } from './routes/offre-site-internet'
+import { Route as OffreLogoRouteImport } from './routes/offre-logo'
 import { Route as MerciRouteImport } from './routes/merci'
 import { Route as GuidesRouteImport } from './routes/guides'
 import { Route as FaqRouteImport } from './routes/faq'
@@ -27,16 +29,29 @@ import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EnIndexRouteImport } from './routes/en/index'
 import { Route as GuidesSlugRouteImport } from './routes/guides.$slug'
+import { Route as EnWebsiteOfferRouteImport } from './routes/en/website-offer'
 import { Route as EnThankYouRouteImport } from './routes/en/thank-you'
+import { Route as EnLogoOfferRouteImport } from './routes/en/logo-offer'
 import { Route as EnGetQuotesRouteImport } from './routes/en/get-quotes'
 import { Route as EnCompanyRegistrationIvoryCoastRouteImport } from './routes/en/company-registration-ivory-coast'
 import { Route as EnAccountingFirmAbidjanRouteImport } from './routes/en/accounting-firm-abidjan'
 import { Route as EnAboutRouteImport } from './routes/en/about'
+import { Route as ApiPublicLeadUpsellRouteImport } from './routes/api/public/lead-upsell'
 import { Route as ApiPublicLeadRouteImport } from './routes/api/public/lead'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OffreSiteInternetRoute = OffreSiteInternetRouteImport.update({
+  id: '/offre-site-internet',
+  path: '/offre-site-internet',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OffreLogoRoute = OffreLogoRouteImport.update({
+  id: '/offre-logo',
+  path: '/offre-logo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MerciRoute = MerciRouteImport.update({
@@ -130,9 +145,19 @@ const GuidesSlugRoute = GuidesSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => GuidesRoute,
 } as any)
+const EnWebsiteOfferRoute = EnWebsiteOfferRouteImport.update({
+  id: '/en/website-offer',
+  path: '/en/website-offer',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EnThankYouRoute = EnThankYouRouteImport.update({
   id: '/en/thank-you',
   path: '/en/thank-you',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EnLogoOfferRoute = EnLogoOfferRouteImport.update({
+  id: '/en/logo-offer',
+  path: '/en/logo-offer',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EnGetQuotesRoute = EnGetQuotesRouteImport.update({
@@ -154,6 +179,11 @@ const EnAccountingFirmAbidjanRoute = EnAccountingFirmAbidjanRouteImport.update({
 const EnAboutRoute = EnAboutRouteImport.update({
   id: '/en/about',
   path: '/en/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicLeadUpsellRoute = ApiPublicLeadUpsellRouteImport.update({
+  id: '/api/public/lead-upsell',
+  path: '/api/public/lead-upsell',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicLeadRoute = ApiPublicLeadRouteImport.update({
@@ -178,15 +208,20 @@ export interface FileRoutesByFullPath {
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRouteWithChildren
   '/merci': typeof MerciRoute
+  '/offre-logo': typeof OffreLogoRoute
+  '/offre-site-internet': typeof OffreSiteInternetRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
   '/en/get-quotes': typeof EnGetQuotesRoute
+  '/en/logo-offer': typeof EnLogoOfferRoute
   '/en/thank-you': typeof EnThankYouRoute
+  '/en/website-offer': typeof EnWebsiteOfferRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/en/': typeof EnIndexRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
+  '/api/public/lead-upsell': typeof ApiPublicLeadUpsellRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -204,15 +239,20 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRouteWithChildren
   '/merci': typeof MerciRoute
+  '/offre-logo': typeof OffreLogoRoute
+  '/offre-site-internet': typeof OffreSiteInternetRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
   '/en/get-quotes': typeof EnGetQuotesRoute
+  '/en/logo-offer': typeof EnLogoOfferRoute
   '/en/thank-you': typeof EnThankYouRoute
+  '/en/website-offer': typeof EnWebsiteOfferRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/en': typeof EnIndexRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
+  '/api/public/lead-upsell': typeof ApiPublicLeadUpsellRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -231,15 +271,20 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRouteWithChildren
   '/merci': typeof MerciRoute
+  '/offre-logo': typeof OffreLogoRoute
+  '/offre-site-internet': typeof OffreSiteInternetRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
   '/en/get-quotes': typeof EnGetQuotesRoute
+  '/en/logo-offer': typeof EnLogoOfferRoute
   '/en/thank-you': typeof EnThankYouRoute
+  '/en/website-offer': typeof EnWebsiteOfferRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/en/': typeof EnIndexRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
+  '/api/public/lead-upsell': typeof ApiPublicLeadUpsellRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -259,15 +304,20 @@ export interface FileRouteTypes {
     | '/faq'
     | '/guides'
     | '/merci'
+    | '/offre-logo'
+    | '/offre-site-internet'
     | '/sitemap.xml'
     | '/en/about'
     | '/en/accounting-firm-abidjan'
     | '/en/company-registration-ivory-coast'
     | '/en/get-quotes'
+    | '/en/logo-offer'
     | '/en/thank-you'
+    | '/en/website-offer'
     | '/guides/$slug'
     | '/en/'
     | '/api/public/lead'
+    | '/api/public/lead-upsell'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -285,15 +335,20 @@ export interface FileRouteTypes {
     | '/faq'
     | '/guides'
     | '/merci'
+    | '/offre-logo'
+    | '/offre-site-internet'
     | '/sitemap.xml'
     | '/en/about'
     | '/en/accounting-firm-abidjan'
     | '/en/company-registration-ivory-coast'
     | '/en/get-quotes'
+    | '/en/logo-offer'
     | '/en/thank-you'
+    | '/en/website-offer'
     | '/guides/$slug'
     | '/en'
     | '/api/public/lead'
+    | '/api/public/lead-upsell'
   id:
     | '__root__'
     | '/'
@@ -311,15 +366,20 @@ export interface FileRouteTypes {
     | '/faq'
     | '/guides'
     | '/merci'
+    | '/offre-logo'
+    | '/offre-site-internet'
     | '/sitemap.xml'
     | '/en/about'
     | '/en/accounting-firm-abidjan'
     | '/en/company-registration-ivory-coast'
     | '/en/get-quotes'
+    | '/en/logo-offer'
     | '/en/thank-you'
+    | '/en/website-offer'
     | '/guides/$slug'
     | '/en/'
     | '/api/public/lead'
+    | '/api/public/lead-upsell'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -338,14 +398,19 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   GuidesRoute: typeof GuidesRouteWithChildren
   MerciRoute: typeof MerciRoute
+  OffreLogoRoute: typeof OffreLogoRoute
+  OffreSiteInternetRoute: typeof OffreSiteInternetRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   EnAboutRoute: typeof EnAboutRoute
   EnAccountingFirmAbidjanRoute: typeof EnAccountingFirmAbidjanRoute
   EnCompanyRegistrationIvoryCoastRoute: typeof EnCompanyRegistrationIvoryCoastRoute
   EnGetQuotesRoute: typeof EnGetQuotesRoute
+  EnLogoOfferRoute: typeof EnLogoOfferRoute
   EnThankYouRoute: typeof EnThankYouRoute
+  EnWebsiteOfferRoute: typeof EnWebsiteOfferRoute
   EnIndexRoute: typeof EnIndexRoute
   ApiPublicLeadRoute: typeof ApiPublicLeadRoute
+  ApiPublicLeadUpsellRoute: typeof ApiPublicLeadUpsellRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -355,6 +420,20 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/offre-site-internet': {
+      id: '/offre-site-internet'
+      path: '/offre-site-internet'
+      fullPath: '/offre-site-internet'
+      preLoaderRoute: typeof OffreSiteInternetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/offre-logo': {
+      id: '/offre-logo'
+      path: '/offre-logo'
+      fullPath: '/offre-logo'
+      preLoaderRoute: typeof OffreLogoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/merci': {
@@ -476,11 +555,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuidesSlugRouteImport
       parentRoute: typeof GuidesRoute
     }
+    '/en/website-offer': {
+      id: '/en/website-offer'
+      path: '/en/website-offer'
+      fullPath: '/en/website-offer'
+      preLoaderRoute: typeof EnWebsiteOfferRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/en/thank-you': {
       id: '/en/thank-you'
       path: '/en/thank-you'
       fullPath: '/en/thank-you'
       preLoaderRoute: typeof EnThankYouRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/en/logo-offer': {
+      id: '/en/logo-offer'
+      path: '/en/logo-offer'
+      fullPath: '/en/logo-offer'
+      preLoaderRoute: typeof EnLogoOfferRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/en/get-quotes': {
@@ -509,6 +602,13 @@ declare module '@tanstack/react-router' {
       path: '/en/about'
       fullPath: '/en/about'
       preLoaderRoute: typeof EnAboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/lead-upsell': {
+      id: '/api/public/lead-upsell'
+      path: '/api/public/lead-upsell'
+      fullPath: '/api/public/lead-upsell'
+      preLoaderRoute: typeof ApiPublicLeadUpsellRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/lead': {
@@ -549,14 +649,19 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   GuidesRoute: GuidesRouteWithChildren,
   MerciRoute: MerciRoute,
+  OffreLogoRoute: OffreLogoRoute,
+  OffreSiteInternetRoute: OffreSiteInternetRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   EnAboutRoute: EnAboutRoute,
   EnAccountingFirmAbidjanRoute: EnAccountingFirmAbidjanRoute,
   EnCompanyRegistrationIvoryCoastRoute: EnCompanyRegistrationIvoryCoastRoute,
   EnGetQuotesRoute: EnGetQuotesRoute,
+  EnLogoOfferRoute: EnLogoOfferRoute,
   EnThankYouRoute: EnThankYouRoute,
+  EnWebsiteOfferRoute: EnWebsiteOfferRoute,
   EnIndexRoute: EnIndexRoute,
   ApiPublicLeadRoute: ApiPublicLeadRoute,
+  ApiPublicLeadUpsellRoute: ApiPublicLeadUpsellRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

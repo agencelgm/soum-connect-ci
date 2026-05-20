@@ -43,6 +43,7 @@ export const Route = createFileRoute("/api/public/lead")({
 
         const payload = {
           ...parsed.data,
+          leadId: crypto.randomUUID(),
           received_at: new Date().toISOString(),
           user_agent: request.headers.get("user-agent") ?? "",
         };
@@ -70,7 +71,7 @@ export const Route = createFileRoute("/api/public/lead")({
           console.log("[lead] NEW_LEAD (no GHL_WEBHOOK_URL set)", JSON.stringify(payload));
         }
 
-        return Response.json({ ok: true });
+        return Response.json({ ok: true, leadId: payload.leadId });
       },
     },
   },
