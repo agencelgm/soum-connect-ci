@@ -298,7 +298,7 @@ function Page() {
   const BUDGETS = language === "en" ? BUDGETS_EN : BUDGETS_FR;
   const homeHref = language === "en" ? "/en" : "/";
   const allServicesHref = getCounterpart("/cabinet-comptable-abidjan", language);
-  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
+  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(makeSchema(c)),
@@ -307,6 +307,11 @@ function Page() {
       service: "",
       statut: "",
       description: "",
+      nbAssocies: "" as unknown as number,
+      bureau: "" as unknown as "oui",
+      logo: "" as unknown as "oui",
+      siteWeb: "" as unknown as "oui",
+      publicite: "" as unknown as "oui",
       localisation: "",
       delai: "",
       budget: "",
@@ -322,8 +327,8 @@ function Page() {
   const errors: FieldErrors<FormValues> = formState.errors;
 
   const next = async () => {
-    const ok = await trigger(STEP_FIELDS[step as 1 | 2]);
-    if (ok) setStep((s) => ((s < 3 ? s + 1 : s) as 1 | 2 | 3 | 4));
+    const ok = await trigger(STEP_FIELDS[step as 1 | 2 | 3]);
+    if (ok) setStep((s) => ((s < 4 ? s + 1 : s) as 1 | 2 | 3 | 4 | 5));
   };
 
   const onSubmit = async (values: FormValues) => {
@@ -343,7 +348,7 @@ function Page() {
         localisation: values.localisation,
         language,
       });
-      setStep(4);
+      setStep(5);
     } catch (err) {
       console.error("Lead submission failed", err);
       toast.error(
@@ -354,7 +359,7 @@ function Page() {
     }
   };
 
-  const progress = step === 4 ? 100 : (step / 3) * 100;
+  const progress = step === 5 ? 100 : (step / 4) * 100;
 
   return (
     <main className="bg-[#F8FAFC] min-h-screen">
@@ -371,7 +376,7 @@ function Page() {
         <div className="grid lg:grid-cols-[1fr_320px] gap-8 items-start">
           <div className="mx-auto w-full max-w-[640px]">
             <div className="rounded-2xl bg-white shadow-lg border border-border p-6 md:p-8">
-              {step < 4 && (
+              {step < 5 && (
                 <div className="mb-6">
                   <div className="flex items-center justify-between text-sm font-medium text-muted-foreground mb-2">
                     <span>{c.stepOf(step)}</span>
@@ -447,6 +452,31 @@ function Page() {
                       />
                     </Field>
 
+                    <Field
+                      id="nbAssocies"
+                      label={c.lAssocies}
+                      required
+                      error={errors.nbAssocies?.message}
+                    >
+                      <Input
+                        id="nbAssocies"
+                        type="number"
+                        min={1}
+                        max={50}
+                        inputMode="numeric"
+                        {...register("nbAssocies")}
+                      />
+                    </Field>
+
+                    <Field
+                      id="bureau"
+                      label={c.lBureau}
+                      required
+                      error={errors.bureau?.message}
+                    >
+                      <RadioYesNo name="bureau" register={register} yes={c.yes} no={c.no} />
+                    </Field>
+
                     <div className="flex justify-end pt-2">
                       <Button
                         type="button"
@@ -463,6 +493,58 @@ function Page() {
                   <div key="s2" className="animate-fade-in space-y-5">
                     <h2 className="font-heading text-xl font-semibold text-primary">
                       {c.s2Title}
+                    </h2>
+
+                    <Field
+                      id="logo"
+                      label={c.lLogo}
+                      required
+                      error={errors.logo?.message}
+                    >
+                      <RadioYesNo name="logo" register={register} yes={c.yes} no={c.no} />
+                    </Field>
+
+                    <Field
+                      id="siteWeb"
+                      label={c.lSite}
+                      required
+                      error={errors.siteWeb?.message}
+                    >
+                      <RadioYesNo name="siteWeb" register={register} yes={c.yes} no={c.no} />
+                    </Field>
+
+                    <Field
+                      id="publicite"
+                      label={c.lPub}
+                      required
+                      error={errors.publicite?.message}
+                    >
+                      <RadioYesNo name="publicite" register={register} yes={c.yes} no={c.no} />
+                    </Field>
+
+                    <div className="flex justify-between pt-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setStep(1)}
+                      >
+                        {c.back}
+                      </Button>
+                      <Button
+                        type="button"
+                        onClick={next}
+                        className="bg-secondary hover:bg-secondary-dark text-white"
+                      >
+                        {c.next}
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {step === 3 && (
+                  <div key="s3" className="animate-fade-in space-y-5">
+                    <h2 className="font-heading text-xl font-semibold text-primary">
+                      {c.s3Title}
                     </h2>
 
                     <Field
@@ -529,7 +611,7 @@ function Page() {
                       <Button
                         type="button"
                         variant="outline"
-                        onClick={() => setStep(1)}
+                        onClick={() => setStep(2)}
                       >
                         {c.back}
                       </Button>
@@ -544,13 +626,13 @@ function Page() {
                   </div>
                 )}
 
-                {step === 3 && (
-                  <div key="s3" className="animate-fade-in space-y-5">
+                {step === 4 && (
+                  <div key="s4" className="animate-fade-in space-y-5">
                     <h2 className="font-heading text-xl font-semibold text-primary">
-                      {c.s3Title}
+                      {c.s4Title}
                     </h2>
                     <p className="text-sm text-muted-foreground">
-                      {c.s3Note}
+                      {c.s4Note}
                     </p>
 
                     <Field
@@ -627,7 +709,7 @@ function Page() {
                         <Button
                           type="button"
                           variant="outline"
-                          onClick={() => setStep(2)}
+                          onClick={() => setStep(3)}
                         >
                           {c.back}
                         </Button>
@@ -646,8 +728,8 @@ function Page() {
                   </div>
                 )}
 
-                {step === 4 && (
-                  <div key="s4" className="animate-fade-in text-center py-6">
+                {step === 5 && (
+                  <div key="s5" className="animate-fade-in text-center py-6">
                     <div className="mx-auto w-16 h-16 rounded-full bg-accent/15 flex items-center justify-center">
                       <CheckCircle2 className="w-10 h-10 text-accent" />
                     </div>
