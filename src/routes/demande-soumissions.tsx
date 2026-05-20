@@ -170,6 +170,9 @@ const COPY = {
     errMobileFmt: "Chiffres, espaces et + uniquement",
     errEmail: "Email invalide",
     errConsent: "Vous devez accepter pour continuer",
+    errDescription: "Veuillez décrire brièvement votre besoin",
+    errBudget: "Veuillez choisir un budget",
+    errEnt: "Nom de votre entreprise requis",
   },
   en: {
     h1: "Get up to 5 Quotes from Certified Accounting Firms",
@@ -222,6 +225,9 @@ const COPY = {
     errMobileFmt: "Digits, spaces and + only",
     errEmail: "Invalid email",
     errConsent: "You must accept to continue",
+    errDescription: "Please briefly describe your need",
+    errBudget: "Please choose a budget",
+    errEnt: "Company name required",
   },
 } as const;
 
@@ -230,14 +236,14 @@ function makeSchema(c: Copy) {
   return z.object({
     service: z.string().min(1, c.errService),
     statut: z.string().min(1, c.errStatut),
-    description: z.string().max(1000).optional().or(z.literal("")),
+    description: z.string().trim().min(10, c.errDescription).max(1000),
     localisation: z.string().min(1, c.errLoc),
     delai: z.string().min(1, c.errDelai),
-    budget: z.string().optional().or(z.literal("")),
+    budget: z.string().min(1, c.errBudget),
     nom: z.string().trim().min(2, c.errNom).max(100),
     mobile: z.string().trim().min(8, c.errWhats).max(25).regex(/^[+0-9 ]+$/, c.errMobileFmt),
     email: z.string().trim().email(c.errEmail).max(255),
-    entreprise: z.string().max(120).optional().or(z.literal("")),
+    entreprise: z.string().trim().min(2, c.errEnt).max(120),
     consent: z.literal(true, { errorMap: () => ({ message: c.errConsent }) }),
   });
 }
@@ -398,6 +404,7 @@ function Page() {
                     <Field
                       id="description"
                       label={c.lDescription}
+                      required
                       error={errors.description?.message}
                     >
                       <Textarea
@@ -469,6 +476,7 @@ function Page() {
                     <Field
                       id="budget"
                       label={c.lBudget}
+                      required
                       error={errors.budget?.message}
                     >
                       <select
@@ -554,6 +562,7 @@ function Page() {
                     <Field
                       id="entreprise"
                       label={c.lEnt}
+                      required
                       error={errors.entreprise?.message}
                     >
                       <Input
