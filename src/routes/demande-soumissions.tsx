@@ -167,7 +167,7 @@ const COPY = {
     errDelai: "Veuillez choisir un délai",
     errNom: "Nom requis",
     errWhats: "Numéro de téléphone invalide",
-    errWhatsFmt: "Chiffres, espaces et + uniquement",
+    errMobileFmt: "Chiffres, espaces et + uniquement",
     errEmail: "Email invalide",
     errConsent: "Vous devez accepter pour continuer",
   },
@@ -219,7 +219,7 @@ const COPY = {
     errDelai: "Please choose a timeframe",
     errNom: "Name required",
     errWhats: "Invalid phone number",
-    errWhatsFmt: "Digits, spaces and + only",
+    errMobileFmt: "Digits, spaces and + only",
     errEmail: "Invalid email",
     errConsent: "You must accept to continue",
   },
@@ -235,7 +235,7 @@ function makeSchema(c: Copy) {
     delai: z.string().min(1, c.errDelai),
     budget: z.string().optional().or(z.literal("")),
     nom: z.string().trim().min(2, c.errNom).max(100),
-    whatsapp: z.string().trim().min(8, c.errWhats).max(25).regex(/^[+0-9 ]+$/, c.errWhatsFmt),
+    mobile: z.string().trim().min(8, c.errWhats).max(25).regex(/^[+0-9 ]+$/, c.errMobileFmt),
     email: z.string().trim().email(c.errEmail).max(255),
     entreprise: z.string().max(120).optional().or(z.literal("")),
     consent: z.literal(true, { errorMap: () => ({ message: c.errConsent }) }),
@@ -247,7 +247,7 @@ type FormValues = z.infer<ReturnType<typeof makeSchema>>;
 const STEP_FIELDS: Record<1 | 2 | 3, (keyof FormValues)[]> = {
   1: ["service", "statut", "description"],
   2: ["localisation", "delai", "budget"],
-  3: ["nom", "whatsapp", "email", "entreprise", "consent"],
+  3: ["nom", "mobile", "email", "entreprise", "consent"],
 };
 
 function Page() {
@@ -273,7 +273,7 @@ function Page() {
       delai: "",
       budget: "",
       nom: "",
-      whatsapp: "",
+      mobile: "",
       email: "",
       entreprise: "",
       consent: false as unknown as true,
@@ -523,17 +523,17 @@ function Page() {
                     </Field>
 
                     <Field
-                      id="whatsapp"
+                      id="mobile"
                       label={c.lWhats}
                       required
-                      error={errors.whatsapp?.message}
+                      error={errors.mobile?.message}
                     >
                       <Input
-                        id="whatsapp"
+                        id="mobile"
                         type="tel"
                         placeholder={c.whatsPh}
                         autoComplete="tel"
-                        {...register("whatsapp")}
+                        {...register("mobile")}
                       />
                     </Field>
 
