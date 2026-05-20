@@ -14,7 +14,6 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import { getLangFromPath } from "@/lib/route-map";
-import { WhatsAppFab } from "@/components/layout/WhatsAppFab";
 import { MobileCtaBar } from "@/components/layout/MobileCtaBar";
 import { NotFoundPage } from "@/components/pages/NotFoundPage";
 
