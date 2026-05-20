@@ -21,6 +21,9 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { buildPageHead, faqSchema } from "@/lib/seo";
+import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+import { RelatedLinks } from "@/components/seo/RelatedLinks";
+import { getPageRelations } from "@/lib/page-relations";
 
 const PARTNER_FAQS = [
   {
