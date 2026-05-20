@@ -341,12 +341,18 @@ function Page() {
         }),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      try {
+        const json = (await res.json()) as { leadId?: string };
+        if (json?.leadId) {
+          sessionStorage.setItem("leadId", json.leadId);
+        }
+      } catch {}
       trackEvent("soumission_envoyee", {
         service: values.service,
         localisation: values.localisation,
         language,
       });
-      navigate({ to: language === "en" ? "/en/thank-you" : "/merci" });
+      navigate({ to: language === "en" ? "/en/logo-offer" : "/offre-logo" });
     } catch (err) {
       console.error("Lead submission failed", err);
       toast.error(

@@ -31,9 +31,9 @@ function MerciPage() {
             Merci !
           </h1>
           <p className="mt-4 text-base md:text-lg text-foreground leading-relaxed">
-            Merci d'avoir rempli notre formulaire. Un membre de notre équipe
-            vous contactera dans les <strong>24 heures ouvrables</strong> afin
-            de vous référer au meilleur cabinet comptable.
+            Merci, toutes vos réponses ont bien été enregistrées pour ce
+            service ainsi que pour les services supplémentaires. Un conseiller
+            vous contactera dans les <strong>prochaines 24 heures ouvrables</strong>.
           </p>
 
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
