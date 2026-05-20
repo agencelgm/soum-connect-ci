@@ -1,44 +1,69 @@
-## Créer une page de remerciement dédiée après soumission du formulaire
+## Ajouter deux pages d'offres exclusives entre le formulaire et la page de remerciement
 
-### Contexte
-Le formulaire multi-étapes `/demande-soumissions` (et sa version EN `/en/get-quotes`) affiche actuellement un écran de succès intégré (étape 5). L'objectif est de le remplacer par une **route dédiée** (`/merci` et `/en/thank-you`) affichant le message demandé et des appels à l'action.
+### Nouveau flux
+```
+Formulaire soumis
+   → /offre-logo (FR) ou /en/logo-offer (EN)
+   → /offre-site-internet (FR) ou /en/website-offer (EN)
+   → /merci (FR) ou /en/thank-you (EN)
+```
 
-### Livrables
+### 1. Nouvelles routes (4 fichiers)
 
-#### 1. Nouvelles routes
-- **`src/routes/merci.tsx`** — page FR avec :
-  - Titre SEO : "Merci | SoumissionsComptables.ci"
-  - Message principal : *"Merci d'avoir rempli notre formulaire. Un membre de notre équipe vous contactera dans les 24 heures ouvrables afin de vous référer au meilleur cabinet comptable."*
-  - CTA secondaire : bouton "Retour à l'accueil" + lien vers les services
-  - Design aligné au site existant (tokens CSS, composants Button/Card, icône CheckCircle2)
+**`src/routes/offre-logo.tsx`** et **`src/routes/en/logo-offer.tsx`**
+- Bandeau **« OFFRE EXCLUSIVE !! »**
+- Titre : *Conception de LOGO à partir de 50 000 FCFA*
+- Court paragraphe de bénéfice (logo professionnel, fichiers livrés, etc.)
+- Deux boutons :
+  - **Oui, je suis intéressé(e)** → navigue vers `/offre-site-internet` (ou `/en/website-offer`)
+  - **Non, merci** → navigue vers la même page suivante
+- Les deux choix sont envoyés à l'API (voir §4) avant la navigation.
 
-- **`src/routes/en/thank-you.tsx`** — page EN avec :
-  - Titre SEO : "Thank You | SoumissionsComptables.ci"
-  - Message EN : *"Thank you for filling out our form. A team member will contact you within 24 business hours to refer you to the best accounting firm."*
-  - CTA "Back to home" + services link
+**`src/routes/offre-site-internet.tsx`** et **`src/routes/en/website-offer.tsx`**
+- Même structure
+- Titre : *Conception de SITE INTERNET à partir de 165 000 FCFA*
+- Les deux boutons redirigent vers `/merci` (ou `/en/thank-you`), après envoi du choix.
 
-#### 2. Mise à jour du route-map
-Ajouter la paire `{ fr: "/merci", en: "/en/thank-you" }` dans `src/lib/route-map.ts` (`ROUTE_PAIRS`) pour que le sélecteur de langue et les liens alternatifs fonctionnent.
+### 2. Page de remerciement — message mis à jour
+`src/routes/merci.tsx` et `src/routes/en/thank-you.tsx` :
 
-#### 3. Redirection post-formulaire
-Dans `src/routes/demande-soumissions.tsx` :
-- Importer `useNavigate` depuis `@tanstack/react-router`.
-- Remplacer `setStep(5)` dans `onSubmit` par `navigate({ to: language === "en" ? "/en/thank-you" : "/merci" })`.
-- Supprimer le bloc JSX `step === 5` (écran de succès intégré) et toutes les clés de traduction `okTitle`, `okText`, `okNextTitle`, `okStep1…3`, `backHome`, `moreServices` qui ne serviront plus.
-- Nettoyer la logique `progress` et `stepOf` qui gérait l'étape 5.
+> *Merci, toutes vos réponses ont bien été enregistrées pour ce service ainsi que pour les services supplémentaires. Un conseiller vous contactera dans les prochaines 24 heures ouvrables.*
 
-#### 4. Traductions partagées
-Ajouter les nouvelles clés dans `src/lib/translations.ts` (objets `fr` et `en`) :
-- `thankYou.title`, `thankYou.message`, `thankYou.ctaHome`, `thankYou.ctaServices`, `thankYou.metaTitle`
+Version EN équivalente. CTA (accueil / services) conservés.
 
-### Décisions techniques
-- **Route distincte plutôt qu'étape interne** : meilleure pour le SEO, le partage, le rechargement, et l'analytique.
-- **Pas de paramètre d'URL** : la redirection est simple et stateless. Pas besoin de passer les données du formulaire dans l'URL.
-- **Hors périmètre** : aucun changement sur le formulaire d'accueil (`LeadFormCard`), sur la route API (`/api/public/lead`), ni sur le formulaire cabinets partenaires.
+### 3. Redirection depuis le formulaire
+Dans `src/routes/demande-soumissions.tsx`, à la place de la redirection actuelle vers `/merci`, rediriger vers `/offre-logo` (ou `/en/logo-offer` selon la langue). Le `leadId` retourné par l'API est passé via le state du router pour permettre l'envoi des upsells (voir §4).
+
+### 4. Suivi des choix d'upsell (sans changer le schéma actuel)
+Pour ne pas perdre l'information :
+- L'API `/api/public/lead` retourne déjà `{ ok: true }` ; on ajoute un `leadId` (UUID généré côté serveur) renvoyé au client et inclus dans le payload envoyé au webhook GHL.
+- Nouvelle route API **`/api/public/lead-upsell`** (POST) :
+  - Body : `{ leadId, offer: "logo" | "site", interested: boolean, language: "fr"|"en" }`
+  - Validation Zod, puis forward vers `GHL_WEBHOOK_URL` (même webhook, payload distinct avec `type: "upsell"`).
+- Les pages d'offre récupèrent le `leadId` depuis le state de navigation et appellent cette route au clic sur l'un des deux boutons, puis naviguent vers la page suivante.
+- Si le `leadId` est absent (accès direct à la page), les boutons fonctionnent quand même mais l'appel API est skippé — la page reste utilisable.
+
+### 5. Route-map et navigation
+Ajouter dans `src/lib/route-map.ts` :
+```
+{ fr: "/offre-logo", en: "/en/logo-offer" },
+{ fr: "/offre-site-internet", en: "/en/website-offer" },
+```
+
+### 6. SEO
+Les deux pages d'offres utilisent `buildPageHead` avec `noindex` via meta robots (ce sont des pages intermédiaires de tunnel, pas indexables). Si `buildPageHead` ne supporte pas `noindex`, on ajoute manuellement la balise meta dans `head()`.
+
+### Style
+Aligné au site : `bg-[#F8FAFC]`, carte blanche centrée `max-w-[640px]`, badge accent « OFFRE EXCLUSIVE !! », titre `font-heading`, prix mis en valeur, deux boutons (`secondary` pour Oui, `outline` pour Non).
 
 ### Fichiers touchés
-- `src/routes/merci.tsx` (création)
-- `src/routes/en/thank-you.tsx` (création)
-- `src/lib/route-map.ts` (ajout paire)
-- `src/routes/demande-soumissions.tsx` (redirect + suppression écran succès)
-- `src/lib/translations.ts` (nouvelles clés)
+- `src/routes/offre-logo.tsx` (création)
+- `src/routes/offre-site-internet.tsx` (création)
+- `src/routes/en/logo-offer.tsx` (création)
+- `src/routes/en/website-offer.tsx` (création)
+- `src/routes/api/public/lead.ts` (retour `leadId`)
+- `src/routes/api/public/lead-upsell.ts` (création)
+- `src/routes/demande-soumissions.tsx` (redirection vers `/offre-logo` + transmission du `leadId`)
+- `src/routes/merci.tsx` + `src/routes/en/thank-you.tsx` (nouveau message)
+- `src/lib/route-map.ts` (2 nouvelles paires)
+- `src/lib/translations.ts` (clés des nouvelles pages)
