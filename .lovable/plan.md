@@ -1,29 +1,36 @@
-## Ajouter un onglet « Blog » dans la navigation
+## Remplacer les 12 images de services par de vraies photos
 
-### Objectif
-Ajouter un onglet **Blog** dans le menu principal du header (desktop + mobile), pointant vers une nouvelle page `/blog` distincte des guides existants. La page affichera une section blog vide pour le moment (placeholder « Articles à venir bientôt »), prête à recevoir les futurs articles.
+### Constat
+Les 12 images actuelles de la section « Nos services » (`src/assets/services/*.jpg`) ont été générées par IA. Même en demandant un rendu documentaire, le résultat reste « lisse » et identifiable comme IA. Pour obtenir un rendu vraiment réaliste, il faut passer à de **vraies photographies de stock** (photos prises par des photographes humains).
 
-### Étapes
+### Approche
+Utiliser **Unsplash** comme source : photos professionnelles, gratuites, licence commerciale, sans attribution obligatoire. Chaque image sera téléchargée en haute qualité (1200×900, qualité 80) puis enregistrée localement dans `src/assets/services/` en gardant les mêmes noms de fichiers — aucun changement d'import nécessaire dans `src/routes/index.tsx`.
 
-1. **Créer la route `/blog`** (`src/routes/blog.tsx`)
-   - `createFileRoute("/blog")` avec `head()` SEO dédié (title, description, og)
-   - Hero simple : titre « Blog » + sous-titre
-   - Section « Articles à venir bientôt » (état vide élégant, cohérent avec le design du site)
-   - Structure prête pour accueillir une grille d'articles plus tard (type `BlogPost`, liste vide à remplir)
-   - Texte FR uniquement (règle projet)
+### Mapping des 12 services → photos réelles
 
-2. **Ajouter le lien dans le Header** (`src/components/layout/Header.tsx`)
-   - Ajouter `{ to: "/blog", label: t.nav.blog }` dans le tableau `NAV` (entre `howItWorks` et `faq`, ou avant `about`)
-   - S'applique automatiquement au menu desktop et au menu mobile (les deux itèrent sur `NAV`)
+| Service | Sujet de la photo |
+|---|---|
+| comptabilite-generale | Comptable au bureau avec calculatrice et documents |
+| creation-entreprise | Poignée de main / signature de contrat professionnel |
+| fiscalite | Bureau avec déclarations fiscales et calculatrice |
+| audit | Documents financiers avec graphiques, stylo et loupe |
+| paie-cnps | Bulletins de paie / RH au travail |
+| conseil-juridique | Avocat avec contrats, plume, livres de droit |
+| domiciliation | Immeuble de bureaux moderne (skyline / building) |
+| diaspora | Personne en visioconférence avec ordinateur portable |
+| reporting | Tableaux de bord financiers, graphiques sur écran |
+| bancaire | Rendez-vous bancaire / poignée de main avec banquier |
+| conformite-fiscale | Bureau de contrôleur fiscal, dossiers réglementaires |
+| audit-interne | Réunion d'équipe d'audit autour d'une table |
 
-3. **Ajouter la clé de traduction** (`src/lib/translations.ts`)
-   - Ajouter `blog: "Blog"` dans `t.nav` (FR)
-   - Ajouter `blog: "Blog"` côté EN également pour éviter une clé manquante (même si la page reste FR pour l'instant)
+### Étapes techniques
+1. Script `bash` qui télécharge 12 photos Unsplash sélectionnées (URLs directes `images.unsplash.com/photo-...?w=1200&q=80`) vers `src/assets/services/{nom}.jpg`, en **écrasant** les fichiers IA existants.
+2. Vérification visuelle rapide (taille, validité JPEG) après téléchargement.
+3. Aucune modification de code nécessaire — les imports dans `src/routes/index.tsx` pointent déjà sur ces chemins.
+
+### Note importante
+Les photos Unsplash sont des photos universelles (pas spécifiquement « Côte d'Ivoire / Abidjan »). Comme vous voulez prioritairement du **réel et professionnel** plutôt que du **localisé africain**, cette approche est cohérente avec votre demande. Si plus tard vous souhaitez des photos spécifiquement africaines/ivoiriennes, il faudra soit en commander à un photographe, soit acheter sur une banque d'images spécialisée — Unsplash en a très peu sur ce thème précis.
 
 ### Hors périmètre
-- Pas de système CMS / base de données pour les articles (à voir plus tard)
-- Pas de version `/en/blog` pour cette étape
-- Pas de lien depuis le footer (peut être ajouté ensuite si souhaité)
-
-### Question ouverte
-Veux-tu que je pré-remplisse la page avec 2-3 articles d'exemple, ou simplement l'état « Articles à venir » pour démarrer ?
+- Pas de changement des images de la page d'accueil hors section services (déjà traitées précédemment).
+- Pas de changement du code de la section services (layout, overlay icône, etc.).
