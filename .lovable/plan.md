@@ -1,23 +1,29 @@
-## Retrait complet de WhatsApp
+## Ajouter un onglet « Blog » dans la navigation
 
-L'utilisateur demande de retirer **tout** ce qui est lié à WhatsApp du site.
+### Objectif
+Ajouter un onglet **Blog** dans le menu principal du header (desktop + mobile), pointant vers une nouvelle page `/blog` distincte des guides existants. La page affichera une section blog vide pour le moment (placeholder « Articles à venir bientôt »), prête à recevoir les futurs articles.
 
-### Fichiers concernés et modifications
+### Étapes
 
-1. **src/components/layout/Header.tsx** ✅ — bouton WhatsApp desktop et mobile retirés
-2. **src/components/layout/Footer.tsx** ✅ — icône sociale et numéro retirés
-3. **src/routes/__root.tsx** ✅ — import et rendu de WhatsAppFab retirés
-4. **src/lib/translations.ts** ✅ — clés whatsapp/contactWhatsapp renommées
-5. **src/components/home/LeadFormCard.tsx** — champ `whatsapp` → `mobile`, label et placeholder mis à jour
-6. **src/components/pages/AboutPage.tsx** — bloc contact WhatsApp retiré
-7. **src/routes/demande-soumissions.tsx** — labels, placeholders, validation, aside WhatsApp retirés
-8. **src/routes/comment-ca-marche.tsx** — mention WhatsApp dans les étapes retirée
-9. **src/routes/cabinets-comptables-partenaires.tsx** — champ `whatsapp` → `mobile`
-10. **src/routes/api/public/lead.ts** — champ `whatsapp` → `mobile`
-11. **src/components/layout/WhatsAppFab.tsx** — fichier à supprimer
+1. **Créer la route `/blog`** (`src/routes/blog.tsx`)
+   - `createFileRoute("/blog")` avec `head()` SEO dédié (title, description, og)
+   - Hero simple : titre « Blog » + sous-titre
+   - Section « Articles à venir bientôt » (état vide élégant, cohérent avec le design du site)
+   - Structure prête pour accueillir une grille d'articles plus tard (type `BlogPost`, liste vide à remplir)
+   - Texte FR uniquement (règle projet)
 
-### Changements techniques
-- Tous les champs de formulaire `whatsapp` deviennent `mobile` (ou `phone`)
-- Les labels passent de "WhatsApp" à "téléphone" / "numéro de téléphone"
-- Les liens `wa.me` et la couleur `#25D366` sont supprimés
-- Le fichier `WhatsAppFab.tsx` est supprimé
+2. **Ajouter le lien dans le Header** (`src/components/layout/Header.tsx`)
+   - Ajouter `{ to: "/blog", label: t.nav.blog }` dans le tableau `NAV` (entre `howItWorks` et `faq`, ou avant `about`)
+   - S'applique automatiquement au menu desktop et au menu mobile (les deux itèrent sur `NAV`)
+
+3. **Ajouter la clé de traduction** (`src/lib/translations.ts`)
+   - Ajouter `blog: "Blog"` dans `t.nav` (FR)
+   - Ajouter `blog: "Blog"` côté EN également pour éviter une clé manquante (même si la page reste FR pour l'instant)
+
+### Hors périmètre
+- Pas de système CMS / base de données pour les articles (à voir plus tard)
+- Pas de version `/en/blog` pour cette étape
+- Pas de lien depuis le footer (peut être ajouté ensuite si souhaité)
+
+### Question ouverte
+Veux-tu que je pré-remplisse la page avec 2-3 articles d'exemple, ou simplement l'état « Articles à venir » pour démarrer ?
