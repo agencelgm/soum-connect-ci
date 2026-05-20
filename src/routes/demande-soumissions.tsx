@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useForm, type FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { CheckCircle2, Shield, Star, BadgeCheck } from "lucide-react";
+import { Shield, Star, BadgeCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -11,7 +11,6 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { buildPageHead } from "@/lib/seo";
 import { useLanguage } from "@/lib/language-context";
-import { getCounterpart } from "@/lib/route-map";
 import { trackEvent } from "@/lib/analytics";
 import { toast } from "sonner";
 
@@ -296,9 +295,8 @@ function Page() {
   const LOCALISATIONS = language === "en" ? LOCALISATIONS_EN : LOCALISATIONS_FR;
   const DELAIS = language === "en" ? DELAIS_EN : DELAIS_FR;
   const BUDGETS = language === "en" ? BUDGETS_EN : BUDGETS_FR;
-  const homeHref = language === "en" ? "/en" : "/";
-  const allServicesHref = getCounterpart("/cabinet-comptable-abidjan", language);
-  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1);
+  const navigate = useNavigate();
+  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(makeSchema(c)),
@@ -327,8 +325,8 @@ function Page() {
   const errors: FieldErrors<FormValues> = formState.errors;
 
   const next = async () => {
-    const ok = await trigger(STEP_FIELDS[step as 1 | 2 | 3]);
-    if (ok) setStep((s) => ((s < 4 ? s + 1 : s) as 1 | 2 | 3 | 4 | 5));
+    const ok = await trigger(STEP_FIELDS[step]);
+    if (ok) setStep((s) => ((s < 4 ? s + 1 : s) as 1 | 2 | 3 | 4));
   };
 
   const onSubmit = async (values: FormValues) => {
@@ -348,7 +346,7 @@ function Page() {
         localisation: values.localisation,
         language,
       });
-      setStep(5);
+      navigate({ to: language === "en" ? "/en/thank-you" : "/merci" });
     } catch (err) {
       console.error("Lead submission failed", err);
       toast.error(
@@ -359,7 +357,7 @@ function Page() {
     }
   };
 
-  const progress = step === 5 ? 100 : (step / 4) * 100;
+  const progress = (step / 4) * 100;
 
   return (
     <main className="bg-[#F8FAFC] min-h-screen">
