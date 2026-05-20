@@ -1,74 +1,44 @@
-## Objectif
+## Créer une page de remerciement dédiée après soumission du formulaire
 
-Étoffer le formulaire **/demande-soumissions** (utilisé aussi par /en/get-quotes) en ajoutant **6 nouvelles questions obligatoires**, réparties dans des étapes du parcours multi-étapes existant (Étape 1 → 2 → 3 → …).
+### Contexte
+Le formulaire multi-étapes `/demande-soumissions` (et sa version EN `/en/get-quotes`) affiche actuellement un écran de succès intégré (étape 5). L'objectif est de le remplacer par une **route dédiée** (`/merci` et `/en/thank-you`) affichant le message demandé et des appels à l'action.
 
-## Nouvelles questions à ajouter
+### Livrables
 
-### Bloc « Votre projet » (en complément de l'étape 1 actuelle)
-1. **Pouvons-nous avoir des détails sur votre projet ?** — zone de texte (déjà présente comme `description`, renommer le libellé et garder le champ).
-2. **Combien d'associés avez-vous ?** — champ nombre (`number`, min 1, max 50).
-3. **Avez-vous un bureau ?** — Oui / Non (radio).
+#### 1. Nouvelles routes
+- **`src/routes/merci.tsx`** — page FR avec :
+  - Titre SEO : "Merci | SoumissionsComptables.ci"
+  - Message principal : *"Merci d'avoir rempli notre formulaire. Un membre de notre équipe vous contactera dans les 24 heures ouvrables afin de vous référer au meilleur cabinet comptable."*
+  - CTA secondaire : bouton "Retour à l'accueil" + lien vers les services
+  - Design aligné au site existant (tokens CSS, composants Button/Card, icône CheckCircle2)
 
-### Bloc « Votre présence commerciale » (nouvelle étape dédiée)
-4. **Avez-vous un logo ?** — Oui / Non (radio).
-5. **Avez-vous un site internet ?** — Oui / Non (radio).
-6. **Faites-vous de la publicité ?** — Oui / Non (radio).
+- **`src/routes/en/thank-you.tsx`** — page EN avec :
+  - Titre SEO : "Thank You | SoumissionsComptables.ci"
+  - Message EN : *"Thank you for filling out our form. A team member will contact you within 24 business hours to refer you to the best accounting firm."*
+  - CTA "Back to home" + services link
 
-## Nouvelle structure du parcours (4 étapes au lieu de 3)
+#### 2. Mise à jour du route-map
+Ajouter la paire `{ fr: "/merci", en: "/en/thank-you" }` dans `src/lib/route-map.ts` (`ROUTE_PAIRS`) pour que le sélecteur de langue et les liens alternatifs fonctionnent.
 
-```text
-Étape 1 / 4 — Votre besoin
-  • Service recherché *
-  • Statut actuel *
-  • Détails du projet * (anciennement « description »)
-  • Nombre d'associés *
-  • Avez-vous un bureau ? *
+#### 3. Redirection post-formulaire
+Dans `src/routes/demande-soumissions.tsx` :
+- Importer `useNavigate` depuis `@tanstack/react-router`.
+- Remplacer `setStep(5)` dans `onSubmit` par `navigate({ to: language === "en" ? "/en/thank-you" : "/merci" })`.
+- Supprimer le bloc JSX `step === 5` (écran de succès intégré) et toutes les clés de traduction `okTitle`, `okText`, `okNextTitle`, `okStep1…3`, `backHome`, `moreServices` qui ne serviront plus.
+- Nettoyer la logique `progress` et `stepOf` qui gérait l'étape 5.
 
-Étape 2 / 4 — Votre présence
-  • Avez-vous un logo ? *
-  • Avez-vous un site internet ? *
-  • Faites-vous de la publicité ? *
+#### 4. Traductions partagées
+Ajouter les nouvelles clés dans `src/lib/translations.ts` (objets `fr` et `en`) :
+- `thankYou.title`, `thankYou.message`, `thankYou.ctaHome`, `thankYou.ctaServices`, `thankYou.metaTitle`
 
-Étape 3 / 4 — Votre localisation
-  • Localisation *
-  • Délai *
-  • Budget *
+### Décisions techniques
+- **Route distincte plutôt qu'étape interne** : meilleure pour le SEO, le partage, le rechargement, et l'analytique.
+- **Pas de paramètre d'URL** : la redirection est simple et stateless. Pas besoin de passer les données du formulaire dans l'URL.
+- **Hors périmètre** : aucun changement sur le formulaire d'accueil (`LeadFormCard`), sur la route API (`/api/public/lead`), ni sur le formulaire cabinets partenaires.
 
-Étape 4 / 4 — Vos coordonnées
-  • Nom *
-  • Téléphone *
-  • Email *
-  • Nom de l'entreprise *
-  • Consentement *
-```
-
-La barre de progression passe de 33/66/100 % à 25/50/75/100 %. L'écran de succès reste l'étape 5 (statut interne).
-
-## Changements techniques
-
-Fichier touché : `src/routes/demande-soumissions.tsx` uniquement.
-
-1. **Schéma Zod** — ajouter 5 champs requis :
-   - `nbAssocies` : `z.coerce.number().int().min(1).max(50)` avec message FR/EN.
-   - `bureau` : `z.enum(["oui","non"])` (libellés UI traduits).
-   - `logo` : `z.enum(["oui","non"])`.
-   - `siteWeb` : `z.enum(["oui","non"])`.
-   - `publicite` : `z.enum(["oui","non"])`.
-   - `description` reste, mais devient strictement obligatoire (déjà fait, libellé mis à jour).
-
-2. **COPY FR/EN** — ajouter libellés `lDetails`, `lAssocies`, `lBureau`, `lLogo`, `lSite`, `lPub` + messages d'erreur `errAssocies`, `errBureau`, `errLogo`, `errSite`, `errPub` + nouveaux titres d'étape `s1Title`…`s4Title` et fonction `stepOf` mise à jour pour `n / 4`.
-
-3. **STEP_FIELDS** — passer de 3 à 4 entrées et redistribuer les champs comme ci-dessus.
-
-4. **Composant `Page`** — ajouter le bloc `step === 2` (présence commerciale) et renuméroter les blocs existants (localisation → 3, coordonnées → 4). Mettre à jour les boutons « Retour » / « Suivant », la `progress` (= `step / 4 * 100`), et l'étape 5 (succès).
-
-5. **Composant `RadioYesNo`** (helper local) — petits boutons radio stylés via `<input type="radio">` + libellés Oui/Non (Yes/No), gérés par `register()` de react-hook-form, intégrés dans le composant `Field` existant pour bénéficier de l'étoile rouge et de la bordure d'erreur déjà en place.
-
-6. **Payload envoyé à `/api/public/lead`** — étendre le `body` avec les 5 nouveaux champs. Le schéma serveur `LeadSchema` est strict et inconnu ne traverse pas : il faut **mettre à jour `src/routes/api/public/lead.ts`** pour accepter ces 5 nouveaux champs optionnels côté serveur (longueurs/regex sécurisés), afin de ne rien casser et de transmettre les données au webhook GHL.
-
-## Hors périmètre
-
-- Pas de modification du formulaire d'accueil `LeadFormCard` (reste court, mono-page).
-- Pas de modification du formulaire « cabinets partenaires ».
-- Pas de changement de design global, ni des étapes de succès et des asides existants.
-- Pas de nouveaux fichiers de composants ; tout reste dans `demande-soumissions.tsx` + extension de la route API existante.
+### Fichiers touchés
+- `src/routes/merci.tsx` (création)
+- `src/routes/en/thank-you.tsx` (création)
+- `src/lib/route-map.ts` (ajout paire)
+- `src/routes/demande-soumissions.tsx` (redirect + suppression écran succès)
+- `src/lib/translations.ts` (nouvelles clés)

@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useForm, type FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { CheckCircle2, Shield, Star, BadgeCheck } from "lucide-react";
+import { Shield, Star, BadgeCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -11,7 +11,6 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { buildPageHead } from "@/lib/seo";
 import { useLanguage } from "@/lib/language-context";
-import { getCounterpart } from "@/lib/route-map";
 import { trackEvent } from "@/lib/analytics";
 import { toast } from "sonner";
 
@@ -296,9 +295,8 @@ function Page() {
   const LOCALISATIONS = language === "en" ? LOCALISATIONS_EN : LOCALISATIONS_FR;
   const DELAIS = language === "en" ? DELAIS_EN : DELAIS_FR;
   const BUDGETS = language === "en" ? BUDGETS_EN : BUDGETS_FR;
-  const homeHref = language === "en" ? "/en" : "/";
-  const allServicesHref = getCounterpart("/cabinet-comptable-abidjan", language);
-  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1);
+  const navigate = useNavigate();
+  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(makeSchema(c)),
@@ -327,8 +325,8 @@ function Page() {
   const errors: FieldErrors<FormValues> = formState.errors;
 
   const next = async () => {
-    const ok = await trigger(STEP_FIELDS[step as 1 | 2 | 3]);
-    if (ok) setStep((s) => ((s < 4 ? s + 1 : s) as 1 | 2 | 3 | 4 | 5));
+    const ok = await trigger(STEP_FIELDS[step]);
+    if (ok) setStep((s) => ((s < 4 ? s + 1 : s) as 1 | 2 | 3 | 4));
   };
 
   const onSubmit = async (values: FormValues) => {
@@ -348,7 +346,7 @@ function Page() {
         localisation: values.localisation,
         language,
       });
-      setStep(5);
+      navigate({ to: language === "en" ? "/en/thank-you" : "/merci" });
     } catch (err) {
       console.error("Lead submission failed", err);
       toast.error(
@@ -359,7 +357,7 @@ function Page() {
     }
   };
 
-  const progress = step === 5 ? 100 : (step / 4) * 100;
+  const progress = (step / 4) * 100;
 
   return (
     <main className="bg-[#F8FAFC] min-h-screen">
@@ -376,8 +374,7 @@ function Page() {
         <div className="grid lg:grid-cols-[1fr_320px] gap-8 items-start">
           <div className="mx-auto w-full max-w-[640px]">
             <div className="rounded-2xl bg-white shadow-lg border border-border p-6 md:p-8">
-              {step < 5 && (
-                <div className="mb-6">
+              <div className="mb-6">
                   <div className="flex items-center justify-between text-sm font-medium text-muted-foreground mb-2">
                     <span>{c.stepOf(step)}</span>
                     <span>{Math.round(progress)}%</span>
@@ -388,8 +385,7 @@ function Page() {
                       style={{ width: `${progress}%` }}
                     />
                   </div>
-                </div>
-              )}
+              </div>
 
               <form onSubmit={handleSubmit(onSubmit)} noValidate>
                 {step === 1 && (
@@ -728,37 +724,6 @@ function Page() {
                   </div>
                 )}
 
-                {step === 5 && (
-                  <div key="s5" className="animate-fade-in text-center py-6">
-                    <div className="mx-auto w-16 h-16 rounded-full bg-accent/15 flex items-center justify-center">
-                      <CheckCircle2 className="w-10 h-10 text-accent" />
-                    </div>
-                    <h2 className="mt-5 font-heading text-2xl font-bold text-primary">
-                      {c.okTitle}
-                    </h2>
-                    <p className="mt-3 text-muted-foreground">
-                      {c.okText}
-                    </p>
-
-                    <div className="mt-6 rounded-xl bg-[#F8FAFC] border border-border p-5 text-left">
-                      <p className="font-semibold text-primary mb-3">{c.okNextTitle}</p>
-                      <ol className="space-y-2 text-sm text-foreground list-decimal list-inside">
-                        <li>{c.okStep1}</li>
-                        <li>{c.okStep2}</li>
-                        <li>{c.okStep3}</li>
-                      </ol>
-                    </div>
-
-                    <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
-                      <Button asChild variant="outline">
-                        <Link to={homeHref}>{c.backHome}</Link>
-                      </Button>
-                      <Button asChild className="bg-secondary hover:bg-secondary-dark text-white">
-                        <Link to={allServicesHref}>{c.moreServices}</Link>
-                      </Button>
-                    </div>
-                  </div>
-                )}
               </form>
             </div>
           </div>
