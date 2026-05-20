@@ -13,7 +13,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { RequiredLabel } from "@/components/ui/required-label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { cn } from "@/lib/utils";
 import {
   Accordion,
   AccordionContent,
@@ -120,6 +122,8 @@ function Page() {
   const [services, setServices] = useState<string[]>([]);
   const [zones, setZones] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [consent, setConsent] = useState(false);
 
   const toggle = (
     value: string,
@@ -142,11 +146,31 @@ function Page() {
       zones,
     };
     const result = partnerSchema.safeParse(data);
+    const fieldErrors: Record<string, string> = {};
+    if (!consent) {
+      fieldErrors.consent = "Vous devez accepter pour continuer";
+    }
     if (!result.success) {
-      const first = result.error.issues[0];
-      toast.error(first?.message ?? "Formulaire invalide");
+      for (const issue of result.error.issues) {
+        const key = String(issue.path[0] ?? "");
+        if (key && !fieldErrors[key]) fieldErrors[key] = issue.message;
+      }
+    }
+    if (Object.keys(fieldErrors).length > 0) {
+      setErrors(fieldErrors);
+      const count = Object.keys(fieldErrors).length;
+      toast.error(
+        count === 1
+          ? "1 champ à corriger"
+          : `${count} champs à corriger`,
+      );
+      // scroll to first invalid field
+      const firstKey = Object.keys(fieldErrors)[0];
+      const el = document.getElementById(firstKey);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
+    setErrors({});
     setSubmitting(true);
     setTimeout(() => {
       setSubmitting(false);
@@ -154,6 +178,7 @@ function Page() {
       (e.target as HTMLFormElement).reset();
       setServices([]);
       setZones([]);
+      setConsent(false);
     }, 600);
   };
 
@@ -274,40 +299,89 @@ function Page() {
             >
               <div className="grid sm:grid-cols-2 gap-5">
                 <div className="space-y-2">
-                  <Label htmlFor="cabinet">Nom du cabinet *</Label>
-                  <Input id="cabinet" name="cabinet" required maxLength={120} />
+                  <RequiredLabel htmlFor="cabinet">Nom du cabinet</RequiredLabel>
+                  <Input
+                    id="cabinet"
+                    name="cabinet"
+                    maxLength={120}
+                    aria-invalid={!!errors.cabinet}
+                    className={cn(errors.cabinet && "border-destructive ring-1 ring-destructive/40")}
+                  />
+                  {errors.cabinet && (
+                    <p className="text-xs text-destructive">{errors.cabinet}</p>
+                  )}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="director">Nom du directeur / expert-comptable *</Label>
-                  <Input id="director" name="director" required maxLength={120} />
+                  <RequiredLabel htmlFor="director">
+                    Nom du directeur / expert-comptable
+                  </RequiredLabel>
+                  <Input
+                    id="director"
+                    name="director"
+                    maxLength={120}
+                    aria-invalid={!!errors.director}
+                    className={cn(errors.director && "border-destructive ring-1 ring-destructive/40")}
+                  />
+                  {errors.director && (
+                    <p className="text-xs text-destructive">{errors.director}</p>
+                  )}
                 </div>
               </div>
 
               <div className="grid sm:grid-cols-2 gap-5">
                 <div className="space-y-2">
-                  <Label htmlFor="agrement">Numéro d'agrément OECCA-CI *</Label>
-                  <Input id="agrement" name="agrement" required maxLength={60} />
+                  <RequiredLabel htmlFor="agrement">
+                    Numéro d'agrément OECCA-CI
+                  </RequiredLabel>
+                  <Input
+                    id="agrement"
+                    name="agrement"
+                    maxLength={60}
+                    aria-invalid={!!errors.agrement}
+                    className={cn(errors.agrement && "border-destructive ring-1 ring-destructive/40")}
+                  />
+                  {errors.agrement && (
+                    <p className="text-xs text-destructive">{errors.agrement}</p>
+                  )}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email professionnel *</Label>
-                  <Input id="email" name="email" type="email" required maxLength={255} />
+                  <RequiredLabel htmlFor="email">Email professionnel</RequiredLabel>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    maxLength={255}
+                    aria-invalid={!!errors.email}
+                    className={cn(errors.email && "border-destructive ring-1 ring-destructive/40")}
+                  />
+                  {errors.email && (
+                    <p className="text-xs text-destructive">{errors.email}</p>
+                  )}
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="mobile">Numéro de téléphone *</Label>
+                <RequiredLabel htmlFor="mobile">Numéro de téléphone</RequiredLabel>
                 <Input
                   id="mobile"
                   name="mobile"
                   type="tel"
                   placeholder="+225 07 00 00 00 00"
-                  required
                   maxLength={25}
+                  aria-invalid={!!errors.mobile}
+                  className={cn(errors.mobile && "border-destructive ring-1 ring-destructive/40")}
                 />
+                {errors.mobile && (
+                  <p className="text-xs text-destructive">{errors.mobile}</p>
+                )}
               </div>
 
               <div className="space-y-3">
-                <Label>Services proposés *</Label>
+                <RequiredLabel
+                  className={cn(errors.services && "text-destructive")}
+                >
+                  Services proposés
+                </RequiredLabel>
                 <div className="grid sm:grid-cols-2 gap-3">
                   {SERVICES.map((s) => {
                     const id = `srv-${s}`;
@@ -316,7 +390,10 @@ function Page() {
                       <label
                         key={s}
                         htmlFor={id}
-                        className="flex items-center gap-3 rounded-md border border-border bg-background-alt/40 px-3 py-2 cursor-pointer hover:bg-background-alt"
+                        className={cn(
+                          "flex items-center gap-3 rounded-md border bg-background-alt/40 px-3 py-2 cursor-pointer hover:bg-background-alt",
+                          errors.services ? "border-destructive" : "border-border",
+                        )}
                       >
                         <Checkbox
                           id={id}
@@ -330,10 +407,17 @@ function Page() {
                     );
                   })}
                 </div>
+                {errors.services && (
+                  <p className="text-xs text-destructive">{errors.services}</p>
+                )}
               </div>
 
               <div className="space-y-3">
-                <Label>Zones desservies *</Label>
+                <RequiredLabel
+                  className={cn(errors.zones && "text-destructive")}
+                >
+                  Zones desservies
+                </RequiredLabel>
                 <div className="grid sm:grid-cols-2 gap-3">
                   {ZONES.map((z) => {
                     const id = `zn-${z}`;
@@ -342,7 +426,10 @@ function Page() {
                       <label
                         key={z}
                         htmlFor={id}
-                        className="flex items-center gap-3 rounded-md border border-border bg-background-alt/40 px-3 py-2 cursor-pointer hover:bg-background-alt"
+                        className={cn(
+                          "flex items-center gap-3 rounded-md border bg-background-alt/40 px-3 py-2 cursor-pointer hover:bg-background-alt",
+                          errors.zones ? "border-destructive" : "border-border",
+                        )}
                       >
                         <Checkbox
                           id={id}
@@ -354,7 +441,28 @@ function Page() {
                     );
                   })}
                 </div>
+                {errors.zones && (
+                  <p className="text-xs text-destructive">{errors.zones}</p>
+                )}
               </div>
+
+              <div className="flex items-start gap-3">
+                <Checkbox
+                  id="consent"
+                  checked={consent}
+                  onCheckedChange={(v) => setConsent(v === true)}
+                />
+                <Label htmlFor="consent" className="text-sm font-normal leading-snug">
+                  J'accepte d'être contacté(e) par SoumissionsComptables.ci pour
+                  finaliser mon inscription{" "}
+                  <span className="text-destructive" aria-hidden>
+                    *
+                  </span>
+                </Label>
+              </div>
+              {errors.consent && (
+                <p className="text-xs text-destructive -mt-3">{errors.consent}</p>
+              )}
 
               <Button
                 type="submit"
