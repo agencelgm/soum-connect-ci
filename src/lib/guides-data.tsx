@@ -1,3 +1,7 @@
+import type { ReactNode } from "react";
+import { CreerSarlCepiciContent } from "@/content/guides/creer-sarl-cepici";
+import creerSarlCepiciImg from "@/assets/guides/creer-sarl-cepici.jpg";
+
 export type Category =
   | "Création d'entreprise"
   | "Comptabilité"
@@ -15,6 +19,10 @@ export type Article = {
   readTime: string;
   /** 1 = 🔴 priorité haute, 2 = 🟡 moyenne, 3 = 🟢 basse. Champ interne, non rendu. */
   priority: 1 | 2 | 3;
+  /** Image hero de l'article (optionnel). */
+  image?: string;
+  /** Contenu rédigé de l'article (optionnel). Sans cela : placeholder. */
+  content?: () => ReactNode;
 };
 
 export const ARTICLES: Article[] = [
@@ -26,6 +34,8 @@ export const ARTICLES: Article[] = [
     categories: ["Création d'entreprise"],
     readTime: "9 min",
     priority: 1,
+    image: creerSarlCepiciImg,
+    content: () => <CreerSarlCepiciContent />,
   },
   {
     slug: "sarl-sa-ei-cote-divoire",

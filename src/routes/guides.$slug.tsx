@@ -1,11 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Clock, PencilLine } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { buildPageHead } from "@/lib/seo";
+import { buildPageHead, SITE_URL } from "@/lib/seo";
 import { getArticleBySlug } from "@/lib/guides-data";
 import { NotFoundPage } from "@/components/pages/NotFoundPage";
 import { RelatedLinks } from "@/components/seo/RelatedLinks";
 import { getPageRelations } from "@/lib/page-relations";
+import { ArticleLayout } from "@/components/guides/ArticleLayout";
 
 export const Route = createFileRoute("/guides/$slug")({
   head: ({ params }) => {
@@ -25,18 +26,41 @@ export const Route = createFileRoute("/guides/$slug")({
       path: `/guides/${article.slug}`,
       title: `${article.title} | SoumissionsComptables.ci`,
       description: article.excerpt,
+      ogImage: article.image,
+      ogType: article.content ? "article" : "website",
       breadcrumb: [
         { name: "Accueil", path: "/" },
         { name: "Guides", path: "/guides" },
         { name: article.title, path: `/guides/${article.slug}` },
       ],
     });
-    // Article placeholder — pas encore de contenu rédigé : on évite l'indexation.
+    // Article placeholder (sans contenu) → noindex.
+    if (!article.content) {
+      return {
+        ...head,
+        meta: [
+          ...head.meta,
+          { name: "robots", content: "noindex,nofollow" },
+        ],
+      };
+    }
+    // Article rédigé → JSON-LD Article + indexable.
+    const articleSchema = {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: article.title,
+      description: article.excerpt,
+      image: article.image ? `${SITE_URL}${article.image}` : undefined,
+      mainEntityOfPage: `${SITE_URL}/guides/${article.slug}`,
+    };
     return {
       ...head,
-      meta: [
-        ...head.meta,
-        { name: "robots", content: "noindex,nofollow" },
+      scripts: [
+        ...head.scripts,
+        {
+          type: "application/ld+json",
+          children: JSON.stringify(articleSchema),
+        },
       ],
     };
   },
@@ -49,6 +73,25 @@ function GuideSlugPage() {
 
   if (!article) {
     return <NotFoundPage />;
+  }
+
+  // Article rédigé → mise en page complète
+  if (article.content) {
+    const rel = getPageRelations("/guides");
+    return (
+      <>
+        <ArticleLayout article={article} heroImage={article.image}>
+          {article.content()}
+        </ArticleLayout>
+        {rel && (
+          <RelatedLinks
+            items={rel.related}
+            title="Pages liées"
+            subtitle="Explorez nos services et autres ressources."
+          />
+        )}
+      </>
+    );
   }
 
   return (
