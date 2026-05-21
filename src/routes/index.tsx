@@ -103,10 +103,10 @@ export function Index() {
         aria-labelledby="hero-title"
         className="relative overflow-hidden bg-[#F5F1EA]"
       >
-        <div className="container-app py-10 md:py-16 grid gap-8 lg:grid-cols-12 lg:items-center">
+        <div className="container-app py-10 md:py-16 grid gap-8 lg:gap-2 lg:grid-cols-12 lg:items-center">
           {/* Left: character + value props */}
           <div className="lg:col-span-5 relative self-end">
-            <div className="hidden lg:flex justify-center items-end">
+            <div className="hidden lg:flex justify-end items-end lg:-mr-8 xl:-mr-12">
               <img
                 src={heroAccountant}
                 alt=""
