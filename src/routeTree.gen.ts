@@ -40,6 +40,7 @@ import { Route as EnAccountingFirmAbidjanRouteImport } from './routes/en/account
 import { Route as EnAboutRouteImport } from './routes/en/about'
 import { Route as ApiPublicLeadUpsellRouteImport } from './routes/api/public/lead-upsell'
 import { Route as ApiPublicLeadRouteImport } from './routes/api/public/lead'
+import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -203,6 +204,11 @@ const ApiPublicLeadRoute = ApiPublicLeadRouteImport.update({
   path: '/api/public/lead',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicContactRoute = ApiPublicContactRouteImport.update({
+  id: '/api/public/contact',
+  path: '/api/public/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -234,6 +240,7 @@ export interface FileRoutesByFullPath {
   '/en/website-offer': typeof EnWebsiteOfferRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/en/': typeof EnIndexRoute
+  '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
   '/api/public/lead-upsell': typeof ApiPublicLeadUpsellRoute
 }
@@ -267,6 +274,7 @@ export interface FileRoutesByTo {
   '/en/website-offer': typeof EnWebsiteOfferRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/en': typeof EnIndexRoute
+  '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
   '/api/public/lead-upsell': typeof ApiPublicLeadUpsellRoute
 }
@@ -301,6 +309,7 @@ export interface FileRoutesById {
   '/en/website-offer': typeof EnWebsiteOfferRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/en/': typeof EnIndexRoute
+  '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
   '/api/public/lead-upsell': typeof ApiPublicLeadUpsellRoute
 }
@@ -336,6 +345,7 @@ export interface FileRouteTypes {
     | '/en/website-offer'
     | '/guides/$slug'
     | '/en/'
+    | '/api/public/contact'
     | '/api/public/lead'
     | '/api/public/lead-upsell'
   fileRoutesByTo: FileRoutesByTo
@@ -369,6 +379,7 @@ export interface FileRouteTypes {
     | '/en/website-offer'
     | '/guides/$slug'
     | '/en'
+    | '/api/public/contact'
     | '/api/public/lead'
     | '/api/public/lead-upsell'
   id:
@@ -402,6 +413,7 @@ export interface FileRouteTypes {
     | '/en/website-offer'
     | '/guides/$slug'
     | '/en/'
+    | '/api/public/contact'
     | '/api/public/lead'
     | '/api/public/lead-upsell'
   fileRoutesById: FileRoutesById
@@ -435,6 +447,7 @@ export interface RootRouteChildren {
   EnThankYouRoute: typeof EnThankYouRoute
   EnWebsiteOfferRoute: typeof EnWebsiteOfferRoute
   EnIndexRoute: typeof EnIndexRoute
+  ApiPublicContactRoute: typeof ApiPublicContactRoute
   ApiPublicLeadRoute: typeof ApiPublicLeadRoute
   ApiPublicLeadUpsellRoute: typeof ApiPublicLeadUpsellRoute
 }
@@ -658,6 +671,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicLeadRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/contact': {
+      id: '/api/public/contact'
+      path: '/api/public/contact'
+      fullPath: '/api/public/contact'
+      preLoaderRoute: typeof ApiPublicContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -702,6 +722,7 @@ const rootRouteChildren: RootRouteChildren = {
   EnThankYouRoute: EnThankYouRoute,
   EnWebsiteOfferRoute: EnWebsiteOfferRoute,
   EnIndexRoute: EnIndexRoute,
+  ApiPublicContactRoute: ApiPublicContactRoute,
   ApiPublicLeadRoute: ApiPublicLeadRoute,
   ApiPublicLeadUpsellRoute: ApiPublicLeadUpsellRoute,
 }
