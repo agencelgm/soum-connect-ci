@@ -69,8 +69,8 @@ export function OfferPage({
           </div>
 
           <div className="rounded-2xl bg-white shadow-lg border border-border p-6 md:p-10 text-center">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/15 text-accent-foreground px-3 py-1 text-xs font-bold uppercase tracking-wide">
-              <Sparkles className="w-3.5 h-3.5 text-accent" />
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary text-white px-3 py-1 text-xs font-bold uppercase tracking-wide">
+              <Sparkles className="w-3.5 h-3.5 text-white" />
               {badge}
             </span>
 

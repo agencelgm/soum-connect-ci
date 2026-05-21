@@ -1,12 +1,15 @@
-# Supprimer le lien « Passer »
+# Rendre le badge « OFFRE EXCLUSIVE !! » lisible
 
-## Objectif
-Forcer les visiteurs à choisir Oui ou Non sur les pages d'upsell — plus de raccourci pour sauter l'étape.
+## Problème
+Le badge en haut de la carte (`/offre-logo` et `/offre-site-internet`) utilise `bg-accent/15` + `text-accent-foreground`, ce qui donne un texte clair sur fond clair — quasi invisible.
 
-## Changement
-**`src/components/upsell/OfferPage.tsx`** — supprimer le bloc `<p>…<Link>Passer</Link>…</p>` situé sous la carte. Retirer aussi les imports devenus inutilisés (`Link`).
+## Correction
+**`src/components/upsell/OfferPage.tsx`** — remplacer les classes du `<span>` badge :
+- Fond plein et contrasté : `bg-secondary` (orange de la marque) avec `text-white`.
+- Garder l'icône `Sparkles` mais en `text-white`.
+- Conserver la forme pill, padding et typo actuels.
 
-Cela couvre automatiquement les 4 pages : `/offre-logo`, `/offre-site-internet`, `/en/logo-offer`, `/en/website-offer`.
+Résultat : badge orange plein, texte blanc, parfaitement lisible sur fond blanc de la carte. Couvre les 4 pages (FR + EN, logo + site).
 
 ## Hors scope
-Aucun changement de routing, de contenu ou de logique de soumission.
+Aucun autre changement de mise en page ou de contenu.
