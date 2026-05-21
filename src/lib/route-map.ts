@@ -16,6 +16,7 @@ export const ROUTE_PAIRS: Array<{ fr: string; en: string }> = [
   { fr: "/merci", en: "/en/thank-you" },
   { fr: "/offre-logo", en: "/en/logo-offer" },
   { fr: "/offre-site-internet", en: "/en/website-offer" },
+  { fr: "/nous-contacter", en: "/en/contact-us" },
 ];
 
 export function getLangFromPath(pathname: string): Language {
