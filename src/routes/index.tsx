@@ -36,7 +36,7 @@ import { LeadFormCard } from "@/components/home/LeadFormCard";
 import { buildPageHead, LOCAL_BUSINESS_SCHEMA } from "@/lib/seo";
 import { useLanguage } from "@/lib/language-context";
 import { getCounterpart } from "@/lib/route-map";
-import heroAccountant from "@/assets/home/hero-accountant.png";
+import heroAccountant from "@/assets/home/hero-accountant-cutout.png";
 import processCouple from "@/assets/home/process-couple.png";
 import seoTeamMeeting from "@/assets/home/seo-team-meeting.jpg";
 import seoAccountantDesk from "@/assets/home/seo-accountant-desk.jpg";
@@ -105,14 +105,14 @@ export function Index() {
       >
         <div className="container-app py-10 md:py-16 grid gap-8 lg:grid-cols-12 lg:items-center">
           {/* Left: character + value props */}
-          <div className="lg:col-span-5 relative">
-            <div className="hidden lg:block">
+          <div className="lg:col-span-5 relative self-end">
+            <div className="hidden lg:flex justify-center items-end">
               <img
                 src={heroAccountant}
                 alt=""
                 width={768}
                 height={1024}
-                className="w-full max-w-md mx-auto"
+                className="w-full max-w-sm object-contain object-bottom"
               />
             </div>
             <div className="lg:hidden text-center">
