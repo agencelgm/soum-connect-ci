@@ -40,16 +40,27 @@ function ArticleCard({ article, featured = false }: { article: Article; featured
         featured ? "md:flex-row" : ""
       }`}
     >
-      <div
-        className={`bg-gradient-to-br from-primary to-primary-dark ${
-          featured ? "md:w-2/5 min-h-[200px]" : "h-32"
-        } flex items-center justify-center`}
-        aria-hidden="true"
-      >
-        <span className="text-white/30 font-heading font-bold text-5xl">
-          {article.title.charAt(0)}
-        </span>
-      </div>
+      {article.image ? (
+        <img
+          src={article.image}
+          alt={article.title}
+          loading="lazy"
+          className={`object-cover ${
+            featured ? "md:w-2/5 w-full h-56 md:h-auto" : "h-44 w-full"
+          }`}
+        />
+      ) : (
+        <div
+          className={`bg-gradient-to-br from-primary to-primary-dark ${
+            featured ? "md:w-2/5 min-h-[200px]" : "h-32"
+          } flex items-center justify-center`}
+          aria-hidden="true"
+        >
+          <span className="text-white/30 font-heading font-bold text-5xl">
+            {article.title.charAt(0)}
+          </span>
+        </div>
+      )}
       <div className="p-6 flex-1 flex flex-col">
         <div className="flex flex-wrap gap-2 mb-3">
           {article.categories.map((c) => (
