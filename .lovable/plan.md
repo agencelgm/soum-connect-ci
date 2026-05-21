@@ -1,10 +1,9 @@
-Détourer le personnage de l'image hero (fond transparent) et l'afficher comme dans la référence : silhouette debout, face au formulaire, à gauche du bloc orange.
+Rapprocher le personnage du formulaire orange pour qu'il semble inciter le visiteur à le remplir.
 
-Actions :
-1. Détourer `src/assets/home/hero-accountant.png` via `imagegen--edit_image` avec `transparent_background=true` → produit un PNG transparent où seul l'homme reste (le bureau, mur blanc, classeurs et plante sont supprimés).
-2. Sauvegarder le résultat sous `src/assets/home/hero-accountant-cutout.png` et mettre à jour l'import dans `src/routes/index.tsx`.
-3. Ajuster le rendu dans la colonne gauche du hero (`lg:col-span-5`) :
-   - image ancrée en bas (`object-bottom`)
-   - hauteur pleine alignée sur le bloc formulaire
-   - aucune carte/fond derrière, juste le personnage qui se détache sur le beige `#F5F1EA`
-4. Aucun changement au formulaire orange ni au reste de la page.
+Ajustements dans `src/routes/index.tsx` (colonne hero gauche uniquement) :
+- Aligner l'image à droite (`justify-end`) au lieu du centre.
+- Permettre un léger débordement vers la colonne du formulaire via `mr-[-2rem]` ou `-mr-12` pour coller au bloc orange.
+- Réduire le `gap-8` de la grille hero à `lg:gap-4` pour resserrer l'ensemble.
+- Garder la même image détourée, ancrée en bas (`object-bottom`).
+
+Aucun changement au formulaire ni au reste de la page.
