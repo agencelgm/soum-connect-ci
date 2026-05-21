@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
-import { ARTICLES } from "@/lib/guides-data";
+import { ARTICLES } from "@/lib/guides-data.tsx";
 
 const BASE_URL = "https://soumissionscomptables.ci";
 
