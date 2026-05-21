@@ -1,60 +1,22 @@
 ## Objectif
 
-Créer la page `/nous-contacter` (actuellement 404) avec un formulaire permettant aux clients de décrire le problème rencontré, puis transmettre les réponses au même webhook que les autres leads.
+Remplacer l'illustration du comptable en hero d'accueil (`src/assets/home/hero-accountant.png`) par une image **photographique** qui :
+- a un rendu réaliste (style photo, pas illustration 3D lisse / "trop IA"),
+- montre le personnage **en pied jusqu'aux jambes** (cadrage similaire à l'image de référence du livreur),
+- conserve un fond détourable propre pour rester intégrée au bandeau crème actuel (`bg-[#F5F1EA]`).
 
-## Pages à créer
+## Ce qui change
 
-1. **`src/routes/nous-contacter.tsx`** (FR)
-2. **`src/routes/en/contact-us.tsx`** (EN, version miroir pour cohérence avec le reste du site)
+- **`src/assets/home/hero-accountant.png`** : remplacé par une nouvelle image générée en `premium` (meilleure fidélité photo), fond blanc puis détouré en PNG transparent.
+- Prompt orienté photo studio réaliste : homme ivoirien, ~30 ans, chemise bleu marine, manches retroussées, tenant un dossier cartonné brun et quelques documents, regard caméra, sourire sobre, **plan en pied (de la tête aux chevilles)**, lumière douce naturelle, grain photo, texture peau réaliste, légère profondeur de champ, **pas de style 3D/CGI/illustration**.
+- Format vertical 768×1280 environ pour permettre le plan en pied sans coupe.
 
-Mise à jour du mapping FR↔EN dans `src/lib/route-map.ts`, et du lien dans `src/routes/faq.tsx` (`<a href>` → `<Link to>`).
+## Ce qui ne change pas
 
-## Contenu du formulaire
+- Le composant `src/routes/index.tsx` continue d'importer `heroAccountant` depuis le même chemin → aucune modification de code nécessaire.
+- Mise en page du hero, formulaire orange, traductions, autres pages : inchangés.
+- Pas de modification de la page `/nous-contacter` ni d'autres assets.
 
-Champs (tous obligatoires sauf mention) :
-- **Nom complet** *
-- **Email** *
-- **Téléphone (mobile)** *
-- **Entreprise** (optionnel)
-- **Sujet du problème** — select :
-  - Problème avec une soumission reçue
-  - Cabinet partenaire ne répond pas
-  - Problème de facturation / paiement
-  - Question sur un service (création, comptabilité, fiscal, domiciliation)
-  - Demande de modification / annulation
-  - Autre
-- **Service concerné** (optionnel, select) : Création d'entreprise / Comptabilité / Déclaration fiscale / Domiciliation / Logo / Site web / Autre
-- **Date à laquelle le problème est survenu** (optionnel, date picker)
-- **Description du problème** * (textarea, min 20 / max 1000 caractères)
-- **Consentement RGPD** * (checkbox)
+## Limite à connaître
 
-Validation Zod côté client (react-hook-form + zodResolver) et côté serveur.
-
-## Endpoint serveur
-
-Nouveau fichier : **`src/routes/api/public/contact.ts`**
-- Schéma Zod identique au client.
-- Forwarde vers `process.env.GHL_WEBHOOK_URL` avec `source: "contact-form"` + `leadId` + `received_at` + `user_agent` (même pattern que `lead.ts`).
-- Log `LOST_LEAD` en cas d'échec webhook, comme l'existant.
-
-## UX
-
-- Design cohérent avec `LeadFormCard` / `OfferPage` : carte blanche `rounded-2xl`, fond `#F8FAFC`, bouton `bg-secondary` orange.
-- Hero court : titre "Nous contacter" + sous-titre "Décrivez-nous votre problème, notre équipe vous répond sous 24h ouvrables."
-- Bandeau de réassurance court (3 items : Réponse < 24h / Équipe locale Abidjan / Confidentialité).
-- Après soumission réussie → redirection vers `/merci` (FR) ou `/en/thank-you` (EN) + toast succès.
-- Gestion d'erreur réseau avec toast destructif et bouton "Réessayer".
-
-## SEO
-
-`buildPageHead` :
-- FR title : "Nous contacter | SoumissionsComptables.ci"
-- FR description : "Une question, un problème avec votre soumission ou un cabinet partenaire ? Contactez notre équipe à Abidjan, réponse sous 24h ouvrables."
-- `altPath` : `/en/contact-us`
-- Breadcrumb : Accueil → Nous contacter
-- `robots: index,follow`
-
-## Hors périmètre
-
-- Pas de table Supabase / Lovable Cloud ajoutée (on réutilise le webhook GHL existant, comme les autres formulaires du site).
-- Pas de modification du formulaire principal de demande de soumissions.
+Même en mode premium, les modèles génératifs gardent une signature visuelle reconnaissable. On va pousser un prompt photo très spécifique (objectif 50 mm, lumière naturelle, grain), mais si le rendu reste trop "IA" après cet essai, l'étape suivante recommandée est d'utiliser une vraie photo stock (par ex. Unsplash / Pexels) — je peux l'intégrer si vous fournissez le lien ou validez ce fallback.
