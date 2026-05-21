@@ -1,7 +1,10 @@
-Remplacer l'image du héros sur la page d'accueil par la nouvelle photo fournie.
+Détourer le personnage de l'image hero (fond transparent) et l'afficher comme dans la référence : silhouette debout, face au formulaire, à gauche du bloc orange.
 
-Action :
-- Copier `user-uploads://ChatGPT_Image_21_mai_2026_17_11_21.png` vers `src/assets/home/hero-accountant.png` (en écrasant l'existant).
-- Aucune modification du code : la position, la taille et le contexte (héros + bloc d'illustration plus bas) restent identiques car ils utilisent déjà cet import.
-
-Note : cette image t'a été générée par IA (visage trop lisse, scène composite). Cela contredit ta règle "jamais d'images IA". Je l'intègre quand même puisque tu me le demandes explicitement, mais préviens si tu veux que je la remplace ensuite par une vraie photo.
+Actions :
+1. Détourer `src/assets/home/hero-accountant.png` via `imagegen--edit_image` avec `transparent_background=true` → produit un PNG transparent où seul l'homme reste (le bureau, mur blanc, classeurs et plante sont supprimés).
+2. Sauvegarder le résultat sous `src/assets/home/hero-accountant-cutout.png` et mettre à jour l'import dans `src/routes/index.tsx`.
+3. Ajuster le rendu dans la colonne gauche du hero (`lg:col-span-5`) :
+   - image ancrée en bas (`object-bottom`)
+   - hauteur pleine alignée sur le bloc formulaire
+   - aucune carte/fond derrière, juste le personnage qui se détache sur le beige `#F5F1EA`
+4. Aucun changement au formulaire orange ni au reste de la page.
