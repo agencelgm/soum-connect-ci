@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { BookOpen, Sparkles } from "lucide-react";
+import { ArrowRight, BookOpen, Clock } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { buildPageHead } from "@/lib/seo";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { RelatedLinks } from "@/components/seo/RelatedLinks";
 import { getPageRelations } from "@/lib/page-relations";
+import { ARTICLES_SORTED } from "@/lib/guides-data";
 
 const META_TITLE =
   "Blog | Entrepreneuriat, comptabilité et fiscalité en Côte d'Ivoire";
@@ -24,19 +26,9 @@ export const Route = createFileRoute("/blog")({
   component: BlogPage,
 });
 
-type BlogPost = {
-  slug: string;
-  title: string;
-  excerpt: string;
-  category: string;
-  date: string;
-  readTime: string;
-};
-
-const POSTS: BlogPost[] = [];
-
 function BlogPage() {
   const rel = getPageRelations("/blog");
+  const posts = ARTICLES_SORTED;
   return (
     <main>
       {rel && <Breadcrumbs items={rel.breadcrumb} />}
@@ -58,59 +50,59 @@ function BlogPage() {
         </div>
       </section>
 
-      {/* Articles / état vide */}
+      {/* Articles */}
       <section className="container-app py-14 md:py-20">
-        {POSTS.length === 0 ? (
-          <div className="max-w-2xl mx-auto rounded-2xl border border-dashed border-border bg-white p-10 md:p-14 text-center">
-            <div className="inline-flex items-center justify-center h-14 w-14 rounded-full bg-secondary/10 text-secondary mb-5">
-              <Sparkles className="h-6 w-6" />
-            </div>
-            <h2 className="font-heading font-bold text-primary text-2xl md:text-3xl">
-              Les premiers articles arrivent bientôt
-            </h2>
-            <p className="mt-3 text-muted-foreground">
-              Nous préparons une série d'articles approfondis pour aider les
-              entrepreneurs et dirigeants en Côte d'Ivoire à mieux piloter leur
-              activité. En attendant, retrouvez nos guides pratiques.
-            </p>
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-              <a
-                href="/guides"
-                className="inline-flex items-center justify-center rounded-lg bg-primary text-white px-5 py-2.5 text-sm font-semibold hover:bg-primary-dark transition-colors"
-              >
-                Voir nos guides
-              </a>
-              <a
-                href="/demande-soumissions"
-                className="inline-flex items-center justify-center rounded-lg border border-border bg-white px-5 py-2.5 text-sm font-semibold text-primary hover:border-primary/40 transition-colors"
-              >
-                Obtenir mes soumissions
-              </a>
-            </div>
-          </div>
-        ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {POSTS.map((post) => (
-              <article
-                key={post.slug}
-                className="rounded-2xl border border-border bg-white p-6 hover:border-primary/40 hover:shadow-lg transition-all"
-              >
-                <span className="text-xs font-semibold text-secondary uppercase tracking-wide">
-                  {post.category}
-                </span>
-                <h3 className="mt-2 font-heading font-bold text-primary text-lg">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {posts.map((post) => (
+            <article
+              key={post.slug}
+              className="group flex flex-col rounded-2xl border border-border bg-white overflow-hidden hover:border-primary/40 hover:shadow-lg transition-all"
+            >
+              {post.image ? (
+                <img
+                  src={post.image}
+                  alt={post.title}
+                  loading="lazy"
+                  className="h-44 w-full object-cover"
+                />
+              ) : (
+                <div className="h-32 bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center" aria-hidden="true">
+                  <span className="text-white/30 font-heading font-bold text-5xl">
+                    {post.title.charAt(0)}
+                  </span>
+                </div>
+              )}
+              <div className="p-6 flex-1 flex flex-col">
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {post.categories.map((c) => (
+                    <Badge key={c} variant="secondary" className="bg-secondary/10 text-secondary hover:bg-secondary/20">
+                      {c}
+                    </Badge>
+                  ))}
+                </div>
+                <h3 className="font-heading font-bold text-primary group-hover:text-secondary transition-colors text-lg">
                   {post.title}
                 </h3>
-                <p className="mt-2 text-sm text-muted-foreground">
+                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
                   {post.excerpt}
                 </p>
-                <div className="mt-4 text-xs text-muted-foreground">
-                  {post.date} · {post.readTime} de lecture
+                <div className="mt-4 flex items-center justify-between pt-4 border-t border-border">
+                  <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <Clock className="h-3.5 w-3.5" />
+                    {post.readTime} de lecture
+                  </span>
+                  <a
+                    href={`/guides/${post.slug}`}
+                    className="inline-flex items-center gap-1 text-sm font-semibold text-secondary hover:text-secondary-dark"
+                  >
+                    Lire la suite
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </a>
                 </div>
-              </article>
-            ))}
-          </div>
-        )}
+              </div>
+            </article>
+          ))}
+        </div>
       </section>
       {rel && <RelatedLinks items={rel.related} />}
     </main>
