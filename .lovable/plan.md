@@ -1,87 +1,40 @@
-## Restructurer les pages Guides comme un vrai article (hero + formulaire + image + contenu riche)
+# Alignement de la structure Guides sur la maquette
 
-Reproduire la mise en page de la référence : bandeau vert avec titre à gauche et formulaire de demande à droite, fil d'Ariane, grande image hero, puis corps d'article structuré (paragraphes, H2, tableaux, callouts, listes).
+## Constat
 
-### Périmètre
-Uniquement les routes `/guides/$slug`. La page `/guides` (liste) et `/blog` ne changent pas.
+La page `/guides/$slug` (composant `ArticleLayout`) a déjà la bonne logique : hero vert avec titre à gauche + `LeadFormCard` à droite, puis image, puis corps. Mais quelques détails diffèrent de la maquette uploadée.
 
-### 1. Nouveau composant `ArticleLayout`
-Fichier : `src/components/guides/ArticleLayout.tsx`
+## Différences à corriger
 
-Structure :
+1. **Fil d'Ariane** : actuellement DANS le hero vert (texte blanc). Sur la maquette, il est SOUS le hero, sur fond blanc, centré sous la largeur du contenu.
+2. **Hero épuré** : retirer les badges de catégories et la durée de lecture du hero vert — la maquette ne montre que le titre (pas d'excerpt visible non plus, mais on peut le garder discret car utile SEO/lecture).
+3. **Image héro** : actuellement chevauche le hero (`-mt-10`). Sur la maquette elle est nettement séparée, centrée, avec marge au-dessus et au-dessous. À recadrer en simple bloc centré sans overlap.
+4. **Largeur du corps** : la maquette montre un corps assez étroit et centré (~max-w-2xl) avec texte justifié/aligné gauche. Notre `max-w-3xl` actuel est OK, à confirmer.
+5. **Tableau** : header vert foncé, lignes alternées très claires — déjà conforme dans `ArticleTable`, à vérifier visuellement.
+6. **Callout orange** (style "petit encadré orange clair" visible sur la maquette) : notre variante `tip` est verte (`secondary`). Ajouter ou ajuster pour matcher l'orange chaud de la maquette → utiliser la variante `warning` (ambre) ou créer une variante `highlight` orange douce alignée sur `--secondary` si secondary est orange dans le thème.
 
-```text
-┌──────────────────────────────────────────────────────┐
-│  HERO (bg primary vert)                              │
-│  ┌──────────────────────┬──────────────────────┐     │
-│  │ Titre H1 (blanc)     │  LeadFormCard        │     │
-│  │ Sous-titre / excerpt │  (sticky desktop)    │     │
-│  │ Badges catégories    │                      │     │
-│  └──────────────────────┴──────────────────────┘     │
-└──────────────────────────────────────────────────────┘
-   Breadcrumb (Accueil > Guides > Titre)
-┌──────────────────────────────────────────────────────┐
-│            Image hero (max-w-4xl, rounded)           │
-└──────────────────────────────────────────────────────┘
-┌──────────────────────────────────────────────────────┐
-│  Corps article (prose, max-w-3xl centré)             │
-│  - Intro                                             │
-│  - H2 + paragraphes                                  │
-│  - Tableau                                           │
-│  - Callout                                           │
-│  - H2 + listes                                       │
-│  - CTA final vers /demande-soumissions               │
-└──────────────────────────────────────────────────────┘
-   RelatedLinks
-```
+## Changements de fichiers
 
-Le composant accepte :
-- `article` (titre, excerpt, categories, readTime)
-- `heroImage` (string import)
-- `children` (le contenu MDX-like en JSX)
+### `src/components/guides/ArticleLayout.tsx`
+- Retirer le fil d'Ariane et les badges du hero vert.
+- Conserver titre + excerpt + LeadFormCard à droite uniquement.
+- Ajouter une bande blanche sous le hero contenant le fil d'Ariane (aligné container).
+- Retirer `-mt-6 md:-mt-10` sur l'image et la placer dans sa propre section avec `py-8 md:py-12`.
+- Garder le corps article en `max-w-3xl mx-auto`.
 
-Mobile : le formulaire passe sous le titre, l'image hero reste pleine largeur.
+### `src/components/guides/article-blocks.tsx`
+- Vérifier la couleur de `ArticleCallout variant="tip"` : si secondary n'est pas orange, ajouter une variante `highlight` qui utilise un fond orange clair + bordure orange (tokens du design system, pas de hex direct).
+- Garder `info`, `warning`, `tip` existants pour compatibilité avec le contenu déjà rédigé.
 
-### 2. Sous-composants de contenu réutilisables
-Dans `src/components/guides/article-blocks.tsx` :
-- `<ArticleSection title="...">` — H2 + paragraphes
-- `<ArticleTable headers={[...]} rows={[[...]]} />` — tableau stylé (bordures, header coloré)
-- `<ArticleCallout variant="info|warning|tip">` — encadré coloré (style identique au callout vert de la référence)
-- `<ArticleList items={[...]} />` — liste à puces stylée
-- `<ArticleCTA />` — bloc CTA final standardisé vers le formulaire
+### `src/content/guides/creer-sarl-cepici.tsx`
+- Aucun changement de contenu nécessaire ; éventuellement passer le callout final en `highlight` si la nouvelle variante est ajoutée.
 
-Ces blocs utilisent les tokens du design system (primary, secondary, border, muted) — aucun hex en dur.
+## Hors scope
 
-### 3. Données enrichies
-Étendre `src/lib/guides-data.ts` :
-- Ajouter `image?: string` (chemin de l'image hero) au type `Article`
-- Ajouter `content?: () => ReactNode` optionnel pour le contenu rédigé
+- Aucune modification du formulaire `LeadFormCard`.
+- Aucune modification des routes, du SEO ou de la data des guides.
+- Aucun nouveau contenu d'article rédigé dans ce lot (on aligne d'abord la structure).
 
-Les articles sans `content` continuent d'afficher le placeholder existant. Au fil de l'eau on remplit `content` pour chaque guide rédigé.
+## Validation après implémentation
 
-### 4. Refonte de `src/routes/guides.$slug.tsx`
-- Si `article.content` existe → render `<ArticleLayout article={...} heroImage={article.image}>{article.content()}</ArticleLayout>`
-- Sinon → garder le placeholder actuel ("Article en cours de rédaction")
-- Le `head()` retire le `noindex` quand le contenu existe (article indexable)
-
-### 5. Premier article rédigé (démo)
-Rédiger **`creer-sarl-cepici`** (priorité 1) comme exemple complet :
-- Fichier dédié : `src/content/guides/creer-sarl-cepici.tsx` (contenu JSX)
-- Image générée via IA : `src/assets/guides/creer-sarl-cepici.jpg` (16:9, illustration professionnelle d'un guichet CEPICI / documents d'entreprise, style éditorial cohérent avec le ton du site)
-- Contenu : intro, sections (Étapes, Documents, Capital minimum, Délais, Coûts), tableau récap des coûts, callout "Bon à savoir", liste des erreurs fréquentes, CTA
-- Respect strict de la mémoire : uniquement SARL/SARLU/SA/EI/GIE OHADA
-
-### 6. SEO
-- L'article rédigé : `head()` complet (title, description, og:image avec l'image hero, breadcrumb, JSON-LD `Article`)
-- Retirer `noindex` pour les articles avec contenu
-
-### Fichiers touchés
-- `src/components/guides/ArticleLayout.tsx` (création)
-- `src/components/guides/article-blocks.tsx` (création)
-- `src/content/guides/creer-sarl-cepici.tsx` (création — contenu rédigé)
-- `src/assets/guides/creer-sarl-cepici.jpg` (création — image IA)
-- `src/lib/guides-data.ts` (ajout champs `image` + `content`, branche l'article rédigé)
-- `src/routes/guides.$slug.tsx` (utilise `ArticleLayout` quand contenu présent + SEO ajusté)
-
-### Suite (après validation)
-Une fois le template validé sur `creer-sarl-cepici`, je rédige les autres guides par lots de priorité 1 (6 articles), puis priorité 2, puis 3. Chaque article = un fichier `src/content/guides/<slug>.tsx` + une image IA. Demande-moi simplement "rédige les guides P1 suivants" pour continuer.
+Rafraîchir `/guides/creer-sarl-cepici` et comparer visuellement avec la maquette : hero vert épuré + form, fil d'Ariane blanc, image centrée séparée, corps texte + tableau + callouts.
