@@ -106,7 +106,7 @@ export function Index() {
         <div className="container-app py-10 md:py-16 grid gap-8 lg:gap-2 lg:grid-cols-12 lg:items-center">
           {/* Left: character + value props */}
           <div className="lg:col-span-5 relative self-end">
-            <div className="hidden lg:flex justify-end items-end lg:-mr-8 xl:-mr-12">
+            <div className="hidden lg:flex justify-end items-end lg:-mr-16 xl:-mr-24">
               <img
                 src={heroAccountant}
                 alt=""
