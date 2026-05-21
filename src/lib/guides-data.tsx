@@ -1,6 +1,18 @@
 import type { ReactNode } from "react";
 import { CreerSarlCepiciContent } from "@/content/guides/creer-sarl-cepici";
+import { SarlSaEiContent } from "@/content/guides/sarl-sa-ei-cote-divoire";
+import { CalendrierFiscal2026Content } from "@/content/guides/calendrier-fiscal-ci-2026";
+import { CoutCabinetAbidjanContent } from "@/content/guides/cout-cabinet-comptable-abidjan";
+import { CreerEntrepriseDepuisFranceContent } from "@/content/guides/creer-entreprise-ci-depuis-france";
+import { ImpotsEntrepriseContent } from "@/content/guides/impots-entreprise-cote-divoire";
+import { ChoisirCabinetAbidjanContent } from "@/content/guides/choisir-cabinet-comptable-abidjan";
 import creerSarlCepiciImg from "@/assets/guides/creer-sarl-cepici.jpg";
+import sarlSaEiImg from "@/assets/guides/sarl-sa-ei.jpg";
+import calendrierFiscalImg from "@/assets/guides/calendrier-fiscal-2026.jpg";
+import coutCabinetImg from "@/assets/guides/cout-cabinet-abidjan.jpg";
+import diasporaFranceImg from "@/assets/guides/diaspora-france-ci.jpg";
+import impotsEntrepriseImg from "@/assets/guides/impots-entreprise-ci.jpg";
+import choisirCabinetImg from "@/assets/guides/choisir-cabinet-abidjan.jpg";
 
 export type Category =
   | "Création d'entreprise"
@@ -45,6 +57,8 @@ export const ARTICLES: Article[] = [
     categories: ["Création d'entreprise"],
     readTime: "7 min",
     priority: 1,
+    image: sarlSaEiImg,
+    content: () => <SarlSaEiContent />,
   },
   {
     slug: "calendrier-fiscal-ci-2026",
@@ -54,6 +68,8 @@ export const ARTICLES: Article[] = [
     categories: ["Fiscalité"],
     readTime: "6 min",
     priority: 1,
+    image: calendrierFiscalImg,
+    content: () => <CalendrierFiscal2026Content />,
   },
   {
     slug: "cout-cabinet-comptable-abidjan",
@@ -63,6 +79,8 @@ export const ARTICLES: Article[] = [
     categories: ["Comptabilité"],
     readTime: "7 min",
     priority: 1,
+    image: coutCabinetImg,
+    content: () => <CoutCabinetAbidjanContent />,
   },
   {
     slug: "creer-entreprise-ci-depuis-france",
@@ -72,6 +90,8 @@ export const ARTICLES: Article[] = [
     categories: ["Diaspora", "Création d'entreprise"],
     readTime: "9 min",
     priority: 1,
+    image: diasporaFranceImg,
+    content: () => <CreerEntrepriseDepuisFranceContent />,
   },
   {
     slug: "impots-entreprise-cote-divoire",
@@ -81,6 +101,8 @@ export const ARTICLES: Article[] = [
     categories: ["Fiscalité"],
     readTime: "8 min",
     priority: 1,
+    image: impotsEntrepriseImg,
+    content: () => <ImpotsEntrepriseContent />,
   },
   {
     slug: "choisir-cabinet-comptable-abidjan",
@@ -90,6 +112,8 @@ export const ARTICLES: Article[] = [
     categories: ["Comptabilité"],
     readTime: "6 min",
     priority: 1,
+    image: choisirCabinetImg,
+    content: () => <ChoisirCabinetAbidjanContent />,
   },
   {
     slug: "domiciliation-entreprise-abidjan",
