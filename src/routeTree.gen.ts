@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as OffreSiteInternetRouteImport } from './routes/offre-site-internet'
 import { Route as OffreLogoRouteImport } from './routes/offre-logo'
+import { Route as NousContacterRouteImport } from './routes/nous-contacter'
 import { Route as MerciRouteImport } from './routes/merci'
 import { Route as GuidesRouteImport } from './routes/guides'
 import { Route as FaqRouteImport } from './routes/faq'
@@ -33,6 +34,7 @@ import { Route as EnWebsiteOfferRouteImport } from './routes/en/website-offer'
 import { Route as EnThankYouRouteImport } from './routes/en/thank-you'
 import { Route as EnLogoOfferRouteImport } from './routes/en/logo-offer'
 import { Route as EnGetQuotesRouteImport } from './routes/en/get-quotes'
+import { Route as EnContactUsRouteImport } from './routes/en/contact-us'
 import { Route as EnCompanyRegistrationIvoryCoastRouteImport } from './routes/en/company-registration-ivory-coast'
 import { Route as EnAccountingFirmAbidjanRouteImport } from './routes/en/accounting-firm-abidjan'
 import { Route as EnAboutRouteImport } from './routes/en/about'
@@ -52,6 +54,11 @@ const OffreSiteInternetRoute = OffreSiteInternetRouteImport.update({
 const OffreLogoRoute = OffreLogoRouteImport.update({
   id: '/offre-logo',
   path: '/offre-logo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NousContacterRoute = NousContacterRouteImport.update({
+  id: '/nous-contacter',
+  path: '/nous-contacter',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MerciRoute = MerciRouteImport.update({
@@ -165,6 +172,11 @@ const EnGetQuotesRoute = EnGetQuotesRouteImport.update({
   path: '/en/get-quotes',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EnContactUsRoute = EnContactUsRouteImport.update({
+  id: '/en/contact-us',
+  path: '/en/contact-us',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EnCompanyRegistrationIvoryCoastRoute =
   EnCompanyRegistrationIvoryCoastRouteImport.update({
     id: '/en/company-registration-ivory-coast',
@@ -208,12 +220,14 @@ export interface FileRoutesByFullPath {
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRouteWithChildren
   '/merci': typeof MerciRoute
+  '/nous-contacter': typeof NousContacterRoute
   '/offre-logo': typeof OffreLogoRoute
   '/offre-site-internet': typeof OffreSiteInternetRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
+  '/en/contact-us': typeof EnContactUsRoute
   '/en/get-quotes': typeof EnGetQuotesRoute
   '/en/logo-offer': typeof EnLogoOfferRoute
   '/en/thank-you': typeof EnThankYouRoute
@@ -239,12 +253,14 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRouteWithChildren
   '/merci': typeof MerciRoute
+  '/nous-contacter': typeof NousContacterRoute
   '/offre-logo': typeof OffreLogoRoute
   '/offre-site-internet': typeof OffreSiteInternetRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
+  '/en/contact-us': typeof EnContactUsRoute
   '/en/get-quotes': typeof EnGetQuotesRoute
   '/en/logo-offer': typeof EnLogoOfferRoute
   '/en/thank-you': typeof EnThankYouRoute
@@ -271,12 +287,14 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRouteWithChildren
   '/merci': typeof MerciRoute
+  '/nous-contacter': typeof NousContacterRoute
   '/offre-logo': typeof OffreLogoRoute
   '/offre-site-internet': typeof OffreSiteInternetRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
+  '/en/contact-us': typeof EnContactUsRoute
   '/en/get-quotes': typeof EnGetQuotesRoute
   '/en/logo-offer': typeof EnLogoOfferRoute
   '/en/thank-you': typeof EnThankYouRoute
@@ -304,12 +322,14 @@ export interface FileRouteTypes {
     | '/faq'
     | '/guides'
     | '/merci'
+    | '/nous-contacter'
     | '/offre-logo'
     | '/offre-site-internet'
     | '/sitemap.xml'
     | '/en/about'
     | '/en/accounting-firm-abidjan'
     | '/en/company-registration-ivory-coast'
+    | '/en/contact-us'
     | '/en/get-quotes'
     | '/en/logo-offer'
     | '/en/thank-you'
@@ -335,12 +355,14 @@ export interface FileRouteTypes {
     | '/faq'
     | '/guides'
     | '/merci'
+    | '/nous-contacter'
     | '/offre-logo'
     | '/offre-site-internet'
     | '/sitemap.xml'
     | '/en/about'
     | '/en/accounting-firm-abidjan'
     | '/en/company-registration-ivory-coast'
+    | '/en/contact-us'
     | '/en/get-quotes'
     | '/en/logo-offer'
     | '/en/thank-you'
@@ -366,12 +388,14 @@ export interface FileRouteTypes {
     | '/faq'
     | '/guides'
     | '/merci'
+    | '/nous-contacter'
     | '/offre-logo'
     | '/offre-site-internet'
     | '/sitemap.xml'
     | '/en/about'
     | '/en/accounting-firm-abidjan'
     | '/en/company-registration-ivory-coast'
+    | '/en/contact-us'
     | '/en/get-quotes'
     | '/en/logo-offer'
     | '/en/thank-you'
@@ -398,12 +422,14 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   GuidesRoute: typeof GuidesRouteWithChildren
   MerciRoute: typeof MerciRoute
+  NousContacterRoute: typeof NousContacterRoute
   OffreLogoRoute: typeof OffreLogoRoute
   OffreSiteInternetRoute: typeof OffreSiteInternetRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   EnAboutRoute: typeof EnAboutRoute
   EnAccountingFirmAbidjanRoute: typeof EnAccountingFirmAbidjanRoute
   EnCompanyRegistrationIvoryCoastRoute: typeof EnCompanyRegistrationIvoryCoastRoute
+  EnContactUsRoute: typeof EnContactUsRoute
   EnGetQuotesRoute: typeof EnGetQuotesRoute
   EnLogoOfferRoute: typeof EnLogoOfferRoute
   EnThankYouRoute: typeof EnThankYouRoute
@@ -434,6 +460,13 @@ declare module '@tanstack/react-router' {
       path: '/offre-logo'
       fullPath: '/offre-logo'
       preLoaderRoute: typeof OffreLogoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/nous-contacter': {
+      id: '/nous-contacter'
+      path: '/nous-contacter'
+      fullPath: '/nous-contacter'
+      preLoaderRoute: typeof NousContacterRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/merci': {
@@ -583,6 +616,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EnGetQuotesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/en/contact-us': {
+      id: '/en/contact-us'
+      path: '/en/contact-us'
+      fullPath: '/en/contact-us'
+      preLoaderRoute: typeof EnContactUsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/en/company-registration-ivory-coast': {
       id: '/en/company-registration-ivory-coast'
       path: '/en/company-registration-ivory-coast'
@@ -649,12 +689,14 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   GuidesRoute: GuidesRouteWithChildren,
   MerciRoute: MerciRoute,
+  NousContacterRoute: NousContacterRoute,
   OffreLogoRoute: OffreLogoRoute,
   OffreSiteInternetRoute: OffreSiteInternetRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   EnAboutRoute: EnAboutRoute,
   EnAccountingFirmAbidjanRoute: EnAccountingFirmAbidjanRoute,
   EnCompanyRegistrationIvoryCoastRoute: EnCompanyRegistrationIvoryCoastRoute,
+  EnContactUsRoute: EnContactUsRoute,
   EnGetQuotesRoute: EnGetQuotesRoute,
   EnLogoOfferRoute: EnLogoOfferRoute,
   EnThankYouRoute: EnThankYouRoute,
@@ -666,3 +708,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
