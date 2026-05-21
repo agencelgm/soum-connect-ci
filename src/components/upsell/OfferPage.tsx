@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -106,15 +106,6 @@ export function OfferPage({
               </Button>
             </div>
           </div>
-
-          <p className="mt-6 text-center text-xs text-muted-foreground">
-            <Link
-              to={language === "en" ? "/en/thank-you" : "/merci"}
-              className="underline-offset-2 hover:underline"
-            >
-              {language === "en" ? "Skip" : "Passer"}
-            </Link>
-          </p>
         </div>
       </section>
     </main>
