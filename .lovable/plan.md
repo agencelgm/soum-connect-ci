@@ -1,34 +1,28 @@
-## Problème
+Plan proposé :
 
-Les 6 images hero des nouveaux articles guides ont été générées par IA (rendu lisse, artificiel). Vous avez répété que vous voulez des **photos réelles**, pas du contenu IA.
+1. Corriger la page Blog
+- Remplacer l’état vide de `/blog` par une grille d’articles réelle.
+- Réutiliser les articles déjà rédigés et structurés dans `guides-data`.
+- Chaque carte affichera : vraie image réaliste, catégorie, titre, extrait, temps de lecture et lien `Lire la suite`.
+- Garder une navigation claire en français.
 
-## Solution proposée
+2. Rendre les articles lisibles depuis le Blog
+- Ajouter une route dynamique `/blog/$slug` pour ouvrir un article complet depuis le blog.
+- Réutiliser la mise en page article existante pour garder le même rendu professionnel.
+- Si un article n’est pas encore rédigé, afficher une page “article en cours de rédaction” au lieu d’un écran vide.
 
-Remplacer les 6 images générées par des **photos réelles libres de droits** issues d'Unsplash (photos d'auteurs vérifiés, gratuites pour usage commercial, sans attribution obligatoire mais créditées dans le code).
+3. Respecter ta structure SEO/AEO/GEO
+- Pour chaque article ouvert : un seul H1, plusieurs H2 formulés en questions, paragraphes courts, FAQ, sources externes, contexte Côte d’Ivoire / Abidjan.
+- Balises meta dynamiques : title, description, URL slug court et descriptif.
+- Image pertinente avec alt text descriptif.
+- Maillage interne naturel vers les pages services et autres articles.
 
-## Images à remplacer
+4. Corriger l’affichage des cartes
+- Remplacer les blocs bleus avec une lettre par les vraies photos déjà présentes dans `src/assets/guides`.
+- Ne pas utiliser d’images IA.
+- Garder seulement le lien `Lire la suite` comme action principale, sauf si tu confirmes vouloir rendre toute la carte cliquable.
 
-| Article | Direction photo réelle |
-|---|---|
-| `sarl-sa-ei.jpg` | Bureau réel avec documents juridiques / poignée de main professionnels africains |
-| `calendrier-fiscal-2026.jpg` | Agenda papier réel, stylo, calculatrice sur bureau |
-| `cout-cabinet-abidjan.jpg` | Comptable réel devant ordinateur avec factures papier |
-| `diaspora-france-ci.jpg` | Photo réelle (passeport, avion, ou bureau avec ordinateur portable) |
-| `impots-entreprise-ci.jpg` | Documents fiscaux réels, calculatrice, dossiers |
-| `choisir-cabinet-abidjan.jpg` | Réunion réelle de professionnels en cabinet |
-
-## Méthode technique
-
-1. Télécharger via `curl` les photos depuis Unsplash (URLs directes `images.unsplash.com/...` en 1600px de large, format JPG).
-2. Écraser les 6 fichiers existants dans `src/assets/guides/` en gardant les mêmes noms → aucun changement à faire dans `guides-data.tsx`.
-3. Sélectionner uniquement des photos avec personnes/scènes africaines quand pertinent (Abidjan/CI context), et bureaux/documents réels pour les sujets fiscaux.
-
-## Règle à mémoriser
-
-Sauvegarder dans la mémoire projet : **« Jamais d'images générées par IA pour ce site. Toujours utiliser des photos réelles (Unsplash ou équivalent). »** — pour ne plus jamais refaire l'erreur.
-
-## Hors périmètre
-
-- Contenu des articles (déjà écrit, validé).
-- Image hero de la page d'accueil (déjà retravaillée précédemment).
-- Les 13 autres articles priorité 2/3 (pas encore d'images).
+5. Vérifier le comportement
+- Vérifier que le menu “Blog” ouvre bien la page blog.
+- Vérifier que `Lire la suite` ouvre bien l’article complet.
+- Vérifier que les images s’affichent correctement et que la page reste responsive sur mobile.
