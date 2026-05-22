@@ -28,11 +28,11 @@ import seoEntrepreneurs from "@/assets/home/seo-entrepreneurs.jpg";
 import seoOffice from "@/assets/home/seo-office-abidjan.jpg";
 
 const META_TITLE_FR =
-  "Créer son Entreprise en Côte d'Ivoire en moins de 30 jours | SoumissionsComptables.ci";
+  "Créer son Entreprise en Côte d'Ivoire en moins de 30 jours | SoumissionComptable.com";
 const META_DESC_FR =
   "Créez votre entreprise en Côte d'Ivoire en moins de 30 jours : RCCM, DFE, IDU, statuts, CNPS. Comparez 5 devis gratuits de cabinets agréés CEPICI sous 48h.";
 const META_TITLE_EN =
-  "Start a Business in Côte d'Ivoire in less than 30 days | SoumissionsComptables.ci";
+  "Start a Business in Côte d'Ivoire in less than 30 days | SoumissionComptable.com";
 const META_DESC_EN =
   "Register your company in Côte d'Ivoire in less than 30 days: RCCM, DFE, IDU, articles, CNPS. Compare 5 free quotes from CEPICI-approved firms within 48h.";
 
@@ -150,7 +150,7 @@ export const Route = createFileRoute("/creer-son-entreprise-cote-divoire")({
           areaServed: { "@type": "Country", name: "Côte d'Ivoire" },
           provider: {
             "@type": "Organization",
-            name: "SoumissionsComptables.ci",
+            name: "SoumissionComptable.com",
           },
           description:
             "Mise en relation avec un cabinet agréé CEPICI pour la création de votre entreprise (RCCM, DFE, IDU, statuts, CNPS) en 7 à 15 jours.",

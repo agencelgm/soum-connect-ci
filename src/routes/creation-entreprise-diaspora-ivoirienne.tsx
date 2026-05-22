@@ -17,7 +17,7 @@ const STEPS = [
   },
   {
     title: "Trouver un cabinet comptable mandataire en CI",
-    text: "Via SoumissionsComptables.ci, identifiez un cabinet agréé OECCA-CI qui acceptera d'agir comme mandataire pour vos démarches.",
+    text: "Via SoumissionComptable.com, identifiez un cabinet agréé OECCA-CI qui acceptera d'agir comme mandataire pour vos démarches.",
   },
   {
     title: "Préparer et envoyer vos documents scannés",

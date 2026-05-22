@@ -28,7 +28,7 @@ export const Route = createFileRoute("/guides/$slug")({
     if (!article) {
       return buildPageHead({
         path,
-        title: "Guide introuvable | SoumissionsComptables.ci",
+        title: "Guide introuvable | SoumissionComptable.com",
         description: "Ce guide n'existe pas ou plus.",
         lang,
         breadcrumb: [

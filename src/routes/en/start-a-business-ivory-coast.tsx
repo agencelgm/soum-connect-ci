@@ -3,7 +3,7 @@ import { buildPageHead, faqSchema, howToSchema } from "@/lib/seo";
 import { CreerEntreprisePage } from "../creer-son-entreprise-cote-divoire";
 
 const TITLE =
-  "Start a Business in Côte d'Ivoire in less than 30 days | SoumissionsComptables.ci";
+  "Start a Business in Côte d'Ivoire in less than 30 days | SoumissionComptable.com";
 const DESCRIPTION =
   "Register your company in Côte d'Ivoire in less than 30 days: RCCM, DFE, IDU, articles, CNPS. Compare 5 free quotes from CEPICI-approved firms within 48h.";
 

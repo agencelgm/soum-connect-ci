@@ -102,7 +102,7 @@ export const translations = {
       items: [
         {
           q: "Est-ce vraiment gratuit pour moi ?",
-          a: "Oui, totalement. SoumissionsComptables.ci est entièrement gratuit pour les entrepreneurs. Ce sont les cabinets comptables partenaires qui financent la plateforme en payant pour accéder aux demandes qualifiées.",
+          a: "Oui, totalement. SoumissionComptable.com est entièrement gratuit pour les entrepreneurs. Ce sont les cabinets comptables partenaires qui financent la plateforme en payant pour accéder aux demandes qualifiées.",
         },
         {
           q: "Combien de temps avant de recevoir une réponse ?",
@@ -153,7 +153,7 @@ export const translations = {
       contact: "Contact",
       privacy: "Politique de confidentialité",
       terms: "Conditions d'utilisation",
-      rights: "© 2026 SoumissionsComptables.ci — Tous droits réservés",
+      rights: "© 2026 SoumissionComptable.com — Tous droits réservés",
       byLgm: "Une réalisation de LGM — Les Gens du Marketing",
       location: "Abidjan, Côte d'Ivoire",
       links: {
@@ -177,9 +177,9 @@ export const translations = {
       finalBtn: "Obtenir mes soumissions gratuitement →",
     },
     about: {
-      metaTitle: "À Propos de SoumissionsComptables.ci | Notre Mission",
+      metaTitle: "À Propos de SoumissionComptable.com | Notre Mission",
       metaDescription:
-        "SoumissionsComptables.ci est la première plateforme de mise en relation entre entrepreneurs et cabinets comptables agréés en Côte d'Ivoire. Découvrez notre mission.",
+        "SoumissionComptable.com est la première plateforme de mise en relation entre entrepreneurs et cabinets comptables agréés en Côte d'Ivoire. Découvrez notre mission.",
       breadcrumbHome: "Accueil",
       breadcrumbAbout: "À propos",
       heroTitle:
@@ -187,7 +187,7 @@ export const translations = {
       heroSub:
         "Connecter entrepreneurs, diaspora et cabinets agréés OECCA-CI en toute transparence.",
       whoTitle: "Qui nous sommes",
-      whoP1Strong: "SoumissionsComptables.ci",
+      whoP1Strong: "SoumissionComptable.com",
       whoP1: " est la première plateforme de mise en relation comptable en Côte d'Ivoire. Nous connectons les entrepreneurs, les membres de la diaspora ivoirienne et les entreprises avec des cabinets comptables agréés et vérifiés.",
       whoP2: "Notre rôle est simple : qualifier vos besoins en quelques minutes, les transmettre à des cabinets agréés OECCA-CI sélectionnés, et vous laisser comparer jusqu'à cinq propositions claires — gratuitement, en 48 heures. Nous ne facturons rien aux entrepreneurs : ce sont les cabinets partenaires qui financent la plateforme en accédant aux demandes qualifiées.",
       whoP3: "Notre ambition est d'apporter au marché comptable ivoirien la transparence et la simplicité qui font défaut aujourd'hui, et de devenir le réflexe naturel de tout entrepreneur cherchant un partenaire comptable de confiance — qu'il soit à Abidjan, en région ou à l'étranger.",
@@ -226,7 +226,7 @@ export const translations = {
         },
       ],
       teamTitle: "L'Équipe Derrière le Projet",
-      teamTextBefore: "SoumissionsComptables.ci est une réalisation de ",
+      teamTextBefore: "SoumissionComptable.com est une réalisation de ",
       teamTextStrong: "LGM — Les Gens du Marketing",
       teamTextAfter:
         ", agence de marketing digital spécialisée dans la performance commerciale.",
@@ -290,11 +290,11 @@ export const translations = {
       ],
       seoTitle: "Des cabinets comptables offrant des services professionnels",
       seoSubtitle: "à Abidjan, Bouaké, San-Pédro, Yamoussoukro, Korhogo, Daloa, Man, Gagnoa, et pour la diaspora ivoirienne partout dans le monde !",
-      seoP1: "SoumissionsComptables.ci, en partenariat avec des cabinets d'expertise comptable agréés OECCA-CI à Abidjan, Bouaké, San-Pédro et partout en Côte d'Ivoire, offre un service de mise en relation comptable professionnel tant pour les entreprises que pour les entrepreneurs. Que vous soyez au Plateau, à Cocody, Yopougon, Marcory, ou dans une autre commune d'Abidjan, en région ou à l'étranger, SoumissionsComptables.ci peut vous fournir des cabinets professionnels rapides, rigoureux et compétents. Ceux-ci sont experts en différents types de prestations : comptabilité générale, fiscalité, audit, paie, conseil juridique et accompagnement à la création d'entreprise.",
-      seoP2: "SoumissionsComptables.ci est un service de demande de soumissions en ligne pour vos besoins comptables en Côte d'Ivoire. Ce service vous convient si vous voulez trouver rapidement un cabinet correspondant à vos besoins et à votre budget. Le formulaire de demande sur cette page ne prend que quelques minutes à remplir.",
+      seoP1: "SoumissionComptable.com, en partenariat avec des cabinets d'expertise comptable agréés OECCA-CI à Abidjan, Bouaké, San-Pédro et partout en Côte d'Ivoire, offre un service de mise en relation comptable professionnel tant pour les entreprises que pour les entrepreneurs. Que vous soyez au Plateau, à Cocody, Yopougon, Marcory, ou dans une autre commune d'Abidjan, en région ou à l'étranger, SoumissionComptable.com peut vous fournir des cabinets professionnels rapides, rigoureux et compétents. Ceux-ci sont experts en différents types de prestations : comptabilité générale, fiscalité, audit, paie, conseil juridique et accompagnement à la création d'entreprise.",
+      seoP2: "SoumissionComptable.com est un service de demande de soumissions en ligne pour vos besoins comptables en Côte d'Ivoire. Ce service vous convient si vous voulez trouver rapidement un cabinet correspondant à vos besoins et à votre budget. Le formulaire de demande sur cette page ne prend que quelques minutes à remplir.",
       seoTypesTitle: "Vous avez le choix entre 3 types de prestations :",
       seoTypes: ["Cabinet le plus économique possible mais agréé OECCA-CI", "Cabinet au meilleur rapport qualité-prix", "Cabinet clé en main (haut de gamme)"],
-      seoP3Strong: "SoumissionsComptables.ci est une plateforme regroupant des cabinets d'expertise comptable agréés à Abidjan, Bouaké, San-Pédro et partout en province.",
+      seoP3Strong: "SoumissionComptable.com est une plateforme regroupant des cabinets d'expertise comptable agréés à Abidjan, Bouaké, San-Pédro et partout en province.",
       seoP3: " Notre service permet aux cabinets sérieux d'avoir plus de visibilité. La demande de soumissions est gratuite pour vous : ce sont nos partenaires cabinets qui financent la plateforme.",
       seoNeedsTitle: "Ce service, sans engagement de votre part, convient à tous les besoins :",
       seoNeeds: [
@@ -310,12 +310,12 @@ export const translations = {
         "Reporting, prévisionnels et contrôle de gestion",
       ],
       seoLocation: "Êtes-vous situé en Côte d'Ivoire ou à l'étranger ? Nous avons des cabinets partenaires à Abidjan (Plateau, Cocody, Marcory, Yopougon, Treichville), Bouaké, San-Pédro, Yamoussoukro, Korhogo, Daloa, Man, Gagnoa, Abengourou — et nous accompagnons aussi la diaspora en France, au Canada, aux USA, en Europe et en Afrique.",
-      seoAdvantagesTitle: "Les avantages de SoumissionsComptables.ci pour vous sont évidents :",
+      seoAdvantagesTitle: "Les avantages de SoumissionComptable.com pour vous sont évidents :",
       seoAdvantages: [
         "La rapidité des réponses : attendez-vous à recevoir les soumissions dans les 48 heures suivant votre demande.",
         "La qualité des prestataires : nos cabinets partenaires sont agréés OECCA-CI et dûment sélectionnés.",
         "Des économies à coup sûr : en comparant les prix, évitez de payer trop cher pour vos prestations comptables.",
-        "La gratuité : SoumissionsComptables.ci est gratuit et ne vous engage à rien !",
+        "La gratuité : SoumissionComptable.com est gratuit et ne vous engage à rien !",
       ],
       mission: "« Notre mission est de connecter les entrepreneurs avec les cabinets comptables agréés qui leur conviennent, de façon à ce que leur décision se prenne facilement. En vous permettant de vous concentrer rapidement sur le développement de votre activité, votre relation comptable se déroule avec un minimum de stress. »",
       seoFinalCta: "Complétez une demande de soumissions dès maintenant pour économiser sur vos prestations comptables.",
@@ -426,7 +426,7 @@ export const translations = {
       items: [
         {
           q: "Is it really free for me?",
-          a: "Yes, completely. SoumissionsComptables.ci is fully free for entrepreneurs. Our partner accounting firms fund the platform by paying for access to qualified leads.",
+          a: "Yes, completely. SoumissionComptable.com is fully free for entrepreneurs. Our partner accounting firms fund the platform by paying for access to qualified leads.",
         },
         {
           q: "How long before I get a reply?",
@@ -477,7 +477,7 @@ export const translations = {
       contact: "Contact",
       privacy: "Privacy policy",
       terms: "Terms of use",
-      rights: "© 2026 SoumissionsComptables.ci — All rights reserved",
+      rights: "© 2026 SoumissionComptable.com — All rights reserved",
       byLgm: "Built by LGM — Les Gens du Marketing",
       location: "Abidjan, Côte d'Ivoire",
       links: {
@@ -501,9 +501,9 @@ export const translations = {
       finalBtn: "Get my free quotes →",
     },
     about: {
-      metaTitle: "About SoumissionsComptables.ci | Our Mission",
+      metaTitle: "About SoumissionComptable.com | Our Mission",
       metaDescription:
-        "SoumissionsComptables.ci is the leading platform connecting entrepreneurs with certified accounting firms in Côte d'Ivoire. Discover our mission.",
+        "SoumissionComptable.com is the leading platform connecting entrepreneurs with certified accounting firms in Côte d'Ivoire. Discover our mission.",
       breadcrumbHome: "Home",
       breadcrumbAbout: "About",
       heroTitle:
@@ -511,7 +511,7 @@ export const translations = {
       heroSub:
         "Connecting entrepreneurs, the diaspora and OECCA-CI certified accounting firms — with full transparency.",
       whoTitle: "Who we are",
-      whoP1Strong: "SoumissionsComptables.ci",
+      whoP1Strong: "SoumissionComptable.com",
       whoP1: " is the leading accounting matchmaking platform in Côte d'Ivoire. We connect entrepreneurs, members of the Ivorian diaspora and businesses with certified, vetted accounting firms.",
       whoP2: "Our role is simple: qualify your needs in a few minutes, forward them to selected OECCA-CI certified accounting firms, and let you compare up to five clear proposals — free of charge, within 48 hours. We never charge entrepreneurs: our partner firms fund the platform by accessing qualified leads.",
       whoP3: "Our ambition is to bring the Ivorian accounting market the transparency and simplicity it currently lacks, and to become the natural first stop for any entrepreneur looking for a trusted accounting partner — whether based in Abidjan, in the regions, or abroad.",
@@ -550,7 +550,7 @@ export const translations = {
         },
       ],
       teamTitle: "The Team Behind the Project",
-      teamTextBefore: "SoumissionsComptables.ci is built by ",
+      teamTextBefore: "SoumissionComptable.com is built by ",
       teamTextStrong: "LGM — Les Gens du Marketing",
       teamTextAfter:
         ", a digital marketing agency specialised in commercial performance.",
@@ -614,11 +614,11 @@ export const translations = {
       ],
       seoTitle: "Accounting firms providing professional services",
       seoSubtitle: "in Abidjan, Bouaké, San-Pédro, Yamoussoukro, Korhogo, Daloa, Man, Gagnoa, and for the Ivorian diaspora worldwide!",
-      seoP1: "SoumissionsComptables.ci, in partnership with OECCA-CI certified accounting firms in Abidjan, Bouaké, San-Pédro and across Côte d'Ivoire, offers a professional accounting matchmaking service for both businesses and entrepreneurs. Whether you're in Plateau, Cocody, Yopougon, Marcory or any other Abidjan district, in the regions or abroad, SoumissionsComptables.ci provides fast, rigorous and skilled firms — experts in general accounting, tax, audit, payroll, legal advisory and company registration.",
-      seoP2: "SoumissionsComptables.ci is an online quote-request service for your accounting needs in Côte d'Ivoire. It suits you if you want to quickly find a firm matching your needs and budget. The request form takes just a few minutes to complete.",
+      seoP1: "SoumissionComptable.com, in partnership with OECCA-CI certified accounting firms in Abidjan, Bouaké, San-Pédro and across Côte d'Ivoire, offers a professional accounting matchmaking service for both businesses and entrepreneurs. Whether you're in Plateau, Cocody, Yopougon, Marcory or any other Abidjan district, in the regions or abroad, SoumissionComptable.com provides fast, rigorous and skilled firms — experts in general accounting, tax, audit, payroll, legal advisory and company registration.",
+      seoP2: "SoumissionComptable.com is an online quote-request service for your accounting needs in Côte d'Ivoire. It suits you if you want to quickly find a firm matching your needs and budget. The request form takes just a few minutes to complete.",
       seoTypesTitle: "You have a choice of 3 service levels:",
       seoTypes: ["Most economical firm but OECCA-CI certified", "Best value-for-money firm", "Turnkey premium firm"],
-      seoP3Strong: "SoumissionsComptables.ci is a platform gathering certified accounting firms in Abidjan, Bouaké, San-Pédro and across the country.",
+      seoP3Strong: "SoumissionComptable.com is a platform gathering certified accounting firms in Abidjan, Bouaké, San-Pédro and across the country.",
       seoP3: " Our service gives serious firms more visibility. Quote requests are free for you: our partner firms fund the platform.",
       seoNeedsTitle: "This service, with no commitment on your side, suits every need:",
       seoNeeds: [
@@ -634,12 +634,12 @@ export const translations = {
         "Reporting, forecasts and management control",
       ],
       seoLocation: "Based in Côte d'Ivoire or abroad? We have partner firms in Abidjan (Plateau, Cocody, Marcory, Yopougon, Treichville), Bouaké, San-Pédro, Yamoussoukro, Korhogo, Daloa, Man, Gagnoa, Abengourou — and we also support the diaspora in France, Canada, USA, Europe and Africa.",
-      seoAdvantagesTitle: "The benefits of SoumissionsComptables.ci for you are clear:",
+      seoAdvantagesTitle: "The benefits of SoumissionComptable.com for you are clear:",
       seoAdvantages: [
         "Speed of replies: expect to receive quotes within 48 hours of your request.",
         "Provider quality: our partner firms are OECCA-CI certified and carefully selected.",
         "Guaranteed savings: by comparing prices, avoid overpaying for your accounting services.",
-        "Free: SoumissionsComptables.ci is free and commits you to nothing!",
+        "Free: SoumissionComptable.com is free and commits you to nothing!",
       ],
       mission: "\"Our mission is to connect entrepreneurs with the certified accounting firms that suit them, so the decision becomes easy. By letting you quickly focus on growing your business, your accounting relationship runs with minimum stress.\"",
       seoFinalCta: "Complete a quote request now to save on your accounting services.",

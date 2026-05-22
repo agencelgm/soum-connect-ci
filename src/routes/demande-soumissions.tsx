@@ -15,7 +15,7 @@ import { trackEvent } from "@/lib/analytics";
 import { toast } from "sonner";
 
 const META_TITLE =
-  "Demande de Soumissions | Cabinets Comptables CI | SoumissionsComptables.ci";
+  "Demande de Soumissions | Cabinets Comptables CI | SoumissionComptable.com";
 const META_DESC =
   "Recevez jusqu'à 5 soumissions gratuites de cabinets comptables agréés en Côte d'Ivoire. Formulaire simple, réponse en 48h. Création d'entreprise, comptabilité, déclaration fiscale.";
 

@@ -77,7 +77,7 @@ const L = {
   about: {
     to: "/a-propos",
     label: "À propos",
-    description: "La mission et l'équipe SoumissionsComptables.ci.",
+    description: "La mission et l'équipe SoumissionComptable.com.",
   },
   quotes: {
     to: "/demande-soumissions",

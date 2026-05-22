@@ -19,15 +19,15 @@ type FaqCategory = { id: string; title: string; items: FaqItem[] };
 const categories: FaqCategory[] = [
   {
     id: "plateforme",
-    title: "À Propos de SoumissionsComptables.ci",
+    title: "À Propos de SoumissionComptable.com",
     items: [
       {
         question: "Est-ce vraiment gratuit pour moi ?",
         answer:
-          "Oui, totalement. SoumissionsComptables.ci est 100% gratuit pour les entrepreneurs et particuliers qui cherchent un cabinet. Les cabinets comptables partenaires financent la plateforme en accédant aux demandes qualifiées.",
+          "Oui, totalement. SoumissionComptable.com est 100% gratuit pour les entrepreneurs et particuliers qui cherchent un cabinet. Les cabinets comptables partenaires financent la plateforme en accédant aux demandes qualifiées.",
       },
       {
-        question: "Comment SoumissionsComptables.ci vérifie-t-il les cabinets ?",
+        question: "Comment SoumissionComptable.com vérifie-t-il les cabinets ?",
         answer:
           "Tous nos cabinets partenaires doivent être inscrits à l'Ordre des Experts-Comptables de Côte d'Ivoire (OECCA-CI). Nous vérifions leur agrément avant tout partenariat, ainsi que leur expérience et leurs références clients.",
       },
@@ -166,7 +166,7 @@ export const Route = createFileRoute("/faq")({
     buildPageHead({
       path: "/faq",
       title:
-        "FAQ — Questions sur les Cabinets Comptables en CI | SoumissionsComptables.ci",
+        "FAQ — Questions sur les Cabinets Comptables en CI | SoumissionComptable.com",
       description:
         "Toutes vos questions sur les cabinets comptables en Côte d'Ivoire, la création d'entreprise via CEPICI, les impôts et la comptabilité. Réponses claires et détaillées.",
       breadcrumb: [

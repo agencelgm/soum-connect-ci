@@ -70,7 +70,7 @@ const COPY = {
       "Décrivez le plus précisément possible ce qui s'est passé, les dates, les personnes concernées...",
     descriptionHelp: "Entre 20 et 1000 caractères.",
     consent:
-      "J'accepte d'être recontacté par l'équipe SoumissionsComptables.ci au sujet de cette demande.",
+      "J'accepte d'être recontacté par l'équipe SoumissionComptable.com au sujet de cette demande.",
     submit: "Envoyer ma demande",
     sending: "Envoi en cours...",
     security: "Vos informations restent confidentielles.",
@@ -130,7 +130,7 @@ const COPY = {
       "Tell us exactly what happened, the dates and people involved...",
     descriptionHelp: "Between 20 and 1000 characters.",
     consent:
-      "I agree to be contacted by the SoumissionsComptables.ci team about this request.",
+      "I agree to be contacted by the SoumissionComptable.com team about this request.",
     submit: "Send my request",
     sending: "Sending...",
     security: "Your information stays confidential.",

@@ -5,7 +5,7 @@ import { getServiceLinksForCategories } from "@/lib/category-services-map";
 
 /**
  * Module de maillage interne contextuel placé en bas d'un guide.
- * Affiche les services SoumissionsComptables.ci les plus pertinents
+ * Affiche les services SoumissionComptable.com les plus pertinents
  * en fonction des catégories de l'article courant.
  */
 export function CategoryServiceLinks({

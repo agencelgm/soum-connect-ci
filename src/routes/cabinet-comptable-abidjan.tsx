@@ -3,7 +3,7 @@ import { Building2, Calculator, Receipt, MapPin, BadgeCheck, Sparkles, Wallet, C
 import { ServicePage, type Faq, type RelatedService } from "@/components/service/ServicePage";
 import { buildPageHead, faqSchema, LOCAL_BUSINESS_SCHEMA } from "@/lib/seo";
 
-const META_TITLE = "Cabinet Comptable à Abidjan | Comparez 5 Offres Gratuitement | SoumissionsComptables.ci";
+const META_TITLE = "Cabinet Comptable à Abidjan | Comparez 5 Offres Gratuitement | SoumissionComptable.com";
 const META_DESC =
   "Trouvez le meilleur cabinet comptable à Abidjan (Plateau, Cocody, Marcory). Cabinets agréés OECCA-CI. Recevez 5 soumissions gratuites en 48h.";
 

@@ -1,8 +1,8 @@
 // Centralised SEO head builder for TanStack Router routes.
 // Returns the {meta, links, scripts} object expected by createFileRoute(...).head().
 
-export const SITE_URL = "https://soumissionscomptables.ci";
-export const SITE_NAME = "SoumissionsComptables.ci";
+export const SITE_URL = "https://www.soumissioncomptable.com";
+export const SITE_NAME = "SoumissionComptable.com";
 export const DEFAULT_OG_IMAGE = "/og-image.png";
 
 /**

@@ -6,7 +6,7 @@ export const Route = createFileRoute("/en/website-offer")({
   head: () => {
     const head = buildPageHead({
       path: "/en/website-offer",
-      title: "Exclusive offer — Website design | SoumissionsComptables.ci",
+      title: "Exclusive offer — Website design | SoumissionComptable.com",
       description:
         "Exclusive offer: professional website design starting from 165,000 FCFA.",
       lang: "en",

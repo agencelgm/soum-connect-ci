@@ -6,7 +6,7 @@ export const Route = createFileRoute("/en/contact-us")({
   head: () =>
     buildPageHead({
       path: "/en/contact-us",
-      title: "Contact us | SoumissionsComptables.ci",
+      title: "Contact us | SoumissionComptable.com",
       description:
         "Have a question or issue with a quote or a partner firm? Contact our team in Abidjan — reply within 24 business hours.",
       altPath: "/nous-contacter",

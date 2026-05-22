@@ -3,7 +3,7 @@ import { Receipt, Building2, Calculator, MapPin, AlertTriangle } from "lucide-re
 import { ServicePage, type Faq, type RelatedService } from "@/components/service/ServicePage";
 import { buildPageHead, faqSchema } from "@/lib/seo";
 
-const META_TITLE = "Déclaration Fiscale Côte d'Ivoire | DSF, TVA, IS | SoumissionsComptables.ci";
+const META_TITLE = "Déclaration Fiscale Côte d'Ivoire | DSF, TVA, IS | SoumissionComptable.com";
 const META_DESC =
   "Trouvez un cabinet comptable pour vos déclarations fiscales en Côte d'Ivoire : DSF, TVA mensuelle, IS, CNPS. Évitez pénalités DGI. Comparez 5 cabinets gratuitement.";
 

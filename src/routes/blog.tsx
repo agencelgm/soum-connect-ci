@@ -10,7 +10,7 @@ import { ARTICLES_SORTED } from "@/lib/guides-data";
 const META_TITLE =
   "Blog | Entrepreneuriat, comptabilité et fiscalité en Côte d'Ivoire";
 const META_DESC =
-  "Le blog SoumissionsComptables.ci : actualités, analyses et conseils pratiques pour les entrepreneurs et dirigeants en Côte d'Ivoire.";
+  "Le blog SoumissionComptable.com : actualités, analyses et conseils pratiques pour les entrepreneurs et dirigeants en Côte d'Ivoire.";
 
 export const Route = createFileRoute("/blog")({
   head: () =>

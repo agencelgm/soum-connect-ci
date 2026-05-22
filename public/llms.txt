@@ -1,10 +1,10 @@
-# SoumissionsComptables.ci
+# SoumissionComptable.com
 
 > La première plateforme de mise en relation entre entrepreneurs et cabinets comptables agréés en Côte d'Ivoire.
 
 ## À propos
 
-SoumissionsComptables.ci permet aux entrepreneurs, aux membres de la diaspora ivoirienne et aux entreprises de comparer gratuitement jusqu'à 5 offres de cabinets comptables certifiés et inscrits à l'Ordre des Experts-Comptables de Côte d'Ivoire (OECCA-CI).
+SoumissionComptable.com permet aux entrepreneurs, aux membres de la diaspora ivoirienne et aux entreprises de comparer gratuitement jusqu'à 5 offres de cabinets comptables certifiés et inscrits à l'Ordre des Experts-Comptables de Côte d'Ivoire (OECCA-CI).
 
 Le service est 100% gratuit pour les prospects. Les cabinets partenaires financent la plateforme.
 
@@ -32,10 +32,10 @@ Le service est 100% gratuit pour les prospects. Les cabinets partenaires finance
 
 ## Pages principales
 
-- Accueil: https://soumissionscomptables.ci
-- Demande soumissions: https://soumissionscomptables.ci/demande-soumissions
-- Création d'entreprise CI: https://soumissionscomptables.ci/creation-entreprise-cote-divoire
-- Cabinet comptable Abidjan: https://soumissionscomptables.ci/cabinet-comptable-abidjan
-- FAQ: https://soumissionscomptables.ci/faq
-- Guides: https://soumissionscomptables.ci/guides
-- Partenaires cabinets: https://soumissionscomptables.ci/cabinets-comptables-partenaires
+- Accueil: https://www.soumissioncomptable.com
+- Demande soumissions: https://www.soumissioncomptable.com/demande-soumissions
+- Création d'entreprise CI: https://www.soumissioncomptable.com/creation-entreprise-cote-divoire
+- Cabinet comptable Abidjan: https://www.soumissioncomptable.com/cabinet-comptable-abidjan
+- FAQ: https://www.soumissioncomptable.com/faq
+- Guides: https://www.soumissioncomptable.com/guides
+- Partenaires cabinets: https://www.soumissioncomptable.com/cabinets-comptables-partenaires
