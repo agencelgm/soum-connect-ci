@@ -113,14 +113,14 @@ export function Index() {
         <div aria-hidden="true" className="absolute inset-0 bg-[#F5F1EA]/75" />
 
         <div className="relative container-app pt-10 md:pt-16 pb-0 grid gap-8 lg:gap-4 lg:grid-cols-12 lg:items-stretch">
-          {/* Left: character (desktop only) — visible crop ends at the torso */}
+          {/* Left: photo comptable au bureau (desktop only) */}
           <div className="hidden lg:flex lg:col-span-5 items-end justify-center lg:-mr-2 xl:-mr-4">
-            <div className="relative w-full max-w-[460px] xl:max-w-[520px] h-[340px] xl:h-[380px] overflow-hidden">
+            <div className="relative w-full max-w-[520px] xl:max-w-[580px] aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl ring-1 ring-black/5">
               <img
-                src={heroAccountant}
+                src={seoAccountantDesk}
                 alt=""
                 aria-hidden="true"
-                className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-auto object-contain pointer-events-none"
+                className="absolute inset-0 h-full w-full object-cover"
               />
             </div>
           </div>
@@ -553,14 +553,13 @@ export function Index() {
           </h2>
           <div className="mt-10 grid gap-8 lg:grid-cols-12 lg:items-center">
             <div className="lg:col-span-5 hidden lg:flex items-end justify-center lg:-mr-2 xl:-mr-4">
-              <div className="relative w-full max-w-[460px] xl:max-w-[520px] h-[340px] xl:h-[380px] overflow-hidden">
+              <div className="relative w-full max-w-[520px] xl:max-w-[580px] aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl ring-1 ring-black/5">
                 <img
-                  src={heroAccountant}
+                  src={seoAccountantDesk}
                   alt=""
-                  width={768}
-                  height={1024}
+                  aria-hidden="true"
                   loading="lazy"
-                  className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-auto object-contain"
+                  className="absolute inset-0 h-full w-full object-cover"
                 />
               </div>
             </div>
