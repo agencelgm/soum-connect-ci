@@ -1,26 +1,37 @@
-Constat actuel : le personnage est rendu dans une fenêtre de seulement `h-[320px] xl:h-[360px]` alors que la carte orange du formulaire fait facilement 700–800px de haut. Résultat : la colonne gauche paraît vide, le personnage semble petit et perdu.
+Deux corrections sur `src/routes/index.tsx`.
 
-Objectif : rendre le personnage visuellement proportionné à la carte formulaire, sans changer le cadrage (toujours coupé au torse contre la section suivante).
+## 1. Hero — la main pointée est coupée
 
-Modifications prévues dans `src/routes/index.tsx` (hero, lignes ~115–126) :
+Cause : le wrapper `overflow-hidden` que nous utilisons pour masquer les jambes coupe AUSSI horizontalement. La main droite du personnage, qui dépasse la largeur de la colonne, est donc rognée.
 
-1. Étirer la colonne gauche pour qu'elle occupe toute la hauteur du hero
-   - Le grid a déjà `lg:items-stretch` — bon.
-   - Remplacer la fenêtre fixe `h-[320px] xl:h-[360px]` par une fenêtre qui suit la hauteur de la colonne : `h-full min-h-[520px] xl:min-h-[620px]`.
-   - Garder `overflow-hidden` pour continuer à masquer les jambes/chaussures.
+Fix : remplacer `overflow-hidden` par `overflow-x-visible overflow-y-hidden` sur le wrapper image. Le crop vertical au torse reste, mais la main peut déborder horizontalement vers la carte (comportement souhaité, comme dans la maquette initiale).
 
-2. Agrandir l'image du personnage proportionnellement
-   - Passer de `h-[680px] xl:h-[760px]` à `h-[1100px] xl:h-[1280px]` pour que la tête remonte près du haut de la colonne et que le torse reste calé en bas.
-   - Conserver `absolute left-1/2 -translate-x-1/2 top-0` et `object-contain`.
-   - Conserver le crop au torse : l'image étant beaucoup plus haute que la fenêtre, le bas (jambes/pieds) est coupé naturellement.
+```tsx
+// ligne ~118
+<div className="relative h-full min-h-[520px] xl:min-h-[620px] w-full overflow-x-visible overflow-y-hidden">
+```
 
-3. Affiner l'équilibre avec la carte
-   - Réduire un peu le décalage négatif droite (`lg:-mr-6 xl:-mr-10` → `lg:-mr-2 xl:-mr-4`) pour laisser la carte respirer sans rapprocher trop le personnage.
-   - Pas de changement sur la carte orange ni sur ses paddings.
+## 2. Section "FINAL CTA REPEAT" — appliquer le même traitement
 
-4. Responsive
-   - Toutes les classes ajoutées sont préfixées `lg:`/`xl:` ; le mobile reste inchangé (personnage masqué).
+Actuellement (lignes 555–564) le personnage est rendu en pleine hauteur centré (`w-full max-w-sm mx-auto`), donc on voit les pieds et il paraît petit à côté de la carte orange.
 
-Validation après implémentation
-   - Capture desktop 1536×864 pour vérifier : tête haute dans la colonne, torse aligné avec le bas du hero, aucune jambe visible, carte orange non touchée.
-   - Capture 1280px pour vérifier qu'il n'y a pas de débordement horizontal.
+Fix : reproduire la structure du hero — colonne `items-stretch`, wrapper avec crop vertical au torse, image agrandie, hand qui peut déborder.
+
+```tsx
+<div className="lg:col-span-5 hidden lg:flex items-stretch justify-center lg:-mr-2 xl:-mr-4">
+  <div className="relative h-full min-h-[520px] xl:min-h-[620px] w-full overflow-x-visible overflow-y-hidden">
+    <img
+      src={heroAccountant}
+      alt=""
+      width={768}
+      height={1024}
+      loading="lazy"
+      className="absolute left-1/2 top-0 h-[1100px] xl:h-[1280px] w-auto max-w-none -translate-x-1/2 object-contain pointer-events-none"
+    />
+  </div>
+</div>
+```
+
+## Validation
+- Capture desktop : main visible débordant vers la carte sur le hero ET sur la section finale, torse calé au bas dans les deux cas, jambes masquées.
+- Mobile inchangé (personnage masqué `hidden lg:flex`).

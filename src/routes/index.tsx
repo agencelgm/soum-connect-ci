@@ -115,7 +115,7 @@ export function Index() {
         <div className="relative container-app pt-10 md:pt-16 pb-0 grid gap-8 lg:gap-4 lg:grid-cols-12 lg:items-stretch">
           {/* Left: character (desktop only) — visible crop ends at the torso */}
           <div className="hidden lg:flex lg:col-span-5 items-stretch justify-center lg:-mr-2 xl:-mr-4">
-            <div className="relative h-full min-h-[520px] xl:min-h-[620px] w-full overflow-hidden">
+            <div className="relative h-full min-h-[520px] xl:min-h-[620px] w-full overflow-x-visible overflow-y-hidden">
               <img
                 src={heroAccountant}
                 alt=""
@@ -552,15 +552,17 @@ export function Index() {
             {h.finalRepeatTitle}
           </h2>
           <div className="mt-10 grid gap-8 lg:grid-cols-12 lg:items-center">
-            <div className="lg:col-span-5 hidden lg:block">
-              <img
-                src={heroAccountant}
-                alt=""
-                width={768}
-                height={1024}
-                loading="lazy"
-                className="w-full max-w-sm mx-auto"
-              />
+            <div className="lg:col-span-5 hidden lg:flex items-stretch justify-center lg:-mr-2 xl:-mr-4">
+              <div className="relative h-full min-h-[520px] xl:min-h-[620px] w-full overflow-x-visible overflow-y-hidden">
+                <img
+                  src={heroAccountant}
+                  alt=""
+                  width={768}
+                  height={1024}
+                  loading="lazy"
+                  className="absolute left-1/2 top-0 h-[1100px] xl:h-[1280px] w-auto max-w-none -translate-x-1/2 object-contain pointer-events-none"
+                />
+              </div>
             </div>
             <div className="lg:col-span-7">
               <div className="relative rounded-2xl bg-secondary p-5 md:p-7 shadow-2xl text-white">
