@@ -119,7 +119,7 @@ export function Index() {
               src={heroAccountant}
               alt=""
               aria-hidden="true"
-              className="h-full w-auto max-h-[640px] object-contain object-bottom"
+              className="h-full w-auto object-contain object-bottom"
             />
           </div>
 
