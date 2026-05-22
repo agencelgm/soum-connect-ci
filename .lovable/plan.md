@@ -1,17 +1,19 @@
-## Plan
+Je vais corriger le problème à la source : la route `/guides/$slug` est bien enregistrée, mais elle est actuellement traitée comme une sous-route de `/guides`. Or la page `/guides` ne rend pas d’`Outlet`, donc après le clic l’URL change mais le contenu visible reste la liste des articles.
 
-1. **Corriger le lien “Lire la suite” dans la page Guides**
-   - Remplacer le lien HTML manuel `href=/guides/...` par le composant de navigation TanStack `Link`.
-   - Utiliser la route typée `to="/guides/$slug"` avec `params={{ slug: article.slug }}` pour garantir une vraie navigation vers l’article.
+Plan d’implémentation :
 
-2. **S’assurer que la page article peut afficher son contenu complet**
-   - Vérifier que l’article `calendrier-fiscal-ci-2026` utilise bien `CalendrierFiscal2026Content`.
-   - Garder l’affichage existant : titre, résumé, image, formulaire, corps complet de l’article, CTA et liens liés.
+1. Corriger la structure de la page `/guides`
+- Ajouter un rendu d’`Outlet` dans `src/routes/guides.tsx` pour que la page article `/guides/calendrier-fiscal-ci-2026` puisse réellement s’afficher.
+- Garder la liste des guides uniquement quand l’utilisateur est exactement sur `/guides`.
 
-3. **Nettoyer le routage généré si nécessaire**
-   - Ne pas modifier manuellement `routeTree.gen.ts`.
-   - Laisser TanStack régénérer la route `/guides/$slug` depuis `src/routes/guides.$slug.tsx`.
+2. Conserver une vraie page article complète
+- Maintenir `src/routes/guides.$slug.tsx` comme page dédiée à l’article complet.
+- Vérifier que l’article “Calendrier fiscal 2026 en Côte d’Ivoire” affiche bien tout le contenu fourni : introduction, sections, tableaux, FAQ, CTA et liens liés.
 
-4. **Valider le résultat**
-   - Vérifier que le clic sur “Lire la suite” depuis `/guides` ou `/blog` ouvre bien `/guides/calendrier-fiscal-ci-2026`.
-   - Vérifier que le corps de l’article complet s’affiche, notamment les sections TVA, ITS, BIC/BNC, patente, états financiers, FAQ et CTA final.
+3. Images réalistes, pas d’IA
+- Conserver uniquement des photos réelles déjà présentes dans `src/assets/guides`.
+- Si l’image actuelle de l’article n’est pas assez adaptée, la remplacer par une photo réelle de type calendrier fiscal / bureau / comptabilité, sans génération IA.
+
+4. Validation
+- Tester le parcours : `/guides` → clic sur “Lire la suite” → `/guides/calendrier-fiscal-ci-2026`.
+- Vérifier que le titre, l’image et le corps complet de l’article s’affichent sur une autre page, sans rester sur la liste des guides.
