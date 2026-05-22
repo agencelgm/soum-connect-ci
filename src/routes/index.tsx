@@ -510,15 +510,18 @@ export function Index() {
 
         {/* Bandeau orange — trust badges fusionnés */}
         <div className="bg-secondary text-secondary-foreground">
-          <div className="container-app py-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="container-app py-8 md:py-12 grid gap-4 sm:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             {h.trustBadges.map((b, i) => {
               const Icon = TRUST_ICONS[i];
               return (
-                <div key={i} className="flex flex-col items-center text-center">
-                  <div className="flex h-12 w-12 md:h-16 md:w-16 items-center justify-center rounded-full border-2 border-white/80 text-white">
-                    <Icon className="h-6 w-6 md:h-8 md:w-8" aria-hidden="true" />
+                <div
+                  key={i}
+                  className="flex flex-row items-center text-left gap-3 sm:flex-col sm:items-center sm:text-center sm:gap-0"
+                >
+                  <div className="flex h-10 w-10 md:h-16 md:w-16 items-center justify-center rounded-full border-2 border-white/80 text-white shrink-0">
+                    <Icon className="h-5 w-5 md:h-8 md:w-8" aria-hidden="true" />
                   </div>
-                  <p className="mt-3 md:mt-4 text-xs md:text-sm font-semibold max-w-[220px] leading-snug">{b}</p>
+                  <p className="text-xs md:text-sm font-semibold max-w-[220px] leading-snug sm:mt-3 md:mt-4">{b}</p>
                 </div>
               );
             })}
