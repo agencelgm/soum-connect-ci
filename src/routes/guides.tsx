@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowRight, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -84,13 +85,14 @@ function ArticleCard({ article, featured = false }: { article: Article; featured
             <Clock className="h-3.5 w-3.5" />
             {article.readTime} de lecture
           </span>
-          <a
-            href={`/guides/${article.slug}`}
+          <Link
+            to="/guides/$slug"
+            params={{ slug: article.slug }}
             className="inline-flex items-center gap-1 text-sm font-semibold text-secondary hover:text-secondary-dark"
           >
             Lire la suite
             <ArrowRight className="h-3.5 w-3.5" />
-          </a>
+          </Link>
         </div>
       </div>
     </article>

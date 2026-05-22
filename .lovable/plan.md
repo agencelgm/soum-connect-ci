@@ -1,26 +1,17 @@
-## Constat
-
-L'article `/guides/calendrier-fiscal-ci-2026` existe déjà :
-- Fichier de contenu : `src/content/guides/calendrier-fiscal-ci-2026.tsx` (538 lignes, complet, structuré avec `ArticleSection`, `ArticleTable`, `ArticleCallout`, `ArticleList`, `ArticleCTA`, FAQ, sources officielles).
-- Métadonnées SEO bien câblées dans `src/lib/guides-data.tsx` (title, excerpt, image, readTime 12 min).
-- Le rendu HTML serveur fonctionne : `curl` retourne le bon `<title>`, la bonne meta description, et le corps contient bien "TVA" (×9), "patente" (×6), etc.
-
-Le message "rien ne sort en cliquant" vient probablement du cache Vite resté coincé après le bug `Cannot find module` corrigé au tour précédent par l'ajout de l'extension `.tsx` dans l'import.
-
 ## Plan
 
-1. **Nettoyer l'import** dans `src/lib/guides-data.tsx` : retirer l'extension `.tsx` (incohérente avec les 6 autres imports de guides) maintenant que Vite a rechargé. Forme finale :
-   ```
-   import { CalendrierFiscal2026Content } from "@/content/guides/calendrier-fiscal-ci-2026";
-   ```
+1. **Corriger le lien “Lire la suite” dans la page Guides**
+   - Remplacer le lien HTML manuel `href=/guides/...` par le composant de navigation TanStack `Link`.
+   - Utiliser la route typée `to="/guides/$slug"` avec `params={{ slug: article.slug }}` pour garantir une vraie navigation vers l’article.
 
-2. **Redémarrer le dev server** pour purger tout cache résiduel.
+2. **S’assurer que la page article peut afficher son contenu complet**
+   - Vérifier que l’article `calendrier-fiscal-ci-2026` utilise bien `CalendrierFiscal2026Content`.
+   - Garder l’affichage existant : titre, résumé, image, formulaire, corps complet de l’article, CTA et liens liés.
 
-3. **Vérifier** :
-   - `curl` sur `/guides/calendrier-fiscal-ci-2026` → 200 + corps contenant le H1 + sections clés (TVA, patente, états financiers, FAQ, Sources officielles).
-   - Screenshot navigateur de la page pour confirmer l'affichage complet (hero vert + image + corps article + CTA + RelatedLinks).
-   - Test du parcours : `/blog` → clic "Lire la suite" sur la carte Calendrier fiscal → arrive bien sur l'article rendu.
+3. **Nettoyer le routage généré si nécessaire**
+   - Ne pas modifier manuellement `routeTree.gen.ts`.
+   - Laisser TanStack régénérer la route `/guides/$slug` depuis `src/routes/guides.$slug.tsx`.
 
-## Hors périmètre
-
-- Le contenu rédactionnel est déjà conforme au texte fourni (intro, "Qu'est-ce qu'un calendrier fiscal", obligations, déclarations mensuelles TVA/salaires/retenues/acomptes, états financiers, patente, taxe entreprenant, tableau calendrier 2026, préparation, documents par mois, Soumissions Comptable, erreurs à éviter, FAQ 7 questions, sources DGI/e-Impôts/225Invest/FNE, conclusion). Aucune réécriture nécessaire — uniquement vérification visuelle. Si après vérification une section manque ou diffère, je l'ajusterai.
+4. **Valider le résultat**
+   - Vérifier que le clic sur “Lire la suite” depuis `/guides` ou `/blog` ouvre bien `/guides/calendrier-fiscal-ci-2026`.
+   - Vérifier que le corps de l’article complet s’affiche, notamment les sections TVA, ITS, BIC/BNC, patente, états financiers, FAQ et CTA final.
