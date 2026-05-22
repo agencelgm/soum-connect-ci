@@ -521,7 +521,7 @@ export function Index() {
                   <div className="flex h-10 w-10 md:h-16 md:w-16 items-center justify-center rounded-full border-2 border-white/80 text-white shrink-0">
                     <Icon className="h-5 w-5 md:h-8 md:w-8" aria-hidden="true" />
                   </div>
-                  <p className="sm:mt-3 md:sm:mt-4 text-xs md:text-sm font-semibold max-w-[220px] leading-snug sm:mt-3 md:mt-4">{b}</p>
+                  <p className="text-xs md:text-sm font-semibold max-w-[220px] leading-snug sm:mt-3 md:mt-4">{b}</p>
                 </div>
               );
             })}
