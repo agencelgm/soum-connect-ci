@@ -62,11 +62,12 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "calendrier-fiscal-ci-2026",
-    title: "Calendrier fiscal 2026 : dates clés pour les entreprises en CI",
+    title:
+      "Calendrier fiscal 2026 en Côte d'Ivoire : dates clés pour les entreprises",
     excerpt:
-      "Toutes les échéances fiscales 2026 : TVA, IS, DSF, CNPS, patente. Ne ratez aucune déclaration.",
+      "Découvrez le calendrier fiscal 2026 en Côte d'Ivoire : TVA, ITS, BIC, BNC, patentes, déclarations fiscales et dates clés à respecter pour les entreprises.",
     categories: ["Fiscalité"],
-    readTime: "6 min",
+    readTime: "12 min",
     priority: 1,
     image: calendrierFiscalImg,
     content: () => <CalendrierFiscal2026Content />,
