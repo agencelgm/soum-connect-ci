@@ -29,7 +29,6 @@ import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EnIndexRouteImport } from './routes/en/index'
-import { Route as PreviewHeroCompareRouteImport } from './routes/preview.hero-compare'
 import { Route as GuidesSlugRouteImport } from './routes/guides.$slug'
 import { Route as EnWebsiteOfferRouteImport } from './routes/en/website-offer'
 import { Route as EnThankYouRouteImport } from './routes/en/thank-you'
@@ -149,11 +148,6 @@ const EnIndexRoute = EnIndexRouteImport.update({
   path: '/en/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PreviewHeroCompareRoute = PreviewHeroCompareRouteImport.update({
-  id: '/preview/hero-compare',
-  path: '/preview/hero-compare',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const GuidesSlugRoute = GuidesSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -245,7 +239,6 @@ export interface FileRoutesByFullPath {
   '/en/thank-you': typeof EnThankYouRoute
   '/en/website-offer': typeof EnWebsiteOfferRoute
   '/guides/$slug': typeof GuidesSlugRoute
-  '/preview/hero-compare': typeof PreviewHeroCompareRoute
   '/en/': typeof EnIndexRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
@@ -280,7 +273,6 @@ export interface FileRoutesByTo {
   '/en/thank-you': typeof EnThankYouRoute
   '/en/website-offer': typeof EnWebsiteOfferRoute
   '/guides/$slug': typeof GuidesSlugRoute
-  '/preview/hero-compare': typeof PreviewHeroCompareRoute
   '/en': typeof EnIndexRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
@@ -316,7 +308,6 @@ export interface FileRoutesById {
   '/en/thank-you': typeof EnThankYouRoute
   '/en/website-offer': typeof EnWebsiteOfferRoute
   '/guides/$slug': typeof GuidesSlugRoute
-  '/preview/hero-compare': typeof PreviewHeroCompareRoute
   '/en/': typeof EnIndexRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
@@ -353,7 +344,6 @@ export interface FileRouteTypes {
     | '/en/thank-you'
     | '/en/website-offer'
     | '/guides/$slug'
-    | '/preview/hero-compare'
     | '/en/'
     | '/api/public/contact'
     | '/api/public/lead'
@@ -388,7 +378,6 @@ export interface FileRouteTypes {
     | '/en/thank-you'
     | '/en/website-offer'
     | '/guides/$slug'
-    | '/preview/hero-compare'
     | '/en'
     | '/api/public/contact'
     | '/api/public/lead'
@@ -423,7 +412,6 @@ export interface FileRouteTypes {
     | '/en/thank-you'
     | '/en/website-offer'
     | '/guides/$slug'
-    | '/preview/hero-compare'
     | '/en/'
     | '/api/public/contact'
     | '/api/public/lead'
@@ -458,7 +446,6 @@ export interface RootRouteChildren {
   EnLogoOfferRoute: typeof EnLogoOfferRoute
   EnThankYouRoute: typeof EnThankYouRoute
   EnWebsiteOfferRoute: typeof EnWebsiteOfferRoute
-  PreviewHeroCompareRoute: typeof PreviewHeroCompareRoute
   EnIndexRoute: typeof EnIndexRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
   ApiPublicLeadRoute: typeof ApiPublicLeadRoute
@@ -607,13 +594,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EnIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/preview/hero-compare': {
-      id: '/preview/hero-compare'
-      path: '/preview/hero-compare'
-      fullPath: '/preview/hero-compare'
-      preLoaderRoute: typeof PreviewHeroCompareRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/guides/$slug': {
       id: '/guides/$slug'
       path: '/$slug'
@@ -741,7 +721,6 @@ const rootRouteChildren: RootRouteChildren = {
   EnLogoOfferRoute: EnLogoOfferRoute,
   EnThankYouRoute: EnThankYouRoute,
   EnWebsiteOfferRoute: EnWebsiteOfferRoute,
-  PreviewHeroCompareRoute: PreviewHeroCompareRoute,
   EnIndexRoute: EnIndexRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
   ApiPublicLeadRoute: ApiPublicLeadRoute,

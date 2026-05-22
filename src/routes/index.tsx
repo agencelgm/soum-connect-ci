@@ -101,9 +101,18 @@ export function Index() {
       {/* ====== 1. HERO SPLIT ====== */}
       <section
         aria-labelledby="hero-title"
-        className="relative overflow-hidden bg-[#F5F1EA]"
+        className="relative overflow-hidden"
       >
-        <div className="container-app py-10 md:py-16 grid gap-8 lg:gap-2 lg:grid-cols-12 lg:items-center">
+        {/* Fond photo flouté (vraie photo, pas d'IA) */}
+        <img
+          src={seoOfficeAbidjan}
+          alt=""
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 h-full w-full object-cover blur-md scale-110"
+        />
+        <div aria-hidden="true" className="absolute inset-0 bg-[#F5F1EA]/75" />
+
+        <div className="relative container-app pt-10 md:pt-16 pb-0 grid gap-8 lg:gap-2 lg:grid-cols-12 lg:items-end">
           {/* Left: character + value props */}
           <div className="lg:col-span-5 relative self-end">
             <div className="hidden lg:flex justify-end items-end lg:-mr-8 xl:-mr-12">
@@ -112,7 +121,7 @@ export function Index() {
                 alt=""
                 width={768}
                 height={1024}
-                className="w-full max-w-sm object-contain object-bottom"
+                className="w-full max-w-md xl:max-w-lg object-contain object-bottom"
               />
             </div>
             <div className="lg:hidden text-center">
@@ -126,7 +135,7 @@ export function Index() {
           </div>
 
           {/* Right: orange form card */}
-          <div className="lg:col-span-7 relative">
+          <div className="lg:col-span-7 relative pb-10 md:pb-16">
             <div className="hidden lg:block mb-4">
               <span className="inline-block rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground">
                 {t.hero.badge}
