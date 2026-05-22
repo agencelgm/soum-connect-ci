@@ -93,6 +93,10 @@ export const PAGE_RELATIONS: Record<string, PageRelations> = {
     breadcrumb: [HOME, SERVICES_CRUMB, { label: "Création d'entreprise" }],
     related: [L.compta, L.fiscal, L.domiciliation, L.diaspora, L.cabinet, L.guides],
   },
+  "/creer-son-entreprise-cote-divoire": {
+    breadcrumb: [HOME, { label: "Créer son entreprise" }],
+    related: [L.creation, L.diaspora, L.domiciliation, L.compta, L.cabinet, L.guides],
+  },
   "/comptabilite-entreprise-abidjan": {
     breadcrumb: [HOME, SERVICES_CRUMB, { label: "Comptabilité d'entreprise" }],
     related: [L.fiscal, L.creation, L.domiciliation, L.cabinet, L.guides, L.faq],
