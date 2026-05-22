@@ -251,7 +251,7 @@ export const translations = {
       statsBar: [
         { value: "150+", label: "Cabinets partenaires" },
         { value: "50 000+", label: "Soumissions par an" },
-        { value: "Côte d'Ivoire", label: "Service partout en" },
+        { value: "100%", label: "Couverture nationale" },
       ],
       testimonials: [
         { quote: "Très utile parce que ça m'a fait connaître des cabinets auxquels je n'aurais pas pensé, comme celui que j'ai choisi.", name: "Aïcha Koné" },
@@ -575,7 +575,7 @@ export const translations = {
       statsBar: [
         { value: "150+", label: "Partner firms" },
         { value: "50,000+", label: "Quotes per year" },
-        { value: "Côte d'Ivoire", label: "Service across" },
+        { value: "100%", label: "Nationwide coverage" },
       ],
       testimonials: [
         { quote: "Very useful — it introduced me to firms I wouldn't have thought of, including the one I chose.", name: "Aïcha Koné" },
