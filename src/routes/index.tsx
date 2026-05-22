@@ -411,7 +411,7 @@ export function Index() {
                 width={896}
                 height={1280}
                 loading="lazy"
-                className="mx-auto w-2/3 max-w-[260px] h-auto rounded-xl shadow-md object-cover aspect-[3/4] md:w-full md:max-w-none"
+                className="w-full h-auto rounded-xl shadow-md object-cover aspect-[3/4]"
               />
             </div>
             <div>
@@ -435,7 +435,7 @@ export function Index() {
 
           {/* Bloc 3 — besoins + image bureau */}
           <div className="mt-10 md:mt-12 grid gap-6 md:gap-8 md:grid-cols-2 md:items-start">
-            <div>
+            <div className="order-2 md:order-1">
               <h3 className="font-heading text-base font-bold text-primary">{h.seoNeedsTitle}</h3>
               <ul className="mt-3 space-y-3 md:space-y-2 text-[15px] md:text-sm text-muted-foreground">
                 {h.seoNeeds.map((nn, i) => (
@@ -449,7 +449,7 @@ export function Index() {
                 {h.seoLocation}
               </p>
             </div>
-            <div>
+            <div className="order-1 md:order-2">
               <img
                 src={seoOfficeAbidjan}
                 alt="Intérieur d'un cabinet d'expertise comptable à Abidjan"
@@ -463,17 +463,17 @@ export function Index() {
 
           {/* Bloc 4 — image entrepreneurs + avantages */}
           <div className="mt-10 md:mt-12 grid gap-6 md:gap-8 md:grid-cols-[minmax(0,_2fr)_minmax(0,_3fr)] md:items-center">
-            <div className="order-2 md:order-1">
+            <div>
               <img
                 src={seoEntrepreneurs}
                 alt="Entrepreneurs ivoiriens accompagnés par un cabinet comptable"
                 width={896}
                 height={1280}
                 loading="lazy"
-                className="mx-auto w-2/3 max-w-[260px] h-auto rounded-xl shadow-md object-cover aspect-[3/4] md:w-full md:max-w-none"
+                className="w-full h-auto rounded-xl shadow-md object-cover aspect-[3/4]"
               />
             </div>
-            <div className="order-1 md:order-2 rounded-lg bg-muted/30 p-4 md:bg-transparent md:p-0">
+            <div>
               <h3 className="font-heading text-base font-bold text-primary">{h.seoAdvantagesTitle}</h3>
               <ul className="mt-3 space-y-3 md:space-y-2 text-[15px] md:text-sm text-muted-foreground">
                 {h.seoAdvantages.map((aa, i) => (
