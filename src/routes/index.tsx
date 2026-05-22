@@ -112,19 +112,21 @@ export function Index() {
         />
         <div aria-hidden="true" className="absolute inset-0 bg-[#F5F1EA]/75" />
 
-        <div className="relative container-app pt-10 md:pt-16 pb-0 grid gap-8 lg:gap-2 lg:grid-cols-12 lg:items-end">
-          {/* Left: character + value props */}
-          <div className="lg:col-span-5 relative self-end">
-            <div className="hidden lg:flex justify-end items-end lg:-mr-8 xl:-mr-12">
-              <img
-                src={heroAccountant}
-                alt=""
-                width={768}
-                height={1024}
-                className="w-full max-w-md xl:max-w-lg object-contain object-bottom"
-              />
-            </div>
-            <div className="lg:hidden text-center">
+        {/* Personnage en absolu — ancré bord bas de la section, indépendant de la hauteur du formulaire */}
+        <img
+          src={heroAccountant}
+          alt=""
+          aria-hidden="true"
+          className="hidden lg:block pointer-events-none absolute bottom-0 left-0 z-10 h-[92%] max-h-[640px] w-auto object-contain object-bottom pl-4 xl:pl-12"
+        />
+
+        <div className="relative container-app pt-10 md:pt-16 pb-0 grid gap-8 lg:gap-2 lg:grid-cols-12">
+          {/* Spacer gauche pour réserver l'espace du personnage en desktop */}
+          <div className="hidden lg:block lg:col-span-5" />
+
+          {/* Badge + H1 mobile uniquement */}
+          <div className="lg:hidden">
+            <div className="text-center">
               <span className="inline-block rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground">
                 {t.hero.badge}
               </span>
