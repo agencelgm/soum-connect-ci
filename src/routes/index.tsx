@@ -178,19 +178,24 @@ export function Index() {
 
       {/* ====== 2. STATS BAR ====== */}
       <section aria-label="Stats" className="bg-white border-y border-border">
-        <div className="container-app py-8 grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div className="container-app py-6 md:py-8 grid grid-cols-3 gap-3 sm:gap-6">
           {h.statsBar.map((s, i) => {
             const Icon = STAT_ICONS[i];
             return (
-              <div key={i} className="flex items-center gap-4 justify-center sm:justify-start">
-                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-secondary text-secondary-foreground shrink-0">
-                  <Icon className="h-7 w-7" aria-hidden="true" />
+              <div
+                key={i}
+                className="flex flex-col items-center text-center gap-2 sm:flex-row sm:items-center sm:text-left sm:gap-4 sm:justify-start"
+              >
+                <div className="flex h-10 w-10 sm:h-14 sm:w-14 items-center justify-center rounded-full bg-secondary text-secondary-foreground shrink-0">
+                  <Icon className="h-5 w-5 sm:h-7 sm:w-7" aria-hidden="true" />
                 </div>
                 <div>
-                  <div className="font-heading text-2xl font-bold text-primary leading-none">
+                  <div className="font-heading text-lg sm:text-2xl font-bold text-primary leading-tight">
                     {s.value}
                   </div>
-                  <div className="text-sm text-muted-foreground mt-1">{s.label}</div>
+                  <div className="text-[11px] sm:text-sm text-muted-foreground mt-0.5 sm:mt-1 leading-tight">
+                    {s.label}
+                  </div>
                 </div>
               </div>
             );
@@ -200,15 +205,18 @@ export function Index() {
 
       {/* ====== 3. FEATURES ROW ====== */}
       <section aria-label="Features" className="bg-[#F8FAFC]">
-        <div className="container-app section grid gap-8 md:grid-cols-3">
+        <div className="container-app py-8 md:section grid gap-5 md:gap-8 md:grid-cols-3">
           {h.featuresRow.map((text, i) => {
             const Icon = FEATURE_ICONS[i];
             return (
-              <div key={i} className="flex flex-col items-center text-center">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  <Icon className="h-8 w-8" aria-hidden="true" />
+              <div
+                key={i}
+                className="flex flex-row items-start text-left gap-4 md:flex-col md:items-center md:text-center md:gap-0"
+              >
+                <div className="flex h-12 w-12 md:h-16 md:w-16 items-center justify-center rounded-full bg-primary/10 text-primary shrink-0">
+                  <Icon className="h-6 w-6 md:h-8 md:w-8" aria-hidden="true" />
                 </div>
-                <p className="mt-4 text-sm font-medium text-foreground max-w-xs">{text}</p>
+                <p className="md:mt-4 text-sm font-medium text-foreground max-w-xs">{text}</p>
               </div>
             );
           })}
@@ -232,22 +240,22 @@ export function Index() {
 
       {/* ====== 5. HIGHLIGHT CARDS ====== */}
       <section aria-label="Couverture" className="bg-[#F8FAFC]">
-        <div className="container-app section grid gap-6 md:grid-cols-3">
+        <div className="container-app section grid gap-4 md:gap-6 md:grid-cols-3">
           {h.highlights.map((card, i) => {
             const Icon = [Globe2, Award, Building2][i];
             return (
               <article key={i} className="bg-white rounded-xl overflow-hidden shadow-sm border border-border">
-                <div className="relative h-44 bg-gradient-to-br from-primary to-[#1a2f5a] flex items-center justify-center">
-                  <Icon className="h-20 w-20 text-white/20" aria-hidden="true" />
+                <div className="relative aspect-[16/9] md:aspect-auto md:h-44 bg-gradient-to-br from-primary to-[#1a2f5a] flex items-center justify-center">
+                  <Icon className="h-16 w-16 md:h-20 md:w-20 text-white/20" aria-hidden="true" />
                   <div className="absolute -bottom-6 left-6 flex h-12 w-12 items-center justify-center rounded-full bg-secondary text-secondary-foreground shadow-lg ring-4 ring-white">
                     <Icon className="h-6 w-6" aria-hidden="true" />
                   </div>
                 </div>
-                <div className="p-6 pt-9">
-                  <h3 className="font-heading text-base font-bold text-primary uppercase leading-snug">
+                <div className="p-5 md:p-6 pt-9">
+                  <h3 className="font-heading text-base md:text-lg font-bold text-primary uppercase leading-snug">
                     {card.title}
                   </h3>
-                  <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{card.text}</p>
+                  <p className="mt-2 md:mt-3 text-sm text-muted-foreground leading-relaxed">{card.text}</p>
                 </div>
               </article>
             );
