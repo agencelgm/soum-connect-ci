@@ -21,6 +21,8 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/", changefreq: "weekly", priority: "1.0", lastmod: today },
           // Page de conversion principale
           { path: "/demande-soumissions", changefreq: "monthly", priority: "0.9", lastmod: today },
+          // Landing alternative — focus mot-clé "créer son entreprise"
+          { path: "/creer-son-entreprise-cote-divoire", changefreq: "weekly", priority: "0.9", lastmod: today },
           // Pages services (priorité 0.8)
           { path: "/creation-entreprise-cote-divoire", changefreq: "monthly", priority: "0.8", lastmod: today },
           { path: "/comptabilite-entreprise-abidjan", changefreq: "monthly", priority: "0.8", lastmod: today },
@@ -49,6 +51,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/en/about", changefreq: "monthly", priority: "0.5", lastmod: today },
           { path: "/en/company-registration-ivory-coast", changefreq: "monthly", priority: "0.6", lastmod: today },
           { path: "/en/accounting-firm-abidjan", changefreq: "monthly", priority: "0.6", lastmod: today },
+          { path: "/en/start-a-business-ivory-coast", changefreq: "weekly", priority: "0.8", lastmod: today },
         ];
 
         const urls = entries.map((e) =>

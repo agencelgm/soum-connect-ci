@@ -39,6 +39,7 @@ export function Footer() {
           <div className="text-white font-semibold mb-3">{t.footer.ourServices}</div>
           <ul className="space-y-2 text-sm">
             <li><Link to="/creation-entreprise-cote-divoire" className="hover:text-secondary">{t.services.creation}</Link></li>
+            <li><Link to="/creer-son-entreprise-cote-divoire" className="hover:text-secondary">Créer son entreprise en 10 jours</Link></li>
             <li><Link to="/comptabilite-entreprise-abidjan" className="hover:text-secondary">{t.services.accounting}</Link></li>
             <li><Link to="/declaration-fiscale-cote-divoire" className="hover:text-secondary">{t.services.tax}</Link></li>
             <li><Link to="/domiciliation-entreprise-abidjan" className="hover:text-secondary">{t.services.domiciliation}</Link></li>
