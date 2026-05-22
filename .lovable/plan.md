@@ -1,44 +1,48 @@
 ## Objectif
-Améliorer 4 aspects des articles de guides (`/guides/$slug`) : mobile, SEO structuré, expérience de lecture, et maillage interne.
+Sur mobile (≤ 640px), plusieurs sections de la home s'empilent verticalement avec de gros icônes circulaires, ce qui donne une impression de blocs « superposés » et oblige à beaucoup scroller. Objectif : compacter et passer en disposition horizontale là où c'est pertinent, sans casser le rendu desktop.
 
-## 1. Fil d'Ariane + bouton « Retour aux articles » mobile-friendly
-Fichier : `src/components/guides/ArticleLayout.tsx`
-- Bouton « Retour aux articles » : pleine largeur sur mobile (`w-full sm:w-auto`), centré, hauteur tactile (min 44px), icône bien alignée.
-- Fil d'Ariane : passer en taille `text-xs` strict sur mobile, autoriser le wrap propre, tronquer le titre de l'article sur 1 ligne avec `truncate` au lieu de `line-clamp-1` qui peut casser le flex.
-- Espacements verticaux compacts sur mobile (`pt-4 pb-2`), plus aérés en md+.
+## Sections à corriger (`src/routes/index.tsx`)
 
-## 2. JSON-LD enrichi + Title/Meta auto-optimisés
-Fichier : `src/routes/guides.$slug.tsx`
-- Enrichir le schéma `Article` existant : ajouter `author` (Organization SoumissionsComptables.ci), `publisher` (avec logo), `datePublished` / `dateModified` (à dériver d'un nouveau champ `publishedAt` / `updatedAt` ajouté dans `guides-data.tsx` — fallback à une date par défaut si absent), `inLanguage: "fr-CI"`, `articleSection` (1ère catégorie), `keywords`.
-- Ajouter un schéma `BreadcrumbList` JSON-LD (Accueil → Blog → Article).
-- Si l'article contient des FAQ (présence détectable via un nouveau champ optionnel `faq?: {q,a}[]` dans `Article`), ajouter `FAQPage` JSON-LD. Sinon, on saute proprement.
-- Title auto-optimisé : tronquer intelligemment pour rester < 60 caractères (format `{title} | SoumissionsComptables.ci`, si trop long → titre seul).
-- Meta description auto-optimisée : tronquer à 155 caractères max sur un mot complet + « … ».
-- Helpers ajoutés dans `src/lib/seo.ts` (`truncateTitle`, `truncateDescription`).
+### 1. Stats bar « 150+ Cabinets partenaires / 50 000+ / Côte d'Ivoire »
+Aujourd'hui : `grid-cols-1 sm:grid-cols-3` + icônes 56px + texte 24px → 3 lignes très hautes sur mobile.
 
-## 3. Barre de progression de lecture
-Nouveau composant : `src/components/guides/ReadingProgressBar.tsx`
-- Barre fine (`h-1`) fixée tout en haut (`fixed top-0 left-0 right-0 z-50`), couleur `bg-secondary` sur fond translucide.
-- Calcule le `scrollTop / (scrollHeight - innerHeight)` via un listener `scroll` + `requestAnimationFrame` pour la perf.
-- Intégrée dans `ArticleLayout.tsx` (donc active sur tous les articles rédigés automatiquement).
-- Accessible : `role="progressbar"`, `aria-valuenow`.
+Cible :
+- Passer en `grid-cols-3` dès mobile (3 colonnes compactes côte-à-côte).
+- Icône réduite sur mobile : `h-10 w-10` (au lieu de `h-14 w-14`), `h-14 w-14` sur md+.
+- Layout vertical à l'intérieur de chaque stat sur mobile (icône au-dessus, valeur dessous, libellé en dessous) → `flex-col items-center text-center`, puis `sm:flex-row sm:items-center sm:text-left` sur tablette+.
+- Valeur : `text-lg` mobile / `text-2xl` md+. Libellé : `text-xs` mobile / `text-sm` md+.
+- Corriger la 3ᵉ stat dont la valeur/libellé se lisent à l'envers ("Côte d'Ivoire" comme chiffre, "Service partout en" comme libellé) : remplacer par `{ value: "100%", label: "Couverture nationale" }` (FR) et `{ value: "100%", label: "Nationwide coverage" }` (EN), dans `src/lib/translations.ts`.
+- Réduire le padding section : `py-8` → `py-6 md:py-8`.
 
-## 4. Section « Articles similaires »
-Nouveau composant : `src/components/guides/RelatedArticles.tsx`
-- Affiche 3 cartes d'articles (image, catégorie, titre, extrait court, temps de lecture, lien).
-- Logique de sélection dans `src/lib/guides-data.tsx` : nouvelle fonction `getRelatedArticles(currentSlug, limit=3)` qui privilégie les articles partageant ≥ 1 catégorie, puis complète avec les plus récents si pas assez.
-- Exclut l'article courant et les articles sans contenu (`!a.content`).
-- Intégrée dans `src/routes/guides.$slug.tsx`, **avant** le bloc `RelatedLinks` existant (qui pointe vers les services), pour avoir : Article → Articles similaires (blog) → Pages liées (services).
-- Style cohérent avec la grille existante des `/guides` (cards blanches, ombre légère, hover subtil).
+### 2. Features row (3 phrases avec icônes)
+Aujourd'hui : `md:grid-cols-3`, icônes 64px, blocs très hauts sur mobile.
 
-## Détails techniques
-- Aucune modification de schéma DB ni de backend.
-- `publishedAt`/`updatedAt` ajoutés au type `Article` comme champs optionnels ; fallback `"2026-01-01"` si non renseigné, pour ne pas avoir à modifier chaque article d'un coup.
-- La barre de progression n'apparaît que sur les articles **rédigés** (`article.content` présent), pas sur les placeholders.
-- Tous les nouveaux textes UI en français.
+Cible :
+- Conserver l'empilement vertical (les phrases sont trop longues pour 3 colonnes mobile), mais réduire le bloc :
+- Icône : `h-12 w-12` mobile / `h-16 w-16` md+.
+- Layout : `flex-row items-start text-left gap-4` sur mobile (icône à gauche, texte à droite) / `md:flex-col md:items-center md:text-center` sur md+.
+- Section padding : `section` → `py-8 md:section`.
 
-## Aperçu du rendu
-- Mobile : bouton retour large et tappable, fil d'Ariane lisible sans débordement.
-- Au scroll d'un article : fine barre verte progresse en haut.
-- Snippet Google enrichi (auteur, date, fil d'Ariane).
-- Sous chaque article : « Articles similaires » avec 3 cartes, puis « Pages liées ».
+### 3. Highlights (3 cartes avec image hero pleine largeur)
+Aujourd'hui : chaque carte a une image hero ~200px de haut sur mobile, accentuant l'effet « blocs successifs ».
+
+Cible (révision légère) :
+- Réduire la hauteur image sur mobile : `aspect-[16/10]` au lieu d'aspect carré/4:3.
+- Espacement vertical inter-cartes : `gap-6` → `gap-4 md:gap-6`.
+- Titre carte : `text-base` mobile / `text-lg` md+.
+
+### 4. Mobile CTA bar collante
+Le bouton orange « Obtenir mes soumissions » visible en bas de chaque capture chevauche parfois le contenu (le footer notamment). Ajouter un padding-bottom conditionnel au `<main>` (ou à `body`) pour réserver l'espace : `pb-20 sm:pb-0` au niveau du wrapper de la page d'accueil.
+
+### 5. Footer mobile
+Les sections « Nos Services / Liens utiles / Contact » s'empilent en 1 colonne avec beaucoup d'espace. Garder 1 colonne (la lecture reste claire) mais :
+- Réduire le `gap-y` global du footer à `gap-y-8` sur mobile (au lieu de gap-y-12 si présent).
+- Aucune autre modification de contenu.
+
+## Hors scope
+- Pas de changement de typo, palette ou tokens design.
+- Pas de retrait/ajout de section.
+- Pas de modification desktop autre que ce qui découle naturellement des classes responsives ajoutées (le rendu ≥ md doit rester identique au pixel près).
+
+## Validation
+Après implémentation : capture mobile (390×844) du haut → milieu de la home + capture desktop (1280×800) pour confirmer la non-régression desktop.
