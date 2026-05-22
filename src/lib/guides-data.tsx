@@ -76,9 +76,9 @@ export const ARTICLES: Article[] = [
     slug: "cout-cabinet-comptable-abidjan",
     title: "Combien coûte un cabinet comptable à Abidjan ?",
     excerpt:
-      "Fourchettes de prix réelles, modèles de facturation (forfait, horaire) et critères qui font varier les honoraires.",
+      "Découvrez combien coûte un cabinet comptable à Abidjan : tarifs mensuels, bilan, déclarations fiscales, paie, facteurs de prix et conseils pour choisir.",
     categories: ["Comptabilité"],
-    readTime: "7 min",
+    readTime: "10 min",
     priority: 1,
     image: coutCabinetImg,
     content: () => <CoutCabinetAbidjanContent />,
