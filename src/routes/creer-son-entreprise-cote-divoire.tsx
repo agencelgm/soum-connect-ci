@@ -287,8 +287,8 @@ export function CreerEntreprisePage() {
       }
     : {
         badge: "🇨🇮 CEPICI · OHADA · Approved firms",
-        h1: "Register your business in Côte d'Ivoire in 10 days",
-        sub: "RCCM, DFE, IDU, articles, CNPS, bank account — all included. Compare 5 free quotes from CEPICI-approved firms within 48h.",
+        h1: "Register your business in Côte d'Ivoire in less than 30 days",
+        sub: "RCCM, DFE, IDU, articles, CNPS — all official documents. Compare 5 free quotes from CEPICI-approved firms within 48h.",
         bullets: [
           "100% turnkey CEPICI procedures",
           "5 OECCA-CI approved firms reply",
