@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { CreerSarlCepiciContent } from "@/content/guides/creer-sarl-cepici";
 import { SarlSaEiContent } from "@/content/guides/sarl-sa-ei-cote-divoire";
-import { CalendrierFiscal2026Content } from "@/content/guides/calendrier-fiscal-ci-2026.tsx";
+import { CalendrierFiscal2026Content } from "@/content/guides/calendrier-fiscal-ci-2026";
 import { CoutCabinetAbidjanContent } from "@/content/guides/cout-cabinet-comptable-abidjan";
 import { CreerEntrepriseDepuisFranceContent } from "@/content/guides/creer-entreprise-ci-depuis-france";
 import { ImpotsEntrepriseContent } from "@/content/guides/impots-entreprise-cote-divoire";
