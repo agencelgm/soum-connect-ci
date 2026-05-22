@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, BookOpen, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { buildPageHead } from "@/lib/seo";
@@ -54,8 +54,10 @@ function BlogPage() {
       <section className="container-app py-14 md:py-20">
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {posts.map((post) => (
-            <article
+            <Link
               key={post.slug}
+              to="/guides/$slug"
+              params={{ slug: post.slug }}
               className="group flex flex-col rounded-2xl border border-border bg-white overflow-hidden hover:border-primary/40 hover:shadow-lg transition-all"
             >
               {post.image ? (
@@ -91,16 +93,13 @@ function BlogPage() {
                     <Clock className="h-3.5 w-3.5" />
                     {post.readTime} de lecture
                   </span>
-                  <a
-                    href={`/guides/${post.slug}`}
-                    className="inline-flex items-center gap-1 text-sm font-semibold text-secondary hover:text-secondary-dark"
-                  >
+                  <span className="inline-flex items-center gap-1 text-sm font-semibold text-secondary group-hover:text-secondary-dark">
                     Lire la suite
                     <ArrowRight className="h-3.5 w-3.5" />
-                  </a>
+                  </span>
                 </div>
               </div>
-            </article>
+            </Link>
           ))}
         </div>
       </section>
