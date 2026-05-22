@@ -1,4 +1,4 @@
-Corriger le hero : le personnage doit être grand, à côté du formulaire, et ses pieds doivent toucher le bord bas de la section (= haut de la bande Stats). Le formulaire orange garde son aération.
+Corriger le hero : le personnage doit être grand, à côté du formulaire, et son torse doit toucher le bord bas de la section (= haut de la bande Stats). Le formulaire orange garde son aération.
 
 ## Bug actuel
 
@@ -102,6 +102,7 @@ Résultat : les pieds du personnage touchent le bord bas de la section hero (don
 ```
 
 Points clés :
+
 - `pb-0` sur le conteneur hero + `lg:items-end` pour que l'image touche la section suivante.
 - `pb-10 md:pb-16` réintroduit sur la colonne formulaire pour conserver son aération.
 - `blur-md scale-110` sur l'image de fond évite les bords nets du flou.
