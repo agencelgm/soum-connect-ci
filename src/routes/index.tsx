@@ -36,7 +36,6 @@ import { LeadFormCard } from "@/components/home/LeadFormCard";
 import { buildPageHead, LOCAL_BUSINESS_SCHEMA } from "@/lib/seo";
 import { useLanguage } from "@/lib/language-context";
 import { getCounterpart } from "@/lib/route-map";
-import heroAccountant from "@/assets/home/hero-accountant-cutout.png";
 import processCouple from "@/assets/home/process-couple.png";
 import seoTeamMeeting from "@/assets/home/seo-team-meeting.jpg";
 import seoAccountantDesk from "@/assets/home/seo-accountant-desk.jpg";
