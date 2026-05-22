@@ -1,4 +1,41 @@
-Faire descendre le personnage jusqu'au bord bas de la section (au contact de la bande Stats), SANS toucher au padding du formulaire orange. Le formulaire garde son espace habituel avant la section suivante.
+Corriger le hero : le personnage doit être grand, à côté du formulaire, et ses pieds doivent toucher le bord bas de la section (= haut de la bande Stats). Le formulaire orange garde son aération.
+
+## Bug actuel
+
+L'image en `position: absolute` avec `bottom-0 h-[92%]` est calculée par rapport à la hauteur totale de la section hero. Comme cette section est très grande (le formulaire est long), `bottom-0` se retrouve sous le pli et la silhouette finit toute petite à mi-hauteur. Mauvaise approche.
+
+## Nouvelle approche
+
+Revenir au flux grid à 2 colonnes (image + formulaire), en utilisant `items-stretch` pour que la colonne image fasse exactement la hauteur du formulaire. L'image, en `h-full w-auto object-contain object-bottom`, occupe toute cette hauteur et ses pieds touchent le bord bas de la section.
+
+- Section : `pb-0` pour qu'il n'y ait aucun padding sous le personnage.
+- Grid : `lg:grid-cols-12 lg:items-stretch` (chaque colonne fait la hauteur de la row).
+- Colonne image (`lg:col-span-5`) : `flex items-end` ; image `h-full w-auto max-h-[640px] object-contain object-bottom`. Hauteur = hauteur du formulaire, largeur libre selon ratio (768×1024 → ~3/4 de la hauteur). Le personnage est donc grand et solidement ancré en bas.
+- Colonne formulaire (`lg:col-span-7`) : `pt-0 pb-10 md:pb-16`. Formulaire inchangé, garde son aération en bas.
+- Sur mobile : image masquée, badge + H1 affichés.
+- Fond photo flouté + overlay : inchangés.
+
+## Détails techniques (`src/routes/index.tsx`, section hero)
+
+```text
+<section className="relative overflow-hidden">
+  <img src={seoOfficeAbidjan} className="absolute inset-0 w-full h-full object-cover blur-md scale-110" />
+  <div className="absolute inset-0 bg-[#F5F1EA]/75" />
+
+  <div className="relative container-app pt-10 md:pt-16 pb-0 grid gap-8 lg:gap-4 lg:grid-cols-12 lg:items-stretch">
+    <div className="hidden lg:flex lg:col-span-5 items-end justify-center lg:-mr-6 xl:-mr-10">
+      <img
+        src={heroAccountant}
+        className="h-full w-auto max-h-[640px] object-contain object-bottom"
+      />
+    </div>
+    <div className="lg:hidden text-center">{/* badge + h1 mobile */}</div>
+    <div className="lg:col-span-7 pb-10 md:pb-16">{/* form inchangé */}</div>
+  </div>
+</section>
+```
+
+Effet attendu : personnage grand (≈ hauteur du formulaire), pieds collés au bord bas de la section, formulaire avec padding intact.
 
 ## Approche
 
