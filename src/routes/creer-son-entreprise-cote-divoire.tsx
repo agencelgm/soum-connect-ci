@@ -10,9 +10,6 @@ import {
   Quote,
   Briefcase,
   Users,
-  Landmark,
-  Wallet,
-  MapPin,
   Globe2,
   Sparkles,
 } from "lucide-react";
