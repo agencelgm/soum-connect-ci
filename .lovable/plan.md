@@ -1,37 +1,26 @@
-Deux corrections sur `src/routes/index.tsx`.
+Cause de la scrollbar : j'ai mis `overflow-x-visible` sur le wrapper image. L'image (≈825px de large à `h-[1100px]`) déborde alors hors de sa colonne (~460px). Sur le hero la section a `overflow-hidden` donc OK ; mais sur la section "FINAL CTA REPEAT" il n'y a pas d'`overflow-hidden`, donc l'image pousse le layout et crée une scrollbar horizontale.
 
-## 1. Hero — la main pointée est coupée
+Correctif propre, sans scrollbar et en gardant la main visible :
 
-Cause : le wrapper `overflow-hidden` que nous utilisons pour masquer les jambes coupe AUSSI horizontalement. La main droite du personnage, qui dépasse la largeur de la colonne, est donc rognée.
+1. Revenir à `overflow-hidden` sur les deux wrappers (vertical ET horizontal).
+2. Positionner l'image alignée à droite de la colonne au lieu de centrée : remplacer `left-1/2 -translate-x-1/2` par `right-0`. Comme la main pointée est sur le côté droit du personnage, elle reste alors entièrement dans la colonne ; seul le côté gauche (épaule gauche / bras gauche) est rogné par le crop, ce qui est invisible.
 
-Fix : remplacer `overflow-hidden` par `overflow-x-visible overflow-y-hidden` sur le wrapper image. Le crop vertical au torse reste, mais la main peut déborder horizontalement vers la carte (comportement souhaité, comme dans la maquette initiale).
+Fichier : `src/routes/index.tsx`
 
+Hero (~ligne 117) :
 ```tsx
-// ligne ~118
-<div className="relative h-full min-h-[520px] xl:min-h-[620px] w-full overflow-x-visible overflow-y-hidden">
-```
-
-## 2. Section "FINAL CTA REPEAT" — appliquer le même traitement
-
-Actuellement (lignes 555–564) le personnage est rendu en pleine hauteur centré (`w-full max-w-sm mx-auto`), donc on voit les pieds et il paraît petit à côté de la carte orange.
-
-Fix : reproduire la structure du hero — colonne `items-stretch`, wrapper avec crop vertical au torse, image agrandie, hand qui peut déborder.
-
-```tsx
-<div className="lg:col-span-5 hidden lg:flex items-stretch justify-center lg:-mr-2 xl:-mr-4">
-  <div className="relative h-full min-h-[520px] xl:min-h-[620px] w-full overflow-x-visible overflow-y-hidden">
+<div className="hidden lg:flex lg:col-span-5 items-stretch justify-center lg:-mr-2 xl:-mr-4">
+  <div className="relative h-full min-h-[520px] xl:min-h-[620px] w-full overflow-hidden">
     <img
       src={heroAccountant}
       alt=""
-      width={768}
-      height={1024}
-      loading="lazy"
-      className="absolute left-1/2 top-0 h-[1100px] xl:h-[1280px] w-auto max-w-none -translate-x-1/2 object-contain pointer-events-none"
+      aria-hidden="true"
+      className="absolute right-0 top-0 h-[1100px] xl:h-[1280px] w-auto max-w-none object-contain pointer-events-none"
     />
   </div>
 </div>
 ```
 
-## Validation
-- Capture desktop : main visible débordant vers la carte sur le hero ET sur la section finale, torse calé au bas dans les deux cas, jambes masquées.
-- Mobile inchangé (personnage masqué `hidden lg:flex`).
+Section finale (~ligne 555) : même structure, `overflow-hidden` + `right-0`.
+
+3. Validation : recharger `/`, confirmer plus de scrollbar horizontale, et que la main pointée vers la carte orange est entière dans les deux sections.
