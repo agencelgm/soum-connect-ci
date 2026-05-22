@@ -386,8 +386,8 @@ export function Index() {
           <p className="mt-2 text-muted-foreground italic">{h.seoSubtitle}</p>
 
           {/* Bloc 1 — intro + image team meeting */}
-          <div className="mt-10 grid gap-8 md:grid-cols-2 md:items-center">
-            <p className="text-sm md:text-base text-muted-foreground leading-relaxed order-2 md:order-1">
+          <div className="mt-10 grid gap-6 md:gap-8 md:grid-cols-2 md:items-center">
+            <p className="text-[15px] md:text-base text-muted-foreground leading-relaxed order-2 md:order-1">
               {h.seoP1}
             </p>
             <div className="order-1 md:order-2">
@@ -397,13 +397,13 @@ export function Index() {
                 width={1280}
                 height={896}
                 loading="lazy"
-                className="w-full h-auto rounded-xl shadow-md object-cover aspect-[4/3]"
+                className="w-full h-auto rounded-xl shadow-md object-cover aspect-[16/10] md:aspect-[4/3]"
               />
             </div>
           </div>
 
           {/* Bloc 2 — image portrait + 3 types */}
-          <div className="mt-12 grid gap-8 md:grid-cols-[minmax(0,_2fr)_minmax(0,_3fr)] md:items-center">
+          <div className="mt-10 md:mt-12 grid gap-6 md:gap-8 md:grid-cols-[minmax(0,_2fr)_minmax(0,_3fr)] md:items-center">
             <div>
               <img
                 src={seoAccountantDesk}
@@ -411,41 +411,41 @@ export function Index() {
                 width={896}
                 height={1280}
                 loading="lazy"
-                className="w-full h-auto rounded-xl shadow-md object-cover aspect-[3/4]"
+                className="mx-auto w-2/3 max-w-[260px] h-auto rounded-xl shadow-md object-cover aspect-[3/4] md:w-full md:max-w-none"
               />
             </div>
             <div>
-              <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+              <p className="text-[15px] md:text-base text-muted-foreground leading-relaxed">
                 {h.seoP2}
               </p>
               <h3 className="mt-6 font-heading text-base font-bold text-primary">{h.seoTypesTitle}</h3>
-              <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+              <ul className="mt-3 space-y-3 md:space-y-2 text-[15px] md:text-sm text-muted-foreground">
                 {h.seoTypes.map((tt, i) => (
                   <li key={i} className="flex items-start gap-2">
-                    <CheckCircle className="h-4 w-4 text-accent mt-0.5 shrink-0" aria-hidden="true" />
+                    <CheckCircle className="h-5 w-5 md:h-4 md:w-4 text-accent mt-0.5 shrink-0" aria-hidden="true" />
                     <span>{tt}</span>
                   </li>
                 ))}
               </ul>
-              <p className="mt-4 text-sm md:text-base text-muted-foreground leading-relaxed">
+              <p className="mt-4 text-[15px] md:text-base text-muted-foreground leading-relaxed">
                 <strong className="text-primary">{h.seoP3Strong}</strong>{h.seoP3}
               </p>
             </div>
           </div>
 
           {/* Bloc 3 — besoins + image bureau */}
-          <div className="mt-12 grid gap-8 md:grid-cols-2 md:items-start">
+          <div className="mt-10 md:mt-12 grid gap-6 md:gap-8 md:grid-cols-2 md:items-start">
             <div>
               <h3 className="font-heading text-base font-bold text-primary">{h.seoNeedsTitle}</h3>
-              <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+              <ul className="mt-3 space-y-3 md:space-y-2 text-[15px] md:text-sm text-muted-foreground">
                 {h.seoNeeds.map((nn, i) => (
                   <li key={i} className="flex items-start gap-2">
-                    <CheckCircle className="h-4 w-4 text-accent mt-0.5 shrink-0" aria-hidden="true" />
+                    <CheckCircle className="h-5 w-5 md:h-4 md:w-4 text-accent mt-0.5 shrink-0" aria-hidden="true" />
                     <span>{nn}</span>
                   </li>
                 ))}
               </ul>
-              <p className="mt-5 text-sm md:text-base text-muted-foreground leading-relaxed font-semibold text-primary">
+              <p className="mt-5 text-[15px] md:text-base text-muted-foreground leading-relaxed font-semibold text-primary">
                 {h.seoLocation}
               </p>
             </div>
@@ -456,29 +456,29 @@ export function Index() {
                 width={1280}
                 height={896}
                 loading="lazy"
-                className="w-full h-auto rounded-xl shadow-md object-cover aspect-[4/3]"
+                className="w-full h-auto rounded-xl shadow-md object-cover aspect-[16/10] md:aspect-[4/3]"
               />
             </div>
           </div>
 
           {/* Bloc 4 — image entrepreneurs + avantages */}
-          <div className="mt-12 grid gap-8 md:grid-cols-[minmax(0,_2fr)_minmax(0,_3fr)] md:items-center">
-            <div>
+          <div className="mt-10 md:mt-12 grid gap-6 md:gap-8 md:grid-cols-[minmax(0,_2fr)_minmax(0,_3fr)] md:items-center">
+            <div className="order-2 md:order-1">
               <img
                 src={seoEntrepreneurs}
                 alt="Entrepreneurs ivoiriens accompagnés par un cabinet comptable"
                 width={896}
                 height={1280}
                 loading="lazy"
-                className="w-full h-auto rounded-xl shadow-md object-cover aspect-[3/4]"
+                className="mx-auto w-2/3 max-w-[260px] h-auto rounded-xl shadow-md object-cover aspect-[3/4] md:w-full md:max-w-none"
               />
             </div>
-            <div>
+            <div className="order-1 md:order-2 rounded-lg bg-muted/30 p-4 md:bg-transparent md:p-0">
               <h3 className="font-heading text-base font-bold text-primary">{h.seoAdvantagesTitle}</h3>
-              <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+              <ul className="mt-3 space-y-3 md:space-y-2 text-[15px] md:text-sm text-muted-foreground">
                 {h.seoAdvantages.map((aa, i) => (
                   <li key={i} className="flex items-start gap-2">
-                    <CheckCircle className="h-4 w-4 text-accent mt-0.5 shrink-0" aria-hidden="true" />
+                    <CheckCircle className="h-5 w-5 md:h-4 md:w-4 text-accent mt-0.5 shrink-0" aria-hidden="true" />
                     <span>{aa}</span>
                   </li>
                 ))}
@@ -487,7 +487,7 @@ export function Index() {
           </div>
 
           {/* Mission + handshake image */}
-          <div className="mt-12 grid gap-8 md:grid-cols-2 md:items-center">
+          <div className="mt-10 md:mt-12 grid gap-6 md:gap-8 md:grid-cols-2 md:items-center">
             <div>
               <img
                 src={seoHandshake}
@@ -495,7 +495,7 @@ export function Index() {
                 width={1280}
                 height={896}
                 loading="lazy"
-                className="w-full h-auto rounded-xl shadow-md object-cover aspect-[4/3]"
+                className="w-full h-auto rounded-xl shadow-md object-cover aspect-[16/10] md:aspect-[4/3]"
               />
             </div>
             <blockquote className="border-l-4 border-secondary bg-[#F8FAFC] p-6 rounded-r-lg italic text-muted-foreground leading-relaxed">
@@ -515,10 +515,10 @@ export function Index() {
               const Icon = TRUST_ICONS[i];
               return (
                 <div key={i} className="flex flex-col items-center text-center">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-white/80 text-white">
-                    <Icon className="h-8 w-8" aria-hidden="true" />
+                  <div className="flex h-12 w-12 md:h-16 md:w-16 items-center justify-center rounded-full border-2 border-white/80 text-white">
+                    <Icon className="h-6 w-6 md:h-8 md:w-8" aria-hidden="true" />
                   </div>
-                  <p className="mt-4 text-sm font-semibold max-w-[220px] leading-snug">{b}</p>
+                  <p className="mt-3 md:mt-4 text-xs md:text-sm font-semibold max-w-[220px] leading-snug">{b}</p>
                 </div>
               );
             })}

@@ -1,48 +1,45 @@
 ## Objectif
-Sur mobile (≤ 640px), plusieurs sections de la home s'empilent verticalement avec de gros icônes circulaires, ce qui donne une impression de blocs « superposés » et oblige à beaucoup scroller. Objectif : compacter et passer en disposition horizontale là où c'est pertinent, sans casser le rendu desktop.
 
-## Sections à corriger (`src/routes/index.tsx`)
+Rendre la section "10. SEO ARTICLE" de `src/routes/index.tsx` plus lisible sur mobile (390px) et éviter que deux images se retrouvent collées l'une au-dessus de l'autre lors du passage en colonne unique.
 
-### 1. Stats bar « 150+ Cabinets partenaires / 50 000+ / Côte d'Ivoire »
-Aujourd'hui : `grid-cols-1 sm:grid-cols-3` + icônes 56px + texte 24px → 3 lignes très hautes sur mobile.
+## Constats actuels (mobile)
 
-Cible :
-- Passer en `grid-cols-3` dès mobile (3 colonnes compactes côte-à-côte).
-- Icône réduite sur mobile : `h-10 w-10` (au lieu de `h-14 w-14`), `h-14 w-14` sur md+.
-- Layout vertical à l'intérieur de chaque stat sur mobile (icône au-dessus, valeur dessous, libellé en dessous) → `flex-col items-center text-center`, puis `sm:flex-row sm:items-center sm:text-left` sur tablette+.
-- Valeur : `text-lg` mobile / `text-2xl` md+. Libellé : `text-xs` mobile / `text-sm` md+.
-- Corriger la 3ᵉ stat dont la valeur/libellé se lisent à l'envers ("Côte d'Ivoire" comme chiffre, "Service partout en" comme libellé) : remplacer par `{ value: "100%", label: "Couverture nationale" }` (FR) et `{ value: "100%", label: "Nationwide coverage" }` (EN), dans `src/lib/translations.ts`.
-- Réduire le padding section : `py-8` → `py-6 md:py-8`.
+1. La liste sélectionnée ("50 000+ soumissions… / 150+ cabinets… / Rapide, 100% gratuit… / Formulaire simple…") est rendue sans aération suffisante : icônes 16px, texte `text-sm`, espacement `space-y-2`. Les lignes se touchent presque et les ✓ se perdent.
+2. Les images portrait (`aspect-[3/4]`) des blocs 2 et 4 prennent toute la largeur sur mobile → elles deviennent énormes (≈ 520px de haut sur un écran de 390px), ce qui pousse le texte hors écran.
+3. Bloc 3 finit par une image (à droite en desktop, en bas sur mobile) et Bloc 4 commence par une image (à gauche en desktop, en haut sur mobile). Résultat sur mobile : **image de bureau Abidjan suivie immédiatement de l'image entrepreneurs** → deux photos qui se suivent verticalement sans texte entre elles. C'est ce que l'utilisateur ne veut pas.
+4. Les paragraphes longs (`seoP1`, `seoP2`) restent en `text-sm` sur mobile alors qu'ils sont denses.
 
-### 2. Features row (3 phrases avec icônes)
-Aujourd'hui : `md:grid-cols-3`, icônes 64px, blocs très hauts sur mobile.
+## Changements proposés
 
-Cible :
-- Conserver l'empilement vertical (les phrases sont trop longues pour 3 colonnes mobile), mais réduire le bloc :
-- Icône : `h-12 w-12` mobile / `h-16 w-16` md+.
-- Layout : `flex-row items-start text-left gap-4` sur mobile (icône à gauche, texte à droite) / `md:flex-col md:items-center md:text-center` sur md+.
-- Section padding : `section` → `py-8 md:section`.
+### A. Listes d'avantages (✓) — incluant la liste sélectionnée
+Dans les 3 `<ul>` (`seoTypes`, `seoNeeds`, `seoAdvantages`) :
+- Passer à `space-y-3` (au lieu de `space-y-2`) sur mobile.
+- Icône `CheckCircle` : `h-5 w-5` mobile, `md:h-4 md:w-4`.
+- Texte : `text-[15px] leading-relaxed` mobile, `md:text-sm`.
+- Ajouter un fond léger optionnel `rounded-lg bg-muted/30 p-4 md:bg-transparent md:p-0` pour mieux délimiter le bloc sur mobile.
 
-### 3. Highlights (3 cartes avec image hero pleine largeur)
-Aujourd'hui : chaque carte a une image hero ~200px de haut sur mobile, accentuant l'effet « blocs successifs ».
+### B. Images portrait (blocs 2 et 4)
+Sur mobile, contraindre la hauteur et centrer :
+- Remplacer `w-full h-auto … aspect-[3/4]` par `mx-auto w-2/3 max-w-[260px] h-auto aspect-[3/4] md:w-full md:max-w-none`.
+- Résultat : sur mobile, ces deux images deviennent des vignettes centrées (~260px de large) au lieu d'occuper toute la largeur.
 
-Cible (révision légère) :
-- Réduire la hauteur image sur mobile : `aspect-[16/10]` au lieu d'aspect carré/4:3.
-- Espacement vertical inter-cartes : `gap-6` → `gap-4 md:gap-6`.
-- Titre carte : `text-base` mobile / `text-lg` md+.
+### C. Images paysage (blocs 1, 3 et mission)
+- Réduire l'aspect sur mobile : `aspect-[16/10] md:aspect-[4/3]` pour libérer du scroll.
 
-### 4. Mobile CTA bar collante
-Le bouton orange « Obtenir mes soumissions » visible en bas de chaque capture chevauche parfois le contenu (le footer notamment). Ajouter un padding-bottom conditionnel au `<main>` (ou à `body`) pour réserver l'espace : `pb-20 sm:pb-0` au niveau du wrapper de la page d'accueil.
+### D. Régler les "deux images qui se suivent" entre blocs 3 et 4
+Inverser l'ordre du bloc 4 sur mobile pour intercaler le texte :
+- Bloc 4 actuel : `[image] [texte]` (et stacke `image → texte` en mobile).
+- Nouveau bloc 4 : ajouter `order-2 md:order-1` au texte et `order-1 md:order-2` à l'image (comme le bloc 1).
+- Conséquence mobile : Bloc 3 finit par image bureau → Bloc 4 commence par **texte "Avantages"** → puis image entrepreneurs. Plus de doublon visuel d'images consécutives.
 
-### 5. Footer mobile
-Les sections « Nos Services / Liens utiles / Contact » s'empilent en 1 colonne avec beaucoup d'espace. Garder 1 colonne (la lecture reste claire) mais :
-- Réduire le `gap-y` global du footer à `gap-y-8` sur mobile (au lieu de gap-y-12 si présent).
-- Aucune autre modification de contenu.
+### E. Typographie des paragraphes
+- `seoP1`, `seoP2`, `seoP3`, `seoLocation` : passer à `text-[15px] md:text-base`.
+- Espacement vertical entre blocs : `mt-10 md:mt-12` au lieu de `mt-12` partout.
 
-## Hors scope
-- Pas de changement de typo, palette ou tokens design.
-- Pas de retrait/ajout de section.
-- Pas de modification desktop autre que ce qui découle naturellement des classes responsives ajoutées (le rendu ≥ md doit rester identique au pixel près).
+### F. Bandeau trust badges (orange)
+Sur mobile (`grid-cols-2`), passer les icônes de `h-16 w-16` à `h-12 w-12` et le texte à `text-xs md:text-sm` pour éviter le débordement.
 
-## Validation
-Après implémentation : capture mobile (390×844) du haut → milieu de la home + capture desktop (1280×800) pour confirmer la non-régression desktop.
+## Fichiers modifiés
+- `src/routes/index.tsx` (uniquement la section "10. SEO ARTICLE" et son bandeau trust, lignes ~380–527).
+
+Aucune modification de logique métier, traductions, ou structure de données.
