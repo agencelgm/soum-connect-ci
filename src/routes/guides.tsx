@@ -1,5 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowRight, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -102,6 +101,12 @@ function ArticleCard({ article, featured = false }: { article: Article; featured
 function Page() {
   const [filter, setFilter] = useState<string>("all");
   const rel = getPageRelations("/guides");
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  // Si on est sur /guides/<slug>, on rend la page article enfant.
+  if (pathname !== "/guides" && pathname !== "/guides/") {
+    return <Outlet />;
+  }
 
   const filtered =
     filter === "all"
