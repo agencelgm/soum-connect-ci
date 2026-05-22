@@ -19,6 +19,7 @@ import { Route as FaqRouteImport } from './routes/faq'
 import { Route as DomiciliationEntrepriseAbidjanRouteImport } from './routes/domiciliation-entreprise-abidjan'
 import { Route as DemandeSoumissionsRouteImport } from './routes/demande-soumissions'
 import { Route as DeclarationFiscaleCoteDivoireRouteImport } from './routes/declaration-fiscale-cote-divoire'
+import { Route as CreerSonEntrepriseCoteDivoireRouteImport } from './routes/creer-son-entreprise-cote-divoire'
 import { Route as CreationEntrepriseDiasporaIvoirienneRouteImport } from './routes/creation-entreprise-diaspora-ivoirienne'
 import { Route as CreationEntrepriseCoteDivoireRouteImport } from './routes/creation-entreprise-cote-divoire'
 import { Route as ComptabiliteEntrepriseAbidjanRouteImport } from './routes/comptabilite-entreprise-abidjan'
@@ -32,6 +33,7 @@ import { Route as EnIndexRouteImport } from './routes/en/index'
 import { Route as GuidesSlugRouteImport } from './routes/guides.$slug'
 import { Route as EnWebsiteOfferRouteImport } from './routes/en/website-offer'
 import { Route as EnThankYouRouteImport } from './routes/en/thank-you'
+import { Route as EnStartABusinessIvoryCoastRouteImport } from './routes/en/start-a-business-ivory-coast'
 import { Route as EnLogoOfferRouteImport } from './routes/en/logo-offer'
 import { Route as EnGetQuotesRouteImport } from './routes/en/get-quotes'
 import { Route as EnContactUsRouteImport } from './routes/en/contact-us'
@@ -92,6 +94,12 @@ const DeclarationFiscaleCoteDivoireRoute =
   DeclarationFiscaleCoteDivoireRouteImport.update({
     id: '/declaration-fiscale-cote-divoire',
     path: '/declaration-fiscale-cote-divoire',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const CreerSonEntrepriseCoteDivoireRoute =
+  CreerSonEntrepriseCoteDivoireRouteImport.update({
+    id: '/creer-son-entreprise-cote-divoire',
+    path: '/creer-son-entreprise-cote-divoire',
     getParentRoute: () => rootRouteImport,
   } as any)
 const CreationEntrepriseDiasporaIvoirienneRoute =
@@ -163,6 +171,12 @@ const EnThankYouRoute = EnThankYouRouteImport.update({
   path: '/en/thank-you',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EnStartABusinessIvoryCoastRoute =
+  EnStartABusinessIvoryCoastRouteImport.update({
+    id: '/en/start-a-business-ivory-coast',
+    path: '/en/start-a-business-ivory-coast',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const EnLogoOfferRoute = EnLogoOfferRouteImport.update({
   id: '/en/logo-offer',
   path: '/en/logo-offer',
@@ -220,6 +234,7 @@ export interface FileRoutesByFullPath {
   '/comptabilite-entreprise-abidjan': typeof ComptabiliteEntrepriseAbidjanRoute
   '/creation-entreprise-cote-divoire': typeof CreationEntrepriseCoteDivoireRoute
   '/creation-entreprise-diaspora-ivoirienne': typeof CreationEntrepriseDiasporaIvoirienneRoute
+  '/creer-son-entreprise-cote-divoire': typeof CreerSonEntrepriseCoteDivoireRoute
   '/declaration-fiscale-cote-divoire': typeof DeclarationFiscaleCoteDivoireRoute
   '/demande-soumissions': typeof DemandeSoumissionsRoute
   '/domiciliation-entreprise-abidjan': typeof DomiciliationEntrepriseAbidjanRoute
@@ -236,6 +251,7 @@ export interface FileRoutesByFullPath {
   '/en/contact-us': typeof EnContactUsRoute
   '/en/get-quotes': typeof EnGetQuotesRoute
   '/en/logo-offer': typeof EnLogoOfferRoute
+  '/en/start-a-business-ivory-coast': typeof EnStartABusinessIvoryCoastRoute
   '/en/thank-you': typeof EnThankYouRoute
   '/en/website-offer': typeof EnWebsiteOfferRoute
   '/guides/$slug': typeof GuidesSlugRoute
@@ -254,6 +270,7 @@ export interface FileRoutesByTo {
   '/comptabilite-entreprise-abidjan': typeof ComptabiliteEntrepriseAbidjanRoute
   '/creation-entreprise-cote-divoire': typeof CreationEntrepriseCoteDivoireRoute
   '/creation-entreprise-diaspora-ivoirienne': typeof CreationEntrepriseDiasporaIvoirienneRoute
+  '/creer-son-entreprise-cote-divoire': typeof CreerSonEntrepriseCoteDivoireRoute
   '/declaration-fiscale-cote-divoire': typeof DeclarationFiscaleCoteDivoireRoute
   '/demande-soumissions': typeof DemandeSoumissionsRoute
   '/domiciliation-entreprise-abidjan': typeof DomiciliationEntrepriseAbidjanRoute
@@ -270,6 +287,7 @@ export interface FileRoutesByTo {
   '/en/contact-us': typeof EnContactUsRoute
   '/en/get-quotes': typeof EnGetQuotesRoute
   '/en/logo-offer': typeof EnLogoOfferRoute
+  '/en/start-a-business-ivory-coast': typeof EnStartABusinessIvoryCoastRoute
   '/en/thank-you': typeof EnThankYouRoute
   '/en/website-offer': typeof EnWebsiteOfferRoute
   '/guides/$slug': typeof GuidesSlugRoute
@@ -289,6 +307,7 @@ export interface FileRoutesById {
   '/comptabilite-entreprise-abidjan': typeof ComptabiliteEntrepriseAbidjanRoute
   '/creation-entreprise-cote-divoire': typeof CreationEntrepriseCoteDivoireRoute
   '/creation-entreprise-diaspora-ivoirienne': typeof CreationEntrepriseDiasporaIvoirienneRoute
+  '/creer-son-entreprise-cote-divoire': typeof CreerSonEntrepriseCoteDivoireRoute
   '/declaration-fiscale-cote-divoire': typeof DeclarationFiscaleCoteDivoireRoute
   '/demande-soumissions': typeof DemandeSoumissionsRoute
   '/domiciliation-entreprise-abidjan': typeof DomiciliationEntrepriseAbidjanRoute
@@ -305,6 +324,7 @@ export interface FileRoutesById {
   '/en/contact-us': typeof EnContactUsRoute
   '/en/get-quotes': typeof EnGetQuotesRoute
   '/en/logo-offer': typeof EnLogoOfferRoute
+  '/en/start-a-business-ivory-coast': typeof EnStartABusinessIvoryCoastRoute
   '/en/thank-you': typeof EnThankYouRoute
   '/en/website-offer': typeof EnWebsiteOfferRoute
   '/guides/$slug': typeof GuidesSlugRoute
@@ -325,6 +345,7 @@ export interface FileRouteTypes {
     | '/comptabilite-entreprise-abidjan'
     | '/creation-entreprise-cote-divoire'
     | '/creation-entreprise-diaspora-ivoirienne'
+    | '/creer-son-entreprise-cote-divoire'
     | '/declaration-fiscale-cote-divoire'
     | '/demande-soumissions'
     | '/domiciliation-entreprise-abidjan'
@@ -341,6 +362,7 @@ export interface FileRouteTypes {
     | '/en/contact-us'
     | '/en/get-quotes'
     | '/en/logo-offer'
+    | '/en/start-a-business-ivory-coast'
     | '/en/thank-you'
     | '/en/website-offer'
     | '/guides/$slug'
@@ -359,6 +381,7 @@ export interface FileRouteTypes {
     | '/comptabilite-entreprise-abidjan'
     | '/creation-entreprise-cote-divoire'
     | '/creation-entreprise-diaspora-ivoirienne'
+    | '/creer-son-entreprise-cote-divoire'
     | '/declaration-fiscale-cote-divoire'
     | '/demande-soumissions'
     | '/domiciliation-entreprise-abidjan'
@@ -375,6 +398,7 @@ export interface FileRouteTypes {
     | '/en/contact-us'
     | '/en/get-quotes'
     | '/en/logo-offer'
+    | '/en/start-a-business-ivory-coast'
     | '/en/thank-you'
     | '/en/website-offer'
     | '/guides/$slug'
@@ -393,6 +417,7 @@ export interface FileRouteTypes {
     | '/comptabilite-entreprise-abidjan'
     | '/creation-entreprise-cote-divoire'
     | '/creation-entreprise-diaspora-ivoirienne'
+    | '/creer-son-entreprise-cote-divoire'
     | '/declaration-fiscale-cote-divoire'
     | '/demande-soumissions'
     | '/domiciliation-entreprise-abidjan'
@@ -409,6 +434,7 @@ export interface FileRouteTypes {
     | '/en/contact-us'
     | '/en/get-quotes'
     | '/en/logo-offer'
+    | '/en/start-a-business-ivory-coast'
     | '/en/thank-you'
     | '/en/website-offer'
     | '/guides/$slug'
@@ -428,6 +454,7 @@ export interface RootRouteChildren {
   ComptabiliteEntrepriseAbidjanRoute: typeof ComptabiliteEntrepriseAbidjanRoute
   CreationEntrepriseCoteDivoireRoute: typeof CreationEntrepriseCoteDivoireRoute
   CreationEntrepriseDiasporaIvoirienneRoute: typeof CreationEntrepriseDiasporaIvoirienneRoute
+  CreerSonEntrepriseCoteDivoireRoute: typeof CreerSonEntrepriseCoteDivoireRoute
   DeclarationFiscaleCoteDivoireRoute: typeof DeclarationFiscaleCoteDivoireRoute
   DemandeSoumissionsRoute: typeof DemandeSoumissionsRoute
   DomiciliationEntrepriseAbidjanRoute: typeof DomiciliationEntrepriseAbidjanRoute
@@ -444,6 +471,7 @@ export interface RootRouteChildren {
   EnContactUsRoute: typeof EnContactUsRoute
   EnGetQuotesRoute: typeof EnGetQuotesRoute
   EnLogoOfferRoute: typeof EnLogoOfferRoute
+  EnStartABusinessIvoryCoastRoute: typeof EnStartABusinessIvoryCoastRoute
   EnThankYouRoute: typeof EnThankYouRoute
   EnWebsiteOfferRoute: typeof EnWebsiteOfferRoute
   EnIndexRoute: typeof EnIndexRoute
@@ -522,6 +550,13 @@ declare module '@tanstack/react-router' {
       path: '/declaration-fiscale-cote-divoire'
       fullPath: '/declaration-fiscale-cote-divoire'
       preLoaderRoute: typeof DeclarationFiscaleCoteDivoireRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/creer-son-entreprise-cote-divoire': {
+      id: '/creer-son-entreprise-cote-divoire'
+      path: '/creer-son-entreprise-cote-divoire'
+      fullPath: '/creer-son-entreprise-cote-divoire'
+      preLoaderRoute: typeof CreerSonEntrepriseCoteDivoireRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/creation-entreprise-diaspora-ivoirienne': {
@@ -615,6 +650,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EnThankYouRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/en/start-a-business-ivory-coast': {
+      id: '/en/start-a-business-ivory-coast'
+      path: '/en/start-a-business-ivory-coast'
+      fullPath: '/en/start-a-business-ivory-coast'
+      preLoaderRoute: typeof EnStartABusinessIvoryCoastRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/en/logo-offer': {
       id: '/en/logo-offer'
       path: '/en/logo-offer'
@@ -703,6 +745,7 @@ const rootRouteChildren: RootRouteChildren = {
   CreationEntrepriseCoteDivoireRoute: CreationEntrepriseCoteDivoireRoute,
   CreationEntrepriseDiasporaIvoirienneRoute:
     CreationEntrepriseDiasporaIvoirienneRoute,
+  CreerSonEntrepriseCoteDivoireRoute: CreerSonEntrepriseCoteDivoireRoute,
   DeclarationFiscaleCoteDivoireRoute: DeclarationFiscaleCoteDivoireRoute,
   DemandeSoumissionsRoute: DemandeSoumissionsRoute,
   DomiciliationEntrepriseAbidjanRoute: DomiciliationEntrepriseAbidjanRoute,
@@ -719,6 +762,7 @@ const rootRouteChildren: RootRouteChildren = {
   EnContactUsRoute: EnContactUsRoute,
   EnGetQuotesRoute: EnGetQuotesRoute,
   EnLogoOfferRoute: EnLogoOfferRoute,
+  EnStartABusinessIvoryCoastRoute: EnStartABusinessIvoryCoastRoute,
   EnThankYouRoute: EnThankYouRoute,
   EnWebsiteOfferRoute: EnWebsiteOfferRoute,
   EnIndexRoute: EnIndexRoute,
@@ -729,3 +773,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
