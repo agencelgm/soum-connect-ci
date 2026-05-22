@@ -112,17 +112,16 @@ export function Index() {
         />
         <div aria-hidden="true" className="absolute inset-0 bg-[#F5F1EA]/75" />
 
-        {/* Personnage en absolu — ancré bord bas de la section, indépendant de la hauteur du formulaire */}
-        <img
-          src={heroAccountant}
-          alt=""
-          aria-hidden="true"
-          className="hidden lg:block pointer-events-none absolute bottom-0 left-0 z-10 h-[92%] max-h-[640px] w-auto object-contain object-bottom pl-4 xl:pl-12"
-        />
-
-        <div className="relative container-app pt-10 md:pt-16 pb-0 grid gap-8 lg:gap-2 lg:grid-cols-12">
-          {/* Spacer gauche pour réserver l'espace du personnage en desktop */}
-          <div className="hidden lg:block lg:col-span-5" />
+        <div className="relative container-app pt-10 md:pt-16 pb-0 grid gap-8 lg:gap-4 lg:grid-cols-12 lg:items-stretch">
+          {/* Left: character (desktop only) */}
+          <div className="hidden lg:flex lg:col-span-5 items-end justify-center lg:-mr-6 xl:-mr-10">
+            <img
+              src={heroAccountant}
+              alt=""
+              aria-hidden="true"
+              className="h-full w-auto object-contain object-bottom -mb-6"
+            />
+          </div>
 
           {/* Badge + H1 mobile uniquement */}
           <div className="lg:hidden">
