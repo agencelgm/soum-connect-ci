@@ -35,6 +35,10 @@ export type Article = {
   image?: string;
   /** Contenu rédigé de l'article (optionnel). Sans cela : placeholder. */
   content?: () => ReactNode;
+  /** Date de publication ISO (YYYY-MM-DD). Utilisée pour le JSON-LD Article. */
+  publishedAt?: string;
+  /** Date de dernière mise à jour ISO (YYYY-MM-DD). Fallback : publishedAt. */
+  updatedAt?: string;
 };
 
 export const ARTICLES: Article[] = [
@@ -254,3 +258,24 @@ export function getArticleBySlug(slug: string): Article | undefined {
 export const ARTICLES_SORTED: Article[] = [...ARTICLES].sort(
   (a, b) => a.priority - b.priority,
 );
+
+/**
+ * Retourne jusqu'à `limit` articles similaires à celui passé en paramètre.
+ * Priorise les articles partageant au moins une catégorie, puis complète
+ * avec les plus prioritaires. N'inclut que les articles rédigés.
+ */
+export function getRelatedArticles(
+  currentSlug: string,
+  limit = 3,
+): Article[] {
+  const current = getArticleBySlug(currentSlug);
+  if (!current) return [];
+  const pool = ARTICLES_SORTED.filter(
+    (a) => a.slug !== currentSlug && !!a.content,
+  );
+  const sameCategory = pool.filter((a) =>
+    a.categories.some((c) => current.categories.includes(c)),
+  );
+  const others = pool.filter((a) => !sameCategory.includes(a));
+  return [...sameCategory, ...others].slice(0, limit);
+}

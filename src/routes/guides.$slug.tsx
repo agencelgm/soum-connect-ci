@@ -1,12 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Clock, PencilLine } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { buildPageHead, SITE_URL } from "@/lib/seo";
-import { getArticleBySlug } from "@/lib/guides-data";
+import {
+  buildPageHead,
+  SITE_URL,
+  SITE_NAME,
+  truncateTitle,
+  truncateDescription,
+} from "@/lib/seo";
+import { getArticleBySlug, getRelatedArticles } from "@/lib/guides-data";
 import { NotFoundPage } from "@/components/pages/NotFoundPage";
 import { RelatedLinks } from "@/components/seo/RelatedLinks";
 import { getPageRelations } from "@/lib/page-relations";
 import { ArticleLayout } from "@/components/guides/ArticleLayout";
+import { RelatedArticles } from "@/components/guides/RelatedArticles";
 
 export const Route = createFileRoute("/guides/$slug")({
   head: ({ params }) => {
@@ -22,10 +29,12 @@ export const Route = createFileRoute("/guides/$slug")({
         ],
       });
     }
+    const optimizedTitle = truncateTitle(article.title);
+    const optimizedDesc = truncateDescription(article.excerpt);
     const head = buildPageHead({
       path: `/guides/${article.slug}`,
-      title: `${article.title} | SoumissionsComptables.ci`,
-      description: article.excerpt,
+      title: optimizedTitle,
+      description: optimizedDesc,
       ogImage: article.image,
       ogType: article.content ? "article" : "website",
       breadcrumb: [
@@ -44,14 +53,38 @@ export const Route = createFileRoute("/guides/$slug")({
         ],
       };
     }
-    // Article rédigé → JSON-LD Article + indexable.
+    // Article rédigé → JSON-LD Article enrichi + indexable.
+    const articleUrl = `${SITE_URL}/guides/${article.slug}`;
+    const imageUrl = article.image ? `${SITE_URL}${article.image}` : undefined;
+    const publishedAt = article.publishedAt ?? "2026-01-01";
+    const updatedAt = article.updatedAt ?? publishedAt;
     const articleSchema = {
       "@context": "https://schema.org",
       "@type": "Article",
       headline: article.title,
-      description: article.excerpt,
-      image: article.image ? `${SITE_URL}${article.image}` : undefined,
-      mainEntityOfPage: `${SITE_URL}/guides/${article.slug}`,
+      description: optimizedDesc,
+      image: imageUrl,
+      mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
+      url: articleUrl,
+      inLanguage: "fr-CI",
+      datePublished: publishedAt,
+      dateModified: updatedAt,
+      articleSection: article.categories[0],
+      keywords: article.categories.join(", "),
+      author: {
+        "@type": "Organization",
+        name: SITE_NAME,
+        url: SITE_URL,
+      },
+      publisher: {
+        "@type": "Organization",
+        name: SITE_NAME,
+        url: SITE_URL,
+        logo: {
+          "@type": "ImageObject",
+          url: `${SITE_URL}/favicon.png`,
+        },
+      },
     };
     return {
       ...head,
@@ -78,11 +111,13 @@ function GuideSlugPage() {
   // Article rédigé → mise en page complète
   if (article.content) {
     const rel = getPageRelations("/guides");
+    const related = getRelatedArticles(article.slug, 3);
     return (
       <>
         <ArticleLayout article={article} heroImage={article.image}>
           {article.content()}
         </ArticleLayout>
+        <RelatedArticles articles={related} />
         {rel && (
           <RelatedLinks
             items={rel.related}

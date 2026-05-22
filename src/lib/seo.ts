@@ -5,6 +5,36 @@ export const SITE_URL = "https://soumissionscomptables.ci";
 export const SITE_NAME = "SoumissionsComptables.ci";
 export const DEFAULT_OG_IMAGE = "/og-image.png";
 
+/**
+ * Tronque un titre pour qu'il rentre dans la limite SEO (~60 caractères),
+ * en évitant de couper au milieu d'un mot. Ajoute le suffixe de marque si
+ * la place le permet.
+ */
+export function truncateTitle(
+  title: string,
+  suffix: string = ` | ${SITE_NAME}`,
+  max = 60,
+): string {
+  const full = `${title}${suffix}`;
+  if (full.length <= max) return full;
+  if (title.length <= max) return title;
+  const cut = title.slice(0, max - 1);
+  const lastSpace = cut.lastIndexOf(" ");
+  return `${(lastSpace > 30 ? cut.slice(0, lastSpace) : cut).trimEnd()}…`;
+}
+
+/**
+ * Tronque une meta description à `max` caractères (155 par défaut), au mot
+ * complet, en ajoutant « … » si besoin.
+ */
+export function truncateDescription(desc: string, max = 155): string {
+  const clean = desc.replace(/\s+/g, " ").trim();
+  if (clean.length <= max) return clean;
+  const cut = clean.slice(0, max - 1);
+  const lastSpace = cut.lastIndexOf(" ");
+  return `${(lastSpace > 80 ? cut.slice(0, lastSpace) : cut).trimEnd()}…`;
+}
+
 type MetaEntry = Record<string, string>;
 type LinkEntry = Record<string, string>;
 type ScriptEntry = { type?: string; children?: string; src?: string };

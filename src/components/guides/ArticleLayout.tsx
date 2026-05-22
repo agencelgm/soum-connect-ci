@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { LeadFormCard } from "@/components/home/LeadFormCard";
 import type { Article } from "@/lib/guides-data";
+import { ReadingProgressBar } from "@/components/guides/ReadingProgressBar";
 
 export function ArticleLayout({
   article,
@@ -15,6 +16,7 @@ export function ArticleLayout({
 }) {
   return (
     <main>
+      <ReadingProgressBar />
       {/* HERO vert : titre à gauche + formulaire à droite */}
       <section className="bg-primary text-white">
         <div className="container-app py-12 md:py-20 lg:py-24">
@@ -38,31 +40,33 @@ export function ArticleLayout({
       {/* Fil d'Ariane sur fond blanc */}
       <nav
         aria-label="Fil d'Ariane"
-        className="container-app pt-5 md:pt-6 pb-2 text-xs md:text-sm text-muted-foreground"
+        className="container-app pt-4 md:pt-6 pb-2 text-xs md:text-sm text-muted-foreground"
       >
         <div className="max-w-3xl mx-auto mb-3">
           <Link
             to="/guides"
-            className="inline-flex items-center gap-2 rounded-md border border-border bg-white px-3 py-1.5 text-sm font-medium text-primary hover:bg-accent transition-colors"
+            className="inline-flex w-full sm:w-auto items-center justify-center sm:justify-start gap-2 rounded-md border border-border bg-white px-4 py-2.5 sm:py-1.5 text-sm font-medium text-primary hover:bg-accent transition-colors min-h-[44px] sm:min-h-0"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="h-4 w-4 shrink-0" />
             Retour aux articles
           </Link>
         </div>
-        <ol className="max-w-3xl mx-auto flex flex-wrap items-center justify-start gap-2">
-          <li>
+        <ol className="max-w-3xl mx-auto flex flex-wrap items-center justify-start gap-x-2 gap-y-1 min-w-0">
+          <li className="shrink-0">
             <Link to="/" className="hover:text-primary">
               Accueil
             </Link>
           </li>
-          <li aria-hidden="true">/</li>
-          <li>
+          <li aria-hidden="true" className="shrink-0">/</li>
+          <li className="shrink-0">
             <Link to="/guides" className="hover:text-primary">
               Blog
             </Link>
           </li>
-          <li aria-hidden="true">/</li>
-          <li className="text-foreground line-clamp-1">{article.title}</li>
+          <li aria-hidden="true" className="shrink-0">/</li>
+          <li className="text-foreground truncate min-w-0 basis-full sm:basis-auto sm:flex-1">
+            {article.title}
+          </li>
         </ol>
       </nav>
 
