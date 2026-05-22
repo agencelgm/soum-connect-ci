@@ -254,9 +254,9 @@ export const translations = {
         { value: "100%", label: "Couverture nationale" },
       ],
       testimonials: [
-        { quote: "Très utile parce que ça m'a fait connaître des cabinets auxquels je n'aurais pas pensé, comme celui que j'ai choisi.", name: "Aïcha Koné" },
-        { quote: "Excellent service, facile d'utilisation et des soumissions de qualité de cabinets fiables.", name: "Mamadou Diabaté" },
-        { quote: "J'ai bien aimé vos services. Cela m'a grandement aidée et m'a enlevé le stress de trouver un cabinet de confiance.", name: "Fatou N'Guessan" },
+        { quote: "Très utile parce que ça m'a fait connaître des cabinets auxquels je n'aurais pas pensé, comme celui que j'ai choisi.", name: "Sarah Ouattara" },
+        { quote: "Excellent service, facile d'utilisation et des soumissions de qualité de cabinets fiables.", name: "Yannick Brou" },
+        { quote: "J'ai bien aimé vos services. Cela m'a grandement aidée et m'a enlevé le stress de trouver un cabinet de confiance.", name: "Linda Adjoua" },
       ],
       highlights: [
         { title: "COMPTABILITÉ LOCALE, NATIONALE & INTERNATIONALE", text: "Nos cabinets partenaires possèdent l'expertise et les outils nécessaires pour accompagner toute entreprise partout en Côte d'Ivoire, que vous soyez à Abidjan, en région ou à l'étranger." },
@@ -578,9 +578,9 @@ export const translations = {
         { value: "100%", label: "Nationwide coverage" },
       ],
       testimonials: [
-        { quote: "Very useful — it introduced me to firms I wouldn't have thought of, including the one I chose.", name: "Aïcha Koné" },
-        { quote: "Excellent service, easy to use and quality quotes from reliable firms.", name: "Mamadou Diabaté" },
-        { quote: "I really liked your service. It helped me a lot and removed the stress of finding a trustworthy firm.", name: "Fatou N'Guessan" },
+        { quote: "Very useful — it introduced me to firms I wouldn't have thought of, including the one I chose.", name: "Sarah Ouattara" },
+        { quote: "Excellent service, easy to use and quality quotes from reliable firms.", name: "Yannick Brou" },
+        { quote: "I really liked your service. It helped me a lot and removed the stress of finding a trustworthy firm.", name: "Linda Adjoua" },
       ],
       highlights: [
         { title: "LOCAL, NATIONAL & INTERNATIONAL ACCOUNTING", text: "Our partner firms have the expertise and tools to support any business across Côte d'Ivoire, whether you're in Abidjan, in the regions, or abroad." },
