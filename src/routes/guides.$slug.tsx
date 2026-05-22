@@ -14,15 +14,23 @@ import { RelatedLinks } from "@/components/seo/RelatedLinks";
 import { getPageRelations } from "@/lib/page-relations";
 import { ArticleLayout } from "@/components/guides/ArticleLayout";
 import { RelatedArticles } from "@/components/guides/RelatedArticles";
+import { CategoryServiceLinks } from "@/components/guides/CategoryServiceLinks";
+import { getLangFromPath } from "@/lib/route-map";
 
 export const Route = createFileRoute("/guides/$slug")({
   head: ({ params }) => {
     const article = getArticleBySlug(params.slug);
+    // Le slug peut éventuellement être rendu depuis un préfixe /en plus tard ;
+    // on dérive donc la langue dynamiquement plutôt que de coder en dur fr-CI.
+    const path = `/guides/${params.slug}`;
+    const lang = getLangFromPath(path);
+    const inLanguage = lang === "en" ? "en" : "fr-CI";
     if (!article) {
       return buildPageHead({
-        path: `/guides/${params.slug}`,
+        path,
         title: "Guide introuvable | SoumissionsComptables.ci",
         description: "Ce guide n'existe pas ou plus.",
+        lang,
         breadcrumb: [
           { name: "Accueil", path: "/" },
           { name: "Guides", path: "/guides" },
@@ -37,6 +45,7 @@ export const Route = createFileRoute("/guides/$slug")({
       description: optimizedDesc,
       ogImage: article.image,
       ogType: article.content ? "article" : "website",
+      lang,
       breadcrumb: [
         { name: "Accueil", path: "/" },
         { name: "Guides", path: "/guides" },
@@ -66,7 +75,7 @@ export const Route = createFileRoute("/guides/$slug")({
       image: imageUrl,
       mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
       url: articleUrl,
-      inLanguage: "fr-CI",
+      inLanguage,
       datePublished: publishedAt,
       dateModified: updatedAt,
       articleSection: article.categories[0],
@@ -118,6 +127,7 @@ function GuideSlugPage() {
           {article.content()}
         </ArticleLayout>
         <RelatedArticles articles={related} />
+        <CategoryServiceLinks categories={article.categories} />
         {rel && (
           <RelatedLinks
             items={rel.related}
