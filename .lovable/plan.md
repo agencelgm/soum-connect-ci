@@ -1,19 +1,23 @@
-Je vais corriger le problème à la source : la route `/guides/$slug` est bien enregistrée, mais elle est actuellement traitée comme une sous-route de `/guides`. Or la page `/guides` ne rend pas d’`Outlet`, donc après le clic l’URL change mais le contenu visible reste la liste des articles.
+Je vais remplacer entièrement le contenu de l'article « Combien coûte un cabinet comptable à Abidjan ? » par le texte que tu as fourni, pour qu'il s'affiche en entier quand on clique sur « Lire la suite » depuis le blog.
 
-Plan d’implémentation :
+1. Mettre à jour le contenu de l'article
+- Réécrire `src/content/guides/cout-cabinet-comptable-abidjan.tsx` avec :
+  - introduction
+  - toutes les sections (pourquoi un cabinet, tarifs moyens, pourquoi les tarifs varient, types de prestations, tarifs par profil EI / SARL / PME, bilan & états financiers, indépendant vs cabinet, ce qui fait monter le prix, comment réduire le coût)
+  - tableau « Exemple de budget selon le type d'entreprise »
+  - sections « bon devis », « comment choisir », « Soumissions Comptable », « erreurs à éviter »
+  - FAQ complète
+  - liste des sources officielles (OECCA-CI, e-Impôts, DGI) avec liens externes
+  - conclusion + CTA Soumissions Comptable
+- Utiliser les blocs déjà existants : `ArticleSection`, `ArticleTable`, `ArticleList`, `ArticleCallout`, `ArticleCTA`.
 
-1. Corriger la structure de la page `/guides`
-- Ajouter un rendu d’`Outlet` dans `src/routes/guides.tsx` pour que la page article `/guides/calendrier-fiscal-ci-2026` puisse réellement s’afficher.
-- Garder la liste des guides uniquement quand l’utilisateur est exactement sur `/guides`.
+2. Mettre à jour les métadonnées dans `src/lib/guides-data.tsx`
+- Titre : « Combien coûte un cabinet comptable à Abidjan ? »
+- Excerpt : « Découvrez combien coûte un cabinet comptable à Abidjan : tarifs mensuels, bilan, déclarations fiscales, paie, facteurs de prix et conseils pour choisir. »
+- Garder le slug actuel `cout-cabinet-comptable-abidjan` (déjà lié au routing et probablement déjà partagé/indexé). Le slug demandé `combien-coute-cabinet-comptable-abidjan` peut être ajouté plus tard si tu préfères, mais changer un slug peut casser des liens existants.
+- Garder l'image réelle existante `cout-cabinet-abidjan.jpg` (vraie photo, pas IA).
 
-2. Conserver une vraie page article complète
-- Maintenir `src/routes/guides.$slug.tsx` comme page dédiée à l’article complet.
-- Vérifier que l’article “Calendrier fiscal 2026 en Côte d’Ivoire” affiche bien tout le contenu fourni : introduction, sections, tableaux, FAQ, CTA et liens liés.
+3. Validation
+- Aller sur `/guides`, cliquer « Lire la suite » sur cet article, vérifier que la page complète s'affiche avec toutes les sections, le tableau, la FAQ et les sources officielles.
 
-3. Images réalistes, pas d’IA
-- Conserver uniquement des photos réelles déjà présentes dans `src/assets/guides`.
-- Si l’image actuelle de l’article n’est pas assez adaptée, la remplacer par une photo réelle de type calendrier fiscal / bureau / comptabilité, sans génération IA.
-
-4. Validation
-- Tester le parcours : `/guides` → clic sur “Lire la suite” → `/guides/calendrier-fiscal-ci-2026`.
-- Vérifier que le titre, l’image et le corps complet de l’article s’affichent sur une autre page, sans rester sur la liste des guides.
+Veux-tu que je change aussi le slug en `/guides/combien-coute-cabinet-comptable-abidjan` ? Si oui, je peux ajouter une redirection depuis l'ancien slug. Par défaut, je garde l'actuel.
