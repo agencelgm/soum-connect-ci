@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { buildPageHead, LOCAL_BUSINESS_SCHEMA } from "@/lib/seo";
 import { Route as FrRoute } from "../cabinet-comptable-abidjan";
 
+const FrComponent = FrRoute.options.component!;
+
 export const Route = createFileRoute("/en/accounting-firm-abidjan")({
   head: () =>
     buildPageHead({
@@ -17,5 +19,9 @@ export const Route = createFileRoute("/en/accounting-firm-abidjan")({
       ],
       extraSchemas: [LOCAL_BUSINESS_SCHEMA],
     }),
-  component: FrRoute.options.component,
+  component: EnAccountingFirmAbidjanPage,
 });
+
+function EnAccountingFirmAbidjanPage() {
+  return <FrComponent />;
+}

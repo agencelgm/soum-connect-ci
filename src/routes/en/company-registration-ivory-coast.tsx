@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { buildPageHead } from "@/lib/seo";
 import { Route as FrRoute } from "../creation-entreprise-cote-divoire";
 
+const FrComponent = FrRoute.options.component!;
+
 export const Route = createFileRoute("/en/company-registration-ivory-coast")({
   head: () =>
     buildPageHead({
@@ -15,5 +17,9 @@ export const Route = createFileRoute("/en/company-registration-ivory-coast")({
         { name: "Company registration", path: "/en/company-registration-ivory-coast" },
       ],
     }),
-  component: FrRoute.options.component,
+  component: EnCompanyRegistrationPage,
 });
+
+function EnCompanyRegistrationPage() {
+  return <FrComponent />;
+}
