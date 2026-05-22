@@ -40,11 +40,11 @@ export type Article = {
 export const ARTICLES: Article[] = [
   {
     slug: "creer-sarl-cepici",
-    title: "Comment créer une SARL au CEPICI en 2026 — Guide Complet",
+    title: "Comment créer une SARL au CEPICI en 2026 : guide complet",
     excerpt:
-      "Toutes les étapes pour créer votre SARL via le guichet unique CEPICI : documents, capital, délais et coûts.",
+      "Découvrez comment créer une SARL au CEPICI en 2026 : étapes, documents, RCCM, IDU, frais, délais et accompagnement comptable.",
     categories: ["Création d'entreprise"],
-    readTime: "9 min",
+    readTime: "12 min",
     priority: 1,
     image: creerSarlCepiciImg,
     content: () => <CreerSarlCepiciContent />,

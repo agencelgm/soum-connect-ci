@@ -1,23 +1,37 @@
-Je vais remplacer entièrement le contenu de l'article « Combien coûte un cabinet comptable à Abidjan ? » par le texte que tu as fourni, pour qu'il s'affiche en entier quand on clique sur « Lire la suite » depuis le blog.
+## Objectif
+Remplacer le contenu de l'article "Créer une SARL au CEPICI" par le texte complet fourni, avec mise à jour des métadonnées SEO.
 
-1. Mettre à jour le contenu de l'article
-- Réécrire `src/content/guides/cout-cabinet-comptable-abidjan.tsx` avec :
-  - introduction
-  - toutes les sections (pourquoi un cabinet, tarifs moyens, pourquoi les tarifs varient, types de prestations, tarifs par profil EI / SARL / PME, bilan & états financiers, indépendant vs cabinet, ce qui fait monter le prix, comment réduire le coût)
-  - tableau « Exemple de budget selon le type d'entreprise »
-  - sections « bon devis », « comment choisir », « Soumissions Comptable », « erreurs à éviter »
-  - FAQ complète
-  - liste des sources officielles (OECCA-CI, e-Impôts, DGI) avec liens externes
-  - conclusion + CTA Soumissions Comptable
-- Utiliser les blocs déjà existants : `ArticleSection`, `ArticleTable`, `ArticleList`, `ArticleCallout`, `ArticleCTA`.
+## Fichiers à modifier
 
-2. Mettre à jour les métadonnées dans `src/lib/guides-data.tsx`
-- Titre : « Combien coûte un cabinet comptable à Abidjan ? »
-- Excerpt : « Découvrez combien coûte un cabinet comptable à Abidjan : tarifs mensuels, bilan, déclarations fiscales, paie, facteurs de prix et conseils pour choisir. »
-- Garder le slug actuel `cout-cabinet-comptable-abidjan` (déjà lié au routing et probablement déjà partagé/indexé). Le slug demandé `combien-coute-cabinet-comptable-abidjan` peut être ajouté plus tard si tu préfères, mais changer un slug peut casser des liens existants.
-- Garder l'image réelle existante `cout-cabinet-abidjan.jpg` (vraie photo, pas IA).
+### 1. `src/content/guides/creer-sarl-cepici.tsx` (réécriture complète)
+Réécrire le composant `CreerSarlCepiciContent` avec le contenu fourni, structuré via les blocs existants :
+- Intro (paragraphe d'accroche)
+- `ArticleSection` : Qu'est-ce qu'une SARL en Côte d'Ivoire ?
+- `ArticleSection` : Pourquoi créer une SARL au CEPICI ?
+- `ArticleSection` : Différence entre créer et enregistrer une SARL
+- `ArticleSection` : Les 8 étapes (chaque étape comme sous-section)
+- `ArticleSection` + `ArticleList` : Documents à préparer
+- `ArticleCallout` : IDU
+- `ArticleSection` : Délais (2 à 4 jours)
+- `ArticleSection` : Pourquoi organiser la comptabilité dès le départ
+- `ArticleSection` : Comment Soumissions Comptable accompagne
+- `ArticleSection` + `ArticleList` : Documents à garder
+- `ArticleSection` + `ArticleList` : Erreurs à éviter
+- `ArticleSection` : FAQ (7 questions/réponses)
+- `ArticleSection` : Sources officielles (CEPICI, 225Invest, eRegulations, Service Public CI)
+- `ArticleCTA` final vers Soumissions Comptable
 
-3. Validation
-- Aller sur `/guides`, cliquer « Lire la suite » sur cet article, vérifier que la page complète s'affiche avec toutes les sections, le tableau, la FAQ et les sources officielles.
+### 2. `src/lib/guides-data.tsx` (métadonnées)
+- `title` : "Comment créer une SARL au CEPICI en 2026 : guide complet"
+- `excerpt` : "Découvrez comment créer une SARL au CEPICI en 2026 : étapes, documents, RCCM, IDU, frais, délais et accompagnement comptable."
+- `readTime` : "12 min"
+- **Slug** : conserver `creer-sarl-cepici` (l'URL `/guides/creer-sarl-cepici` est déjà indexable et stable ; changer pour `creer-sarl-cepici-2026` casserait les liens existants sans bénéfice SEO).
 
-Veux-tu que je change aussi le slug en `/guides/combien-coute-cabinet-comptable-abidjan` ? Si oui, je peux ajouter une redirection depuis l'ancien slug. Par défaut, je garde l'actuel.
+### 3. `src/routes/guides.$slug.tsx` (head meta)
+Vérifier que le `head()` de la route lit bien `title` et `excerpt` depuis `ARTICLES` — les nouvelles valeurs seront automatiquement reprises pour `<title>`, `meta description`, `og:title`, `og:description`.
+
+## Question avant build
+Le slug actuel est `/guides/creer-sarl-cepici`. Le brief demande `/guides/creer-sarl-cepici-2026`. Je conserve l'ancien pour préserver les liens existants — confirmez si vous préférez basculer sur le nouveau slug (avec risque de liens cassés et perte SEO acquise).
+
+## Validation
+Naviguer vers `/guides/creer-sarl-cepici` après build : vérifier titre H1, sections, FAQ, sources, CTA.
