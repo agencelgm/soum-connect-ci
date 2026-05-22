@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
+import { ArrowLeft } from "lucide-react";
 import { LeadFormCard } from "@/components/home/LeadFormCard";
 import type { Article } from "@/lib/guides-data";
 
@@ -39,6 +40,15 @@ export function ArticleLayout({
         aria-label="Fil d'Ariane"
         className="container-app pt-5 md:pt-6 pb-2 text-xs md:text-sm text-muted-foreground"
       >
+        <div className="max-w-3xl mx-auto mb-3">
+          <Link
+            to="/guides"
+            className="inline-flex items-center gap-2 rounded-md border border-border bg-white px-3 py-1.5 text-sm font-medium text-primary hover:bg-accent transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Retour aux articles
+          </Link>
+        </div>
         <ol className="max-w-3xl mx-auto flex flex-wrap items-center justify-start gap-2">
           <li>
             <Link to="/" className="hover:text-primary">
