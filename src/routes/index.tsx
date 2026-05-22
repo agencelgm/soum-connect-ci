@@ -488,7 +488,7 @@ export function Index() {
 
           {/* Mission + handshake image */}
           <div className="mt-10 md:mt-12 grid gap-6 md:gap-8 md:grid-cols-2 md:items-center">
-            <div className="order-2 md:order-1">
+            <div>
               <img
                 src={seoHandshake}
                 alt="Mise en relation réussie entre un cabinet comptable et son client"
@@ -498,7 +498,7 @@ export function Index() {
                 className="w-full h-auto rounded-xl shadow-md object-cover aspect-[16/10] md:aspect-[4/3]"
               />
             </div>
-            <blockquote className="order-1 md:order-2 border-l-4 border-secondary bg-[#F8FAFC] p-6 rounded-r-lg italic text-muted-foreground leading-relaxed">
+            <blockquote className="border-l-4 border-secondary bg-[#F8FAFC] p-6 rounded-r-lg italic text-muted-foreground leading-relaxed">
               {h.mission}
             </blockquote>
           </div>
