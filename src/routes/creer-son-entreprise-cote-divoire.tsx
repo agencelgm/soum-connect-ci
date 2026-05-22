@@ -10,9 +10,6 @@ import {
   Quote,
   Briefcase,
   Users,
-  Landmark,
-  Wallet,
-  MapPin,
   Globe2,
   Sparkles,
 } from "lucide-react";
@@ -31,13 +28,13 @@ import seoEntrepreneurs from "@/assets/home/seo-entrepreneurs.jpg";
 import seoOffice from "@/assets/home/seo-office-abidjan.jpg";
 
 const META_TITLE_FR =
-  "Créer son Entreprise en Côte d'Ivoire en 10 jours | SoumissionsComptables.ci";
+  "Créer son Entreprise en Côte d'Ivoire en moins de 30 jours | SoumissionsComptables.ci";
 const META_DESC_FR =
-  "Créez votre entreprise en Côte d'Ivoire en 10 jours : RCCM, DFE, IDU, statuts, CNPS. Comparez 5 devis gratuits de cabinets agréés CEPICI sous 48h.";
+  "Créez votre entreprise en Côte d'Ivoire en moins de 30 jours : RCCM, DFE, IDU, statuts, CNPS. Comparez 5 devis gratuits de cabinets agréés CEPICI sous 48h.";
 const META_TITLE_EN =
-  "Start a Business in Côte d'Ivoire in 10 Days | SoumissionsComptables.ci";
+  "Start a Business in Côte d'Ivoire in less than 30 days | SoumissionsComptables.ci";
 const META_DESC_EN =
-  "Register your company in Côte d'Ivoire in 10 days: RCCM, DFE, IDU, articles, CNPS. Compare 5 free quotes from CEPICI-approved firms within 48h.";
+  "Register your company in Côte d'Ivoire in less than 30 days: RCCM, DFE, IDU, articles, CNPS. Compare 5 free quotes from CEPICI-approved firms within 48h.";
 
 // Steps for HowTo schema (FR is the canonical content)
 const HOWTO_STEPS = [
@@ -51,7 +48,7 @@ const HOWTO_STEPS = [
   },
   {
     name: "Choisissez et obtenez vos documents en 7–15 jours",
-    text: "Sélectionnez le cabinet qui vous convient. Il s'occupe de tout : RCCM, DFE, IDU, statuts, PV, déclaration CNPS, ouverture de compte bancaire.",
+    text: "Sélectionnez le cabinet qui vous convient. Il s'occupe de tout : RCCM, DFE, IDU, statuts, PV et déclaration CNPS.",
   },
 ];
 
@@ -64,7 +61,7 @@ const FAQS_FR = [
   {
     question: "Quels documents reçoit-on à la création d'entreprise ?",
     answer:
-      "Vous repartez avec : le RCCM (Registre du Commerce et du Crédit Mobilier), la DFE (Déclaration Fiscale d'Existence), l'IDU (Identifiant Unique), les statuts de la société, le procès-verbal de constitution, l'annexe fiscale, l'attestation CNPS, et l'ouverture de votre compte bancaire professionnel.",
+      "Vous repartez avec : le RCCM (Registre du Commerce et du Crédit Mobilier), la DFE (Déclaration Fiscale d'Existence), l'IDU (Identifiant Unique), les statuts de la société, le procès-verbal de constitution, l'annexe fiscale et l'attestation CNPS.",
   },
   {
     question: "Quelle forme juridique choisir : SARL, SARLU, SA, EI ou GIE ?",
@@ -97,7 +94,7 @@ const FAQS_EN = [
   {
     question: "What documents do I receive when starting a business?",
     answer:
-      "You walk away with: RCCM (trade register), DFE (tax existence declaration), IDU (unique identifier), articles of association, incorporation minutes, fiscal annex, CNPS certificate, and your business bank account opening.",
+      "You walk away with: RCCM (trade register), DFE (tax existence declaration), IDU (unique identifier), articles of association, incorporation minutes, fiscal annex and CNPS certificate.",
   },
   {
     question: "Which legal form should I choose: SARL, SARLU, SA, EI or GIE?",
@@ -135,12 +132,12 @@ export const Route = createFileRoute("/creer-son-entreprise-cote-divoire")({
       ],
       extraSchemas: [
         howToSchema(
-          "Comment créer son entreprise en Côte d'Ivoire en 10 jours",
+          "Comment créer son entreprise en Côte d'Ivoire en moins de 30 jours",
           HOWTO_STEPS,
           {
             description:
               "Procédure clé en main pour créer une SARL, SARLU, SA, EI ou GIE en Côte d'Ivoire via un cabinet agréé CEPICI.",
-            totalTime: "P10D",
+            totalTime: "P30D",
             estimatedCost: { currency: "XOF", minValue: 75000, maxValue: 200000 },
           },
         ),
@@ -176,8 +173,8 @@ export function CreerEntreprisePage() {
   const tx = fr
     ? {
         badge: "🇨🇮 CEPICI · OHADA · Cabinets agréés",
-        h1: "Créez votre entreprise en Côte d'Ivoire en 10 jours",
-        sub: "RCCM, DFE, IDU, statuts, CNPS, compte bancaire — tout est inclus. Comparez 5 devis gratuits de cabinets agréés CEPICI sous 48 h, choisissez le meilleur.",
+        h1: "Créez votre entreprise en Côte d'Ivoire en moins de 30 jours",
+        sub: "RCCM, DFE, IDU, statuts, CNPS — tous les documents officiels. Comparez 5 devis gratuits de cabinets agréés CEPICI sous 48 h, choisissez le meilleur.",
         bullets: [
           "Démarches CEPICI 100 % prises en charge",
           "5 cabinets agréés OECCA-CI vous répondent",
@@ -215,8 +212,6 @@ export function CreerEntreprisePage() {
           { t: "PV de constitution", d: "Procès-verbal officiel de constitution de votre société." },
           { t: "Annexe fiscale", d: "Annexe fiscale validée par la DGI." },
           { t: "Déclaration CNPS", d: "Inscription à la Caisse Nationale de Prévoyance Sociale." },
-          { t: "Compte bancaire pro", d: "Ouverture d'un compte bancaire professionnel chez une banque locale." },
-          { t: "Domiciliation", d: "Adresse professionnelle à Abidjan si vous n'en avez pas encore." },
         ],
         formsTitle: "Formes juridiques disponibles en Côte d'Ivoire (OHADA)",
         formsSub:
@@ -292,8 +287,8 @@ export function CreerEntreprisePage() {
       }
     : {
         badge: "🇨🇮 CEPICI · OHADA · Approved firms",
-        h1: "Register your business in Côte d'Ivoire in 10 days",
-        sub: "RCCM, DFE, IDU, articles, CNPS, bank account — all included. Compare 5 free quotes from CEPICI-approved firms within 48h.",
+        h1: "Register your business in Côte d'Ivoire in less than 30 days",
+        sub: "RCCM, DFE, IDU, articles, CNPS — all official documents. Compare 5 free quotes from CEPICI-approved firms within 48h.",
         bullets: [
           "100% turnkey CEPICI procedures",
           "5 OECCA-CI approved firms reply",
@@ -331,8 +326,6 @@ export function CreerEntreprisePage() {
           { t: "Incorporation minutes", d: "Official minutes of your company's incorporation." },
           { t: "Fiscal annex", d: "Fiscal annex validated by the tax office." },
           { t: "CNPS registration", d: "Registration with the national social security fund." },
-          { t: "Business bank account", d: "Opening of a professional account with a local bank." },
-          { t: "Registered address", d: "Professional address in Abidjan if you don't have one yet." },
         ],
         formsTitle: "Legal forms available in Côte d'Ivoire (OHADA)",
         formsSub: "The firm helps you pick the form that best fits your project, taxes and partners.",
@@ -362,7 +355,7 @@ export function CreerEntreprisePage() {
         steps: [
           { name: "Describe your project in 2 minutes", text: "Fill out the form: legal form, activity, city. No commitment." },
           { name: "Receive 5 quotes from CEPICI-approved firms", text: "Within 24–48h, up to 5 OECCA-CI approved firms send you a detailed quote: price, lead time, included documents." },
-          { name: "Pick and get your documents in 7–15 days", text: "Pick the firm that suits you. They handle everything: RCCM, DFE, IDU, articles, minutes, CNPS, bank account." },
+          { name: "Pick and get your documents in 7–15 days", text: "Pick the firm that suits you. They handle everything: RCCM, DFE, IDU, articles, minutes and CNPS." },
         ],
         testimonialsTitle: "They started their company with our partner firms",
         testimonials: [
@@ -378,10 +371,10 @@ export function CreerEntreprisePage() {
         related: "Read also",
       };
 
-  const TRUST_ICONS = [Users, ShieldCheck, Wallet, Clock];
+  const TRUST_ICONS = [Users, ShieldCheck, Award, Clock];
   const DOC_ICONS = [
     FileText, FileText, FileText, ClipboardList, ClipboardList,
-    FileText, ShieldCheck, Landmark, MapPin,
+    FileText, ShieldCheck,
   ];
 
   return (
@@ -423,7 +416,7 @@ export function CreerEntreprisePage() {
 
             {/* Documents pills */}
             <div className="mt-6 flex flex-wrap gap-2">
-              {["RCCM", "DFE", "IDU", "Statuts", "PV", "CNPS", fr ? "Compte bancaire" : "Bank account", fr ? "Domiciliation" : "Address"].map((doc) => (
+              {["RCCM", "DFE", "IDU", "Statuts", "PV", "CNPS"].map((doc) => (
                 <span
                   key={doc}
                   className="inline-flex items-center gap-1 rounded-full bg-white/90 border border-primary/10 px-3 py-1 text-xs font-semibold text-primary shadow-sm"
