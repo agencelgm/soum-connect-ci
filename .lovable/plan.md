@@ -1,26 +1,35 @@
-Ajouter une vue de comparaison avant/après du personnage du hero pour valider visuellement le retour à l'ancienne version avant de confirmer le revert.
+Refondre la section hero pour reproduire le style de la référence (déménageurs) : personnage plus grand, collé à la section suivante, sans espace blanc, sur un fond photo flouté.
 
-## Objectif
+## Ce qui change visuellement
 
-Vous voulez revenir à une version antérieure de l'image `hero-accountant-cutout.png`, mais avant de confirmer, voir côte à côte l'image actuelle (qui pointe vers le formulaire) et l'ancienne version pour comparer.
+- Fond : remplacer le beige `#F5F1EA` par une vraie photo de bureau comptable abidjanais déjà présente (`seoOfficeAbidjan`), floutée et assombrie via un overlay, pour donner le même effet "image en arrière brouillée" que la référence.
+- Personnage : agrandi (de `max-w-sm` à `max-w-md` puis `xl:max-w-lg`), aligné en bas absolu de la section, débordant légèrement vers le formulaire.
+- Espacement : supprimer le padding bas de la section hero (`pb-0`) pour que le personnage touche la bande "Stats" suivante, exactement comme dans la référence.
+- Formulaire orange : inchangé en contenu, mais on garde un padding bas sur sa colonne pour qu'il reste à bonne hauteur pendant que l'image descend jusqu'au bord.
+- Mobile : on garde l'image cachée (`hidden lg:flex`) — pas de changement mobile.
 
-## Approche proposée
+## Contraintes respectées
 
-Comme Lovable ne peut pas restaurer programmatiquement un ancien fichier binaire, le plan est :
+- Aucune image générée par IA. On réutilise une photo réelle déjà importée (`src/assets/home/seo-office-abidjan.jpg`) comme fond flouté.
+- Aucun changement de copy, de formulaire, ni du reste de la page.
+- Nettoyage : la page interne `src/routes/preview.hero-compare.tsx` (créée précédemment pour comparer les versions) est supprimée, elle n'a plus d'utilité.
 
-1. Régénérer une "ancienne version candidate" du personnage (pose neutre face caméra, sans pointer du doigt, grand sourire) et l'enregistrer comme `hero-accountant-cutout-v1.png` — l'image actuelle (`hero-accountant-cutout.png`) reste intacte.
-2. Créer une page de comparaison temporaire `/preview/hero-compare` (non liée dans la navigation, `noindex`) qui affiche :
-   - À gauche : version actuelle (pointe le formulaire)
-   - À droite : version candidate (neutre)
-   - Sous chaque image, un bouton "Garder cette version"
-3. Une fois votre choix fait, on remplace `hero-accountant-cutout.png` par la version retenue et on supprime la page de comparaison et le fichier non utilisé.
+## Détails techniques (`src/routes/index.tsx`, section hero uniquement)
 
-## Alternative recommandée
+```text
+<section className="relative overflow-hidden">
+  <img src={seoOfficeAbidjan} className="absolute inset-0 w-full h-full object-cover blur-md scale-110" />
+  <div className="absolute inset-0 bg-[#F5F1EA]/70" />   // overlay clair pour lisibilité
+  <div className="relative container-app pt-10 md:pt-16 pb-0 grid lg:grid-cols-12 lg:items-end">
+    <div className="lg:col-span-5 self-end">
+      <img src={heroAccountant} className="w-full max-w-md xl:max-w-lg object-contain object-bottom" />
+    </div>
+    <div className="lg:col-span-7 pb-10 md:pb-16">{/* form */}</div>
+  </div>
+</section>
+```
 
-Si vous avez vraiment l'ancien fichier exact dans l'historique du chat, le plus fiable reste de cliquer sur le bouton revert (↪️) sous le message AI qui contenait la bonne version. Cela restaure le fichier au byte près, sans regénération approximative.
-
-## Détails techniques
-
-- Nouveau fichier : `src/assets/home/hero-accountant-cutout-v1.png` (généré via imagegen).
-- Nouvelle route : `src/routes/preview.hero-compare.tsx`, avec `head()` en `noindex` et layout deux colonnes responsive.
-- Aucune modification de `src/routes/index.tsx` tant que vous n'avez pas validé.
+Points clés :
+- `pb-0` sur le conteneur hero + `lg:items-end` pour que l'image touche la section suivante.
+- `pb-10 md:pb-16` réintroduit sur la colonne formulaire pour conserver son aération.
+- `blur-md scale-110` sur l'image de fond évite les bords nets du flou.
