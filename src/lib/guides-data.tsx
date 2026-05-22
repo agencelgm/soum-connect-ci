@@ -53,9 +53,9 @@ export const ARTICLES: Article[] = [
     slug: "sarl-sa-ei-cote-divoire",
     title: "SARL vs SA vs Entreprise Individuelle en CI : quel statut choisir ?",
     excerpt:
-      "Comparatif détaillé des trois formes juridiques les plus courantes en Côte d'Ivoire pour bien choisir.",
+      "SARL, SA ou entreprise individuelle en Côte d'Ivoire : découvrez les différences, avantages, limites, obligations et le meilleur statut selon votre projet.",
     categories: ["Création d'entreprise"],
-    readTime: "7 min",
+    readTime: "11 min",
     priority: 1,
     image: sarlSaEiImg,
     content: () => <SarlSaEiContent />,
