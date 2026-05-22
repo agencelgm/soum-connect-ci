@@ -1,28 +1,39 @@
-Supprimer l'espace blanc entre les pieds du personnage et la bande "Stats", pour que le corps touche réellement la section suivante (comme dans la référence déménageurs).
-
-## Cause
-
-Le PNG `hero-accountant-cutout.png` contient une zone transparente sous les pieds du personnage. Même avec `object-bottom` et `pb-0`, ce padding interne au PNG crée un vide visuel entre les chaussures et la bande Stats.
+Faire descendre le personnage jusqu'au bord bas de la section (au contact de la bande Stats), SANS toucher au padding du formulaire orange. Le formulaire garde son espace habituel avant la section suivante.
 
 ## Approche
 
-On ne peut pas recadrer le PNG sans le régénérer (interdit par la règle "pas d'IA"). On compense côté CSS :
+Sortir l'image du flux grid : la positionner en absolu, ancrée bas-gauche de la section hero. Sa hauteur n'est plus liée à la colonne formulaire — elle est libre de descendre jusqu'au bord. Le formulaire reste en flux normal avec son `pb` habituel.
 
-- Agrandir le personnage (`xl:max-w-xl`) pour qu'il occupe plus de hauteur visuelle.
-- Ajouter une marge négative basse à l'image (`-mb-6 lg:-mb-10`) pour que la partie visible (chaussures) recouvre la limite de la section et morde sur la bande Stats.
-- Conserver `overflow-hidden` sur la section pour ne pas casser le layout si la marge négative dépasse.
-- Garder le formulaire orange tel quel.
+- Personnage : `absolute bottom-0 left-0`, occupant ~5 colonnes de large à gauche (`w-[42%] xl:w-[40%]`, `max-h-[560px]` pour borner la hauteur).
+- `object-bottom` pour que les pieds touchent exactement le bord bas.
+- La colonne grid gauche devient un simple spacer vide en desktop (juste pour réserver la place horizontale et empêcher le formulaire de prendre toute la largeur).
+- Le formulaire conserve son `pb-10 md:pb-16` — donc espace inchangé entre formulaire et Stats.
+- Sur mobile, image toujours masquée.
 
-Aucun changement sur mobile (image toujours masquée sous `lg`).
-
-## Détails techniques (`src/routes/index.tsx`, colonne image du hero)
+## Détails techniques (`src/routes/index.tsx`, section hero)
 
 ```text
-<img
-  src={heroAccountant}
-  className="w-full max-w-md xl:max-w-xl object-contain object-bottom -mb-6 lg:-mb-10"
-/>
+<section className="relative overflow-hidden">
+  <img src={seoOfficeAbidjan} className="absolute inset-0 ... blur-md" />
+  <div className="absolute inset-0 bg-[#F5F1EA]/75" />
+
+  {/* Personnage en absolu, indépendant de la grille */}
+  <img
+    src={heroAccountant}
+    className="hidden lg:block absolute bottom-0 left-0 z-10
+               w-[42%] xl:w-[40%] max-h-[560px] object-contain object-bottom
+               pl-4 xl:pl-12"
+  />
+
+  <div className="relative container-app pt-10 md:pt-16 pb-0 grid lg:grid-cols-12">
+    <div className="hidden lg:block lg:col-span-5" />     {/* spacer pour la place de l'image */}
+    <div className="lg:col-span-7 pb-10 md:pb-16">{/* form inchangé */}</div>
+    <div className="lg:hidden">{/* badge + h1 mobile inchangé */}</div>
+  </div>
+</section>
 ```
+
+Résultat : les pieds du personnage touchent le bord bas de la section hero (donc le haut de la bande Stats), pendant que le formulaire orange garde son aération.
 
 ## Ce qui change visuellement
 
