@@ -35,8 +35,8 @@ export function AboutPage() {
     {
       icon: Mail,
       label: a.contactEmail,
-      value: "contact@soumissionscomptables.ci",
-      href: "mailto:contact@soumissionscomptables.ci",
+      value: "contact@soumissioncomptable.com",
+      href: "mailto:contact@soumissioncomptable.com",
     },
     {
       icon: MapPin,

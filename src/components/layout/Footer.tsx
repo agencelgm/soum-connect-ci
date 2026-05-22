@@ -12,7 +12,7 @@ export function Footer() {
           <div className="inline-flex items-center bg-white rounded-md p-2">
             <img
               src={logo}
-              alt="SoumissionsComptables.ci"
+              alt="SoumissionComptable.com"
               width={200}
               height={56}
               className="h-12 w-auto"
@@ -64,8 +64,8 @@ export function Footer() {
           <ul className="space-y-3 text-sm">
             <li className="flex items-center gap-2">
               <Mail className="h-4 w-4 shrink-0" />
-              <a href="mailto:contact@soumissionscomptables.ci" className="hover:text-secondary">
-                contact@soumissionscomptables.ci
+              <a href="mailto:contact@soumissioncomptable.com" className="hover:text-secondary">
+                contact@soumissioncomptable.com
               </a>
             </li>
             <li className="flex items-center gap-2">

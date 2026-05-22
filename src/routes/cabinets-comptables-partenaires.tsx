@@ -47,9 +47,9 @@ export const Route = createFileRoute("/cabinets-comptables-partenaires")({
     buildPageHead({
       path: "/cabinets-comptables-partenaires",
       title:
-        "Rejoignez notre Réseau | Cabinets Comptables Partenaires | SoumissionsComptables.ci",
+        "Rejoignez notre Réseau | Cabinets Comptables Partenaires | SoumissionComptable.com",
       description:
-        "Vous êtes cabinet comptable agréé en Côte d'Ivoire ? Rejoignez SoumissionsComptables.ci et recevez des leads qualifiés d'entrepreneurs qui cherchent vos services. Inscription simple.",
+        "Vous êtes cabinet comptable agréé en Côte d'Ivoire ? Rejoignez SoumissionComptable.com et recevez des leads qualifiés d'entrepreneurs qui cherchent vos services. Inscription simple.",
       breadcrumb: [
         { name: "Accueil", path: "/" },
         { name: "Cabinets partenaires", path: "/cabinets-comptables-partenaires" },
@@ -216,7 +216,7 @@ function Page() {
       <section className="container-app py-16 md:py-20">
         <div className="text-center max-w-2xl mx-auto">
           <h2 className="text-2xl md:text-4xl font-bold text-foreground">
-            Pourquoi Rejoindre SoumissionsComptables.ci ?
+            Pourquoi Rejoindre SoumissionComptable.com ?
           </h2>
           <p className="mt-3 text-muted-foreground">
             Un canal d'acquisition dédié aux cabinets agréés OECCA-CI.
@@ -271,7 +271,7 @@ function Page() {
         <figure className="max-w-3xl mx-auto rounded-2xl bg-primary text-primary-foreground p-8 md:p-12 relative">
           <Quote className="absolute top-6 left-6 h-10 w-10 text-secondary opacity-60" />
           <blockquote className="text-lg md:text-2xl font-medium leading-relaxed pl-12">
-            "Depuis que nous sommes sur SoumissionsComptables.ci, nous recevons 3 à 5 nouveaux prospects qualifiés par mois sans effort de prospection."
+            "Depuis que nous sommes sur SoumissionComptable.com, nous recevons 3 à 5 nouveaux prospects qualifiés par mois sans effort de prospection."
           </blockquote>
           <figcaption className="mt-6 pl-12 text-primary-foreground/80 text-sm">
             — Cabinet Expertise Plus, Abidjan Plateau
@@ -453,7 +453,7 @@ function Page() {
                   onCheckedChange={(v) => setConsent(v === true)}
                 />
                 <Label htmlFor="consent" className="text-sm font-normal leading-snug">
-                  J'accepte d'être contacté(e) par SoumissionsComptables.ci pour
+                  J'accepte d'être contacté(e) par SoumissionComptable.com pour
                   finaliser mon inscription{" "}
                   <span className="text-destructive" aria-hidden>
                     *

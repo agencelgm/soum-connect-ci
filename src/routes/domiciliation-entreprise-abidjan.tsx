@@ -3,7 +3,7 @@ import { MapPin, Building2, Calculator, Receipt, Mail, Briefcase, Globe2 } from 
 import { ServicePage, type Faq, type RelatedService } from "@/components/service/ServicePage";
 import { buildPageHead, faqSchema, LOCAL_BUSINESS_SCHEMA } from "@/lib/seo";
 
-const META_TITLE = "Domiciliation Entreprise Abidjan | Adresse Professionnelle | SoumissionsComptables.ci";
+const META_TITLE = "Domiciliation Entreprise Abidjan | Adresse Professionnelle | SoumissionComptable.com";
 const META_DESC =
   "Domiciliez votre entreprise à Abidjan avec une adresse professionnelle (Plateau, Cocody, Marcory). Idéal diaspora et startups. Comparez 5 offres gratuitement.";
 

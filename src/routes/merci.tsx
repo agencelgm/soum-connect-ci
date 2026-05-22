@@ -7,7 +7,7 @@ export const Route = createFileRoute("/merci")({
   head: () =>
     buildPageHead({
       path: "/merci",
-      title: "Merci | SoumissionsComptables.ci",
+      title: "Merci | SoumissionComptable.com",
       description:
         "Merci d'avoir rempli notre formulaire. Un membre de notre équipe vous contactera dans les 24 heures ouvrables.",
       altPath: "/en/thank-you",

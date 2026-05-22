@@ -21,7 +21,7 @@ import { buildPageHead } from "@/lib/seo";
 import { RelatedLinks } from "@/components/seo/RelatedLinks";
 import { getPageRelations } from "@/lib/page-relations";
 
-const META_TITLE = "Comment Ça Marche | SoumissionsComptables.ci";
+const META_TITLE = "Comment Ça Marche | SoumissionComptable.com";
 const META_DESC =
   "Découvrez comment obtenir jusqu'à 5 soumissions gratuites de cabinets comptables agréés en Côte d'Ivoire en moins de 48h. Processus simple en 3 étapes.";
 

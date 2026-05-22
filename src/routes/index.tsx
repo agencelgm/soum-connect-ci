@@ -56,7 +56,7 @@ import svcConformiteFiscale from "@/assets/services/conformite-fiscale.jpg";
 import svcAuditInterne from "@/assets/services/audit-interne.jpg";
 
 const TITLE =
-  "Cabinet Comptable Côte d'Ivoire | Comparez 5 Soumissions Gratuitement | SoumissionsComptables.ci";
+  "Cabinet Comptable Côte d'Ivoire | Comparez 5 Soumissions Gratuitement | SoumissionComptable.com";
 const DESCRIPTION =
   "Trouvez le meilleur cabinet comptable en Côte d'Ivoire. Remplissez un formulaire, recevez jusqu'à 5 soumissions gratuites de cabinets agréés en 48h. Création d'entreprise, comptabilité, fiscalité.";
 

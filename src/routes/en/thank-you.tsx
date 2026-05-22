@@ -7,7 +7,7 @@ export const Route = createFileRoute("/en/thank-you")({
   head: () =>
     buildPageHead({
       path: "/en/thank-you",
-      title: "Thank You | SoumissionsComptables.ci",
+      title: "Thank You | SoumissionComptable.com",
       description:
         "Thank you for filling out our form. A team member will contact you within 24 business hours.",
       lang: "en",
