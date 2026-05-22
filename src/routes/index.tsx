@@ -113,13 +113,13 @@ export function Index() {
         <div aria-hidden="true" className="absolute inset-0 bg-[#F5F1EA]/75" />
 
         <div className="relative container-app pt-10 md:pt-16 pb-0 grid gap-8 lg:gap-4 lg:grid-cols-12 lg:items-stretch">
-          {/* Left: character (desktop only) */}
-          <div className="hidden lg:flex lg:col-span-5 items-end justify-center lg:-mr-6 xl:-mr-10">
+          {/* Left: character (desktop only) — cropped so torso aligns with next section */}
+          <div className="hidden lg:flex lg:col-span-5 items-end justify-center lg:-mr-6 xl:-mr-10 relative overflow-hidden">
             <img
               src={heroAccountant}
               alt=""
               aria-hidden="true"
-              className="h-full w-auto object-contain object-bottom -mb-6"
+              className="h-full w-auto max-w-none object-contain object-bottom translate-y-[45%]"
             />
           </div>
 
