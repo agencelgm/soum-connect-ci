@@ -1,4 +1,28 @@
-Refondre la section hero pour reproduire le style de la référence (déménageurs) : personnage plus grand, collé à la section suivante, sans espace blanc, sur un fond photo flouté.
+Supprimer l'espace blanc entre les pieds du personnage et la bande "Stats", pour que le corps touche réellement la section suivante (comme dans la référence déménageurs).
+
+## Cause
+
+Le PNG `hero-accountant-cutout.png` contient une zone transparente sous les pieds du personnage. Même avec `object-bottom` et `pb-0`, ce padding interne au PNG crée un vide visuel entre les chaussures et la bande Stats.
+
+## Approche
+
+On ne peut pas recadrer le PNG sans le régénérer (interdit par la règle "pas d'IA"). On compense côté CSS :
+
+- Agrandir le personnage (`xl:max-w-xl`) pour qu'il occupe plus de hauteur visuelle.
+- Ajouter une marge négative basse à l'image (`-mb-6 lg:-mb-10`) pour que la partie visible (chaussures) recouvre la limite de la section et morde sur la bande Stats.
+- Conserver `overflow-hidden` sur la section pour ne pas casser le layout si la marge négative dépasse.
+- Garder le formulaire orange tel quel.
+
+Aucun changement sur mobile (image toujours masquée sous `lg`).
+
+## Détails techniques (`src/routes/index.tsx`, colonne image du hero)
+
+```text
+<img
+  src={heroAccountant}
+  className="w-full max-w-md xl:max-w-xl object-contain object-bottom -mb-6 lg:-mb-10"
+/>
+```
 
 ## Ce qui change visuellement
 
