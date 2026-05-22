@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowRight, Clock } from "lucide-react";
+import { ArrowRight, Clock, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { buildPageHead } from "@/lib/seo";
@@ -100,6 +100,7 @@ function ArticleCard({ article, featured = false }: { article: Article; featured
 
 function Page() {
   const [filter, setFilter] = useState<string>("all");
+  const [visibleCount, setVisibleCount] = useState<number>(6);
   const rel = getPageRelations("/guides");
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
@@ -114,6 +115,19 @@ function Page() {
       : ARTICLES_SORTED.filter((a) => a.categories.includes(filter as Category));
 
   const [featured, ...rest] = filtered;
+
+  // Derniers guides rédigés, classés par publishedAt desc (fallback : priorité).
+  // Inclut uniquement les articles avec contenu publié.
+  const latest = [...ARTICLES_SORTED]
+    .filter((a) => !!a.content)
+    .sort((a, b) => {
+      const da = a.publishedAt ?? "";
+      const db = b.publishedAt ?? "";
+      if (da === db) return a.priority - b.priority;
+      return db.localeCompare(da);
+    });
+  const visibleLatest = latest.slice(0, visibleCount);
+  const hasMore = visibleCount < latest.length;
 
   return (
     <main>
@@ -166,6 +180,51 @@ function Page() {
           </div>
         )}
       </section>
+
+      {/* Derniers guides — chargement progressif */}
+      {latest.length > 0 && (
+        <section
+          aria-labelledby="latest-guides-title"
+          className="bg-[#F8FAFC] border-t border-border"
+        >
+          <div className="container-app py-12 md:py-16">
+            <div className="max-w-2xl mb-8">
+              <div className="inline-flex items-center gap-2 rounded-full bg-secondary/10 text-secondary px-3 py-1 text-xs font-semibold mb-3">
+                <Sparkles className="h-3.5 w-3.5" />
+                Nouveautés
+              </div>
+              <h2
+                id="latest-guides-title"
+                className="font-heading font-bold text-primary text-2xl md:text-3xl"
+              >
+                Derniers guides publiés
+              </h2>
+              <p className="mt-2 text-muted-foreground">
+                Les articles les plus récents pour rester à jour sur la
+                création d'entreprise, la comptabilité et la fiscalité en CI.
+              </p>
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {visibleLatest.map((a) => (
+                <ArticleCard key={a.slug} article={a} />
+              ))}
+            </div>
+            {hasMore && (
+              <div className="mt-10 flex justify-center">
+                <button
+                  type="button"
+                  onClick={() => setVisibleCount((c) => c + 6)}
+                  className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-semibold text-white hover:bg-primary/90 transition-colors"
+                >
+                  Charger plus de guides
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
       {rel && <RelatedLinks items={rel.related} />}
     </main>
   );
