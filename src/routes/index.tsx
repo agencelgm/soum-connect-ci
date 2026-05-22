@@ -114,13 +114,13 @@ export function Index() {
 
         <div className="relative container-app pt-10 md:pt-16 pb-0 grid gap-8 lg:gap-4 lg:grid-cols-12 lg:items-stretch">
           {/* Left: character (desktop only) — visible crop ends at the torso */}
-          <div className="hidden lg:flex lg:col-span-5 items-stretch justify-center lg:-mr-2 xl:-mr-4">
-            <div className="relative h-full min-h-[520px] xl:min-h-[620px] w-full overflow-hidden">
+          <div className="hidden lg:flex lg:col-span-5 items-end justify-center lg:-mr-2 xl:-mr-4">
+            <div className="relative w-full max-w-[460px] xl:max-w-[520px] h-[340px] xl:h-[380px] overflow-hidden">
               <img
                 src={heroAccountant}
                 alt=""
                 aria-hidden="true"
-                className="absolute right-0 top-0 h-[1100px] xl:h-[1280px] w-auto max-w-none object-contain pointer-events-none"
+                className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-auto object-contain pointer-events-none"
               />
             </div>
           </div>
@@ -552,15 +552,15 @@ export function Index() {
             {h.finalRepeatTitle}
           </h2>
           <div className="mt-10 grid gap-8 lg:grid-cols-12 lg:items-center">
-            <div className="lg:col-span-5 hidden lg:flex items-stretch justify-center lg:-mr-2 xl:-mr-4">
-              <div className="relative h-full min-h-[520px] xl:min-h-[620px] w-full overflow-hidden">
+            <div className="lg:col-span-5 hidden lg:flex items-end justify-center lg:-mr-2 xl:-mr-4">
+              <div className="relative w-full max-w-[460px] xl:max-w-[520px] h-[340px] xl:h-[380px] overflow-hidden">
                 <img
                   src={heroAccountant}
                   alt=""
                   width={768}
                   height={1024}
                   loading="lazy"
-                  className="absolute right-0 top-0 h-[1100px] xl:h-[1280px] w-auto max-w-none object-contain pointer-events-none"
+                  className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-auto object-contain"
                 />
               </div>
             </div>
