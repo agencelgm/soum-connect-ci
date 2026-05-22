@@ -1,47 +1,50 @@
-Compris. On garde le crop vertical au torse (bas masqué, jambes/pieds invisibles), mais on arrête de couper le côté droit du personnage. Tout le haut du corps doit être visible en entier : tête, épaules, deux bras, main pointée, jusqu'au torse.
+## Objectif
+Remplacer le cutout `heroAccountant` (vide autour, coupé au torse) par la photo `seoAccountantDesk` — image riche (comptable + bureau + documents) qui remplit naturellement la colonne sans paraître vide. Réutilisée à l'identique dans le hero et la section CTA finale.
 
-## Méthode
-- Afficher l'image à la largeur de la colonne (pas plus grande). Comme ça aucun débordement latéral, aucun crop horizontal.
-- Cropper uniquement verticalement, via un wrapper `overflow-hidden` de hauteur fixe qui ne laisse voir que la moitié supérieure (de la tête au torse).
-- L'image est centrée horizontalement et alignée en haut du wrapper.
+## Fichier modifié
+`src/routes/index.tsx` uniquement.
 
-## Calcul rapide
-Image source 768×1024 (ratio 0.75). À une largeur ≈ 460–500px, la hauteur naturelle est ≈ 613–667px. Le torse se situe ~mi-image. Donc une fenêtre wrapper de `h-[340px] xl:h-[380px]` montre la tête jusqu'au bas du torse.
+## Hero (~ligne 117-126)
+Remplacer le wrapper actuel par une carte image pleine :
 
-## Modifications dans `src/routes/index.tsx`
-
-### Hero (~ligne 117)
 ```tsx
 <div className="hidden lg:flex lg:col-span-5 items-end justify-center lg:-mr-2 xl:-mr-4">
-  <div className="relative w-full max-w-[460px] xl:max-w-[520px] h-[340px] xl:h-[380px] overflow-hidden">
+  <div className="relative w-full max-w-[520px] xl:max-w-[580px] aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl ring-1 ring-black/5">
     <img
-      src={heroAccountant}
+      src={seoAccountantDesk}
       alt=""
       aria-hidden="true"
-      className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-auto object-contain pointer-events-none"
+      className="absolute inset-0 h-full w-full object-cover"
     />
   </div>
 </div>
 ```
 
-### Section "FINAL CTA REPEAT" (~ligne 555)
-Même structure et mêmes dimensions :
+## Section "FINAL CTA REPEAT" (~ligne 555-566)
+Même structure, image identique, `loading="lazy"` :
+
 ```tsx
 <div className="lg:col-span-5 hidden lg:flex items-end justify-center lg:-mr-2 xl:-mr-4">
-  <div className="relative w-full max-w-[460px] xl:max-w-[520px] h-[340px] xl:h-[380px] overflow-hidden">
+  <div className="relative w-full max-w-[520px] xl:max-w-[580px] aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl ring-1 ring-black/5">
     <img
-      src={heroAccountant}
+      src={seoAccountantDesk}
       alt=""
-      width={768}
-      height={1024}
+      aria-hidden="true"
       loading="lazy"
-      className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-auto object-contain"
+      className="absolute inset-0 h-full w-full object-cover"
     />
   </div>
 </div>
 ```
 
+## Détails
+- `aspect-[4/5]` garde une carte verticale équilibrée qui remplit la colonne sans dépendre d'une hauteur fixe.
+- `object-cover` recadre la photo proprement, jamais d'espace vide.
+- `shadow-2xl` + `ring-1 ring-black/5` donnent de la présence à la carte sur le fond beige.
+- `heroAccountant` n'est plus utilisé : import retiré du fichier.
+- Mobile : carte cachée (`hidden lg:flex`), aucun changement.
+
 ## Validation
-- Hero et section finale : on voit le personnage en entier de la tête au torse (les deux bras, la main pointée, le visage complet), coupé proprement au niveau du torse contre la section suivante.
-- Plus aucune scrollbar horizontale.
+- Hero et section finale : carte photo riche, plus de sensation de vide autour.
+- Aucun débordement horizontal.
 - Mobile inchangé.
