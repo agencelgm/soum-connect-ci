@@ -113,14 +113,16 @@ export function Index() {
         <div aria-hidden="true" className="absolute inset-0 bg-[#F5F1EA]/75" />
 
         <div className="relative container-app pt-10 md:pt-16 pb-0 grid gap-8 lg:gap-4 lg:grid-cols-12 lg:items-stretch">
-          {/* Left: character (desktop only) — cropped so torso aligns with next section */}
-          <div className="hidden lg:block lg:col-span-5 relative overflow-hidden lg:-mr-6 xl:-mr-10">
-            <img
-              src={heroAccountant}
-              alt=""
-              aria-hidden="true"
-              className="absolute left-1/2 -translate-x-1/2 bottom-0 translate-y-1/2 h-[680px] xl:h-[760px] w-auto max-w-none object-contain pointer-events-none"
-            />
+          {/* Left: character (desktop only) — visible crop ends at the torso */}
+          <div className="hidden lg:flex lg:col-span-5 items-end justify-center lg:-mr-6 xl:-mr-10">
+            <div className="relative h-[320px] xl:h-[360px] w-full overflow-hidden">
+              <img
+                src={heroAccountant}
+                alt=""
+                aria-hidden="true"
+                className="absolute left-1/2 top-0 h-[680px] xl:h-[760px] w-auto max-w-none -translate-x-1/2 object-contain pointer-events-none"
+              />
+            </div>
           </div>
 
           {/* Badge + H1 mobile uniquement */}
