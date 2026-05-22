@@ -119,7 +119,7 @@ export function Index() {
               src={heroAccountant}
               alt=""
               aria-hidden="true"
-              className="absolute left-1/2 -translate-x-1/2 bottom-0 translate-y-1/2 h-[680px] xl:h-[760px] w-auto max-w-none object-contain pointer-events-none"
+              className="absolute left-1/2 -translate-x-1/2 bottom-0 translate-y-[42%] h-[900px] xl:h-[980px] w-auto max-w-none object-contain pointer-events-none"
             />
           </div>
 
