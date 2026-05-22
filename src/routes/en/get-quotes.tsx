@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { buildPageHead } from "@/lib/seo";
 import { Route as FrRoute } from "../demande-soumissions";
 
+const FrComponent = FrRoute.options.component!;
+
 export const Route = createFileRoute("/en/get-quotes")({
   head: () =>
     buildPageHead({
@@ -15,5 +17,9 @@ export const Route = createFileRoute("/en/get-quotes")({
         { name: "Get quotes", path: "/en/get-quotes" },
       ],
     }),
-  component: FrRoute.options.component,
+  component: EnGetQuotesPage,
 });
+
+function EnGetQuotesPage() {
+  return <FrComponent />;
+}
