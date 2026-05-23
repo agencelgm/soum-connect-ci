@@ -108,6 +108,37 @@ export const Route = createFileRoute("/guides/$slug")({
         children: JSON.stringify(faqSchema(article.faqs)),
       });
     }
+    // Location pages (cabinet-comptable-{quartier}-abidjan) → LocalBusiness schema
+    const locationMatch = article.slug.match(/^cabinet-comptable-(.+)-abidjan$/);
+    if (locationMatch) {
+      const quartierSlug = locationMatch[1];
+      const quartierName = quartierSlug
+        .split("-")
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(" ");
+      const localBusinessSchema = {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        name: `${SITE_NAME} — Cabinet Comptable ${quartierName}`,
+        description: `Plateforme de mise en relation avec des cabinets comptables agréés OECCA-CI à ${quartierName}, Abidjan.`,
+        url: articleUrl,
+        areaServed: {
+          "@type": "Place",
+          name: `${quartierName}, Abidjan, Côte d'Ivoire`,
+        },
+        serviceType: [
+          "Comptabilité",
+          "Création d'entreprise",
+          "Déclaration fiscale",
+          "Audit",
+        ],
+        priceRange: "60 000 - 400 000 FCFA/mois",
+      };
+      extraScripts.push({
+        type: "application/ld+json",
+        children: JSON.stringify(localBusinessSchema),
+      });
+    }
     return {
       ...head,
       scripts: [...head.scripts, ...extraScripts],
