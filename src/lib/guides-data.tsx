@@ -16,6 +16,12 @@ import { AuditComptableObligatoireCiContent } from "@/content/guides/audit-compt
 import { DomiciliationEntrepriseAbidjanContent } from "@/content/guides/domiciliation-entreprise-abidjan";
 import { CreerSaCoteDivoireContent } from "@/content/guides/creer-sa-cote-divoire";
 import { CompteBancaireEntrepriseAbidjanContent } from "@/content/guides/compte-bancaire-entreprise-abidjan";
+import { ErreursCreationEntrepriseCiContent } from "@/content/guides/erreurs-creation-entreprise-ci";
+import { CabinetComptablePlateauAbidjanContent } from "@/content/guides/cabinet-comptable-plateau-abidjan";
+import { CreerEntrepriseCiCanadaContent } from "@/content/guides/creer-entreprise-ci-canada";
+import { CoutCreationEntrepriseContent } from "@/content/guides/cout-creation-entreprise-cote-divoire";
+import { RccmCoteDivoireContent } from "@/content/guides/rccm-cote-divoire";
+import { AidesCreationEntrepriseCiContent } from "@/content/guides/aides-creation-entreprise-ci";
 import creerSarlCepiciImg from "@/assets/guides/creer-sarl-cepici.jpg";
 import sarlSaEiImg from "@/assets/guides/sarl-sa-ei.jpg";
 import calendrierFiscalImg from "@/assets/guides/calendrier-fiscal-2026.jpg";
@@ -188,6 +194,7 @@ export const ARTICLES: Article[] = [
     categories: ["Diaspora"],
     readTime: "8 min",
     priority: 2,
+    content: () => <CreerEntrepriseCiCanadaContent />,
   },
   {
     slug: "cabinet-comptable-plateau-abidjan",
@@ -197,6 +204,7 @@ export const ARTICLES: Article[] = [
     categories: ["Géo", "Comptabilité"],
     readTime: "6 min",
     priority: 2,
+    content: () => <CabinetComptablePlateauAbidjanContent />,
   },
   {
     slug: "capital-minimum-sarl-ohada",
@@ -256,6 +264,38 @@ export const ARTICLES: Article[] = [
     categories: ["Création d'entreprise"],
     readTime: "7 min",
     priority: 3,
+    content: () => <ErreursCreationEntrepriseCiContent />,
+  },
+  {
+    slug: "cout-creation-entreprise-cote-divoire",
+    title:
+      "Combien coûte la création d'une entreprise en Côte d'Ivoire en 2026 ?",
+    excerpt:
+      "Frais CEPICI, honoraires de cabinet, capital, notaire : tous les prix réels pour créer sa société en CI.",
+    categories: ["Création d'entreprise"],
+    readTime: "7 min",
+    priority: 2,
+    content: () => <CoutCreationEntrepriseContent />,
+  },
+  {
+    slug: "rccm-cote-divoire",
+    title: "RCCM Côte d'Ivoire : qu'est-ce que c'est et comment l'obtenir ?",
+    excerpt:
+      "Registre du Commerce, inscription, renouvellement, coûts et délais : tout savoir sur le RCCM en CI.",
+    categories: ["Création d'entreprise"],
+    readTime: "7 min",
+    priority: 2,
+    content: () => <RccmCoteDivoireContent />,
+  },
+  {
+    slug: "aides-creation-entreprise-ci",
+    title: "Aides et financements pour créer une entreprise en CI en 2026",
+    excerpt:
+      "CEPICI, FDFP, BEI, fonds d'investissement, incubateurs : les 3 types d'aides disponibles aux créateurs.",
+    categories: ["Création d'entreprise"],
+    readTime: "7 min",
+    priority: 2,
+    content: () => <AidesCreationEntrepriseCiContent />,
   },
 ];
 
