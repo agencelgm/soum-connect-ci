@@ -55,6 +55,10 @@ export type Article = {
   publishedAt?: string;
   /** Date de dernière mise à jour ISO (YYYY-MM-DD). Fallback : publishedAt. */
   updatedAt?: string;
+  /** Résumé "En bref" (40-60 mots) affiché en tête d'article. Fallback : excerpt. */
+  summary?: string;
+  /** Paires Q/R extraites de l'article — émet un FAQPage schema quand fournies. */
+  faqs?: Array<{ question: string; answer: string }>;
 };
 
 export const ARTICLES: Article[] = [
