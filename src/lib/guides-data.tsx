@@ -6,6 +6,16 @@ import { CoutCabinetAbidjanContent } from "@/content/guides/cout-cabinet-comptab
 import { CreerEntrepriseDepuisFranceContent } from "@/content/guides/creer-entreprise-ci-depuis-france";
 import { ImpotsEntrepriseContent } from "@/content/guides/impots-entreprise-cote-divoire";
 import { ChoisirCabinetAbidjanContent } from "@/content/guides/choisir-cabinet-comptable-abidjan";
+import { CepiciCoteDivoireContent } from "@/content/guides/cepici-cote-divoire";
+import { TvaCoteDivoirePmeContent } from "@/content/guides/tva-cote-divoire-pme";
+import { ObligationsComptablesSarlCiContent } from "@/content/guides/obligations-comptables-sarl-ci";
+import { EntrepriseIndividuelleVsSarlContent } from "@/content/guides/entreprise-individuelle-vs-sarl";
+import { CapitalMinimumSarlOhadaContent } from "@/content/guides/capital-minimum-sarl-ohada";
+import { CnpsCoteDivoireEmployeursContent } from "@/content/guides/cnps-cote-divoire-employeurs";
+import { AuditComptableObligatoireCiContent } from "@/content/guides/audit-comptable-obligatoire-ci";
+import { DomiciliationEntrepriseAbidjanContent } from "@/content/guides/domiciliation-entreprise-abidjan";
+import { CreerSaCoteDivoireContent } from "@/content/guides/creer-sa-cote-divoire";
+import { CompteBancaireEntrepriseAbidjanContent } from "@/content/guides/compte-bancaire-entreprise-abidjan";
 import creerSarlCepiciImg from "@/assets/guides/creer-sarl-cepici.jpg";
 import sarlSaEiImg from "@/assets/guides/sarl-sa-ei.jpg";
 import calendrierFiscalImg from "@/assets/guides/calendrier-fiscal-2026.jpg";
@@ -128,6 +138,7 @@ export const ARTICLES: Article[] = [
     categories: ["Domiciliation"],
     readTime: "6 min",
     priority: 2,
+    content: () => <DomiciliationEntrepriseAbidjanContent />,
   },
   {
     slug: "obligations-comptables-sarl-ci",
@@ -137,6 +148,7 @@ export const ARTICLES: Article[] = [
     categories: ["Comptabilité"],
     readTime: "7 min",
     priority: 2,
+    content: () => <ObligationsComptablesSarlCiContent />,
   },
   {
     slug: "cepici-cote-divoire",
@@ -146,6 +158,7 @@ export const ARTICLES: Article[] = [
     categories: ["Création d'entreprise"],
     readTime: "6 min",
     priority: 2,
+    content: () => <CepiciCoteDivoireContent />,
   },
   {
     slug: "creer-sa-cote-divoire",
@@ -155,6 +168,7 @@ export const ARTICLES: Article[] = [
     categories: ["Création d'entreprise"],
     readTime: "8 min",
     priority: 2,
+    content: () => <CreerSaCoteDivoireContent />,
   },
   {
     slug: "tva-cote-divoire-pme",
@@ -164,6 +178,7 @@ export const ARTICLES: Article[] = [
     categories: ["Fiscalité"],
     readTime: "7 min",
     priority: 2,
+    content: () => <TvaCoteDivoirePmeContent />,
   },
   {
     slug: "creer-entreprise-ci-canada",
@@ -191,6 +206,7 @@ export const ARTICLES: Article[] = [
     categories: ["Création d'entreprise"],
     readTime: "5 min",
     priority: 2,
+    content: () => <CapitalMinimumSarlOhadaContent />,
   },
   {
     slug: "cnps-cote-divoire-employeurs",
@@ -200,6 +216,7 @@ export const ARTICLES: Article[] = [
     categories: ["Fiscalité"],
     readTime: "7 min",
     priority: 3,
+    content: () => <CnpsCoteDivoireEmployeursContent />,
   },
   {
     slug: "compte-bancaire-entreprise-abidjan",
@@ -209,6 +226,7 @@ export const ARTICLES: Article[] = [
     categories: ["Création d'entreprise"],
     readTime: "6 min",
     priority: 3,
+    content: () => <CompteBancaireEntrepriseAbidjanContent />,
   },
   {
     slug: "entreprise-individuelle-vs-sarl",
@@ -218,6 +236,7 @@ export const ARTICLES: Article[] = [
     categories: ["Création d'entreprise"],
     readTime: "6 min",
     priority: 3,
+    content: () => <EntrepriseIndividuelleVsSarlContent />,
   },
   {
     slug: "audit-comptable-obligatoire-ci",
@@ -227,6 +246,7 @@ export const ARTICLES: Article[] = [
     categories: ["Audit"],
     readTime: "6 min",
     priority: 3,
+    content: () => <AuditComptableObligatoireCiContent />,
   },
   {
     slug: "erreurs-creation-entreprise-ci",
