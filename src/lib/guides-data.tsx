@@ -121,6 +121,10 @@ export const ARTICLES: Article[] = [
     priority: 1,
     image: sarlSaEiImg,
     content: () => <SarlSaEiContent />,
+    publishedAt: "2026-01-20",
+    updatedAt: "2026-05-10",
+    summary:
+      "En Côte d'Ivoire, la SARL convient à la plupart des PME (capital libre, responsabilité limitée), la SA s'impose pour lever des fonds (capital minimum 10 M FCFA, 7 actionnaires), et l'entreprise individuelle reste adaptée aux activités modestes sans associés ni patrimoine séparé. Le choix dépend du capital disponible, du nombre d'associés et du niveau de risque accepté.",
   },
   {
     slug: "calendrier-fiscal-ci-2026",
@@ -133,6 +137,10 @@ export const ARTICLES: Article[] = [
     priority: 1,
     image: calendrierFiscalImg,
     content: () => <CalendrierFiscal2026Content />,
+    publishedAt: "2026-01-05",
+    updatedAt: "2026-05-10",
+    summary:
+      "Le calendrier fiscal 2026 ivoirien s'articule autour de quatre échéances mensuelles (TVA, ITS, prélèvements le 15) et de rendez-vous annuels : DSF avant le 30 avril, patente au 1er trimestre, IS soldé au 20 avril. Toute entreprise doit également respecter les acomptes BIC/BNC trimestriels et la déclaration CNPS mensuelle.",
   },
   {
     slug: "cout-cabinet-comptable-abidjan",
@@ -144,6 +152,10 @@ export const ARTICLES: Article[] = [
     priority: 1,
     image: coutCabinetImg,
     content: () => <CoutCabinetAbidjanContent />,
+    publishedAt: "2026-01-25",
+    updatedAt: "2026-05-10",
+    summary:
+      "À Abidjan, un cabinet comptable agréé OECCA-CI facture entre 80 000 et 400 000 FCFA par mois pour une PME, selon le volume d'écritures, le secteur d'activité et le quartier (Plateau plus cher que Cocody ou Marcory). La DSF annuelle s'ajoute en sus (200 000 à 1 M FCFA). Tarifs réels et grille détaillée dans le guide.",
   },
   {
     slug: "creer-entreprise-ci-depuis-france",
@@ -155,6 +167,10 @@ export const ARTICLES: Article[] = [
     priority: 1,
     image: diasporaFranceImg,
     content: () => <CreerEntrepriseDepuisFranceContent />,
+    publishedAt: "2026-02-01",
+    updatedAt: "2026-05-12",
+    summary:
+      "Depuis la France, créer une SARL ou SA en Côte d'Ivoire est possible à 100 % à distance via un mandataire local muni d'une procuration légalisée. Le cabinet ivoirien dépose le dossier au CEPICI, paie les frais, récupère RCCM, DFE et IDU sous 4 jours, puis ouvre le compte bancaire au nom de la société.",
   },
   {
     slug: "impots-entreprise-cote-divoire",
@@ -166,6 +182,10 @@ export const ARTICLES: Article[] = [
     priority: 1,
     image: impotsEntrepriseImg,
     content: () => <ImpotsEntrepriseContent />,
+    publishedAt: "2026-02-05",
+    updatedAt: "2026-05-12",
+    summary:
+      "Une entreprise ivoirienne paie cinq grandes catégories d'impôts : l'IS (25 % du bénéfice net), la TVA (18 % collectée et reversée mensuellement), l'ITS (retenue à la source sur salaires), la patente annuelle assise sur le CA et le loyer, et les cotisations CNPS employeur (≈ 18 % du brut). S'ajoutent BIC, BNC et taxes sectorielles.",
   },
   {
     slug: "choisir-cabinet-comptable-abidjan",
@@ -177,6 +197,10 @@ export const ARTICLES: Article[] = [
     priority: 1,
     image: choisirCabinetImg,
     content: () => <ChoisirCabinetAbidjanContent />,
+    publishedAt: "2026-02-12",
+    updatedAt: "2026-05-12",
+    summary:
+      "Pour choisir un cabinet comptable à Abidjan, vérifiez cinq critères : l'agrément OECCA-CI (obligatoire pour signer la DSF), l'expérience dans votre secteur, la transparence des honoraires, la réactivité aux échéances DGI et la proximité géographique. Comparez systématiquement au moins trois propositions avant de signer une lettre de mission annuelle.",
   },
   {
     slug: "domiciliation-entreprise-abidjan",
@@ -187,6 +211,10 @@ export const ARTICLES: Article[] = [
     readTime: "6 min",
     priority: 2,
     content: () => <DomiciliationEntrepriseAbidjanContent />,
+    publishedAt: "2026-02-18",
+    updatedAt: "2026-05-12",
+    summary:
+      "La domiciliation d'entreprise à Abidjan permet de disposer d'une adresse de siège social professionnelle sans louer de bureau. Tarifs : 25 000 à 80 000 FCFA par mois selon le quartier (Plateau plus cher que Cocody ou Marcory). Inclut généralement réception du courrier, scan, mise à disposition de salles de réunion ponctuelles.",
   },
   {
     slug: "obligations-comptables-sarl-ci",
@@ -197,6 +225,10 @@ export const ARTICLES: Article[] = [
     readTime: "7 min",
     priority: 2,
     content: () => <ObligationsComptablesSarlCiContent />,
+    publishedAt: "2026-02-22",
+    updatedAt: "2026-05-12",
+    summary:
+      "Toute SARL ivoirienne doit tenir une comptabilité SYSCOHADA complète (journal, grand livre, balance), produire des états financiers annuels (bilan, compte de résultat, TAFIRE, annexes), déposer une DSF avant le 30 avril et conserver les pièces 10 ans. Un commissaire aux comptes devient obligatoire au-delà de 250 M FCFA de CA.",
   },
   {
     slug: "cepici-cote-divoire",
@@ -207,6 +239,10 @@ export const ARTICLES: Article[] = [
     readTime: "6 min",
     priority: 2,
     content: () => <CepiciCoteDivoireContent />,
+    publishedAt: "2026-02-28",
+    updatedAt: "2026-05-12",
+    summary:
+      "Le CEPICI (Centre de Promotion des Investissements en Côte d'Ivoire) est le Guichet Unique de création d'entreprise, situé à Riviera Golf, Abidjan. Il centralise les démarches RCCM, DFE, IDU, CNPS et publication au JORCI en un seul dépôt. Délai moyen : 24 à 72 heures. Frais fixes ≈ 289 200 FCFA pour une SARL.",
   },
   {
     slug: "creer-sa-cote-divoire",
@@ -217,6 +253,10 @@ export const ARTICLES: Article[] = [
     readTime: "8 min",
     priority: 2,
     content: () => <CreerSaCoteDivoireContent />,
+    publishedAt: "2026-03-05",
+    updatedAt: "2026-05-15",
+    summary:
+      "Créer une SA en Côte d'Ivoire exige un capital minimum de 10 M FCFA (100 M si appel public à l'épargne), au moins 7 actionnaires (ou 1 pour une SA unipersonnelle), un commissaire aux comptes dès la création et la nomination d'un conseil d'administration. Statuts notariés obligatoires, dépôt au CEPICI sous 8 jours après libération du capital.",
   },
   {
     slug: "tva-cote-divoire-pme",
@@ -227,6 +267,10 @@ export const ARTICLES: Article[] = [
     readTime: "7 min",
     priority: 2,
     content: () => <TvaCoteDivoirePmeContent />,
+    publishedAt: "2026-03-10",
+    updatedAt: "2026-05-15",
+    summary:
+      "La TVA en Côte d'Ivoire s'applique au taux normal de 18 % (9 % pour certains produits réglementés). Toute entreprise dépassant 50 M FCFA de CA annuel est assujettie de plein droit. Déclaration et paiement mensuels avant le 15. La TVA déductible se récupère sur les achats professionnels justifiés par factures conformes.",
   },
   {
     slug: "creer-entreprise-ci-canada",
@@ -237,6 +281,10 @@ export const ARTICLES: Article[] = [
     readTime: "8 min",
     priority: 2,
     content: () => <CreerEntrepriseCiCanadaContent />,
+    publishedAt: "2026-03-15",
+    updatedAt: "2026-05-15",
+    summary:
+      "Depuis le Canada, créer une entreprise en Côte d'Ivoire passe par un cabinet ivoirien mandataire et une procuration légalisée à l'ambassade. Comptez 5 à 7 jours ouvrés malgré le décalage horaire. Les transferts de capital se font via virement SWIFT vers le compte bloqué CEPICI. Frais totaux : 350 000 à 600 000 FCFA tout compris.",
   },
   {
     slug: "cabinet-comptable-plateau-abidjan",
