@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Building2, Calculator, Receipt, MapPin, BadgeCheck, Sparkles, Wallet, Clock } from "lucide-react";
 import { ServicePage, type Faq, type RelatedService } from "@/components/service/ServicePage";
 import { buildPageHead, faqSchema, LOCAL_BUSINESS_SCHEMA } from "@/lib/seo";
@@ -109,13 +109,20 @@ function Page() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
-                  <tr><td className="p-3 font-semibold">Plateau</td><td className="p-3">Big Four, cabinets internationaux, audit</td><td className="p-3">Grandes entreprises, multinationales</td></tr>
-                  <tr><td className="p-3 font-semibold">Cocody / Deux Plateaux</td><td className="p-3">Cabinets de taille moyenne, conseil</td><td className="p-3">PME, professions libérales, ONG</td></tr>
+                  <tr><td className="p-3 font-semibold"><Link to="/guides/$slug" params={{ slug: "cabinet-comptable-plateau-abidjan" }} className="text-secondary hover:underline">Plateau</Link></td><td className="p-3">Big Four, cabinets internationaux, audit</td><td className="p-3">Grandes entreprises, multinationales</td></tr>
+                  <tr><td className="p-3 font-semibold"><Link to="/guides/$slug" params={{ slug: "cabinet-comptable-cocody-abidjan" }} className="text-secondary hover:underline">Cocody / Deux Plateaux</Link></td><td className="p-3">Cabinets de taille moyenne, conseil</td><td className="p-3">PME, professions libérales, ONG</td></tr>
+                  <tr><td className="p-3 font-semibold"><Link to="/guides/$slug" params={{ slug: "cabinet-comptable-angre-abidjan" }} className="text-secondary hover:underline">Angré (Cocody)</Link></td><td className="p-3">Cabinets de proximité, taille humaine</td><td className="p-3">TPE/PME, restaurants, écoles, cliniques</td></tr>
                   <tr><td className="p-3 font-semibold">Marcory (Zone 4)</td><td className="p-3">Cabinets spécialisés PME, fiscal</td><td className="p-3">PME, import-export, commerce</td></tr>
                   <tr><td className="p-3 font-semibold">Yopougon / Adjamé</td><td className="p-3">Cabinets de proximité</td><td className="p-3">TPE, commerçants, artisans</td></tr>
                 </tbody>
               </table>
             </div>
+            <p className="mt-4 text-sm text-muted-foreground">
+              Guides détaillés par quartier :{" "}
+              <Link to="/guides/$slug" params={{ slug: "cabinet-comptable-plateau-abidjan" }} className="text-secondary hover:underline">Plateau</Link>{" "}·{" "}
+              <Link to="/guides/$slug" params={{ slug: "cabinet-comptable-cocody-abidjan" }} className="text-secondary hover:underline">Cocody</Link>{" "}·{" "}
+              <Link to="/guides/$slug" params={{ slug: "cabinet-comptable-angre-abidjan" }} className="text-secondary hover:underline">Angré</Link>.
+            </p>
           </section>
 
           <section aria-labelledby="howto">
