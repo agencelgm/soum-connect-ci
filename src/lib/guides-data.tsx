@@ -138,6 +138,7 @@ export const ARTICLES: Article[] = [
     categories: ["Domiciliation"],
     readTime: "6 min",
     priority: 2,
+    content: () => <DomiciliationEntrepriseAbidjanContent />,
   },
   {
     slug: "obligations-comptables-sarl-ci",
@@ -147,6 +148,7 @@ export const ARTICLES: Article[] = [
     categories: ["Comptabilité"],
     readTime: "7 min",
     priority: 2,
+    content: () => <ObligationsComptablesSarlCiContent />,
   },
   {
     slug: "cepici-cote-divoire",
@@ -156,6 +158,7 @@ export const ARTICLES: Article[] = [
     categories: ["Création d'entreprise"],
     readTime: "6 min",
     priority: 2,
+    content: () => <CepiciCoteDivoireContent />,
   },
   {
     slug: "creer-sa-cote-divoire",
@@ -165,6 +168,7 @@ export const ARTICLES: Article[] = [
     categories: ["Création d'entreprise"],
     readTime: "8 min",
     priority: 2,
+    content: () => <CreerSaCoteDivoireContent />,
   },
   {
     slug: "tva-cote-divoire-pme",
@@ -174,6 +178,7 @@ export const ARTICLES: Article[] = [
     categories: ["Fiscalité"],
     readTime: "7 min",
     priority: 2,
+    content: () => <TvaCoteDivoirePmeContent />,
   },
   {
     slug: "creer-entreprise-ci-canada",
@@ -201,6 +206,7 @@ export const ARTICLES: Article[] = [
     categories: ["Création d'entreprise"],
     readTime: "5 min",
     priority: 2,
+    content: () => <CapitalMinimumSarlOhadaContent />,
   },
   {
     slug: "cnps-cote-divoire-employeurs",
@@ -210,6 +216,7 @@ export const ARTICLES: Article[] = [
     categories: ["Fiscalité"],
     readTime: "7 min",
     priority: 3,
+    content: () => <CnpsCoteDivoireEmployeursContent />,
   },
   {
     slug: "compte-bancaire-entreprise-abidjan",
@@ -219,6 +226,7 @@ export const ARTICLES: Article[] = [
     categories: ["Création d'entreprise"],
     readTime: "6 min",
     priority: 3,
+    content: () => <CompteBancaireEntrepriseAbidjanContent />,
   },
   {
     slug: "entreprise-individuelle-vs-sarl",
@@ -228,6 +236,7 @@ export const ARTICLES: Article[] = [
     categories: ["Création d'entreprise"],
     readTime: "6 min",
     priority: 3,
+    content: () => <EntrepriseIndividuelleVsSarlContent />,
   },
   {
     slug: "audit-comptable-obligatoire-ci",
@@ -237,6 +246,7 @@ export const ARTICLES: Article[] = [
     categories: ["Audit"],
     readTime: "6 min",
     priority: 3,
+    content: () => <AuditComptableObligatoireCiContent />,
   },
   {
     slug: "erreurs-creation-entreprise-ci",
