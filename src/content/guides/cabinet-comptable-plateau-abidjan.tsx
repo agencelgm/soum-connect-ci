@@ -5,6 +5,7 @@ import {
   ArticleCTA,
   ArticleTable,
 } from "@/components/guides/article-blocks";
+import { Link } from "@tanstack/react-router";
 
 export function CabinetComptablePlateauAbidjanContent() {
   return (
@@ -146,6 +147,16 @@ export function CabinetComptablePlateauAbidjanContent() {
             </p>
           </div>
         </div>
+      </ArticleSection>
+
+      <ArticleSection title="Voir aussi">
+        <ArticleList
+          items={[
+            <><Link to="/cabinet-comptable-abidjan" className="text-primary underline">Cabinet comptable Abidjan : guide complet</Link> — page hub de référence.</>,
+            <><Link to="/guides/$slug" params={{ slug: "cabinet-comptable-cocody-abidjan" }} className="text-primary underline">Cabinet comptable Cocody Abidjan</Link> — alternative pour PME.</>,
+            <><Link to="/guides/$slug" params={{ slug: "cabinet-comptable-angre-abidjan" }} className="text-primary underline">Cabinet comptable Angré Abidjan</Link> — quartier voisin.</>,
+          ]}
+        />
       </ArticleSection>
 
       <ArticleCTA
