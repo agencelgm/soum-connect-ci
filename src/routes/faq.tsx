@@ -1,11 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Search, ArrowRight } from "lucide-react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { Search, ArrowRight, ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { buildPageHead, faqSchema } from "@/lib/seo";
@@ -232,18 +226,30 @@ function Page() {
                 <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-6">
                   {cat.title}
                 </h2>
-                <Accordion type="single" collapsible className="w-full">
+                <div className="w-full divide-y divide-border border-y border-border">
                   {cat.items.map((it, i) => (
-                    <AccordionItem key={i} value={`${cat.id}-${i}`}>
-                      <AccordionTrigger className="text-left text-base md:text-lg font-medium">
-                        {it.question}
-                      </AccordionTrigger>
-                      <AccordionContent className="text-muted-foreground leading-relaxed text-base">
-                        {it.answer}
-                      </AccordionContent>
-                    </AccordionItem>
+                    <details
+                      key={i}
+                      className="group py-2"
+                      itemScope
+                      itemProp="mainEntity"
+                      itemType="https://schema.org/Question"
+                    >
+                      <summary className="flex cursor-pointer items-center justify-between gap-4 py-2 text-left text-base md:text-lg font-medium list-none [&::-webkit-details-marker]:hidden">
+                        <span itemProp="name">{it.question}</span>
+                        <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 group-open:rotate-180" />
+                      </summary>
+                      <div
+                        className="pb-4 pt-1 text-muted-foreground leading-relaxed text-base"
+                        itemScope
+                        itemProp="acceptedAnswer"
+                        itemType="https://schema.org/Answer"
+                      >
+                        <p itemProp="text">{it.answer}</p>
+                      </div>
+                    </details>
                   ))}
-                </Accordion>
+                </div>
               </div>
             ))}
           </div>
