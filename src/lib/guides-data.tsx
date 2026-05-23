@@ -72,6 +72,42 @@ export const ARTICLES: Article[] = [
     priority: 1,
     image: creerSarlCepiciImg,
     content: () => <CreerSarlCepiciContent />,
+    publishedAt: "2026-01-15",
+    updatedAt: "2026-05-01",
+    summary:
+      "Créer une SARL au CEPICI en 2026 demande 8 étapes clés : définir l'activité, choisir le nom, rédiger les statuts, fixer le siège, réunir les pièces, déposer le dossier au Guichet Unique, payer les frais (≈ 289 200 FCFA), puis obtenir RCCM, DFE et IDU sous 2 à 4 jours.",
+    faqs: [
+      {
+        question: "Peut-on créer une SARL seul en Côte d'Ivoire ?",
+        answer:
+          "Oui, il est possible de créer une SARL seul. Dans ce cas, on parle généralement de SARL unipersonnelle (SARLU). Cette option peut convenir à un entrepreneur qui veut structurer son activité sans avoir d'associés.",
+      },
+      {
+        question: "Faut-il passer par le CEPICI pour créer une SARL ?",
+        answer:
+          "Le CEPICI est le point central des formalités de création d'entreprise en Côte d'Ivoire. Le Guichet Unique facilite les démarches liées à la création, à l'immatriculation et à l'obtention des documents officiels.",
+      },
+      {
+        question: "Quels documents faut-il pour créer une SARL au CEPICI ?",
+        answer:
+          "Il faut notamment les statuts, le formulaire unique Personne Morale, les pièces d'identité, les documents liés au siège social, le plan de localisation, les documents notariés et les informations sur les dirigeants. La liste exacte peut varier selon le dossier.",
+      },
+      {
+        question: "Combien coûte la création d'une SARL au CEPICI ?",
+        answer:
+          "Le coût dépend du capital, des actes, du bail, des frais notariés et des formalités nécessaires. eRegulations donne un exemple de coût estimé à 289 200 FCFA pour une procédure de création de société, mais ce montant doit être adapté à chaque situation.",
+      },
+      {
+        question: "Combien de temps faut-il pour créer une SARL au CEPICI ?",
+        answer:
+          "La durée estimée peut être de 2 à 4 jours selon eRegulations, mais le délai réel dépend de la qualité du dossier et des corrections éventuelles.",
+      },
+      {
+        question: "L'IDU est-il obligatoire pour une SARL ?",
+        answer:
+          "L'IDU permet d'identifier une entreprise légalement constituée en Côte d'Ivoire. Il est attribué dès la création de la structure depuis le portail unique des services à l'investisseur.",
+      },
+    ],
   },
   {
     slug: "sarl-sa-ei-cote-divoire",
