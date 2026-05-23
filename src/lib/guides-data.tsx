@@ -391,6 +391,10 @@ export const ARTICLES: Article[] = [
     readTime: "5 min",
     priority: 2,
     content: () => <CapitalMinimumSarlOhadaContent />,
+    publishedAt: "2026-03-20",
+    updatedAt: "2026-05-15",
+    summary:
+      "Depuis la réforme OHADA, le capital minimum d'une SARL en Côte d'Ivoire est librement fixé par les associés — pratiquement, 100 000 FCFA suffisent juridiquement. En pratique, viser 1 à 5 M FCFA reste recommandé pour crédibiliser la société face aux banques et fournisseurs. Libération minimale : 50 % à la constitution, solde sous 2 ans.",
   },
   {
     slug: "cnps-cote-divoire-employeurs",
@@ -401,6 +405,10 @@ export const ARTICLES: Article[] = [
     readTime: "7 min",
     priority: 3,
     content: () => <CnpsCoteDivoireEmployeursContent />,
+    publishedAt: "2026-03-25",
+    updatedAt: "2026-05-15",
+    summary:
+      "Tout employeur ivoirien doit s'immatriculer à la CNPS dans les 8 jours suivant la première embauche, déclarer mensuellement ses salariés et verser les cotisations avant le 15 du mois suivant. Taux : ≈ 18,45 % à la charge de l'employeur (retraite, prestations familiales, accident du travail) et 6,30 % retenus sur le brut du salarié.",
   },
   {
     slug: "compte-bancaire-entreprise-abidjan",
@@ -411,6 +419,10 @@ export const ARTICLES: Article[] = [
     readTime: "6 min",
     priority: 3,
     content: () => <CompteBancaireEntrepriseAbidjanContent />,
+    publishedAt: "2026-04-01",
+    updatedAt: "2026-05-15",
+    summary:
+      "Ouvrir un compte bancaire entreprise à Abidjan demande RCCM, DFE, IDU, statuts, pièce d'identité du gérant et justificatif d'adresse du siège. Délai moyen : 5 à 15 jours selon la banque (SGCI, Ecobank, NSIA, BOA, Orabank). Pour la création SARL, un compte bloqué CEPICI est exigé avant immatriculation.",
   },
   {
     slug: "entreprise-individuelle-vs-sarl",
@@ -421,6 +433,10 @@ export const ARTICLES: Article[] = [
     readTime: "6 min",
     priority: 3,
     content: () => <EntrepriseIndividuelleVsSarlContent />,
+    publishedAt: "2026-04-05",
+    updatedAt: "2026-05-15",
+    summary:
+      "Passer d'une entreprise individuelle à une SARL en Côte d'Ivoire devient pertinent dès 30 à 50 M FCFA de CA annuel, ou plus tôt si l'activité présente un risque patrimonial (prestation, BTP, importation). La SARL protège le patrimoine personnel, ouvre l'accès au crédit et facilite l'entrée d'associés ou d'investisseurs.",
   },
   {
     slug: "audit-comptable-obligatoire-ci",
@@ -431,6 +447,10 @@ export const ARTICLES: Article[] = [
     readTime: "6 min",
     priority: 3,
     content: () => <AuditComptableObligatoireCiContent />,
+    publishedAt: "2026-04-10",
+    updatedAt: "2026-05-15",
+    summary:
+      "En Côte d'Ivoire, le commissariat aux comptes devient obligatoire pour une SARL dès qu'elle dépasse 250 M FCFA de chiffre d'affaires, 125 M FCFA de total bilan ou 50 salariés. Toute SA est soumise à audit dès la création. Le commissaire aux comptes doit être inscrit à l'OECCA-CI et son mandat est de 3 ans renouvelable.",
   },
   {
     slug: "erreurs-creation-entreprise-ci",
@@ -441,6 +461,10 @@ export const ARTICLES: Article[] = [
     readTime: "7 min",
     priority: 3,
     content: () => <ErreursCreationEntrepriseCiContent />,
+    publishedAt: "2026-04-15",
+    updatedAt: "2026-05-15",
+    summary:
+      "Les 10 erreurs les plus coûteuses lors de la création d'entreprise en CI : statuts mal rédigés, capital sous-évalué, mauvais code APE, oubli de l'IDU, retard d'affiliation CNPS, négligence de la patente, choix du mauvais centre des impôts, gérance non déclarée, absence de comptable et confusion entre siège social et domiciliation.",
   },
   {
     slug: "cout-creation-entreprise-cote-divoire",
@@ -452,6 +476,10 @@ export const ARTICLES: Article[] = [
     readTime: "7 min",
     priority: 2,
     content: () => <CoutCreationEntrepriseContent />,
+    publishedAt: "2026-04-20",
+    updatedAt: "2026-05-15",
+    summary:
+      "Créer une SARL en Côte d'Ivoire en 2026 coûte environ 289 200 FCFA de frais CEPICI obligatoires (RCCM, DFE, IDU, JORCI), auxquels s'ajoutent 150 000 à 400 000 FCFA d'honoraires si vous passez par un cabinet, plus le capital social libéré. Pour une SA, prévoir 600 000 à 1,2 M FCFA tout compris (statuts notariés inclus).",
   },
   {
     slug: "rccm-cote-divoire",
@@ -462,6 +490,10 @@ export const ARTICLES: Article[] = [
     readTime: "7 min",
     priority: 2,
     content: () => <RccmCoteDivoireContent />,
+    publishedAt: "2026-04-25",
+    updatedAt: "2026-05-15",
+    summary:
+      "Le RCCM (Registre du Commerce et du Crédit Mobilier) est le numéro d'immatriculation officiel de toute entreprise en Côte d'Ivoire, attribué par le Tribunal de Commerce via le CEPICI. Il est obligatoire pour facturer, ouvrir un compte bancaire pro et contracter. Coût : 15 000 FCFA, délivré sous 24 à 72 heures, à mentionner sur toutes les factures.",
   },
   {
     slug: "aides-creation-entreprise-ci",
@@ -472,6 +504,10 @@ export const ARTICLES: Article[] = [
     readTime: "7 min",
     priority: 2,
     content: () => <AidesCreationEntrepriseCiContent />,
+    publishedAt: "2026-05-01",
+    updatedAt: "2026-05-15",
+    summary:
+      "Trois grandes catégories d'aides existent pour créer une entreprise en Côte d'Ivoire : les dispositifs publics (CEPICI, FDFP, Agence Emploi Jeunes, FAFCI), les fonds privés et bailleurs (BEI, Proparco, Africinvest, business angels) et les incubateurs/accélérateurs (Orange Fab, Seedstars, La Fabrique). Conditions et plafonds détaillés dans le guide.",
   },
 ];
 
