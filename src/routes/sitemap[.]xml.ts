@@ -18,40 +18,47 @@ export const Route = createFileRoute("/sitemap.xml")({
         const today = new Date().toISOString().slice(0, 10);
 
         const entries: SitemapEntry[] = [
+          // Homepage
           { path: "/", changefreq: "weekly", priority: "1.0", lastmod: today },
-          // Page de conversion principale
+          // Conversion pages
           { path: "/demande-soumissions", changefreq: "monthly", priority: "0.9", lastmod: today },
-          // Landing alternative — focus mot-clé "créer son entreprise"
           { path: "/creer-son-entreprise-cote-divoire", changefreq: "weekly", priority: "0.9", lastmod: today },
-          // Pages services (priorité 0.8)
+          // Service pages
           { path: "/creation-entreprise-cote-divoire", changefreq: "monthly", priority: "0.8", lastmod: today },
           { path: "/comptabilite-entreprise-abidjan", changefreq: "monthly", priority: "0.8", lastmod: today },
           { path: "/declaration-fiscale-cote-divoire", changefreq: "monthly", priority: "0.8", lastmod: today },
           { path: "/domiciliation-entreprise-abidjan", changefreq: "monthly", priority: "0.8", lastmod: today },
-          // Pages géographiques + diaspora + partenaires + FAQ (priorité 0.7)
+          // Geo + diaspora + partners + FAQ
           { path: "/cabinet-comptable-abidjan", changefreq: "monthly", priority: "0.7", lastmod: today },
           { path: "/creation-entreprise-diaspora-ivoirienne", changefreq: "monthly", priority: "0.7", lastmod: today },
           { path: "/cabinets-comptables-partenaires", changefreq: "monthly", priority: "0.7", lastmod: today },
           { path: "/faq", changefreq: "monthly", priority: "0.7", lastmod: today },
-          // Blog + pages secondaires (priorité 0.6)
+          // Secondary pages
           { path: "/guides", changefreq: "monthly", priority: "0.6", lastmod: today },
           { path: "/comment-ca-marche", changefreq: "monthly", priority: "0.6", lastmod: today },
-          // À propos
+          { path: "/nous-contacter", changefreq: "monthly", priority: "0.5", lastmod: today },
+          // About
           { path: "/a-propos", changefreq: "monthly", priority: "0.5", lastmod: today },
-          // Guides dynamiques
+          // Offer pages
+          { path: "/offre-logo", changefreq: "monthly", priority: "0.4", lastmod: today },
+          { path: "/offre-site-internet", changefreq: "monthly", priority: "0.4", lastmod: today },
+          // Dynamic guides
           ...ARTICLES.map((a) => ({
             path: `/guides/${a.slug}`,
             changefreq: "monthly" as const,
             priority: "0.5",
-            lastmod: today,
+            lastmod: a.updatedAt ?? a.publishedAt ?? today,
           })),
           // English mirrors
           { path: "/en", changefreq: "weekly", priority: "0.8", lastmod: today },
+          { path: "/en/start-a-business-ivory-coast", changefreq: "weekly", priority: "0.8", lastmod: today },
           { path: "/en/get-quotes", changefreq: "monthly", priority: "0.7", lastmod: today },
-          { path: "/en/about", changefreq: "monthly", priority: "0.5", lastmod: today },
           { path: "/en/company-registration-ivory-coast", changefreq: "monthly", priority: "0.6", lastmod: today },
           { path: "/en/accounting-firm-abidjan", changefreq: "monthly", priority: "0.6", lastmod: today },
-          { path: "/en/start-a-business-ivory-coast", changefreq: "weekly", priority: "0.8", lastmod: today },
+          { path: "/en/about", changefreq: "monthly", priority: "0.5", lastmod: today },
+          { path: "/en/contact-us", changefreq: "monthly", priority: "0.5", lastmod: today },
+          { path: "/en/logo-offer", changefreq: "monthly", priority: "0.4", lastmod: today },
+          { path: "/en/website-offer", changefreq: "monthly", priority: "0.4", lastmod: today },
         ];
 
         const urls = entries.map((e) =>
