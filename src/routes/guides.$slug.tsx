@@ -7,6 +7,7 @@ import {
   SITE_NAME,
   truncateTitle,
   truncateDescription,
+  faqSchema,
 } from "@/lib/seo";
 import { getArticleBySlug, getRelatedArticles } from "@/lib/guides-data";
 import { NotFoundPage } from "@/components/pages/NotFoundPage";
@@ -95,15 +96,21 @@ export const Route = createFileRoute("/guides/$slug")({
         },
       },
     };
+    const extraScripts = [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(articleSchema),
+      },
+    ];
+    if (article.faqs && article.faqs.length > 0) {
+      extraScripts.push({
+        type: "application/ld+json",
+        children: JSON.stringify(faqSchema(article.faqs)),
+      });
+    }
     return {
       ...head,
-      scripts: [
-        ...head.scripts,
-        {
-          type: "application/ld+json",
-          children: JSON.stringify(articleSchema),
-        },
-      ],
+      scripts: [...head.scripts, ...extraScripts],
     };
   },
   component: GuideSlugPage,
