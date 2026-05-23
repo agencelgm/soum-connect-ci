@@ -18,6 +18,8 @@ import { CreerSaCoteDivoireContent } from "@/content/guides/creer-sa-cote-divoir
 import { CompteBancaireEntrepriseAbidjanContent } from "@/content/guides/compte-bancaire-entreprise-abidjan";
 import { ErreursCreationEntrepriseCiContent } from "@/content/guides/erreurs-creation-entreprise-ci";
 import { CabinetComptablePlateauAbidjanContent } from "@/content/guides/cabinet-comptable-plateau-abidjan";
+import { CabinetComptableCocodyAbidjanContent } from "@/content/guides/cabinet-comptable-cocody-abidjan";
+import { CabinetComptableAngreAbidjanContent } from "@/content/guides/cabinet-comptable-angre-abidjan";
 import { CreerEntrepriseCiCanadaContent } from "@/content/guides/creer-entreprise-ci-canada";
 import { CoutCreationEntrepriseContent } from "@/content/guides/cout-creation-entreprise-cote-divoire";
 import { RccmCoteDivoireContent } from "@/content/guides/rccm-cote-divoire";
@@ -245,6 +247,92 @@ export const ARTICLES: Article[] = [
     readTime: "6 min",
     priority: 2,
     content: () => <CabinetComptablePlateauAbidjanContent />,
+    publishedAt: "2026-02-10",
+    updatedAt: "2026-05-15",
+    summary:
+      "Le Plateau, CBD d'Abidjan, concentre Big Four et cabinets spécialisés grands comptes. Honoraires 20 à 30 % plus élevés qu'à Cocody ou Marcory. Pertinent pour groupes, multinationales, ONG et entreprises soumises à audit légal. Pour une PME standard, un cabinet de Cocody offre un meilleur rapport qualité-prix à compétences équivalentes.",
+    faqs: [
+      {
+        question: "Les cabinets du Plateau sont-ils meilleurs que les autres ?",
+        answer: "Pas nécessairement. La qualité d'un cabinet dépend de son agrément OECCA-CI, de l'expérience de ses experts-comptables et de sa réactivité — pas de son adresse.",
+      },
+      {
+        question: "Un cabinet du Plateau peut-il suivre mon entreprise si je suis à Yopougon ?",
+        answer: "Oui, sans aucun problème. La gestion comptable se fait principalement à distance grâce à la dématérialisation et à la télédéclaration sur le portail e-impôts de la DGI.",
+      },
+      {
+        question: "Comment vérifier qu'un cabinet est agréé OECCA-CI ?",
+        answer: "Demandez le numéro d'inscription à l'Ordre et vérifiez-le sur le site officiel oecca-ci.org. Sans agrément, aucune DSF signée n'est recevable.",
+      },
+      {
+        question: "Quel est le tarif moyen d'une tenue comptable mensuelle au Plateau ?",
+        answer: "Entre 150 000 et 400 000 FCFA par mois pour une PME, contre 80 000 à 250 000 FCFA dans des quartiers comme Cocody ou Marcory.",
+      },
+    ],
+  },
+  {
+    slug: "cabinet-comptable-cocody-abidjan",
+    title: "Cabinet comptable Cocody Abidjan : guide complet 2026",
+    excerpt:
+      "Tarifs, sous-quartiers (Riviera, Angré, 2 Plateaux), administrations proches : comment choisir un cabinet comptable agréé OECCA-CI à Cocody.",
+    categories: ["Géo", "Comptabilité"],
+    readTime: "7 min",
+    priority: 1,
+    content: () => <CabinetComptableCocodyAbidjanContent />,
+    publishedAt: "2026-05-20",
+    updatedAt: "2026-05-20",
+    summary:
+      "Cocody est le second pôle économique d'Abidjan après le Plateau. Ses cabinets comptables agréés OECCA-CI couvrent Riviera, Deux-Plateaux et Angré, avec des tarifs inférieurs de 20 à 30 % à ceux du Plateau pour une qualité équivalente. Idéal pour PME de services, professions libérales, cliniques, écoles privées et ONG.",
+    faqs: [
+      {
+        question: "Où se trouve le centre des impôts DGI le plus proche de Cocody ?",
+        answer: "Le Centre Moyennes Entreprises (CME) Cocody se trouve à Cocody Centre, près du carrefour Saint-Jean. Les grandes entreprises (CA > 3 milliards FCFA) dépendent de la DGE au Plateau.",
+      },
+      {
+        question: "Y a-t-il beaucoup de cabinets agréés OECCA-CI à Cocody ?",
+        answer: "Oui. Cocody est, après le Plateau, la commune qui concentre le plus grand nombre de cabinets d'expertise comptable agréés, principalement en Riviera, Deux-Plateaux et Angré.",
+      },
+      {
+        question: "Un cabinet de Cocody peut-il gérer une entreprise basée à Yopougon ?",
+        answer: "Oui, sans difficulté. La dématérialisation des factures et la télédéclaration sur le portail e-impôts permettent à un cabinet de Cocody de suivre des clients partout dans le Grand Abidjan.",
+      },
+      {
+        question: "Combien coûte un comptable à Cocody pour une SARL débutante ?",
+        answer: "Entre 80 000 et 150 000 FCFA par mois pour une SARL réalisant moins de 100 millions FCFA de chiffre d'affaires, hors DSF annuelle facturée séparément (250 000 à 600 000 FCFA).",
+      },
+    ],
+  },
+  {
+    slug: "cabinet-comptable-angre-abidjan",
+    title: "Cabinet comptable Angré Abidjan : tarifs et conseils 2026",
+    excerpt:
+      "Comment choisir un cabinet comptable agréé OECCA-CI à Angré (Cocody) : tarifs TPE/PME, administrations proches, cabinets recommandés.",
+    categories: ["Géo", "Comptabilité"],
+    readTime: "6 min",
+    priority: 1,
+    content: () => <CabinetComptableAngreAbidjanContent />,
+    publishedAt: "2026-05-20",
+    updatedAt: "2026-05-20",
+    summary:
+      "Angré, sous-quartier en pleine expansion de Cocody, abrite restaurants, écoles privées, cliniques et PME de services. Ses cabinets comptables agréés OECCA-CI, majoritairement de taille humaine, proposent un service de proximité 25 à 35 % moins cher qu'au Plateau, avec l'agence CNPS Cocody à la 8e tranche et le CME Cocody à 15 minutes.",
+    faqs: [
+      {
+        question: "Où se trouve le centre des impôts DGI le plus proche d'Angré ?",
+        answer: "Le CME Cocody (Centre Moyennes Entreprises) à Cocody Centre est le centre de rattachement par défaut des PME d'Angré, à 10-15 minutes en voiture hors heures de pointe.",
+      },
+      {
+        question: "Y a-t-il des cabinets agréés OECCA-CI à Angré ?",
+        answer: "Oui, une vingtaine de cabinets agréés sont installés à Angré, principalement de la 7e à la 9e tranche. Vérifiez l'agrément sur oecca-ci.org avant toute signature.",
+      },
+      {
+        question: "Un cabinet d'Angré peut-il créer ma SARL au CEPICI ?",
+        answer: "Oui. Le CEPICI est à Riviera Golf, à 15 minutes d'Angré. La plupart des cabinets locaux proposent une création SARL clé en main (statuts, dépôt, RCCM, IDU) entre 180 000 et 350 000 FCFA.",
+      },
+      {
+        question: "Quelle différence avec un cabinet de Cocody-Riviera ?",
+        answer: "Riviera cible une clientèle plus haut de gamme (ONG, expatriés, cliniques) avec des honoraires supérieurs. Angré est plus orienté TPE/PME locales. La qualité technique est identique dès lors que les deux sont agréés OECCA-CI.",
+      },
+    ],
   },
   {
     slug: "capital-minimum-sarl-ohada",
