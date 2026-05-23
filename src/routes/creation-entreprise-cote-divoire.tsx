@@ -4,9 +4,9 @@ import { ServicePage, type Faq, type RelatedService } from "@/components/service
 import { buildPageHead, faqSchema, howToSchema } from "@/lib/seo";
 
 const META_TITLE =
-  "Création d'Entreprise en Côte d'Ivoire | Trouvez votre Cabinet | SoumissionComptable.com";
+  "Création d'Entreprise Côte d'Ivoire — Cabinets Agréés CEPICI";
 const META_DESC =
-  "Créez votre SARL, SA ou Entreprise Individuelle en Côte d'Ivoire avec l'aide d'un cabinet comptable agréé. Démarches CEPICI, documents requis, coûts. Obtenez 5 soumissions gratuitement.";
+  "Créez votre SARL, SA, EI ou GIE en Côte d'Ivoire via le CEPICI. Démarches, documents, coûts. 5 soumissions gratuites de cabinets agréés OECCA-CI.";
 
 const STEPS: { name: string; text: string }[] = [
   {
