@@ -70,9 +70,9 @@ const L = {
     description: "Guides pratiques pour entrepreneurs ivoiriens.",
   },
   blog: {
-    to: "/blog",
-    label: "Blog",
-    description: "Analyses et actualités pour les dirigeants en CI.",
+    to: "/guides",
+    label: "Guides & ressources",
+    description: "Guides pratiques pour entrepreneurs ivoiriens.",
   },
   about: {
     to: "/a-propos",
@@ -133,13 +133,9 @@ export const PAGE_RELATIONS: Record<string, PageRelations> = {
     breadcrumb: [HOME, { label: "À propos" }],
     related: [L.comment, L.partenaires, L.cabinet, L.faq, L.guides, L.creation],
   },
-  "/blog": {
-    breadcrumb: [HOME, { label: "Blog" }],
-    related: [L.guides, L.faq, L.creation, L.compta, L.fiscal, L.cabinet],
-  },
   "/guides": {
     breadcrumb: [HOME, { label: "Guides" }],
-    related: [L.creation, L.compta, L.fiscal, L.cabinet, L.faq, L.blog],
+    related: [L.creation, L.compta, L.fiscal, L.cabinet, L.faq, L.about],
   },
   "/demande-soumissions": {
     breadcrumb: [HOME, { label: "Demande de soumissions" }],

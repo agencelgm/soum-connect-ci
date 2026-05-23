@@ -58,7 +58,7 @@ export function Header() {
 
   const NAV = [
     { to: "/comment-ca-marche", label: t.nav.howItWorks },
-    { to: "/blog", label: t.nav.blog },
+    { to: "/guides", label: t.nav.blog },
     { to: "/faq", label: t.nav.faq },
     { to: "/a-propos", label: t.nav.about },
   ];
