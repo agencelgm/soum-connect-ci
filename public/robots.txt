@@ -25,9 +25,6 @@ Allow: /
 User-agent: Google-Extended
 Allow: /
 
-User-agent: Bingbot
-Allow: /
-
 # Block training-only crawlers (no citation benefit)
 User-agent: CCBot
 Disallow: /
