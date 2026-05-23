@@ -26,8 +26,8 @@ const META_DESC =
   "Découvrez comment obtenir jusqu'à 5 soumissions gratuites de cabinets comptables agréés en Côte d'Ivoire en moins de 48h. Processus simple en 3 étapes.";
 
 export const Route = createFileRoute("/comment-ca-marche")({
-  head: () =>
-    buildPageHead({
+  head: () => {
+    const head = buildPageHead({
       path: "/comment-ca-marche",
       title: META_TITLE,
       description: META_DESC,
@@ -35,7 +35,39 @@ export const Route = createFileRoute("/comment-ca-marche")({
         { name: "Accueil", path: "/" },
         { name: "Comment ça marche", path: "/comment-ca-marche" },
       ],
-    }),
+    });
+    const howToSchema = {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      name: "Comment obtenir 5 soumissions de cabinets comptables en Côte d'Ivoire",
+      totalTime: "PT48H",
+      step: [
+        {
+          "@type": "HowToStep",
+          position: 1,
+          name: "Remplissez le formulaire (2 minutes)",
+          text: "Indiquez votre type de service, votre localisation et vos coordonnées dans un formulaire en ligne court.",
+        },
+        {
+          "@type": "HowToStep",
+          position: 2,
+          name: "Recevez jusqu'à 5 soumissions sous 48 h",
+          text: "Votre demande est transmise aux cabinets adaptés, qui préparent et vous envoient leur proposition dans les 48 heures.",
+        },
+        {
+          "@type": "HowToStep",
+          position: 3,
+          name: "Comparez et choisissez sans engagement",
+          text: "Comparez les offres, posez vos questions directement aux cabinets et choisissez celui qui vous convient — ou aucun.",
+        },
+      ],
+    };
+    head.scripts = [
+      ...(head.scripts ?? []),
+      { type: "application/ld+json", children: JSON.stringify(howToSchema) },
+    ];
+    return head;
+  },
   component: Page,
 });
 

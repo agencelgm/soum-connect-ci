@@ -15,9 +15,9 @@ import { trackEvent } from "@/lib/analytics";
 import { toast } from "sonner";
 
 const META_TITLE =
-  "Demande de Soumissions | Cabinets Comptables CI | SoumissionComptable.com";
+  "Demande de Soumissions — Cabinets Comptables CI Agréés";
 const META_DESC =
-  "Recevez jusqu'à 5 soumissions gratuites de cabinets comptables agréés en Côte d'Ivoire. Formulaire simple, réponse en 48h. Création d'entreprise, comptabilité, déclaration fiscale.";
+  "Recevez 5 soumissions gratuites de cabinets comptables agréés OECCA-CI en 48 h. Création, comptabilité, fiscalité, domiciliation.";
 
 export const Route = createFileRoute("/demande-soumissions")({
   head: () =>

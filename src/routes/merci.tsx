@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 import { buildPageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/merci")({
-  head: () =>
-    buildPageHead({
+  head: () => {
+    const head = buildPageHead({
       path: "/merci",
       title: "Merci | SoumissionComptable.com",
       description:
@@ -15,7 +15,10 @@ export const Route = createFileRoute("/merci")({
         { name: "Accueil", path: "/" },
         { name: "Merci", path: "/merci" },
       ],
-    }),
+    });
+    head.meta.push({ name: "robots", content: "noindex, nofollow" });
+    return head;
+  },
   component: MerciPage,
 });
 

@@ -3,9 +3,9 @@ import { Calculator, Building2, Receipt, MapPin, TrendingDown, GraduationCap, Ta
 import { ServicePage, type Faq, type RelatedService } from "@/components/service/ServicePage";
 import { buildPageHead, faqSchema, LOCAL_BUSINESS_SCHEMA } from "@/lib/seo";
 
-const META_TITLE = "Comptabilité Entreprise Abidjan | Tenue de Comptes | SoumissionComptable.com";
+const META_TITLE = "Comptabilité Entreprise Abidjan — Tenue de Comptes OHADA";
 const META_DESC =
-  "Externalisez la comptabilité de votre entreprise à Abidjan. Tenue de comptes, états financiers SYSCOHADA, déclarations mensuelles. Comparez 5 cabinets gratuitement.";
+  "Externalisez votre comptabilité à Abidjan : tenue de comptes, états financiers SYSCOHADA, déclarations mensuelles. 5 cabinets comparés gratuitement.";
 
 const FAQS: Faq[] = [
   {

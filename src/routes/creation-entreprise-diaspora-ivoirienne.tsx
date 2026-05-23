@@ -6,9 +6,9 @@ import { ServicePage, type Faq, type RelatedService } from "@/components/service
 import { buildPageHead, faqSchema } from "@/lib/seo";
 
 const META_TITLE =
-  "Créer une Entreprise en Côte d'Ivoire depuis l'Étranger | Diaspora Ivoirienne";
+  "Créer une Entreprise en CI depuis l'Étranger — Diaspora";
 const META_DESC =
-  "Guide complet pour la diaspora ivoirienne (France, Canada, USA) sur comment créer une SARL ou SA en Côte d'Ivoire à distance via le CEPICI. Trouvez votre cabinet mandataire.";
+  "Diaspora ivoirienne (France, Canada, USA) : créez votre SARL ou SA en CI à distance via le CEPICI. Cabinet mandataire, étapes, documents requis.";
 
 const STEPS = [
   {
