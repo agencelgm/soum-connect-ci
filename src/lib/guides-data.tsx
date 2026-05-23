@@ -6,6 +6,16 @@ import { CoutCabinetAbidjanContent } from "@/content/guides/cout-cabinet-comptab
 import { CreerEntrepriseDepuisFranceContent } from "@/content/guides/creer-entreprise-ci-depuis-france";
 import { ImpotsEntrepriseContent } from "@/content/guides/impots-entreprise-cote-divoire";
 import { ChoisirCabinetAbidjanContent } from "@/content/guides/choisir-cabinet-comptable-abidjan";
+import { CepiciCoteDivoireContent } from "@/content/guides/cepici-cote-divoire";
+import { TvaCoteDivoirePmeContent } from "@/content/guides/tva-cote-divoire-pme";
+import { ObligationsComptablesSarlCiContent } from "@/content/guides/obligations-comptables-sarl-ci";
+import { EntrepriseIndividuelleVsSarlContent } from "@/content/guides/entreprise-individuelle-vs-sarl";
+import { CapitalMinimumSarlOhadaContent } from "@/content/guides/capital-minimum-sarl-ohada";
+import { CnpsCoteDivoireEmployeursContent } from "@/content/guides/cnps-cote-divoire-employeurs";
+import { AuditComptableObligatoireCiContent } from "@/content/guides/audit-comptable-obligatoire-ci";
+import { DomiciliationEntrepriseAbidjanContent } from "@/content/guides/domiciliation-entreprise-abidjan";
+import { CreerSaCoteDivoireContent } from "@/content/guides/creer-sa-cote-divoire";
+import { CompteBancaireEntrepriseAbidjanContent } from "@/content/guides/compte-bancaire-entreprise-abidjan";
 import creerSarlCepiciImg from "@/assets/guides/creer-sarl-cepici.jpg";
 import sarlSaEiImg from "@/assets/guides/sarl-sa-ei.jpg";
 import calendrierFiscalImg from "@/assets/guides/calendrier-fiscal-2026.jpg";
