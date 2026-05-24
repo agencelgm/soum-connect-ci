@@ -32,6 +32,31 @@ import diasporaFranceImg from "@/assets/guides/diaspora-france-ci.jpg";
 import impotsEntrepriseImg from "@/assets/guides/impots-entreprise-ci.jpg";
 import choisirCabinetImg from "@/assets/guides/choisir-cabinet-abidjan.jpg";
 
+// Photos réelles (Unsplash) — pas d'IA. Format paysage 16/9 optimisé.
+const U = (id: string) =>
+  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=1280&q=70`;
+
+const IMG = {
+  domiciliation: U("1497366216548-37526070297c"),       // bureaux modernes
+  obligations: U("1554224155-6726b3ff858f"),            // calculatrice / compta
+  cepici: U("1450101499163-c8848c66ca85"),              // documents bureau
+  creerSa: U("1556761175-5973dc0f32e7"),                // réunion conseil
+  tva: U("1554224154-22dec7ec8818"),                    // factures / chiffres
+  canada: U("1436491865332-7a61a109cc05"),              // avion / voyage
+  plateau: U("1486406146926-c627a92ad1ab"),             // bureau pro
+  cocody: U("1497366811353-6870744d04b2"),              // espace de travail
+  angre: U("1497366216548-37526070297c"),               // bureau ouvert
+  capital: U("1601597111158-2fceff292cdc"),             // billets de banque
+  cnps: U("1573164713714-d95e436ab8d6"),                // équipe RH
+  banque: U("1556742049-0cfed4f6a45d"),                 // carte bancaire
+  eiVsSarl: U("1454165804606-c3d57bc86b40"),            // graphiques décision
+  audit: U("1551836022-d5d88e9218df"),                  // loupe sur dossier
+  erreurs: U("1521791136064-7986c2920216"),             // checklist / réunion
+  coutCreation: U("1565514020179-026b92b84bb6"),        // billets FCFA
+  rccm: U("1450101499163-c8848c66ca85"),                // registre officiel
+  aides: U("1559526324-4b87b5e36e44"),                  // poignée de main
+};
+
 export type Category =
   | "Création d'entreprise"
   | "Comptabilité"
