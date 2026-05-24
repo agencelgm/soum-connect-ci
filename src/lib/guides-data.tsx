@@ -31,6 +31,9 @@ import coutCabinetImg from "@/assets/guides/cout-cabinet-abidjan.jpg";
 import diasporaFranceImg from "@/assets/guides/diaspora-france-ci.jpg";
 import impotsEntrepriseImg from "@/assets/guides/impots-entreprise-ci.jpg";
 import choisirCabinetImg from "@/assets/guides/choisir-cabinet-abidjan.jpg";
+import cabinetPlateauImg from "@/assets/guides/cabinet-plateau-abidjan.jpg";
+import cabinetCocodyImg from "@/assets/guides/cabinet-cocody-abidjan.jpg";
+import cabinetAngreImg from "@/assets/guides/cabinet-angre-abidjan.jpg";
 
 export type Category =
   | "Création d'entreprise"
@@ -294,6 +297,7 @@ export const ARTICLES: Article[] = [
     categories: ["Géo", "Comptabilité"],
     readTime: "6 min",
     priority: 2,
+    image: cabinetPlateauImg,
     content: () => <CabinetComptablePlateauAbidjanContent />,
     publishedAt: "2026-02-10",
     updatedAt: "2026-05-15",
@@ -326,6 +330,7 @@ export const ARTICLES: Article[] = [
     categories: ["Géo", "Comptabilité"],
     readTime: "7 min",
     priority: 1,
+    image: cabinetCocodyImg,
     content: () => <CabinetComptableCocodyAbidjanContent />,
     publishedAt: "2026-05-20",
     updatedAt: "2026-05-20",
@@ -358,6 +363,7 @@ export const ARTICLES: Article[] = [
     categories: ["Géo", "Comptabilité"],
     readTime: "6 min",
     priority: 1,
+    image: cabinetAngreImg,
     content: () => <CabinetComptableAngreAbidjanContent />,
     publishedAt: "2026-05-20",
     updatedAt: "2026-05-20",
