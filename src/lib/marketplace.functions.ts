@@ -135,7 +135,7 @@ export const publishProspect = createServerFn({ method: "POST" })
     await assertStaff(context.userId);
     const { data: pubId, error } = await context.supabase.rpc("publish_prospect_as_lead", {
       _prospect_id: data.prospect_id,
-      _summary: data.summary ?? null,
+      _summary: data.summary ?? undefined,
       _max_unlocks: data.max_unlocks,
     });
     if (error) throw new Error(error.message);
