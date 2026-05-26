@@ -195,31 +195,47 @@ function GrantButton({ disabled, onConfirm }: { disabled?: boolean; onConfirm: (
   );
 }
 
-function ProspectsPanel() {
+function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
   const listFn = useServerFn(listProspects);
   const qc = useQueryClient();
   const publishFn = useServerFn(publishProspect);
+  const rejectFn = useServerFn(rejectProspect);
+  const reactivateFn = useServerFn(reactivateProspect);
+  const deleteFn = useServerFn(deleteProspect);
   const { data, isLoading } = useQuery({ queryKey: ["prospects"], queryFn: () => listFn() });
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [filter, setFilter] = useState<"all" | "pending_qualification" | "qualified" | "rejected">("all");
+
+  async function run(id: string, fn: () => Promise<unknown>) {
+    setBusyId(id);
+    try { await fn(); qc.invalidateQueries({ queryKey: ["prospects"] }); }
+    catch (e) { toast.error(e instanceof Error ? e.message : "Erreur"); }
+    finally { setBusyId(null); }
+  }
+
   async function onPublish(prospect_id: string) {
-    setBusyId(prospect_id);
-    try {
+    await run(prospect_id, async () => {
       await publishFn({ data: { prospect_id, max_unlocks: 6 } });
       toast.success("Lead publié dans la marketplace.");
-      qc.invalidateQueries({ queryKey: ["prospects"] });
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Erreur");
-    } finally {
-      setBusyId(null);
-    }
+    });
   }
   if (isLoading) return <p>Chargement…</p>;
-  const prospects = data?.prospects ?? [];
+  const all = data?.prospects ?? [];
+  const prospects = filter === "all" ? all : all.filter((p: any) => p.status === filter);
   return (
     <div className="space-y-2">
-      <p className="text-sm text-muted-foreground">{prospects.length} prospect(s) récents</p>
+      <div className="flex justify-between items-center flex-wrap gap-2">
+        <p className="text-sm text-muted-foreground">{prospects.length} prospect(s) affichés (sur {all.length})</p>
+        <div className="flex gap-1 text-xs">
+          {(["all", "pending_qualification", "qualified", "rejected"] as const).map((k) => (
+            <Button key={k} size="sm" variant={filter === k ? "default" : "outline"} onClick={() => setFilter(k)}>
+              {k === "all" ? "Tous" : k === "pending_qualification" ? "En attente" : k === "qualified" ? "Qualifiés" : "Rejetés"}
+            </Button>
+          ))}
+        </div>
+      </div>
       {prospects.map((p: any) => (
-        <div key={p.id} className="rounded border p-3 bg-card text-sm">
+        <div key={p.id} className={`rounded border p-3 bg-card text-sm ${p.status === "rejected" ? "opacity-60" : ""}`}>
           <div className="flex justify-between flex-wrap gap-2">
             <div>
               <strong>{p.full_name || "—"}</strong> · {p.email || "—"} · {p.phone || "—"}
@@ -235,10 +251,32 @@ function ProspectsPanel() {
             {p.legal_form && <>Forme : {p.legal_form}</>}
           </div>
           {p.message && <p className="mt-1 text-xs italic">"{p.message}"</p>}
-          <div className="mt-2 flex justify-end">
-            <Button size="sm" variant="outline" disabled={busyId === p.id} onClick={() => onPublish(p.id)}>
-              {busyId === p.id ? "Publication…" : "Publier comme lead (6 places)"}
-            </Button>
+          {p.status === "rejected" && p.qualification_notes && (
+            <p className="mt-1 text-xs text-destructive">Motif rejet : {p.qualification_notes}</p>
+          )}
+          <div className="mt-2 flex justify-end gap-2 flex-wrap">
+            {p.status !== "rejected" && p.status !== "qualified" && (
+              <>
+                <Button size="sm" variant="outline" disabled={busyId === p.id} onClick={() => onPublish(p.id)}>
+                  {busyId === p.id ? "…" : "Publier comme lead (6 places)"}
+                </Button>
+                <RejectButton label="Rejeter" disabled={busyId === p.id} onConfirm={(reason) =>
+                  run(p.id, async () => { await rejectFn({ data: { prospect_id: p.id, reason } }); toast.success("Prospect rejeté"); })
+                } />
+              </>
+            )}
+            {p.status === "rejected" && (
+              <Button size="sm" variant="outline" disabled={busyId === p.id} onClick={() =>
+                run(p.id, async () => { await reactivateFn({ data: { prospect_id: p.id } }); toast.success("Prospect réactivé"); })
+              }>Réactiver</Button>
+            )}
+            {isAdmin && (
+              <Button size="sm" variant="destructive" disabled={busyId === p.id} onClick={() => {
+                if (confirm("Supprimer définitivement ce prospect ?")) {
+                  run(p.id, async () => { await deleteFn({ data: { prospect_id: p.id } }); toast.success("Prospect supprimé"); });
+                }
+              }}>Supprimer</Button>
+            )}
           </div>
         </div>
       ))}
@@ -311,5 +349,156 @@ function CreatePartnerPanel() {
       <div><Label>Zones (virgules)</Label><Textarea value={form.zones} onChange={(e) => up("zones", e.target.value)} /></div>
       <Button type="submit" disabled={busy}>{busy ? "…" : "Créer le partenaire"}</Button>
     </form>
+  );
+}
+
+function TeamPanel() {
+  const listFn = useServerFn(listTeam);
+  const addFn = useServerFn(addTeamMember);
+  const updRoleFn = useServerFn(updateTeamRole);
+  const resetPwdFn = useServerFn(resetTeamPassword);
+  const suspendFn = useServerFn(suspendTeamMember);
+  const unsuspendFn = useServerFn(unsuspendTeamMember);
+  const deleteFn = useServerFn(deleteTeamMember);
+  const qc = useQueryClient();
+  const { data, isLoading } = useQuery({ queryKey: ["team"], queryFn: () => listFn() });
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [showAdd, setShowAdd] = useState(false);
+  const [tempPwdDialog, setTempPwdDialog] = useState<{ email: string; pwd: string } | null>(null);
+  const [form, setForm] = useState({ email: "", first_name: "", last_name: "", role: "agent" as "admin" | "agent" });
+
+  function up<K extends keyof typeof form>(k: K, v: string) { setForm((f) => ({ ...f, [k]: v as any })); }
+
+  async function run(id: string, fn: () => Promise<unknown>) {
+    setBusyId(id);
+    try { await fn(); qc.invalidateQueries({ queryKey: ["team"] }); }
+    catch (e) { toast.error(e instanceof Error ? e.message : "Erreur"); }
+    finally { setBusyId(null); }
+  }
+
+  async function onAdd(e: React.FormEvent) {
+    e.preventDefault();
+    setBusyId("new");
+    try {
+      const res = await addFn({ data: form });
+      setTempPwdDialog({ email: form.email, pwd: res.temp_password });
+      setForm({ email: "", first_name: "", last_name: "", role: "agent" });
+      setShowAdd(false);
+      qc.invalidateQueries({ queryKey: ["team"] });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Erreur");
+    } finally { setBusyId(null); }
+  }
+
+  if (isLoading) return <p>Chargement…</p>;
+  const members = data?.members ?? [];
+  const me = data?.me;
+
+  return (
+    <div className="space-y-4">
+      {tempPwdDialog && (
+        <div className="rounded-lg border-2 border-primary bg-primary/5 p-4 space-y-2">
+          <p className="font-semibold">Mot de passe temporaire pour {tempPwdDialog.email}</p>
+          <p className="text-sm text-muted-foreground">Communique-le au membre. Il devra le changer à sa première connexion. Ce mot de passe ne sera plus affiché.</p>
+          <div className="flex gap-2 items-center">
+            <code className="flex-1 rounded bg-background border px-3 py-2 font-mono text-sm">{tempPwdDialog.pwd}</code>
+            <Button size="sm" onClick={() => { navigator.clipboard.writeText(tempPwdDialog.pwd); toast.success("Copié"); }}>Copier</Button>
+            <Button size="sm" variant="ghost" onClick={() => setTempPwdDialog(null)}>Fermer</Button>
+          </div>
+        </div>
+      )}
+
+      <div className="flex justify-between items-center">
+        <p className="text-sm text-muted-foreground">{members.length} membre(s) staff</p>
+        <Button size="sm" onClick={() => setShowAdd((s) => !s)}>
+          {showAdd ? "Annuler" : "+ Ajouter un membre"}
+        </Button>
+      </div>
+
+      {showAdd && (
+        <form onSubmit={onAdd} className="rounded-lg border p-4 bg-card space-y-3">
+          <div className="grid grid-cols-2 gap-3">
+            <div><Label>Prénom *</Label><Input required value={form.first_name} onChange={(e) => up("first_name", e.target.value)} /></div>
+            <div><Label>Nom *</Label><Input required value={form.last_name} onChange={(e) => up("last_name", e.target.value)} /></div>
+          </div>
+          <div><Label>Email *</Label><Input type="email" required value={form.email} onChange={(e) => up("email", e.target.value)} /></div>
+          <div>
+            <Label>Rôle *</Label>
+            <div className="flex gap-2 mt-1">
+              <Button type="button" size="sm" variant={form.role === "agent" ? "default" : "outline"} onClick={() => up("role", "agent")}>Agent</Button>
+              <Button type="button" size="sm" variant={form.role === "admin" ? "default" : "outline"} onClick={() => up("role", "admin")}>Administrateur</Button>
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Un mot de passe temporaire sera généré et affiché une seule fois.
+            </p>
+          </div>
+          <Button type="submit" disabled={busyId === "new"}>
+            {busyId === "new" ? "Création…" : "Créer le compte"}
+          </Button>
+        </form>
+      )}
+
+      <div className="space-y-2">
+        {members.map((m: any) => {
+          const isMe = m.user_id === me;
+          return (
+            <div key={m.user_id} className={`rounded-lg border p-4 bg-card ${m.suspended ? "opacity-60" : ""}`}>
+              <div className="flex justify-between flex-wrap gap-3">
+                <div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <strong>{m.full_name || m.email}</strong>
+                    <span className={`inline-block rounded px-2 py-0.5 text-xs ${m.role === "admin" ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
+                      {m.role === "admin" ? "Administrateur" : "Agent"}
+                    </span>
+                    {m.suspended && <span className="inline-block rounded bg-destructive text-destructive-foreground px-2 py-0.5 text-xs">Suspendu</span>}
+                    {m.must_change_password && <span className="inline-block rounded bg-amber-500/20 text-amber-700 dark:text-amber-300 px-2 py-0.5 text-xs">Doit changer mdp</span>}
+                    {isMe && <span className="inline-block rounded bg-muted px-2 py-0.5 text-xs">Vous</span>}
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-1">{m.email}</p>
+                </div>
+                <div className="flex flex-wrap gap-2 items-start">
+                  {!isMe && (
+                    <Button size="sm" variant="outline" disabled={busyId === m.user_id} onClick={() =>
+                      run(m.user_id, async () => {
+                        const newRole = m.role === "admin" ? "agent" : "admin";
+                        await updRoleFn({ data: { user_id: m.user_id, role: newRole } });
+                        toast.success("Rôle modifié");
+                      })
+                    }>
+                      → {m.role === "admin" ? "Agent" : "Admin"}
+                    </Button>
+                  )}
+                  <Button size="sm" variant="outline" disabled={busyId === m.user_id} onClick={() => {
+                    if (!confirm(`Réinitialiser le mot de passe de ${m.email} ?`)) return;
+                    setBusyId(m.user_id);
+                    resetPwdFn({ data: { user_id: m.user_id } })
+                      .then((res) => { setTempPwdDialog({ email: m.email, pwd: res.temp_password }); })
+                      .catch((e) => toast.error(e instanceof Error ? e.message : "Erreur"))
+                      .finally(() => setBusyId(null));
+                  }}>
+                    Reset mdp
+                  </Button>
+                  {!isMe && (m.suspended ? (
+                    <Button size="sm" variant="outline" disabled={busyId === m.user_id} onClick={() =>
+                      run(m.user_id, async () => { await unsuspendFn({ data: { user_id: m.user_id } }); toast.success("Réactivé"); })
+                    }>Réactiver</Button>
+                  ) : (
+                    <Button size="sm" variant="outline" disabled={busyId === m.user_id} onClick={() =>
+                      run(m.user_id, async () => { await suspendFn({ data: { user_id: m.user_id } }); toast.success("Suspendu"); })
+                    }>Suspendre</Button>
+                  ))}
+                  {!isMe && (
+                    <Button size="sm" variant="destructive" disabled={busyId === m.user_id} onClick={() => {
+                      if (!confirm(`Supprimer définitivement ${m.email} ? Cette action est irréversible.`)) return;
+                      run(m.user_id, async () => { await deleteFn({ data: { user_id: m.user_id } }); toast.success("Membre supprimé"); });
+                    }}>Supprimer</Button>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 }
