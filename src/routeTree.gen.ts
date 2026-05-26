@@ -14,6 +14,7 @@ import { Route as OffreSiteInternetRouteImport } from './routes/offre-site-inter
 import { Route as OffreLogoRouteImport } from './routes/offre-logo'
 import { Route as NousContacterRouteImport } from './routes/nous-contacter'
 import { Route as MerciRouteImport } from './routes/merci'
+import { Route as InscriptionPartenaireRouteImport } from './routes/inscription-partenaire'
 import { Route as GuidesRouteImport } from './routes/guides'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as DomiciliationEntrepriseAbidjanRouteImport } from './routes/domiciliation-entreprise-abidjan'
@@ -22,6 +23,7 @@ import { Route as DeclarationFiscaleCoteDivoireRouteImport } from './routes/decl
 import { Route as CreerSonEntrepriseCoteDivoireRouteImport } from './routes/creer-son-entreprise-cote-divoire'
 import { Route as CreationEntrepriseDiasporaIvoirienneRouteImport } from './routes/creation-entreprise-diaspora-ivoirienne'
 import { Route as CreationEntrepriseCoteDivoireRouteImport } from './routes/creation-entreprise-cote-divoire'
+import { Route as ConnexionRouteImport } from './routes/connexion'
 import { Route as ComptabiliteEntrepriseAbidjanRouteImport } from './routes/comptabilite-entreprise-abidjan'
 import { Route as CommentCaMarcheRouteImport } from './routes/comment-ca-marche'
 import { Route as CabinetsComptablesPartenairesRouteImport } from './routes/cabinets-comptables-partenaires'
@@ -69,6 +71,11 @@ const MerciRoute = MerciRouteImport.update({
   path: '/merci',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InscriptionPartenaireRoute = InscriptionPartenaireRouteImport.update({
+  id: '/inscription-partenaire',
+  path: '/inscription-partenaire',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GuidesRoute = GuidesRouteImport.update({
   id: '/guides',
   path: '/guides',
@@ -114,6 +121,11 @@ const CreationEntrepriseCoteDivoireRoute =
     path: '/creation-entreprise-cote-divoire',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ConnexionRoute = ConnexionRouteImport.update({
+  id: '/connexion',
+  path: '/connexion',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ComptabiliteEntrepriseAbidjanRoute =
   ComptabiliteEntrepriseAbidjanRouteImport.update({
     id: '/comptabilite-entreprise-abidjan',
@@ -232,6 +244,7 @@ export interface FileRoutesByFullPath {
   '/cabinets-comptables-partenaires': typeof CabinetsComptablesPartenairesRoute
   '/comment-ca-marche': typeof CommentCaMarcheRoute
   '/comptabilite-entreprise-abidjan': typeof ComptabiliteEntrepriseAbidjanRoute
+  '/connexion': typeof ConnexionRoute
   '/creation-entreprise-cote-divoire': typeof CreationEntrepriseCoteDivoireRoute
   '/creation-entreprise-diaspora-ivoirienne': typeof CreationEntrepriseDiasporaIvoirienneRoute
   '/creer-son-entreprise-cote-divoire': typeof CreerSonEntrepriseCoteDivoireRoute
@@ -240,6 +253,7 @@ export interface FileRoutesByFullPath {
   '/domiciliation-entreprise-abidjan': typeof DomiciliationEntrepriseAbidjanRoute
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRouteWithChildren
+  '/inscription-partenaire': typeof InscriptionPartenaireRoute
   '/merci': typeof MerciRoute
   '/nous-contacter': typeof NousContacterRoute
   '/offre-logo': typeof OffreLogoRoute
@@ -268,6 +282,7 @@ export interface FileRoutesByTo {
   '/cabinets-comptables-partenaires': typeof CabinetsComptablesPartenairesRoute
   '/comment-ca-marche': typeof CommentCaMarcheRoute
   '/comptabilite-entreprise-abidjan': typeof ComptabiliteEntrepriseAbidjanRoute
+  '/connexion': typeof ConnexionRoute
   '/creation-entreprise-cote-divoire': typeof CreationEntrepriseCoteDivoireRoute
   '/creation-entreprise-diaspora-ivoirienne': typeof CreationEntrepriseDiasporaIvoirienneRoute
   '/creer-son-entreprise-cote-divoire': typeof CreerSonEntrepriseCoteDivoireRoute
@@ -276,6 +291,7 @@ export interface FileRoutesByTo {
   '/domiciliation-entreprise-abidjan': typeof DomiciliationEntrepriseAbidjanRoute
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRouteWithChildren
+  '/inscription-partenaire': typeof InscriptionPartenaireRoute
   '/merci': typeof MerciRoute
   '/nous-contacter': typeof NousContacterRoute
   '/offre-logo': typeof OffreLogoRoute
@@ -305,6 +321,7 @@ export interface FileRoutesById {
   '/cabinets-comptables-partenaires': typeof CabinetsComptablesPartenairesRoute
   '/comment-ca-marche': typeof CommentCaMarcheRoute
   '/comptabilite-entreprise-abidjan': typeof ComptabiliteEntrepriseAbidjanRoute
+  '/connexion': typeof ConnexionRoute
   '/creation-entreprise-cote-divoire': typeof CreationEntrepriseCoteDivoireRoute
   '/creation-entreprise-diaspora-ivoirienne': typeof CreationEntrepriseDiasporaIvoirienneRoute
   '/creer-son-entreprise-cote-divoire': typeof CreerSonEntrepriseCoteDivoireRoute
@@ -313,6 +330,7 @@ export interface FileRoutesById {
   '/domiciliation-entreprise-abidjan': typeof DomiciliationEntrepriseAbidjanRoute
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRouteWithChildren
+  '/inscription-partenaire': typeof InscriptionPartenaireRoute
   '/merci': typeof MerciRoute
   '/nous-contacter': typeof NousContacterRoute
   '/offre-logo': typeof OffreLogoRoute
@@ -343,6 +361,7 @@ export interface FileRouteTypes {
     | '/cabinets-comptables-partenaires'
     | '/comment-ca-marche'
     | '/comptabilite-entreprise-abidjan'
+    | '/connexion'
     | '/creation-entreprise-cote-divoire'
     | '/creation-entreprise-diaspora-ivoirienne'
     | '/creer-son-entreprise-cote-divoire'
@@ -351,6 +370,7 @@ export interface FileRouteTypes {
     | '/domiciliation-entreprise-abidjan'
     | '/faq'
     | '/guides'
+    | '/inscription-partenaire'
     | '/merci'
     | '/nous-contacter'
     | '/offre-logo'
@@ -379,6 +399,7 @@ export interface FileRouteTypes {
     | '/cabinets-comptables-partenaires'
     | '/comment-ca-marche'
     | '/comptabilite-entreprise-abidjan'
+    | '/connexion'
     | '/creation-entreprise-cote-divoire'
     | '/creation-entreprise-diaspora-ivoirienne'
     | '/creer-son-entreprise-cote-divoire'
@@ -387,6 +408,7 @@ export interface FileRouteTypes {
     | '/domiciliation-entreprise-abidjan'
     | '/faq'
     | '/guides'
+    | '/inscription-partenaire'
     | '/merci'
     | '/nous-contacter'
     | '/offre-logo'
@@ -415,6 +437,7 @@ export interface FileRouteTypes {
     | '/cabinets-comptables-partenaires'
     | '/comment-ca-marche'
     | '/comptabilite-entreprise-abidjan'
+    | '/connexion'
     | '/creation-entreprise-cote-divoire'
     | '/creation-entreprise-diaspora-ivoirienne'
     | '/creer-son-entreprise-cote-divoire'
@@ -423,6 +446,7 @@ export interface FileRouteTypes {
     | '/domiciliation-entreprise-abidjan'
     | '/faq'
     | '/guides'
+    | '/inscription-partenaire'
     | '/merci'
     | '/nous-contacter'
     | '/offre-logo'
@@ -452,6 +476,7 @@ export interface RootRouteChildren {
   CabinetsComptablesPartenairesRoute: typeof CabinetsComptablesPartenairesRoute
   CommentCaMarcheRoute: typeof CommentCaMarcheRoute
   ComptabiliteEntrepriseAbidjanRoute: typeof ComptabiliteEntrepriseAbidjanRoute
+  ConnexionRoute: typeof ConnexionRoute
   CreationEntrepriseCoteDivoireRoute: typeof CreationEntrepriseCoteDivoireRoute
   CreationEntrepriseDiasporaIvoirienneRoute: typeof CreationEntrepriseDiasporaIvoirienneRoute
   CreerSonEntrepriseCoteDivoireRoute: typeof CreerSonEntrepriseCoteDivoireRoute
@@ -460,6 +485,7 @@ export interface RootRouteChildren {
   DomiciliationEntrepriseAbidjanRoute: typeof DomiciliationEntrepriseAbidjanRoute
   FaqRoute: typeof FaqRoute
   GuidesRoute: typeof GuidesRouteWithChildren
+  InscriptionPartenaireRoute: typeof InscriptionPartenaireRoute
   MerciRoute: typeof MerciRoute
   NousContacterRoute: typeof NousContacterRoute
   OffreLogoRoute: typeof OffreLogoRoute
@@ -517,6 +543,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MerciRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/inscription-partenaire': {
+      id: '/inscription-partenaire'
+      path: '/inscription-partenaire'
+      fullPath: '/inscription-partenaire'
+      preLoaderRoute: typeof InscriptionPartenaireRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/guides': {
       id: '/guides'
       path: '/guides'
@@ -571,6 +604,13 @@ declare module '@tanstack/react-router' {
       path: '/creation-entreprise-cote-divoire'
       fullPath: '/creation-entreprise-cote-divoire'
       preLoaderRoute: typeof CreationEntrepriseCoteDivoireRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/connexion': {
+      id: '/connexion'
+      path: '/connexion'
+      fullPath: '/connexion'
+      preLoaderRoute: typeof ConnexionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/comptabilite-entreprise-abidjan': {
@@ -742,6 +782,7 @@ const rootRouteChildren: RootRouteChildren = {
   CabinetsComptablesPartenairesRoute: CabinetsComptablesPartenairesRoute,
   CommentCaMarcheRoute: CommentCaMarcheRoute,
   ComptabiliteEntrepriseAbidjanRoute: ComptabiliteEntrepriseAbidjanRoute,
+  ConnexionRoute: ConnexionRoute,
   CreationEntrepriseCoteDivoireRoute: CreationEntrepriseCoteDivoireRoute,
   CreationEntrepriseDiasporaIvoirienneRoute:
     CreationEntrepriseDiasporaIvoirienneRoute,
@@ -751,6 +792,7 @@ const rootRouteChildren: RootRouteChildren = {
   DomiciliationEntrepriseAbidjanRoute: DomiciliationEntrepriseAbidjanRoute,
   FaqRoute: FaqRoute,
   GuidesRoute: GuidesRouteWithChildren,
+  InscriptionPartenaireRoute: InscriptionPartenaireRoute,
   MerciRoute: MerciRoute,
   NousContacterRoute: NousContacterRoute,
   OffreLogoRoute: OffreLogoRoute,
@@ -773,3 +815,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
