@@ -59,16 +59,7 @@ export const unlockLead = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => z.object({ publication_id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
-    // Construire un client Supabase scopé à l'utilisateur pour que auth.uid() soit défini dans le RPC
-    const { createClient } = await import("@supabase/supabase-js");
-    const url = process.env.SUPABASE_URL!;
-    const anon = process.env.SUPABASE_PUBLISHABLE_KEY!;
-    const authHeader = context.authHeader ?? `Bearer ${context.token ?? ""}`;
-    const userClient = createClient(url, anon, {
-      global: { headers: { Authorization: authHeader } },
-      auth: { persistSession: false, autoRefreshToken: false },
-    });
-    const { data: result, error } = await userClient.rpc("unlock_lead", { _publication_id: data.publication_id });
+    const { data: result, error } = await context.supabase.rpc("unlock_lead", { _publication_id: data.publication_id });
     if (error) {
       const map: Record<string, string> = {
         partner_not_found: "Aucun compte partenaire trouvé.",
@@ -89,11 +80,8 @@ export const unlockLead = createServerFn({ method: "POST" })
         await emitPartnerEvent(partner, balance === 0 ? "zero_credits" : "low_credits");
       }
     }
-    return result as {
-      already_unlocked: boolean;
-      credits_balance: number;
-      prospect: Record<string, unknown>;
-    };
+    const r = result as { already_unlocked: boolean; credits_balance: number; prospect: Record<string, string | number | boolean | null> };
+    return r;
   });
 
 // ----- Mes leads débloqués -----
@@ -145,15 +133,7 @@ export const publishProspect = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     await assertStaff(context.userId);
-    const { createClient } = await import("@supabase/supabase-js");
-    const url = process.env.SUPABASE_URL!;
-    const anon = process.env.SUPABASE_PUBLISHABLE_KEY!;
-    const authHeader = context.authHeader ?? `Bearer ${context.token ?? ""}`;
-    const userClient = createClient(url, anon, {
-      global: { headers: { Authorization: authHeader } },
-      auth: { persistSession: false, autoRefreshToken: false },
-    });
-    const { data: pubId, error } = await userClient.rpc("publish_prospect_as_lead", {
+    const { data: pubId, error } = await context.supabase.rpc("publish_prospect_as_lead", {
       _prospect_id: data.prospect_id,
       _summary: data.summary ?? null,
       _max_unlocks: data.max_unlocks,
