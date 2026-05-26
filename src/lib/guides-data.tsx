@@ -74,6 +74,15 @@ export type Article = {
   readTime: string;
   /** 1 = 🔴 priorité haute, 2 = 🟡 moyenne, 3 = 🟢 basse. Champ interne, non rendu. */
   priority: 1 | 2 | 3;
+  /**
+   * Audience marketing du guide — OBLIGATOIRE.
+   * "creation" = lecteur qui veut créer son entreprise.
+   * "gestion"  = lecteur qui a déjà une entreprise (compta, fiscal, audit…).
+   * "both"     = sujet transverse (laisser inferAudience() trancher avec le formulaire).
+   * Envoyé à GoHighLevel comme `audience_hint` pour router le prospect.
+   * Ne JAMAIS ajouter un nouveau guide sans renseigner ce champ.
+   */
+  audience: "creation" | "gestion" | "both";
   /** Image hero de l'article (optionnel). */
   image?: string;
   /** Contenu rédigé de l'article (optionnel). Sans cela : placeholder. */
