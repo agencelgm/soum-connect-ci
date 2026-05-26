@@ -112,6 +112,12 @@ export function Header() {
         <div className="hidden lg:flex items-center gap-3">
           <LangToggle />
           <Link
+            to="/connexion"
+            className="text-sm font-medium text-foreground hover:text-primary"
+          >
+            Espace partenaire
+          </Link>
+          <Link
             to={quotesHref}
             className="inline-flex items-center justify-center rounded-lg bg-secondary text-white px-4 py-2 text-sm font-semibold hover:bg-secondary-dark transition-colors"
           >
@@ -180,6 +186,13 @@ export function Header() {
             <div className="mt-3 flex items-center justify-center px-3 border-t border-border pt-3">
               <LangToggle />
             </div>
+            <Link
+              to="/connexion"
+              onClick={() => setOpen(false)}
+              className="rounded-md px-3 py-3 min-h-[48px] flex items-center text-sm font-medium text-foreground hover:bg-muted"
+            >
+              Espace partenaire
+            </Link>
             <Link
               to={quotesHref}
               onClick={() => setOpen(false)}

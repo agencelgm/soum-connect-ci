@@ -1,0 +1,69 @@
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth-context";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+
+export const Route = createFileRoute("/connexion")({
+  head: () => ({
+    meta: [
+      { title: "Connexion partenaire — SoumissionsComptables.ci" },
+      { name: "robots", content: "noindex,nofollow" },
+    ],
+  }),
+  component: ConnexionPage,
+});
+
+function ConnexionPage() {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!loading && user) navigate({ to: "/espace-partenaire", replace: true });
+  }, [user, loading, navigate]);
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setSubmitting(true);
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    setSubmitting(false);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success("Connexion réussie");
+    navigate({ to: "/espace-partenaire", replace: true });
+  }
+
+  return (
+    <section className="mx-auto max-w-md px-6 py-16">
+      <h1 className="text-3xl font-bold mb-2">Connexion</h1>
+      <p className="text-muted-foreground mb-8">Accédez à votre espace partenaire.</p>
+      <form onSubmit={onSubmit} className="space-y-4">
+        <div>
+          <Label htmlFor="email">Email</Label>
+          <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+        </div>
+        <div>
+          <Label htmlFor="password">Mot de passe</Label>
+          <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+        </div>
+        <Button type="submit" disabled={submitting} className="w-full">
+          {submitting ? "Connexion…" : "Se connecter"}
+        </Button>
+      </form>
+      <p className="mt-6 text-sm text-muted-foreground">
+        Pas encore partenaire ?{" "}
+        <Link to="/inscription-partenaire" className="text-primary font-semibold underline">
+          Créer un compte cabinet
+        </Link>
+      </p>
+    </section>
+  );
+}
