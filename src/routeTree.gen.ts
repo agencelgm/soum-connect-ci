@@ -30,6 +30,7 @@ import { Route as CabinetsComptablesPartenairesRouteImport } from './routes/cabi
 import { Route as CabinetComptableAbidjanRouteImport } from './routes/cabinet-comptable-abidjan'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AProposRouteImport } from './routes/a-propos'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EnIndexRouteImport } from './routes/en/index'
 import { Route as GuidesSlugRouteImport } from './routes/guides.$slug'
@@ -42,6 +43,7 @@ import { Route as EnContactUsRouteImport } from './routes/en/contact-us'
 import { Route as EnCompanyRegistrationIvoryCoastRouteImport } from './routes/en/company-registration-ivory-coast'
 import { Route as EnAccountingFirmAbidjanRouteImport } from './routes/en/accounting-firm-abidjan'
 import { Route as EnAboutRouteImport } from './routes/en/about'
+import { Route as AuthenticatedEspacePartenaireRouteImport } from './routes/_authenticated.espace-partenaire'
 import { Route as ApiPublicLeadUpsellRouteImport } from './routes/api/public/lead-upsell'
 import { Route as ApiPublicLeadRouteImport } from './routes/api/public/lead'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
@@ -158,6 +160,10 @@ const AProposRoute = AProposRouteImport.update({
   path: '/a-propos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -220,6 +226,12 @@ const EnAboutRoute = EnAboutRouteImport.update({
   path: '/en/about',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedEspacePartenaireRoute =
+  AuthenticatedEspacePartenaireRouteImport.update({
+    id: '/espace-partenaire',
+    path: '/espace-partenaire',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const ApiPublicLeadUpsellRoute = ApiPublicLeadUpsellRouteImport.update({
   id: '/api/public/lead-upsell',
   path: '/api/public/lead-upsell',
@@ -259,6 +271,7 @@ export interface FileRoutesByFullPath {
   '/offre-logo': typeof OffreLogoRoute
   '/offre-site-internet': typeof OffreSiteInternetRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/espace-partenaire': typeof AuthenticatedEspacePartenaireRoute
   '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
@@ -297,6 +310,7 @@ export interface FileRoutesByTo {
   '/offre-logo': typeof OffreLogoRoute
   '/offre-site-internet': typeof OffreSiteInternetRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/espace-partenaire': typeof AuthenticatedEspacePartenaireRoute
   '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
@@ -315,6 +329,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/a-propos': typeof AProposRoute
   '/blog': typeof BlogRoute
   '/cabinet-comptable-abidjan': typeof CabinetComptableAbidjanRoute
@@ -336,6 +351,7 @@ export interface FileRoutesById {
   '/offre-logo': typeof OffreLogoRoute
   '/offre-site-internet': typeof OffreSiteInternetRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/_authenticated/espace-partenaire': typeof AuthenticatedEspacePartenaireRoute
   '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
@@ -376,6 +392,7 @@ export interface FileRouteTypes {
     | '/offre-logo'
     | '/offre-site-internet'
     | '/sitemap.xml'
+    | '/espace-partenaire'
     | '/en/about'
     | '/en/accounting-firm-abidjan'
     | '/en/company-registration-ivory-coast'
@@ -414,6 +431,7 @@ export interface FileRouteTypes {
     | '/offre-logo'
     | '/offre-site-internet'
     | '/sitemap.xml'
+    | '/espace-partenaire'
     | '/en/about'
     | '/en/accounting-firm-abidjan'
     | '/en/company-registration-ivory-coast'
@@ -431,6 +449,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/a-propos'
     | '/blog'
     | '/cabinet-comptable-abidjan'
@@ -452,6 +471,7 @@ export interface FileRouteTypes {
     | '/offre-logo'
     | '/offre-site-internet'
     | '/sitemap.xml'
+    | '/_authenticated/espace-partenaire'
     | '/en/about'
     | '/en/accounting-firm-abidjan'
     | '/en/company-registration-ivory-coast'
@@ -470,6 +490,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AProposRoute: typeof AProposRoute
   BlogRoute: typeof BlogRoute
   CabinetComptableAbidjanRoute: typeof CabinetComptableAbidjanRoute
@@ -655,6 +676,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AProposRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -739,6 +767,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EnAboutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/espace-partenaire': {
+      id: '/_authenticated/espace-partenaire'
+      path: '/espace-partenaire'
+      fullPath: '/espace-partenaire'
+      preLoaderRoute: typeof AuthenticatedEspacePartenaireRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/api/public/lead-upsell': {
       id: '/api/public/lead-upsell'
       path: '/api/public/lead-upsell'
@@ -763,6 +798,18 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedRouteChildren {
+  AuthenticatedEspacePartenaireRoute: typeof AuthenticatedEspacePartenaireRoute
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedEspacePartenaireRoute: AuthenticatedEspacePartenaireRoute,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
+
 interface GuidesRouteChildren {
   GuidesSlugRoute: typeof GuidesSlugRoute
 }
@@ -776,6 +823,7 @@ const GuidesRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AProposRoute: AProposRoute,
   BlogRoute: BlogRoute,
   CabinetComptableAbidjanRoute: CabinetComptableAbidjanRoute,
@@ -815,3 +863,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
