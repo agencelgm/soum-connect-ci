@@ -1,4 +1,4 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query";
 import {
   Outlet,
   createRootRouteWithContext,
@@ -7,6 +7,9 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { AuthProvider } from "@/lib/auth-context";
 
 import appCss from "../styles.css?url";
 import { LanguageProvider } from "@/lib/language-context";
@@ -121,7 +124,9 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <LanguageProvider>
+      <AuthProvider>
+        <AuthSync />
+        <LanguageProvider>
         <div className="flex min-h-screen flex-col bg-background pb-16 lg:pb-0">
           <a
             href="#main"
@@ -137,7 +142,21 @@ function RootComponent() {
           <MobileCtaBar />
           <Toaster />
         </div>
-      </LanguageProvider>
+        </LanguageProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
+}
+
+function AuthSync() {
+  const router = useRouter();
+  const qc = useQueryClient();
+  useEffect(() => {
+    const { data: sub } = supabase.auth.onAuthStateChange(() => {
+      router.invalidate();
+      qc.invalidateQueries();
+    });
+    return () => sub.subscription.unsubscribe();
+  }, [router, qc]);
+  return null;
 }
