@@ -60,7 +60,10 @@ export function ArticleLayout({
             </div>
 
             <div>
-              <LeadFormCard source={`guide-${article.slug}`} />
+              <LeadFormCard
+                source={`guide-${article.slug}`}
+                audienceHint={article.audience}
+              />
             </div>
           </div>
         </div>
