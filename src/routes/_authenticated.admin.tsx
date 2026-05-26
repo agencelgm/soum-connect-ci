@@ -14,6 +14,7 @@ import {
   adminGrantCredits,
   getMyPartner,
 } from "@/lib/partners.functions";
+import { publishProspect } from "@/lib/marketplace.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -182,7 +183,22 @@ function GrantButton({ disabled, onConfirm }: { disabled?: boolean; onConfirm: (
 
 function ProspectsPanel() {
   const listFn = useServerFn(listProspects);
+  const qc = useQueryClient();
+  const publishFn = useServerFn(publishProspect);
   const { data, isLoading } = useQuery({ queryKey: ["prospects"], queryFn: () => listFn() });
+  const [busyId, setBusyId] = useState<string | null>(null);
+  async function onPublish(prospect_id: string) {
+    setBusyId(prospect_id);
+    try {
+      await publishFn({ data: { prospect_id, max_unlocks: 6 } });
+      toast.success("Lead publié dans la marketplace.");
+      qc.invalidateQueries({ queryKey: ["prospects"] });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Erreur");
+    } finally {
+      setBusyId(null);
+    }
+  }
   if (isLoading) return <p>Chargement…</p>;
   const prospects = data?.prospects ?? [];
   return (
@@ -205,6 +221,11 @@ function ProspectsPanel() {
             {p.legal_form && <>Forme : {p.legal_form}</>}
           </div>
           {p.message && <p className="mt-1 text-xs italic">"{p.message}"</p>}
+          <div className="mt-2 flex justify-end">
+            <Button size="sm" variant="outline" disabled={busyId === p.id} onClick={() => onPublish(p.id)}>
+              {busyId === p.id ? "Publication…" : "Publier comme lead (6 places)"}
+            </Button>
+          </div>
         </div>
       ))}
     </div>
