@@ -46,6 +46,7 @@ export const Route = createFileRoute("/api/public/lead")({
 
         const payload = {
           ...parsed.data,
+          tag: "soumissioncomptable",
           leadId: crypto.randomUUID(),
           received_at: new Date().toISOString(),
           user_agent: request.headers.get("user-agent") ?? "",

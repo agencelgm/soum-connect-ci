@@ -34,6 +34,7 @@ export const Route = createFileRoute("/api/public/lead-upsell")({
         const payload = {
           type: "upsell",
           ...parsed.data,
+          tag: "soumissioncomptable",
           received_at: new Date().toISOString(),
           user_agent: request.headers.get("user-agent") ?? "",
         };
