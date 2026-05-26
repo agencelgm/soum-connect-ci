@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
+import { inferAudience } from "@/lib/audience";
 
 const LeadSchema = z.object({
   source: z.string().min(1).max(64),
@@ -23,6 +24,7 @@ const LeadSchema = z.object({
   logo: z.enum(["oui", "non"]).optional(),
   siteWeb: z.enum(["oui", "non"]).optional(),
   publicite: z.enum(["oui", "non"]).optional(),
+  audience_hint: z.enum(["creation", "gestion", "both"]).optional(),
 });
 
 export const Route = createFileRoute("/api/public/lead")({
@@ -46,6 +48,12 @@ export const Route = createFileRoute("/api/public/lead")({
 
         const payload = {
           ...parsed.data,
+          audience: inferAudience({
+            audience_hint: parsed.data.audience_hint,
+            statut: parsed.data.statut,
+            source: parsed.data.source,
+            service: parsed.data.service,
+          }),
           tag: "soumissioncomptable",
           leadId: crypto.randomUUID(),
           received_at: new Date().toISOString(),
