@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { getTrackingFields } from "@/lib/lead-tracking";
 
 type OfferPageProps = {
   language: "fr" | "en";
@@ -40,10 +41,20 @@ export function OfferPage({
       leadId = sessionStorage.getItem("leadId") ?? undefined;
     } catch {}
     try {
+      const source =
+        (offer === "logo" ? "upsell-logo" : "upsell-site-internet") +
+        (language === "en" ? "-en" : "");
       await fetch("/api/public/lead-upsell", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ leadId, offer, interested, language }),
+        body: JSON.stringify({
+          leadId,
+          offer,
+          interested,
+          language,
+          source,
+          ...getTrackingFields(),
+        }),
       });
     } catch (err) {
       console.error("[upsell] submit failed", err);
