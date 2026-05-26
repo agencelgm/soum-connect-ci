@@ -43,6 +43,7 @@ import { Route as EnContactUsRouteImport } from './routes/en/contact-us'
 import { Route as EnCompanyRegistrationIvoryCoastRouteImport } from './routes/en/company-registration-ivory-coast'
 import { Route as EnAccountingFirmAbidjanRouteImport } from './routes/en/accounting-firm-abidjan'
 import { Route as EnAboutRouteImport } from './routes/en/about'
+import { Route as AuthenticatedRechargerRouteImport } from './routes/_authenticated.recharger'
 import { Route as AuthenticatedMarketplaceRouteImport } from './routes/_authenticated.marketplace'
 import { Route as AuthenticatedEspacePartenaireRouteImport } from './routes/_authenticated.espace-partenaire'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated.admin'
@@ -229,6 +230,11 @@ const EnAboutRoute = EnAboutRouteImport.update({
   path: '/en/about',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRechargerRoute = AuthenticatedRechargerRouteImport.update({
+  id: '/recharger',
+  path: '/recharger',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedMarketplaceRoute =
   AuthenticatedMarketplaceRouteImport.update({
     id: '/marketplace',
@@ -294,6 +300,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRoute
   '/espace-partenaire': typeof AuthenticatedEspacePartenaireRoute
   '/marketplace': typeof AuthenticatedMarketplaceRoute
+  '/recharger': typeof AuthenticatedRechargerRoute
   '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
@@ -336,6 +343,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRoute
   '/espace-partenaire': typeof AuthenticatedEspacePartenaireRoute
   '/marketplace': typeof AuthenticatedMarketplaceRoute
+  '/recharger': typeof AuthenticatedRechargerRoute
   '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
@@ -380,6 +388,7 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/espace-partenaire': typeof AuthenticatedEspacePartenaireRoute
   '/_authenticated/marketplace': typeof AuthenticatedMarketplaceRoute
+  '/_authenticated/recharger': typeof AuthenticatedRechargerRoute
   '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
@@ -424,6 +433,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/espace-partenaire'
     | '/marketplace'
+    | '/recharger'
     | '/en/about'
     | '/en/accounting-firm-abidjan'
     | '/en/company-registration-ivory-coast'
@@ -466,6 +476,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/espace-partenaire'
     | '/marketplace'
+    | '/recharger'
     | '/en/about'
     | '/en/accounting-firm-abidjan'
     | '/en/company-registration-ivory-coast'
@@ -509,6 +520,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/espace-partenaire'
     | '/_authenticated/marketplace'
+    | '/_authenticated/recharger'
     | '/en/about'
     | '/en/accounting-firm-abidjan'
     | '/en/company-registration-ivory-coast'
@@ -806,6 +818,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EnAboutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/recharger': {
+      id: '/_authenticated/recharger'
+      path: '/recharger'
+      fullPath: '/recharger'
+      preLoaderRoute: typeof AuthenticatedRechargerRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/marketplace': {
       id: '/_authenticated/marketplace'
       path: '/marketplace'
@@ -862,12 +881,14 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedEspacePartenaireRoute: typeof AuthenticatedEspacePartenaireRoute
   AuthenticatedMarketplaceRoute: typeof AuthenticatedMarketplaceRoute
+  AuthenticatedRechargerRoute: typeof AuthenticatedRechargerRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedEspacePartenaireRoute: AuthenticatedEspacePartenaireRoute,
   AuthenticatedMarketplaceRoute: AuthenticatedMarketplaceRoute,
+  AuthenticatedRechargerRoute: AuthenticatedRechargerRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(

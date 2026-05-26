@@ -44,9 +44,14 @@ function MarketplacePage() {
           <h1 className="text-3xl font-bold">Marketplace de leads</h1>
           <p className="text-sm text-muted-foreground">{data.partner.cabinet_name}</p>
         </div>
-        <div className="rounded-lg border bg-card px-4 py-3">
-          <div className="text-xs uppercase text-muted-foreground">Crédits</div>
-          <div className="text-2xl font-bold">{data.partner.credits_balance}</div>
+        <div className="flex items-center gap-3">
+          <div className="rounded-lg border bg-card px-4 py-3">
+            <div className="text-xs uppercase text-muted-foreground">Crédits</div>
+            <div className="text-2xl font-bold">{data.partner.credits_balance}</div>
+          </div>
+          <Button asChild variant={data.partner.credits_balance < 3 ? "default" : "outline"}>
+            <Link to="/recharger">Recharger</Link>
+          </Button>
         </div>
       </div>
 
@@ -148,7 +153,9 @@ function LeadCard({ lead, alreadyUnlocked, credits }: { lead: Lead; alreadyUnloc
           {mut.isPending ? "…" : "Afficher les coordonnées"}
         </Button>
       ) : credits < 1 ? (
-        <Button variant="outline" disabled>Recharger pour débloquer</Button>
+        <Button asChild variant="default">
+          <Link to="/recharger">Recharger pour débloquer</Link>
+        </Button>
       ) : (
         <Button onClick={() => mut.mutate()} disabled={mut.isPending}>
           {mut.isPending ? "Déblocage…" : "Débloquer (1 crédit)"}
