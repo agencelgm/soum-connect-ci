@@ -132,12 +132,12 @@ function Page() {
     <main>
       {rel && <Breadcrumbs items={rel.breadcrumb} />}
       {/* Hero */}
-      <section className="bg-[#F8FAFC] border-b border-border">
+      <section className="bg-primary">
         <div className="container-app py-14 md:py-20 text-center">
-          <h1 className="font-heading font-bold text-primary text-3xl md:text-5xl max-w-3xl mx-auto leading-tight">
+          <h1 className="font-heading font-bold text-white text-3xl md:text-5xl max-w-3xl mx-auto leading-tight">
             Guides & Ressources pour Entrepreneurs en Côte d'Ivoire
           </h1>
-          <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="mt-4 text-lg text-white/85 max-w-2xl mx-auto">
             Tous nos guides pratiques sur la création d'entreprise, la comptabilité et la fiscalité en CI.
           </p>
         </div>
@@ -184,7 +184,7 @@ function Page() {
       {latest.length > 0 && (
         <section
           aria-labelledby="latest-guides-title"
-          className="bg-[#F8FAFC] border-t border-border"
+          className="bg-background-alt border-t border-border"
         >
           <div className="container-app py-12 md:py-16">
             <div className="max-w-2xl mb-8">

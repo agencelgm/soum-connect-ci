@@ -159,29 +159,33 @@ const personas = [
 function Page() {
   return (
     <>
+      {/* Breadcrumb */}
+      <div className="container-app pt-6 pb-2">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to="/">Accueil</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Comment ça marche</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
+
       {/* HERO */}
-      <section className="bg-[#F8FAFC]" aria-labelledby="hero-title">
+      <section className="bg-primary" aria-labelledby="hero-title">
         <div className="container-app section">
-          <Breadcrumb className="mb-6">
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link to="/">Accueil</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Comment ça marche</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
           <h1
             id="hero-title"
-            className="font-heading text-3xl md:text-5xl font-bold text-primary leading-tight max-w-3xl"
+            className="font-heading text-3xl md:text-5xl font-bold text-white leading-tight max-w-3xl"
           >
             Comment Obtenir vos Soumissions de Cabinets Comptables
           </h1>
-          <p className="mt-4 text-lg text-muted-foreground max-w-2xl">
+          <p className="mt-4 text-lg text-white/85 max-w-2xl">
             Notre processus est simple, rapide et 100% gratuit pour vous.
           </p>
         </div>
@@ -237,7 +241,7 @@ function Page() {
       </section>
 
       {/* SECTION 2 — Pour vous rassurer */}
-      <section className="bg-[#F8FAFC]" aria-labelledby="reassure-title">
+      <section className="bg-background-alt" aria-labelledby="reassure-title">
         <div className="container-app section">
           <h2
             id="reassure-title"

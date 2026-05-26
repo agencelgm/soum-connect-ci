@@ -175,20 +175,11 @@
     font-weight: 600;
   }
 
-  h1 {
-    font-size: var(--text-hero-mobile);
-    line-height: var(--leading-hero);
-  }
-  h2 {
-    font-size: 1.5rem;
+  h1, h2, h3 {
     line-height: 1.2;
   }
-  @media (min-width: 768px) {
-    h1 { font-size: var(--text-hero-tablet); }
-    h2 { font-size: 2rem; }
-  }
-  @media (min-width: 1024px) {
-    h1 { font-size: var(--text-hero-desktop); }
+  h1 {
+    line-height: var(--leading-hero);
   }
 }
 

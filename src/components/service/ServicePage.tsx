@@ -49,20 +49,20 @@ export function ServicePage({
   );
   return (
     <main>
-      <section className="bg-[#F8FAFC] border-b border-border">
+      <section className="bg-primary">
         <div className="container-app py-10 md:py-16">
           <nav aria-label={t.servicePage.breadcrumb} className="mb-6">
-            <ol className="flex flex-wrap items-center gap-1 text-sm text-muted-foreground">
+            <ol className="flex flex-wrap items-center gap-1 text-sm text-white/70">
               {breadcrumb.map((c, i) => {
                 const last = i === breadcrumb.length - 1;
                 return (
                   <li key={i} className="flex items-center gap-1">
                     {c.to && !last ? (
-                      <Link to={c.to} className="hover:text-primary">
+                      <Link to={c.to} className="hover:text-white transition-colors">
                         {c.label}
                       </Link>
                     ) : (
-                      <span className={last ? "text-foreground font-medium" : ""}>
+                      <span className={last ? "text-white font-medium" : ""}>
                         {c.label}
                       </span>
                     )}
@@ -74,27 +74,21 @@ export function ServicePage({
           </nav>
 
           <div className="flex items-start gap-4">
-            <div className="hidden sm:flex shrink-0 h-14 w-14 rounded-2xl bg-primary text-white items-center justify-center shadow-sm">
+            <div className="hidden sm:flex shrink-0 h-14 w-14 rounded-2xl bg-white/15 text-white items-center justify-center">
               <ServiceIcon className="h-7 w-7" />
             </div>
             <div>
-              <h1 className="font-heading font-bold text-primary text-3xl md:text-5xl leading-tight">
+              <h1 className="font-heading font-bold text-white text-3xl md:text-5xl leading-tight">
                 {title}
               </h1>
-              <p className="mt-4 max-w-2xl text-base md:text-lg text-muted-foreground">
+              <p className="mt-4 max-w-2xl text-base md:text-lg text-white/85">
                 {heroSubtitle}
               </p>
               <div className="mt-6">
-                <Button
-                  asChild
-                  size="lg"
-                  className="bg-secondary hover:bg-secondary-dark text-white"
-                >
-                  <Link to={quotesHref}>
-                    {t.servicePage.heroBtn}
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
+                <Link to={quotesHref} className="btn-cta-primary inline-flex">
+                  {t.servicePage.heroBtn}
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
               </div>
             </div>
           </div>

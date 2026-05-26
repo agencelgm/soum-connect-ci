@@ -178,20 +178,20 @@ function Page() {
     <>
       {rel && <Breadcrumbs items={rel.breadcrumb} className="container-app pt-6" />}
       {/* Hero */}
-      <section className="bg-background-alt border-b border-border">
+      <section className="bg-primary">
         <div className="container-app py-16 md:py-20 text-center">
-          <h1 className="text-3xl md:text-5xl font-bold text-foreground max-w-3xl mx-auto">
+          <h1 className="text-3xl md:text-5xl font-bold text-white max-w-3xl mx-auto">
             Questions Fréquentes sur les Cabinets Comptables en Côte d'Ivoire
           </h1>
-          <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="mt-4 text-lg text-white/85 max-w-2xl mx-auto">
             Trouvez rapidement les réponses à vos questions sur nos services, la création d'entreprise, la fiscalité et la comptabilité en CI.
           </p>
           <div className="mt-8 max-w-xl mx-auto relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-white/60" />
             <Input
               type="search"
               placeholder="Rechercher une question…"
-              className="pl-12 h-12 text-base"
+              className="pl-12 h-12 text-base bg-white/15 border-white/30 text-white placeholder:text-white/60 focus-visible:ring-white/40"
               aria-label="Rechercher dans la FAQ"
             />
           </div>

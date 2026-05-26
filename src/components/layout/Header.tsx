@@ -74,7 +74,7 @@ export function Header() {
             alt="SoumissionComptable.com"
             width={540}
             height={144}
-            className="h-10 md:h-20 lg:h-[7.5rem] w-auto"
+            className="h-12 md:h-20 lg:h-[7.5rem] w-auto"
           />
         </Link>
 
