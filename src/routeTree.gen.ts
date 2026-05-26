@@ -43,6 +43,7 @@ import { Route as EnContactUsRouteImport } from './routes/en/contact-us'
 import { Route as EnCompanyRegistrationIvoryCoastRouteImport } from './routes/en/company-registration-ivory-coast'
 import { Route as EnAccountingFirmAbidjanRouteImport } from './routes/en/accounting-firm-abidjan'
 import { Route as EnAboutRouteImport } from './routes/en/about'
+import { Route as AuthenticatedMarketplaceRouteImport } from './routes/_authenticated.marketplace'
 import { Route as AuthenticatedEspacePartenaireRouteImport } from './routes/_authenticated.espace-partenaire'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated.admin'
 import { Route as ApiPublicTestPartnerWebhookRouteImport } from './routes/api/public/test-partner-webhook'
@@ -228,6 +229,12 @@ const EnAboutRoute = EnAboutRouteImport.update({
   path: '/en/about',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedMarketplaceRoute =
+  AuthenticatedMarketplaceRouteImport.update({
+    id: '/marketplace',
+    path: '/marketplace',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedEspacePartenaireRoute =
   AuthenticatedEspacePartenaireRouteImport.update({
     id: '/espace-partenaire',
@@ -286,6 +293,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/espace-partenaire': typeof AuthenticatedEspacePartenaireRoute
+  '/marketplace': typeof AuthenticatedMarketplaceRoute
   '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
@@ -327,6 +335,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/espace-partenaire': typeof AuthenticatedEspacePartenaireRoute
+  '/marketplace': typeof AuthenticatedMarketplaceRoute
   '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
@@ -370,6 +379,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/espace-partenaire': typeof AuthenticatedEspacePartenaireRoute
+  '/_authenticated/marketplace': typeof AuthenticatedMarketplaceRoute
   '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
@@ -413,6 +423,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/admin'
     | '/espace-partenaire'
+    | '/marketplace'
     | '/en/about'
     | '/en/accounting-firm-abidjan'
     | '/en/company-registration-ivory-coast'
@@ -454,6 +465,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/admin'
     | '/espace-partenaire'
+    | '/marketplace'
     | '/en/about'
     | '/en/accounting-firm-abidjan'
     | '/en/company-registration-ivory-coast'
@@ -496,6 +508,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/_authenticated/admin'
     | '/_authenticated/espace-partenaire'
+    | '/_authenticated/marketplace'
     | '/en/about'
     | '/en/accounting-firm-abidjan'
     | '/en/company-registration-ivory-coast'
@@ -793,6 +806,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EnAboutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/marketplace': {
+      id: '/_authenticated/marketplace'
+      path: '/marketplace'
+      fullPath: '/marketplace'
+      preLoaderRoute: typeof AuthenticatedMarketplaceRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/espace-partenaire': {
       id: '/_authenticated/espace-partenaire'
       path: '/espace-partenaire'
@@ -841,11 +861,13 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedEspacePartenaireRoute: typeof AuthenticatedEspacePartenaireRoute
+  AuthenticatedMarketplaceRoute: typeof AuthenticatedMarketplaceRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedEspacePartenaireRoute: AuthenticatedEspacePartenaireRoute,
+  AuthenticatedMarketplaceRoute: AuthenticatedMarketplaceRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -906,3 +928,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
