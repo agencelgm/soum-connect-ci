@@ -35,8 +35,11 @@ export const Route = createFileRoute("/guides")({
 
 function ArticleCard({ article, featured = false }: { article: Article; featured?: boolean }) {
   return (
-    <article
-      className={`group flex flex-col rounded-2xl border border-border bg-white overflow-hidden hover:border-primary/40 hover:shadow-lg transition-all ${
+    <Link
+      to="/guides/$slug"
+      params={{ slug: article.slug }}
+      aria-label={article.title}
+      className={`group flex flex-col rounded-2xl border border-border bg-white overflow-hidden hover:border-primary/40 hover:shadow-lg transition-all cursor-pointer ${
         featured ? "md:flex-row" : ""
       }`}
     >
@@ -84,17 +87,13 @@ function ArticleCard({ article, featured = false }: { article: Article; featured
             <Clock className="h-3.5 w-3.5" />
             {article.readTime} de lecture
           </span>
-          <Link
-            to="/guides/$slug"
-            params={{ slug: article.slug }}
-            className="inline-flex items-center gap-1 text-sm font-semibold text-secondary hover:text-secondary-dark"
-          >
+          <span className="inline-flex items-center gap-1 text-sm font-semibold text-secondary group-hover:text-secondary-dark">
             Lire la suite
             <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
+          </span>
         </div>
       </div>
-    </article>
+    </Link>
   );
 }
 
