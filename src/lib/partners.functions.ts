@@ -123,6 +123,20 @@ export const getMyPartner = createServerFn({ method: "GET" })
     };
   });
 
+// ---------------------- Mark password as changed ----------------------
+
+export const markPasswordChanged = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { userId } = context;
+    const { error } = await supabaseAdmin
+      .from("profiles")
+      .update({ must_change_password: false, updated_at: new Date().toISOString() })
+      .eq("id", userId);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
 // ---------------------- Admin: list partners ----------------------
 
 export const listPartners = createServerFn({ method: "GET" })
