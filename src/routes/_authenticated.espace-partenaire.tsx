@@ -61,9 +61,11 @@ function EspacePartenaire() {
       {partner && partner.status === "approved" && (
         <StatusCard title={`Bienvenue, ${partner.cabinet_name}`} tone="success">
           <p>Crédits disponibles : <strong>{partner.credits_balance}</strong></p>
-          <p className="mt-2 text-sm text-muted-foreground">
-            La marketplace de leads sera bientôt activée. Vous serez notifié dès l'ouverture.
-          </p>
+          <div className="mt-3">
+            <Button asChild>
+              <Link to="/marketplace">Accéder à la marketplace</Link>
+            </Button>
+          </div>
         </StatusCard>
       )}
     </div>
