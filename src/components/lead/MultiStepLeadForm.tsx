@@ -300,7 +300,12 @@ export function MultiStepLeadForm({
       const res = await fetch("/api/public/lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...values, source, language }),
+        body: JSON.stringify({
+          ...values,
+          source,
+          language,
+          ...getTrackingFields(),
+        }),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       try {
