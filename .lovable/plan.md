@@ -1,55 +1,59 @@
+# Accès admin pour les propriétaires du site
 
-# Plateforme partenaires & marketplace de leads — v3
+## Constat
 
-Mise à jour : tous les emails partenaires passent par GoHighLevel via webhook dédié.
+L'infra admin existe déjà côté code :
 
-## Changement clé v3 — Emails déléguées à GHL
+- Route `/admin` (`src/routes/_authenticated.admin.tsx`) avec tableau de bord (Partenaires, Prospects, Création manuelle).
+- Table `user_roles` avec enum `app_role` (`admin`, `agent`, `user`) et fonction `has_role()` sécurisée.
+- RLS qui ouvre lecture/écriture prospects, publication leads, gestion partenaires aux rôles `admin` et `agent`.
 
-On **ne câble aucun service email** (pas de Resend). À la place, un **nouveau webhook GHL dédié partenaires**, séparé de celui des prospects.
+**Mais 3 trous bloquent l'usage** :
 
-### Deux webhooks GHL distincts
+1. La table `user_roles` est vide → personne n'est admin.
+2. `/connexion` redirige TOUT le monde vers `/espace-partenaire`, même un admin.
+3. Aucun lien visible vers `/admin` nulle part dans l'UI (route "cachée" qu'il faut taper à la main).
 
-| Variable env | Usage | Tags envoyés |
-|---|---|---|
-| `GHL_WEBHOOK_URL` (existant) | Prospects formulaires lead | `soumissioncomptable` |
-| `GHL_PARTNERS_WEBHOOK_URL` (nouveau) | Tous les événements partenaires | `soumissioncomptable` + `partenaire` |
+## Ce que je propose
 
-### Événements partenaires envoyés à GHL
+### 1. Créer ton compte propriétaire (et celui de ton équipe)
 
-À chaque événement clé du cycle de vie partenaire, on POST vers `GHL_PARTNERS_WEBHOOK_URL` avec :
-- Toutes les infos cabinet (nom cabinet, contact prénom/nom, email, téléphone, ville, site, Facebook, services, zones)
-- `event_type` : `signup` | `approved` | `rejected` | `paused` | `reactivated` | `manual_creation` | `low_credits` | `zero_credits`
-- `tags` : `["soumissioncomptable", "partenaire"]`
-- `status` actuel du compte, `credits_balance`, `partner_id`
-- Tracking : `submitted_at`, `user_agent`, `page_url`
+Tu te crées un compte normal via `/connexion` (ou je te crée un compte direct avec un mot de passe temporaire que tu changes ensuite). Une fois l'email connu, je lance une migration qui :
 
-GHL gère ensuite les emails (bienvenue, attente, approbation, refus, relances recharge, etc.) via ses automatisations. Toi tu configures les séquences côté GHL.
+- insère ton `user_id` dans `public.user_roles` avec `role = 'admin'`,
+- (optionnel) ajoute un ou deux comptes `agent` pour ton équipe support.
 
-### Côté code
+Pour ça j'ai juste besoin de **ton email** (celui que tu veux utiliser comme compte propriétaire). Je peux aussi prévoir un second email `agent` si tu veux séparer "toi propriétaire" et "ton assistante qui qualifie les prospects".
 
-Nouveau fichier `src/lib/ghl-partners.server.ts` :
-- Fonction `notifyPartnerEvent({ partner, event_type })` 
-- Pattern identique à l'existant : try/catch, log `LOST_PARTNER_EVENT` si échec, ne bloque jamais l'action utilisateur
-- Appelée depuis les server functions : `signupPartner()`, `approvePartner()`, `rejectPartner()`, `pausePartner()`, `reactivatePartner()`, `createPartnerManually()`, et déclenchée automatiquement quand `credits_balance` passe sous un seuil
+### 2. Redirection intelligente après login
 
-### Secrets à ajouter
+Modifier `/connexion` (et `/inscription-partenaire`) pour, après authentification, appeler un petit serverFn `getMyRedirect()` qui regarde :
 
-`GHL_PARTNERS_WEBHOOK_URL` — webhook GHL dédié partenaires (à créer côté GHL avant la phase 2).
+- si l'utilisateur a le rôle `admin` ou `agent` → `/admin`
+- sinon (= partenaire ou nouveau) → `/espace-partenaire`
 
-## Reste inchangé par rapport à v2
+Comme ça un seul formulaire de connexion sert pour tout le monde, propriétaires comme cabinets. Pas de page `/admin-login` séparée (mauvaise pratique, doublon inutile).
 
-- 5 statuts partenaire : `pending_review`, `approved`, `paused`, `rejected`, `deleted`
-- Inscription self-service + page d'attente
-- Création manuelle par admin/agent (auto-approuvé, 10 crédits)
-- Approbation/pause/rejet/suppression par l'équipe
-- Pas de crédit = bouton « Recharger pour débloquer » sur les leads
-- Tables, RLS, rôles, RPC `unlock_lead()`, marketplace : identiques v1/v2
+### 3. Lien admin visible quand pertinent
 
-## Phases
+Dans le header du layout `_authenticated.tsx`, afficher un lien `Admin` à côté de `Déconnexion` **uniquement** si l'utilisateur a un rôle staff. Pour les cabinets normaux, le header reste identique à aujourd'hui (ils ne voient rien).
 
-- **Phase 1** : Cloud + auth + tables + enregistrement formulaires existants
-- **Phase 2** : Inscription partenaire + dashboard admin + **webhook GHL partenaires** (tu me fournis l'URL avant qu'on lance la phase)
-- **Phase 3** : Portail partenaire + marketplace + crédits + RPC
-- **Phase 4** : Page recharge (placeholder Chariow) + polish + déclencheurs `low_credits`/`zero_credits` vers GHL
+### 4. Sécurité du `/admin`
 
-Valide cette v3 et je commence par la Phase 1.
+Le composant `AdminPage` vérifie déjà côté client `isStaff` et affiche "Accès réservé à l'équipe" sinon. Ajouter en plus un `beforeLoad` sur la route qui appelle `getMyPartner()` et `throw redirect({ to: "/espace-partenaire" })` si pas staff → évite le flash de chargement et bloque même si quelqu'un trafique le client.
+
+## Détails techniques
+
+- **Nouveau serverFn** `getMyRole()` dans `src/lib/partners.functions.ts` (ou nouveau `src/lib/auth.functions.ts`) : protégé par `requireSupabaseAuth`, retourne `{ roles: app_role[] }` en lisant `user_roles`.
+- **Migration SQL** : `INSERT INTO public.user_roles (user_id, role) SELECT id, 'admin' FROM auth.users WHERE email = '<ton-email>' ON CONFLICT DO NOTHING;`
+- **Edits** :
+  - `src/routes/connexion.tsx` — après `signInWithPassword`, attendre `getMyRole()` et router.
+  - `src/routes/_authenticated.tsx` — afficher lien `Admin` si staff.
+  - `src/routes/_authenticated.admin.tsx` — ajouter `beforeLoad` de garde.
+
+## Questions à confirmer avant que je passe en build
+
+1. **Quel email** veux-tu utiliser comme compte propriétaire admin ? agencelgm@gmail.com
+2. Veux-tu aussi créer un ou plusieurs comptes `agent` (équipe support qui qualifie les prospects sans accès aux fonctions destructives comme supprimer un partenaire) ? Si oui, donne-moi les emails. [fatemexpertjuniorlgm@gmail.com](mailto:fatemexpertjuniorlgm@gmail.com), [gracecoordlgm@gmail.com](mailto:gracecoordlgm@gmail.com), [loistianoulgm@gmail.com](mailto:loistianoulgm@gmail.com)
+3. OK pour que `/connexion` serve à la fois aux propriétaires ET aux cabinets (avec redirection automatique selon rôle) plutôt qu'une page `/admin-login` séparée - yes  
+4- Pour moi et mon équipe, met un mot de passe temporaire qui demande qu'on crée un nouveau à la première connection

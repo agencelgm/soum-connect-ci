@@ -2,6 +2,8 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
+import { useServerFn } from "@tanstack/react-start";
+import { getMyPartner } from "@/lib/partners.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,13 +22,24 @@ export const Route = createFileRoute("/connexion")({
 function ConnexionPage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const meFn = useServerFn(getMyPartner);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (!loading && user) navigate({ to: "/espace-partenaire", replace: true });
-  }, [user, loading, navigate]);
+    if (!loading && user) {
+      meFn().then((me) => {
+        if (me.mustChangePassword) {
+          navigate({ to: "/changer-mot-de-passe", replace: true });
+        } else if (me.roles.includes("admin") || me.roles.includes("agent")) {
+          navigate({ to: "/admin", replace: true });
+        } else {
+          navigate({ to: "/espace-partenaire", replace: true });
+        }
+      });
+    }
+  }, [user, loading, navigate, meFn]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -38,7 +51,18 @@ function ConnexionPage() {
       return;
     }
     toast.success("Connexion réussie");
-    navigate({ to: "/espace-partenaire", replace: true });
+    try {
+      const me = await meFn();
+      if (me.mustChangePassword) {
+        navigate({ to: "/changer-mot-de-passe", replace: true });
+      } else if (me.roles.includes("admin") || me.roles.includes("agent")) {
+        navigate({ to: "/admin", replace: true });
+      } else {
+        navigate({ to: "/espace-partenaire", replace: true });
+      }
+    } catch {
+      navigate({ to: "/espace-partenaire", replace: true });
+    }
   }
 
   return (

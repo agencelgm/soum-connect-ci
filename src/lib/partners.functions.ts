@@ -110,10 +110,31 @@ export const getMyPartner = createServerFn({ method: "GET" })
       .from("user_roles")
       .select("role")
       .eq("user_id", userId);
+    const { data: profile } = await supabaseAdmin
+      .from("profiles")
+      .select("must_change_password, full_name, email")
+      .eq("id", userId)
+      .maybeSingle();
     return {
       partner: data,
       roles: (roles ?? []).map((r) => r.role) as string[],
+      mustChangePassword: !!profile?.must_change_password,
+      profile: profile ?? null,
     };
+  });
+
+// ---------------------- Mark password as changed ----------------------
+
+export const markPasswordChanged = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { userId } = context;
+    const { error } = await supabaseAdmin
+      .from("profiles")
+      .update({ must_change_password: false, updated_at: new Date().toISOString() })
+      .eq("id", userId);
+    if (error) throw new Error(error.message);
+    return { ok: true };
   });
 
 // ---------------------- Admin: list partners ----------------------

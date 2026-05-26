@@ -26,6 +26,7 @@ import { Route as CreationEntrepriseCoteDivoireRouteImport } from './routes/crea
 import { Route as ConnexionRouteImport } from './routes/connexion'
 import { Route as ComptabiliteEntrepriseAbidjanRouteImport } from './routes/comptabilite-entreprise-abidjan'
 import { Route as CommentCaMarcheRouteImport } from './routes/comment-ca-marche'
+import { Route as ChangerMotDePasseRouteImport } from './routes/changer-mot-de-passe'
 import { Route as CabinetsComptablesPartenairesRouteImport } from './routes/cabinets-comptables-partenaires'
 import { Route as CabinetComptableAbidjanRouteImport } from './routes/cabinet-comptable-abidjan'
 import { Route as BlogRouteImport } from './routes/blog'
@@ -141,6 +142,11 @@ const ComptabiliteEntrepriseAbidjanRoute =
 const CommentCaMarcheRoute = CommentCaMarcheRouteImport.update({
   id: '/comment-ca-marche',
   path: '/comment-ca-marche',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChangerMotDePasseRoute = ChangerMotDePasseRouteImport.update({
+  id: '/changer-mot-de-passe',
+  path: '/changer-mot-de-passe',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CabinetsComptablesPartenairesRoute =
@@ -280,6 +286,7 @@ export interface FileRoutesByFullPath {
   '/blog': typeof BlogRoute
   '/cabinet-comptable-abidjan': typeof CabinetComptableAbidjanRoute
   '/cabinets-comptables-partenaires': typeof CabinetsComptablesPartenairesRoute
+  '/changer-mot-de-passe': typeof ChangerMotDePasseRoute
   '/comment-ca-marche': typeof CommentCaMarcheRoute
   '/comptabilite-entreprise-abidjan': typeof ComptabiliteEntrepriseAbidjanRoute
   '/connexion': typeof ConnexionRoute
@@ -323,6 +330,7 @@ export interface FileRoutesByTo {
   '/blog': typeof BlogRoute
   '/cabinet-comptable-abidjan': typeof CabinetComptableAbidjanRoute
   '/cabinets-comptables-partenaires': typeof CabinetsComptablesPartenairesRoute
+  '/changer-mot-de-passe': typeof ChangerMotDePasseRoute
   '/comment-ca-marche': typeof CommentCaMarcheRoute
   '/comptabilite-entreprise-abidjan': typeof ComptabiliteEntrepriseAbidjanRoute
   '/connexion': typeof ConnexionRoute
@@ -368,6 +376,7 @@ export interface FileRoutesById {
   '/blog': typeof BlogRoute
   '/cabinet-comptable-abidjan': typeof CabinetComptableAbidjanRoute
   '/cabinets-comptables-partenaires': typeof CabinetsComptablesPartenairesRoute
+  '/changer-mot-de-passe': typeof ChangerMotDePasseRoute
   '/comment-ca-marche': typeof CommentCaMarcheRoute
   '/comptabilite-entreprise-abidjan': typeof ComptabiliteEntrepriseAbidjanRoute
   '/connexion': typeof ConnexionRoute
@@ -413,6 +422,7 @@ export interface FileRouteTypes {
     | '/blog'
     | '/cabinet-comptable-abidjan'
     | '/cabinets-comptables-partenaires'
+    | '/changer-mot-de-passe'
     | '/comment-ca-marche'
     | '/comptabilite-entreprise-abidjan'
     | '/connexion'
@@ -456,6 +466,7 @@ export interface FileRouteTypes {
     | '/blog'
     | '/cabinet-comptable-abidjan'
     | '/cabinets-comptables-partenaires'
+    | '/changer-mot-de-passe'
     | '/comment-ca-marche'
     | '/comptabilite-entreprise-abidjan'
     | '/connexion'
@@ -500,6 +511,7 @@ export interface FileRouteTypes {
     | '/blog'
     | '/cabinet-comptable-abidjan'
     | '/cabinets-comptables-partenaires'
+    | '/changer-mot-de-passe'
     | '/comment-ca-marche'
     | '/comptabilite-entreprise-abidjan'
     | '/connexion'
@@ -545,6 +557,7 @@ export interface RootRouteChildren {
   BlogRoute: typeof BlogRoute
   CabinetComptableAbidjanRoute: typeof CabinetComptableAbidjanRoute
   CabinetsComptablesPartenairesRoute: typeof CabinetsComptablesPartenairesRoute
+  ChangerMotDePasseRoute: typeof ChangerMotDePasseRoute
   CommentCaMarcheRoute: typeof CommentCaMarcheRoute
   ComptabiliteEntrepriseAbidjanRoute: typeof ComptabiliteEntrepriseAbidjanRoute
   ConnexionRoute: typeof ConnexionRoute
@@ -697,6 +710,13 @@ declare module '@tanstack/react-router' {
       path: '/comment-ca-marche'
       fullPath: '/comment-ca-marche'
       preLoaderRoute: typeof CommentCaMarcheRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/changer-mot-de-passe': {
+      id: '/changer-mot-de-passe'
+      path: '/changer-mot-de-passe'
+      fullPath: '/changer-mot-de-passe'
+      preLoaderRoute: typeof ChangerMotDePasseRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cabinets-comptables-partenaires': {
@@ -913,6 +933,7 @@ const rootRouteChildren: RootRouteChildren = {
   BlogRoute: BlogRoute,
   CabinetComptableAbidjanRoute: CabinetComptableAbidjanRoute,
   CabinetsComptablesPartenairesRoute: CabinetsComptablesPartenairesRoute,
+  ChangerMotDePasseRoute: ChangerMotDePasseRoute,
   CommentCaMarcheRoute: CommentCaMarcheRoute,
   ComptabiliteEntrepriseAbidjanRoute: ComptabiliteEntrepriseAbidjanRoute,
   ConnexionRoute: ConnexionRoute,
