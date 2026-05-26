@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { inferAudience } from "@/lib/audience";
+import { recordProspect } from "@/lib/prospects.server";
 
 const LeadSchema = z.object({
   source: z.string().min(1).max(64),
@@ -59,6 +60,29 @@ export const Route = createFileRoute("/api/public/lead")({
           received_at: new Date().toISOString(),
           user_agent: request.headers.get("user-agent") ?? "",
         };
+
+        // Enregistre en base (non bloquant — log si échec, n'impacte pas l'UX)
+        await recordProspect({
+          form_type: "lead",
+          full_name: parsed.data.nom,
+          email: parsed.data.email,
+          phone: parsed.data.mobile,
+          company_name: parsed.data.entreprise || null,
+          statut: parsed.data.statut || null,
+          service: parsed.data.service,
+          city: parsed.data.localisation || null,
+          budget: parsed.data.budget || null,
+          message: parsed.data.description || null,
+          legal_form: null,
+          audience: payload.audience,
+          audience_hint: parsed.data.audience_hint ?? null,
+          source: parsed.data.source,
+          page_url: parsed.data.page_url || null,
+          referrer: parsed.data.referrer || null,
+          user_agent: payload.user_agent,
+          submitted_at: parsed.data.submitted_at || null,
+          raw_payload: payload as unknown as Record<string, unknown>,
+        });
 
         const webhookUrl = process.env.GHL_WEBHOOK_URL;
         if (webhookUrl) {
