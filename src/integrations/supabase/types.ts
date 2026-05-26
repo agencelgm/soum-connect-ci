@@ -387,6 +387,11 @@ export type Database = {
         }
         Returns: boolean
       }
+      publish_prospect_as_lead: {
+        Args: { _max_unlocks?: number; _prospect_id: string; _summary?: string }
+        Returns: string
+      }
+      unlock_lead: { Args: { _publication_id: string }; Returns: Json }
     }
     Enums: {
       app_role: "admin" | "agent" | "partner"
