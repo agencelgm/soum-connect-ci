@@ -20,6 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { getTrackingFields } from "@/lib/lead-tracking";
 
 type Lang = "fr" | "en";
 
@@ -215,6 +216,7 @@ export function ContactForm({ language }: { language: Lang }) {
         body: JSON.stringify({
           source: "contact-form",
           language,
+          ...getTrackingFields(),
           nom: values.fullName,
           email: values.email,
           mobile,

@@ -6,6 +6,10 @@ const UpsellSchema = z.object({
   offer: z.enum(["logo", "site"]),
   interested: z.boolean(),
   language: z.enum(["fr", "en"]).default("fr"),
+  source: z.string().min(1).max(64).optional(),
+  page_url: z.string().max(500).optional().default(""),
+  referrer: z.string().max(500).optional().default(""),
+  submitted_at: z.string().max(40).optional().default(""),
 });
 
 export const Route = createFileRoute("/api/public/lead-upsell")({
@@ -30,6 +34,7 @@ export const Route = createFileRoute("/api/public/lead-upsell")({
         const payload = {
           type: "upsell",
           ...parsed.data,
+          tag: "soumissioncomptable",
           received_at: new Date().toISOString(),
           user_agent: request.headers.get("user-agent") ?? "",
         };

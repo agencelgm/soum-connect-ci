@@ -152,7 +152,7 @@ export function Index() {
                 {language === "fr" ? "Comparez prix et services — 100% gratuit, sans engagement" : "Compare prices and services — 100% free, no commitment"}
               </p>
               <div className="mt-5">
-                <LeadFormCard />
+                <LeadFormCard source="home-hero" />
               </div>
               <p className="text-xs text-muted-foreground/70 text-center mt-3">
                 ✓ {language === "fr" ? "Cabinets agréés OECCA-CI · Réponse sous 48h · 0 engagement" : "OECCA-CI certified firms · Reply within 48h · No commitment"}

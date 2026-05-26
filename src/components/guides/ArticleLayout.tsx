@@ -60,7 +60,7 @@ export function ArticleLayout({
             </div>
 
             <div>
-              <LeadFormCard />
+              <LeadFormCard source={`guide-${article.slug}`} />
             </div>
           </div>
         </div>

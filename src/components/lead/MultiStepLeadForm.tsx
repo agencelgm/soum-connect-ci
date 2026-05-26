@@ -12,6 +12,7 @@ import { useLanguage } from "@/lib/language-context";
 import { trackEvent } from "@/lib/analytics";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { getTrackingFields } from "@/lib/lead-tracking";
 
 const SERVICES_FR = [
   "🏢 Création d'entreprise (SARL, SA, EI via CEPICI)",
@@ -300,7 +301,12 @@ export function MultiStepLeadForm({
       const res = await fetch("/api/public/lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...values, source, language }),
+        body: JSON.stringify({
+          ...values,
+          source,
+          language,
+          ...getTrackingFields(),
+        }),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       try {

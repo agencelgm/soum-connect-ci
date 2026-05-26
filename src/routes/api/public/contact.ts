@@ -4,6 +4,9 @@ import { z } from "zod";
 const ContactSchema = z.object({
   source: z.string().min(1).max(64).default("contact-form"),
   language: z.enum(["fr", "en"]).default("fr"),
+  page_url: z.string().max(500).optional().default(""),
+  referrer: z.string().max(500).optional().default(""),
+  submitted_at: z.string().max(40).optional().default(""),
   nom: z.string().trim().min(2).max(100),
   email: z.string().trim().email().max(255),
   mobile: z.string().trim().min(6).max(32).regex(/^[+0-9 ]+$/),
@@ -43,6 +46,7 @@ export const Route = createFileRoute("/api/public/contact")({
 
         const payload = {
           ...parsed.data,
+          tag: "soumissioncomptable",
           leadId: crypto.randomUUID(),
           received_at: new Date().toISOString(),
           user_agent: request.headers.get("user-agent") ?? "",

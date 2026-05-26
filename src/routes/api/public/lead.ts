@@ -4,6 +4,9 @@ import { z } from "zod";
 const LeadSchema = z.object({
   source: z.string().min(1).max(64),
   language: z.enum(["fr", "en"]).default("fr"),
+  page_url: z.string().max(500).optional().default(""),
+  referrer: z.string().max(500).optional().default(""),
+  submitted_at: z.string().max(40).optional().default(""),
   service: z.string().min(1).max(200),
   statut: z.string().max(200).optional().default(""),
   description: z.string().max(1000).optional().default(""),
@@ -43,6 +46,7 @@ export const Route = createFileRoute("/api/public/lead")({
 
         const payload = {
           ...parsed.data,
+          tag: "soumissioncomptable",
           leadId: crypto.randomUUID(),
           received_at: new Date().toISOString(),
           user_agent: request.headers.get("user-agent") ?? "",
