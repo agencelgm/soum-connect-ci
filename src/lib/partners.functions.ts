@@ -110,9 +110,16 @@ export const getMyPartner = createServerFn({ method: "GET" })
       .from("user_roles")
       .select("role")
       .eq("user_id", userId);
+    const { data: profile } = await supabaseAdmin
+      .from("profiles")
+      .select("must_change_password, full_name, email")
+      .eq("id", userId)
+      .maybeSingle();
     return {
       partner: data,
       roles: (roles ?? []).map((r) => r.role) as string[],
+      mustChangePassword: !!profile?.must_change_password,
+      profile: profile ?? null,
     };
   });
 
