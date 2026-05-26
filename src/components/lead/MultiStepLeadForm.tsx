@@ -248,12 +248,14 @@ export interface MultiStepLeadFormProps {
   source?: string;
   variant?: "page" | "card";
   title?: string;
+  audienceHint?: "creation" | "gestion" | "both";
 }
 
 export function MultiStepLeadForm({
   source = "demande-soumissions",
   variant = "page",
   title,
+  audienceHint,
 }: MultiStepLeadFormProps) {
   const { language } = useLanguage();
   const c = COPY[language] as Copy;
@@ -305,6 +307,7 @@ export function MultiStepLeadForm({
           ...values,
           source,
           language,
+          audience_hint: audienceHint,
           ...getTrackingFields(),
         }),
       });

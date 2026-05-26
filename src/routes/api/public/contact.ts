@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
+import { inferAudience } from "@/lib/audience";
 
 const ContactSchema = z.object({
   source: z.string().min(1).max(64).default("contact-form"),
@@ -16,6 +17,7 @@ const ContactSchema = z.object({
   dateProbleme: z.string().max(32).optional().default(""),
   description: z.string().trim().min(20).max(1000),
   consent: z.boolean().refine((v) => v === true, "Consent required"),
+  audience_hint: z.enum(["creation", "gestion", "both"]).optional(),
 });
 
 export const Route = createFileRoute("/api/public/contact")({
@@ -46,6 +48,11 @@ export const Route = createFileRoute("/api/public/contact")({
 
         const payload = {
           ...parsed.data,
+          audience: inferAudience({
+            audience_hint: parsed.data.audience_hint,
+            source: parsed.data.source,
+            service: parsed.data.service,
+          }),
           tag: "soumissioncomptable",
           leadId: crypto.randomUUID(),
           received_at: new Date().toISOString(),

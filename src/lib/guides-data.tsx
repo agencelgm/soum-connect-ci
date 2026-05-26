@@ -74,6 +74,15 @@ export type Article = {
   readTime: string;
   /** 1 = 🔴 priorité haute, 2 = 🟡 moyenne, 3 = 🟢 basse. Champ interne, non rendu. */
   priority: 1 | 2 | 3;
+  /**
+   * Audience marketing du guide — OBLIGATOIRE.
+   * "creation" = lecteur qui veut créer son entreprise.
+   * "gestion"  = lecteur qui a déjà une entreprise (compta, fiscal, audit…).
+   * "both"     = sujet transverse (laisser inferAudience() trancher avec le formulaire).
+   * Envoyé à GoHighLevel comme `audience_hint` pour router le prospect.
+   * Ne JAMAIS ajouter un nouveau guide sans renseigner ce champ.
+   */
+  audience: "creation" | "gestion" | "both";
   /** Image hero de l'article (optionnel). */
   image?: string;
   /** Contenu rédigé de l'article (optionnel). Sans cela : placeholder. */
@@ -91,6 +100,7 @@ export type Article = {
 export const ARTICLES: Article[] = [
   {
     slug: "creer-sarl-cepici",
+    audience: "creation",
     title: "Comment créer une SARL au CEPICI en 2026 : guide complet",
     excerpt:
       "Découvrez comment créer une SARL au CEPICI en 2026 : étapes, documents, RCCM, IDU, frais, délais et accompagnement comptable.",
@@ -138,6 +148,7 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "sarl-sa-ei-cote-divoire",
+    audience: "creation",
     title: "SARL vs SA vs Entreprise Individuelle en CI : quel statut choisir ?",
     excerpt:
       "SARL, SA ou entreprise individuelle en Côte d'Ivoire : découvrez les différences, avantages, limites, obligations et le meilleur statut selon votre projet.",
@@ -153,6 +164,7 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "calendrier-fiscal-ci-2026",
+    audience: "gestion",
     title:
       "Calendrier fiscal 2026 en Côte d'Ivoire : dates clés pour les entreprises",
     excerpt:
@@ -169,6 +181,7 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "cout-cabinet-comptable-abidjan",
+    audience: "gestion",
     title: "Combien coûte un cabinet comptable à Abidjan ?",
     excerpt:
       "Découvrez combien coûte un cabinet comptable à Abidjan : tarifs mensuels, bilan, déclarations fiscales, paie, facteurs de prix et conseils pour choisir.",
@@ -184,6 +197,7 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "creer-entreprise-ci-depuis-france",
+    audience: "creation",
     title: "Créer son entreprise en CI depuis la France : guide diaspora",
     excerpt:
       "Procuration, mandataire, CEPICI en ligne : comment monter votre société ivoirienne sans quitter la France.",
@@ -199,6 +213,7 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "impots-entreprise-cote-divoire",
+    audience: "gestion",
     title: "Quels impôts paye une entreprise en Côte d'Ivoire ?",
     excerpt:
       "IS, TVA, ITS, patente, CNPS : tour d'horizon complet de la fiscalité applicable aux sociétés en CI.",
@@ -214,6 +229,7 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "choisir-cabinet-comptable-abidjan",
+    audience: "gestion",
     title: "Comment choisir son cabinet comptable à Abidjan ?",
     excerpt:
       "Les 5 critères essentiels pour sélectionner un cabinet comptable fiable et adapté à votre activité.",
@@ -229,6 +245,7 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "domiciliation-entreprise-abidjan",
+    audience: "gestion",
     title: "Domiciliation d'entreprise à Abidjan : tout savoir",
     excerpt:
       "Quartiers, tarifs, prestations incluses : guide complet pour domicilier votre société à Abidjan.",
@@ -244,6 +261,7 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "obligations-comptables-sarl-ci",
+    audience: "gestion",
     title: "Les obligations comptables d'une SARL en Côte d'Ivoire",
     excerpt:
       "Tenue de comptes SYSCOHADA, états financiers, DSF, audit : vos obligations annuelles expliquées simplement.",
@@ -259,6 +277,7 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "cepici-cote-divoire",
+    audience: "creation",
     title: "Qu'est-ce que le CEPICI ? Rôle et procédures en 2026",
     excerpt:
       "Mission, services, guichet unique, procédures en ligne : tout ce qu'il faut savoir sur le CEPICI.",
@@ -274,6 +293,7 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "creer-sa-cote-divoire",
+    audience: "creation",
     title: "Créer une SA en Côte d'Ivoire : conditions et procédures",
     excerpt:
       "Capital, gouvernance, formalités OHADA : comment constituer une Société Anonyme en CI.",
@@ -289,6 +309,7 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "tva-cote-divoire-pme",
+    audience: "gestion",
     title: "La TVA en Côte d'Ivoire : tout ce que doit savoir une PME",
     excerpt:
       "Taux, seuils, déclarations mensuelles, déductions : maîtrisez la TVA ivoirienne en tant que PME.",
@@ -304,6 +325,7 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "creer-entreprise-ci-canada",
+    audience: "creation",
     title: "Créer son entreprise en CI depuis le Canada",
     excerpt:
       "Spécificités diaspora canadienne : décalage horaire, transferts, mandataire et formalités CEPICI à distance.",
@@ -319,6 +341,7 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "cabinet-comptable-plateau-abidjan",
+    audience: "gestion",
     title: "Cabinet comptable Plateau Abidjan : comment trouver le bon ?",
     excerpt:
       "Spécificités du Plateau (CBD), profils des cabinets, tarifs : guide pour bien choisir dans le quartier d'affaires.",
@@ -352,6 +375,7 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "cabinet-comptable-cocody-abidjan",
+    audience: "gestion",
     title: "Cabinet comptable Cocody Abidjan : guide complet 2026",
     excerpt:
       "Tarifs, sous-quartiers (Riviera, Angré, 2 Plateaux), administrations proches : comment choisir un cabinet comptable agréé OECCA-CI à Cocody.",
@@ -385,6 +409,7 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "cabinet-comptable-angre-abidjan",
+    audience: "gestion",
     title: "Cabinet comptable Angré Abidjan : tarifs et conseils 2026",
     excerpt:
       "Comment choisir un cabinet comptable agréé OECCA-CI à Angré (Cocody) : tarifs TPE/PME, administrations proches, cabinets recommandés.",
@@ -418,6 +443,7 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "capital-minimum-sarl-ohada",
+    audience: "creation",
     title: "Quel est le capital minimum d'une SARL en CI en 2026 ?",
     excerpt:
       "Règles OHADA, montant minimum, modalités de libération et bonnes pratiques pour fixer son capital.",
@@ -433,6 +459,7 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "cnps-cote-divoire-employeurs",
+    audience: "gestion",
     title: "CNPS Côte d'Ivoire : obligations des employeurs",
     excerpt:
       "Immatriculation, taux de cotisation, déclarations : ce que tout employeur ivoirien doit savoir sur la CNPS.",
@@ -448,6 +475,7 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "compte-bancaire-entreprise-abidjan",
+    audience: "creation",
     title: "Comment ouvrir un compte bancaire pour son entreprise à Abidjan",
     excerpt:
       "Banques recommandées, documents requis, délais : ouvrir un compte pro à Abidjan sans mauvaise surprise.",
@@ -463,6 +491,7 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "entreprise-individuelle-vs-sarl",
+    audience: "creation",
     title: "Entreprise individuelle vs SARL en CI : quand passer ?",
     excerpt:
       "Seuils, fiscalité, responsabilité : à quel moment transformer son EI en SARL en Côte d'Ivoire.",
@@ -478,6 +507,7 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "audit-comptable-obligatoire-ci",
+    audience: "gestion",
     title: "L'audit comptable en CI : quand est-il obligatoire ?",
     excerpt:
       "Seuils légaux, types d'audit, commissariat aux comptes : tout savoir sur l'audit obligatoire en Côte d'Ivoire.",
@@ -493,6 +523,7 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "erreurs-creation-entreprise-ci",
+    audience: "creation",
     title: "10 erreurs à éviter lors de la création d'entreprise en CI",
     excerpt:
       "Les pièges les plus fréquents observés au CEPICI et comment les contourner pour démarrer du bon pied.",
@@ -508,6 +539,7 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "cout-creation-entreprise-cote-divoire",
+    audience: "creation",
     title:
       "Combien coûte la création d'une entreprise en Côte d'Ivoire en 2026 ?",
     excerpt:
@@ -524,6 +556,7 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "rccm-cote-divoire",
+    audience: "creation",
     title: "RCCM Côte d'Ivoire : qu'est-ce que c'est et comment l'obtenir ?",
     excerpt:
       "Registre du Commerce, inscription, renouvellement, coûts et délais : tout savoir sur le RCCM en CI.",
@@ -539,6 +572,7 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "aides-creation-entreprise-ci",
+    audience: "creation",
     title: "Aides et financements pour créer une entreprise en CI en 2026",
     excerpt:
       "CEPICI, FDFP, BEI, fonds d'investissement, incubateurs : les 3 types d'aides disponibles aux créateurs.",

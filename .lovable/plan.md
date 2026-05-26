@@ -1,35 +1,98 @@
 ## Objectif
-Vérifier en bout-en-bout que `GHL_WEBHOOK_URL` reçoit bien les soumissions des formulaires du site.
 
-## Méthode
+Ajouter un champ **`audience`** dans le payload envoyé à GoHighLevel pour distinguer 2 audiences :
+- `creation` — prospect qui veut **créer** son entreprise
+- `gestion` — prospect qui a **déjà** une entreprise et cherche un cabinet pour la gestion
+- `unknown` — non déterminable (qualification manuelle dans GHL)
 
-Je vais envoyer **3 requêtes de test** directement sur les 3 endpoints publics du site en production, avec des données clairement marquées « TEST » pour qu'elles soient faciles à repérer et à supprimer dans GHL.
+Architecture **future-proof** : l'audience de chaque guide est déclarée comme métadonnée dans `guides-data.tsx` (champ obligatoire en TypeScript), donc impossible d'ajouter un nouveau guide sans préciser l'audience.
 
-| # | Endpoint | Payload de test | Étiquettes |
-|---|---|---|---|
-| 1 | `POST /api/public/lead` | Formulaire principal complet | `source: "test-webhook"`, `nom: "TEST Webhook"`, `email: "test+webhook@soumissioncomptable.com"` |
-| 2 | `POST /api/public/contact` | Formulaire contact | `source: "test-webhook"`, `nom: "TEST Contact"` |
-| 3 | `POST /api/public/lead-upsell` | Upsell logo, `interested: true` | `source: "test-webhook-upsell"` |
+## Portée
 
-Pour chaque appel je vérifie :
-1. **Status HTTP 200** retourné par le serveur Lovable → le schéma Zod a accepté le payload
-2. **Logs serveur** (via `stack_modern--server-function-logs`) → je cherche les traces `[ghl] sent` ou `[ghl] failed` pour confirmer que le code a tenté l'envoi à GHL
-3. **Confirmation de ton côté dans GHL** : ouvrir l'historique du workflow Inbound Webhook et vérifier que les 3 entrées « TEST » sont arrivées avec :
-   - `tag: "soumissioncomptable"`
-   - `source: "test-webhook"` (ou `test-webhook-upsell`)
-   - `page_url`, `referrer`, `submitted_at`, `received_at`, `user_agent` présents
+Appliqué aux 2 endpoints de phase 1 :
+- `POST /api/public/lead`
+- `POST /api/public/contact`
 
-## Ce que ça va produire dans GHL
+L'endpoint `/api/public/lead-upsell` reste inchangé (services annexes).
 
-3 leads de test apparaîtront dans ton workflow GHL. Si tu as déjà branché des automatisations (SMS de bienvenue, ajout de tag, email…), elles vont se déclencher pour ces 3 entrées. Tu pourras ensuite les supprimer manuellement (recherche `TEST Webhook`).
+## Logique de classification
 
-## Si le test échoue
+Priorité décroissante dans `inferAudience()` :
 
-Diagnostic dans cet ordre :
-- **HTTP 400** côté Lovable → un champ du schéma Zod est invalide, je corrige le payload de test
-- **HTTP 200 mais rien dans GHL** → je relis les logs serveur (`[ghl] failed: <raison>`), je vérifie que `GHL_WEBHOOK_URL` est bien lu côté worker, et que l'URL pointe vers le bon workflow
-- **HTTP 500** → erreur côté handler, je corrige le code
+1. **`audience_hint` envoyé par le formulaire** (métadonnée de la page d'origine) — source de vérité quand on est sur un guide ou une page taggée
+2. **Champ `statut`** du formulaire principal — déclaration explicite de l'utilisateur ("Je veux créer" / "J'ai déjà une entreprise")
+3. **`source`** — règles sur les pages non-guide (home, demande-soumissions, créer-son-entreprise, contact)
+4. **`service`** choisi — fallback final
+5. Sinon → `unknown`
 
-## Validation finale
+## Détails techniques
 
-Tu me confirmes ce que tu vois dans GHL (« j'ai bien reçu les 3 TEST » ou « rien n'arrive »), et on conclut.
+### 1. Métadonnée `audience` sur chaque guide
+
+Dans `src/lib/guides-data.tsx`, ajouter au type `Article` :
+
+```ts
+/** Audience marketing du guide. Obligatoire — détermine le routing GHL. */
+audience: "creation" | "gestion" | "both";
+```
+
+Puis remplir pour les ~25 guides existants. Répartition prévue :
+- **creation** : creer-sarl-cepici, sarl-sa-ei, creer-entreprise-ci-depuis-france, cepici, entreprise-individuelle-vs-sarl, capital-minimum-sarl-ohada, creer-sa-cote-divoire, erreurs-creation-entreprise-ci, creer-entreprise-ci-canada, cout-creation-entreprise, rccm-cote-divoire, aides-creation-entreprise-ci
+- **gestion** : calendrier-fiscal-2026, cout-cabinet-comptable-abidjan, impots-entreprise, choisir-cabinet-comptable-abidjan, tva-cote-divoire-pme, obligations-comptables-sarl-ci, cnps-cote-divoire-employeurs, audit-comptable-obligatoire, domiciliation-entreprise-abidjan, compte-bancaire-entreprise-abidjan, cabinet-comptable-plateau / cocody / angre
+
+Le champ étant requis, **toute future addition échouera le build tant que `audience` n'est pas renseigné** → garde-fou automatique.
+
+### 2. Propagation jusqu'au formulaire
+
+- `ArticleLayout` lit `article.audience` et passe une prop `audienceHint` au `MultiStepLeadForm`
+- `MultiStepLeadForm` accepte une prop optionnelle `audienceHint?: "creation" | "gestion" | "both"` et l'ajoute au payload sous le nom `audience_hint`
+- Les autres usages du formulaire (home, demande-soumissions, créer-son-entreprise) ne passent pas la prop → `audience_hint` reste `undefined` et `inferAudience` retombe sur les autres règles
+
+### 3. Schémas Zod
+
+Ajouter dans `lead.ts` et `contact.ts` :
+```ts
+audience_hint: z.enum(["creation", "gestion", "both"]).optional(),
+```
+
+### 4. Nouveau fichier `src/lib/audience.ts`
+
+Fonction pure `inferAudience({ audience_hint, statut, source, service })` qui retourne `"creation" | "gestion" | "unknown"`. Logique :
+- `audience_hint === "both"` → ne tranche pas, passe à la règle suivante
+- `audience_hint === "creation" | "gestion"` → retourne directement
+- Sinon parcourt statut → source (via une petite map de préfixes pour les pages non-guide) → service (regex)
+
+Fichier importé seulement par les routes `/api/public/*` (côté serveur). Pas de `.server.ts` car la logique est pure et peut servir aussi en debug.
+
+### 5. Endpoints
+
+Dans `lead.ts` et `contact.ts`, après le `safeParse` réussi :
+```ts
+const audience = inferAudience({
+  audience_hint: parsed.data.audience_hint,
+  statut: parsed.data.statut,
+  source: parsed.data.source,
+  service: parsed.data.service,
+});
+const payload = { ...parsed.data, audience, tag: "soumissioncomptable", ... };
+```
+
+### 6. Commentaire de garde dans `guides-data.tsx`
+
+En tête du fichier, un bref commentaire :
+```
+// IMPORTANT : chaque nouvel article DOIT déclarer `audience`.
+// "creation" = veut créer son entreprise, "gestion" = a déjà une entreprise, "both" = transverse.
+// Ce champ est envoyé à GoHighLevel pour router le prospect vers la bonne séquence.
+```
+
+## Côté GoHighLevel (à faire ensuite par toi)
+
+Brancher sur le champ `audience` du payload :
+- `audience = creation` → ta séquence "Création d'entreprise"
+- `audience = gestion` → ta séquence "Gestion comptable"
+- `audience = unknown` → tâche de qualification manuelle
+
+## Validation
+
+Après build, je relance des tests webhook avec différents `source` / `audience_hint` / `statut` et je te confirme que `audience` arrive avec la bonne valeur dans chaque cas.
