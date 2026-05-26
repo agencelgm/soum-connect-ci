@@ -328,7 +328,7 @@ export function MultiStepLeadForm({
   const isCard = variant === "card";
 
   const selectClass =
-    "w-full h-11 rounded-md border border-input bg-white px-3 text-sm text-foreground";
+    "w-full h-12 rounded-md border border-input bg-white px-3 text-base text-foreground";
 
   return (
     <div
@@ -343,16 +343,29 @@ export function MultiStepLeadForm({
         </h2>
       )}
       <div className="mb-6">
-        <div className="flex items-center justify-between text-sm font-medium text-muted-foreground mb-2">
-          <span>{c.stepOf(step)}</span>
-          <span>{Math.round(progress)}%</span>
+        <div className="flex items-center justify-between mb-3">
+          {([1, 2, 3, 4] as const).map((s) => (
+            <div key={s} className="flex flex-col items-center flex-1">
+              <div
+                className={[
+                  "h-8 w-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300",
+                  s < step ? "bg-accent text-white" :
+                  s === step ? "bg-secondary text-white shadow-[var(--shadow-cta)]" :
+                  "bg-muted text-muted-foreground"
+                ].join(" ")}
+              >
+                {s < step ? "✓" : s}
+              </div>
+            </div>
+          ))}
         </div>
-        <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
+        <div className="h-1 w-full rounded-full bg-muted overflow-hidden">
           <div
             className="h-full bg-secondary transition-all duration-500"
             style={{ width: `${progress}%` }}
           />
         </div>
+        <p className="text-xs text-muted-foreground mt-1 text-right">{c.stepOf(step)}</p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -361,7 +374,7 @@ export function MultiStepLeadForm({
             <h3
               className={cn(
                 "font-heading font-semibold text-primary",
-                isCard ? "text-base" : "text-xl",
+                isCard ? "text-lg" : "text-xl",
               )}
             >
               {c.s1Title}
@@ -423,7 +436,7 @@ export function MultiStepLeadForm({
               <Button
                 type="button"
                 onClick={next}
-                className="bg-secondary hover:bg-secondary-dark text-white"
+                className="h-12 bg-secondary hover:bg-secondary-dark text-white"
               >
                 {c.next}
               </Button>
@@ -436,7 +449,7 @@ export function MultiStepLeadForm({
             <h3
               className={cn(
                 "font-heading font-semibold text-primary",
-                isCard ? "text-base" : "text-xl",
+                isCard ? "text-lg" : "text-xl",
               )}
             >
               {c.s2Title}
@@ -455,13 +468,13 @@ export function MultiStepLeadForm({
             </Field>
 
             <div className="flex justify-between pt-2">
-              <Button type="button" variant="outline" onClick={() => setStep(1)}>
+              <Button type="button" variant="outline" className="h-12" onClick={() => setStep(1)}>
                 {c.back}
               </Button>
               <Button
                 type="button"
                 onClick={next}
-                className="bg-secondary hover:bg-secondary-dark text-white"
+                className="h-12 bg-secondary hover:bg-secondary-dark text-white"
               >
                 {c.next}
               </Button>
@@ -474,7 +487,7 @@ export function MultiStepLeadForm({
             <h3
               className={cn(
                 "font-heading font-semibold text-primary",
-                isCard ? "text-base" : "text-xl",
+                isCard ? "text-lg" : "text-xl",
               )}
             >
               {c.s3Title}
@@ -513,13 +526,13 @@ export function MultiStepLeadForm({
             </Field>
 
             <div className="flex justify-between pt-2">
-              <Button type="button" variant="outline" onClick={() => setStep(2)}>
+              <Button type="button" variant="outline" className="h-12" onClick={() => setStep(2)}>
                 {c.back}
               </Button>
               <Button
                 type="button"
                 onClick={next}
-                className="bg-secondary hover:bg-secondary-dark text-white"
+                className="h-12 bg-secondary hover:bg-secondary-dark text-white"
               >
                 {c.next}
               </Button>
@@ -532,7 +545,7 @@ export function MultiStepLeadForm({
             <h3
               className={cn(
                 "font-heading font-semibold text-primary",
-                isCard ? "text-base" : "text-xl",
+                isCard ? "text-lg" : "text-xl",
               )}
             >
               {c.s4Title}
@@ -594,7 +607,7 @@ export function MultiStepLeadForm({
                 <Button
                   type="submit"
                   disabled={formState.isSubmitting}
-                  className="flex-1 h-12 text-base bg-secondary hover:bg-secondary-dark text-white"
+                  className="flex-1 btn-cta-primary h-12"
                 >
                   {formState.isSubmitting ? c.sending : c.submit}
                 </Button>
@@ -659,7 +672,7 @@ function RadioYesNo({
       ].map((opt) => (
         <label
           key={opt.v}
-          className="flex-1 cursor-pointer rounded-md border border-input bg-white px-3 py-2.5 text-sm text-foreground flex items-center justify-center gap-2 hover:border-secondary has-[:checked]:border-secondary has-[:checked]:bg-secondary/5 has-[:checked]:text-secondary-dark transition-colors"
+          className="flex-1 cursor-pointer rounded-md border border-input bg-white px-3 py-3 min-h-[48px] text-sm text-foreground flex items-center justify-center gap-2 hover:border-secondary has-[:checked]:border-secondary has-[:checked]:bg-secondary/5 has-[:checked]:text-secondary-dark transition-colors"
         >
           <input
             type="radio"

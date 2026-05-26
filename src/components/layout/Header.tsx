@@ -67,15 +67,14 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-border shadow-sm">
-      <div className="max-w-[1200px] mx-auto px-6 h-32 flex items-center justify-between gap-4">
+      <div className="max-w-[1200px] mx-auto px-6 h-16 md:h-24 lg:h-32 flex items-center justify-between gap-4">
         <Link to={homeHref} aria-label="SoumissionComptable.com — Accueil" className="flex items-center shrink-0">
           <img
             src={logo}
             alt="SoumissionComptable.com"
             width={540}
             height={144}
-            className="h-30 w-auto"
-            style={{ height: "120px" }}
+            className="h-10 md:h-20 lg:h-[7.5rem] w-auto"
           />
         </Link>
 
@@ -136,13 +135,13 @@ export function Header() {
             <Link
               to={homeHref}
               onClick={() => setOpen(false)}
-              className="rounded-md px-3 py-2 text-sm font-medium text-foreground hover:bg-muted hover:text-primary"
+              className="rounded-md px-3 py-3 min-h-[48px] flex items-center text-sm font-medium text-foreground hover:bg-muted hover:text-primary"
             >
               {t.nav.home}
             </Link>
             <button
               onClick={() => setMobileServicesOpen((v) => !v)}
-              className="flex items-center justify-between rounded-md px-3 py-2 text-sm font-medium text-foreground hover:bg-muted"
+              className="flex items-center justify-between rounded-md px-3 py-3 min-h-[48px] text-sm font-medium text-foreground hover:bg-muted w-full"
             >
               {t.nav.services}
               <ChevronDown className={`h-4 w-4 transition-transform ${mobileServicesOpen ? "rotate-180" : ""}`} />
@@ -154,7 +153,7 @@ export function Header() {
                     key={s.to}
                     to={s.to}
                     onClick={() => setOpen(false)}
-                    className="rounded-md px-3 py-2 text-sm text-muted-foreground hover:text-primary"
+                    className="rounded-md px-3 py-3 min-h-[48px] flex items-center text-sm text-muted-foreground hover:text-primary"
                   >
                     {s.label}
                   </Link>
@@ -162,7 +161,7 @@ export function Header() {
                 <Link
                   to={getCounterpart("/cabinet-comptable-abidjan", language)}
                   onClick={() => setOpen(false)}
-                  className="rounded-md px-3 py-2 text-sm font-semibold text-secondary"
+                  className="rounded-md px-3 py-3 min-h-[48px] flex items-center text-sm font-semibold text-secondary"
                 >
                   {t.nav.allServices}
                 </Link>
@@ -173,18 +172,18 @@ export function Header() {
                 key={item.to}
                 to={item.to}
                 onClick={() => setOpen(false)}
-                className="rounded-md px-3 py-2 text-sm font-medium text-foreground hover:bg-muted hover:text-primary"
+                className="rounded-md px-3 py-3 min-h-[48px] flex items-center text-sm font-medium text-foreground hover:bg-muted hover:text-primary"
               >
                 {item.label}
               </Link>
             ))}
-            <div className="mt-3 flex items-center justify-between px-3">
+            <div className="mt-3 flex items-center justify-center px-3 border-t border-border pt-3">
               <LangToggle />
             </div>
             <Link
               to={quotesHref}
               onClick={() => setOpen(false)}
-              className="mt-2 inline-flex items-center justify-center rounded-lg bg-secondary text-white px-4 py-2 text-sm font-semibold hover:bg-secondary-dark"
+              className="btn-cta-primary w-full justify-center mt-2"
             >
               {t.nav.getQuotes}
             </Link>

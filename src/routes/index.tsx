@@ -1,5 +1,7 @@
+import { useState, useEffect } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
+import useEmblaCarousel from "embla-carousel-react";
 import {
   CheckCircle,
   ArrowRight,
@@ -15,7 +17,6 @@ import {
   Scale,
   Users,
   Briefcase,
-  Wallet,
   BarChart3,
   Landmark,
   AlertTriangle,
@@ -36,7 +37,6 @@ import { LeadFormCard } from "@/components/home/LeadFormCard";
 import { buildPageHead, LOCAL_BUSINESS_SCHEMA } from "@/lib/seo";
 import { useLanguage } from "@/lib/language-context";
 import { getCounterpart } from "@/lib/route-map";
-import processCouple from "@/assets/home/process-couple.png";
 import seoTeamMeeting from "@/assets/home/seo-team-meeting.jpg";
 import seoAccountantDesk from "@/assets/home/seo-accountant-desk.jpg";
 import seoHandshake from "@/assets/home/seo-handshake-client.jpg";
@@ -95,26 +95,30 @@ export function Index() {
   const STEP_ICONS = [FileText, ClipboardList, CheckCircle];
   const TRUST_ICONS = [ClipboardList, Users, Award, Smartphone];
 
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "start" });
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  useEffect(() => {
+    if (!emblaApi) return;
+    const onSelect = () => setSelectedIndex(emblaApi.selectedScrollSnap());
+    emblaApi.on("select", onSelect);
+    return () => { emblaApi.off("select", onSelect); };
+  }, [emblaApi]);
+
   return (
     <>
       {/* ====== 1. HERO SPLIT ====== */}
       <section
         aria-labelledby="hero-title"
-        className="relative overflow-hidden"
+        className="hero-gradient-bg relative overflow-hidden"
       >
-        {/* Fond photo flouté (vraie photo, pas d'IA) */}
-        <img
-          src={seoOfficeAbidjan}
-          alt=""
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 h-full w-full object-cover blur-md scale-110"
-        />
-        <div aria-hidden="true" className="absolute inset-0 bg-[#F5F1EA]/75" />
+        {/* Decorative depth circles */}
+        <div aria-hidden className="absolute -top-[10%] right-[-5%] h-80 w-80 rounded-full bg-white/5 blur-3xl pointer-events-none" />
+        <div aria-hidden className="absolute bottom-[-5%] left-[-5%] h-64 w-64 rounded-full bg-[#F4732A]/10 blur-3xl pointer-events-none" />
 
         <div className="relative container-app pt-10 md:pt-16 pb-0 grid gap-8 lg:gap-4 lg:grid-cols-12 lg:items-stretch">
           {/* Left: photo comptable au bureau (desktop only) */}
           <div className="hidden lg:flex lg:col-span-5 items-end justify-center lg:-mr-2 xl:-mr-4">
-            <div className="relative w-full max-w-[520px] xl:max-w-[580px] aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl ring-1 ring-black/5">
+            <div className="relative w-full max-w-[520px] xl:max-w-[580px] aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/10">
               <img
                 src={seoAccountantDesk}
                 alt=""
@@ -124,53 +128,35 @@ export function Index() {
             </div>
           </div>
 
-          {/* Badge + H1 mobile uniquement */}
-          <div className="lg:hidden">
-            <div className="text-center">
-              <span className="inline-block rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground">
-                {t.hero.badge}
-              </span>
-              <h1 id="hero-title" className="mt-3 font-heading text-3xl font-bold text-primary">
-                {t.hero.h1}
-              </h1>
-            </div>
-          </div>
-
-          {/* Right: orange form card */}
+          {/* Right: headline + white form card */}
           <div className="lg:col-span-7 relative pb-10 md:pb-16">
-            <div className="hidden lg:block mb-4">
-              <span className="inline-block rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground">
+            <div className="mb-4">
+              <span className="inline-block rounded-full bg-white/15 border border-white/25 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
                 {t.hero.badge}
               </span>
-              <h1 id="hero-title" className="mt-3 font-heading text-3xl xl:text-4xl font-bold text-primary leading-tight">
+              <h1 id="hero-title" className="mt-3 font-heading font-extrabold text-white leading-[1.15]">
                 {t.hero.h1}
               </h1>
-              <p className="mt-2 text-base text-muted-foreground max-w-xl">
+              <p className="mt-3 text-white/85 text-base md:text-lg max-w-lg">
                 {t.hero.sub}
               </p>
-            </div>
-            <div className="relative rounded-2xl bg-secondary p-5 md:p-7 shadow-2xl text-white">
-              {/* ribbon badge */}
-              <div
-                aria-hidden
-                className="absolute -top-3 -right-3 hidden sm:flex h-20 w-20 items-center justify-center rounded-full bg-white text-primary shadow-lg border-4 border-white text-[10px] font-bold text-center leading-tight px-1 rotate-12"
-              >
-                <span>CABINETS<br/>AGRÉÉS<br/>OECCA-CI</span>
+              <div className="mt-4 flex items-center gap-3 text-sm text-white/80 flex-wrap">
+                <span>{t.hero.rating}</span>
               </div>
-              <h2 className="font-heading text-xl md:text-2xl font-bold uppercase">
+            </div>
+            <div className="rounded-2xl bg-white p-5 md:p-7 shadow-[var(--shadow-hero-card)]">
+              <h2 className="font-heading text-xl md:text-2xl font-bold text-primary uppercase">
                 {language === "fr" ? "Obtenez 5 soumissions gratuites de cabinets comptables" : "Get 5 free quotes from accounting firms"}
               </h2>
-              <p className="mt-1 text-white/90 font-semibold">
-                {language === "fr" ? "Comparez prix et services et choisissez le meilleur" : "Compare prices and services and choose the best"}
-              </p>
-              <p className="mt-2 text-sm text-white/85">
-                {language === "fr"
-                  ? "Complétez simplement le formulaire ci-dessous pour obtenir vos soumissions dans les prochaines 24 à 48 heures."
-                  : "Simply fill out the form below to receive your quotes within 24 to 48 hours."}
+              <p className="mt-1 text-sm text-muted-foreground">
+                {language === "fr" ? "Comparez prix et services — 100% gratuit, sans engagement" : "Compare prices and services — 100% free, no commitment"}
               </p>
               <div className="mt-5">
                 <LeadFormCard />
               </div>
+              <p className="text-xs text-muted-foreground/70 text-center mt-3">
+                ✓ {language === "fr" ? "Cabinets agréés OECCA-CI · Réponse sous 48h · 0 engagement" : "OECCA-CI certified firms · Reply within 48h · No commitment"}
+              </p>
             </div>
           </div>
         </div>
@@ -193,7 +179,7 @@ export function Index() {
                   <div className="font-heading text-lg sm:text-2xl font-bold text-primary leading-tight">
                     {s.value}
                   </div>
-                  <div className="text-[11px] sm:text-sm text-muted-foreground mt-0.5 sm:mt-1 leading-tight">
+                  <div className="text-xs sm:text-sm text-muted-foreground mt-0.5 sm:mt-1 leading-tight">
                     {s.label}
                   </div>
                 </div>
@@ -225,16 +211,47 @@ export function Index() {
 
       {/* ====== 4. TESTIMONIALS ====== */}
       <section aria-label="Témoignages" className="bg-white">
-        <div className="container-app section grid gap-8 md:grid-cols-3">
-          {h.testimonials.map((tt, i) => (
-            <figure key={i} className="text-center px-4">
-              <Quote className="mx-auto h-8 w-8 text-secondary" aria-hidden="true" />
-              <blockquote className="mt-4 text-sm md:text-base text-muted-foreground italic leading-relaxed">
-                "{tt.quote}"
-              </blockquote>
-              <figcaption className="mt-3 font-bold text-primary">{tt.name}</figcaption>
-            </figure>
-          ))}
+        <div className="container-app section">
+          {/* Desktop: 3-col grid */}
+          <div className="hidden md:grid md:grid-cols-3 gap-8">
+            {h.testimonials.map((tt, i) => (
+              <figure key={i} className="text-center px-4">
+                <Quote className="mx-auto h-8 w-8 text-secondary" aria-hidden="true" />
+                <blockquote className="mt-4 text-sm md:text-base text-muted-foreground italic leading-relaxed">
+                  "{tt.quote}"
+                </blockquote>
+                <figcaption className="mt-3 font-bold text-primary">{tt.name}</figcaption>
+              </figure>
+            ))}
+          </div>
+          {/* Mobile: swipeable Embla carousel */}
+          <div className="md:hidden">
+            <div className="overflow-hidden" ref={emblaRef}>
+              <div className="flex">
+                {h.testimonials.map((tt, i) => (
+                  <div key={i} className="min-w-0 flex-[0_0_85%] mx-3">
+                    <figure className="text-center px-2">
+                      <Quote className="mx-auto h-8 w-8 text-secondary" aria-hidden="true" />
+                      <blockquote className="mt-4 text-sm text-muted-foreground italic leading-relaxed">
+                        "{tt.quote}"
+                      </blockquote>
+                      <figcaption className="mt-3 font-bold text-primary">{tt.name}</figcaption>
+                    </figure>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="flex justify-center gap-2 mt-6">
+              {h.testimonials.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => emblaApi?.scrollTo(i)}
+                  aria-label={`Témoignage ${i + 1}`}
+                  className={`h-2 rounded-full transition-all ${selectedIndex === i ? "w-6 bg-secondary" : "w-2 bg-muted-foreground/30"}`}
+                />
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -272,12 +289,15 @@ export function Index() {
             </h2>
             <p className="mt-3 text-muted-foreground">{h.servicesIntroSub}</p>
           </div>
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="mt-10 -mx-4 px-4 sm:mx-0 sm:px-0
+                          flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4
+                          sm:grid sm:grid-cols-2 sm:overflow-visible sm:snap-none sm:pb-0
+                          lg:grid-cols-3 xl:grid-cols-4">
             {h.services12.map((s, i) => {
               const Icon = SERVICE_ICONS[i];
               const img = SERVICE_IMAGES[i];
               return (
-                <article key={i} className="rounded-xl bg-white overflow-hidden border border-border shadow-sm hover:shadow-md transition-shadow">
+                <article key={i} className="snap-start shrink-0 w-[72vw] max-w-[260px] sm:w-auto sm:max-w-none sm:shrink rounded-xl bg-white overflow-hidden border border-border shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-card-hover)] transition-shadow">
                   <div className="relative aspect-[4/3] overflow-hidden bg-muted">
                     <img
                       src={img}
@@ -299,6 +319,7 @@ export function Index() {
               );
             })}
           </div>
+          <p className="mt-2 text-center text-xs text-muted-foreground sm:hidden">← {language === "fr" ? "Faites défiler" : "Scroll"} →</p>
         </div>
       </section>
 
@@ -312,32 +333,25 @@ export function Index() {
             <p className="mt-4 font-heading text-4xl md:text-5xl font-extrabold text-secondary">{h.stepsTitle}</p>
           </div>
 
-          <div className="mt-10 flex justify-center">
-            <img
-              src={processCouple}
-              alt=""
-              width={768}
-              height={768}
-              loading="lazy"
-              className="w-full max-w-sm"
-            />
-          </div>
-
-          <div className="mt-8 grid gap-8 md:grid-cols-3">
+          <div className="mt-10 flex flex-col md:grid md:grid-cols-3 gap-8 relative">
+            {/* Vertical connecting line on mobile */}
+            <div aria-hidden className="absolute left-[2.25rem] top-8 bottom-8 w-0.5 bg-gradient-to-b from-secondary/20 via-secondary to-secondary/20 md:hidden" />
             {h.steps3.map((s, i) => {
               const Icon = STEP_ICONS[i];
               return (
-                <article key={i} className="text-center">
-                  <div className="relative mx-auto h-36 w-36 rounded-full bg-gradient-to-br from-primary to-[#1a2f5a] flex items-center justify-center">
-                    <span className="font-heading text-5xl font-bold text-white/15">{i + 1}</span>
-                    <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-secondary text-secondary-foreground ring-4 ring-white shadow">
-                      <Icon className="h-6 w-6" aria-hidden="true" />
+                <article key={i} className="flex flex-row items-start gap-5 md:flex-col md:items-center md:text-center">
+                  <div className="relative flex-shrink-0 h-[4.5rem] w-[4.5rem] md:h-36 md:w-36 rounded-full bg-gradient-to-br from-primary to-[#1a2f5a] flex items-center justify-center z-10">
+                    <span className="font-heading text-2xl md:text-5xl font-bold text-white/15">{i + 1}</span>
+                    <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 md:-bottom-3 flex h-8 w-8 md:h-12 md:w-12 items-center justify-center rounded-full bg-secondary text-secondary-foreground ring-2 md:ring-4 ring-white shadow">
+                      <Icon className="h-4 w-4 md:h-6 md:w-6" aria-hidden="true" />
                     </div>
                   </div>
-                  <p className="mt-6 font-heading font-extrabold text-secondary text-xl">{s.tag}</p>
-                  <p className="mt-1 font-heading font-bold text-primary text-base">{s.title}</p>
-                  <p className="mt-3 text-sm text-muted-foreground leading-relaxed px-2">{s.text}</p>
-                  <p className="mt-3 text-xs uppercase tracking-wider text-muted-foreground/80 italic">{s.footer}</p>
+                  <div className="pt-1">
+                    <p className="font-heading font-extrabold text-secondary text-lg md:text-xl">{s.tag}</p>
+                    <p className="mt-0.5 font-heading font-bold text-primary text-sm md:text-base">{s.title}</p>
+                    <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.text}</p>
+                    <p className="mt-2 text-xs uppercase tracking-wider text-muted-foreground/80 italic">{s.footer}</p>
+                  </div>
                 </article>
               );
             })}
@@ -547,6 +561,17 @@ export function Index() {
               </AccordionItem>
             ))}
           </Accordion>
+          <div className="mt-8 p-5 rounded-xl bg-primary/5 border border-primary/10 text-center">
+            <p className="font-heading font-bold text-primary text-base">
+              {language === "fr" ? "Prêt à commencer ?" : "Ready to get started?"}
+            </p>
+            <p className="text-sm text-muted-foreground mt-1">
+              {language === "fr" ? "Obtenez vos soumissions gratuitement en 2 minutes." : "Get your free quotes in 2 minutes."}
+            </p>
+            <Link to={quotesHref} className="btn-cta-primary mt-4 inline-flex">
+              {language === "fr" ? "Obtenir mes soumissions →" : "Get my quotes →"}
+            </Link>
+          </div>
           <div className="mt-6 text-center">
             <Link to="/faq" className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline">
               {t.cta.viewAllFaq} <ArrowRight className="h-4 w-4" />
@@ -556,47 +581,34 @@ export function Index() {
       </section>
 
       {/* ====== 13. FINAL CTA REPEAT ====== */}
-      <section aria-labelledby="final-title" className="bg-[#F5F1EA]">
-        <div className="container-app section">
-          <h2 id="final-title" className="text-center font-heading text-2xl md:text-3xl font-bold text-primary max-w-3xl mx-auto">
+      <section aria-labelledby="final-title" className="hero-gradient-bg relative overflow-hidden">
+        <div aria-hidden className="absolute -top-[10%] right-[-5%] h-80 w-80 rounded-full bg-white/5 blur-3xl pointer-events-none" />
+        <div aria-hidden className="absolute bottom-[-5%] left-[-5%] h-64 w-64 rounded-full bg-[#F4732A]/10 blur-3xl pointer-events-none" />
+        <div className="relative container-app section">
+          <h2 id="final-title" className="text-center font-heading text-2xl md:text-3xl font-bold text-white max-w-3xl mx-auto">
             {h.finalRepeatTitle}
           </h2>
-          <div className="mt-10 grid gap-8 lg:grid-cols-12 lg:items-center">
-            <div className="lg:col-span-5 hidden lg:flex items-end justify-center lg:-mr-2 xl:-mr-4">
-              <div className="relative w-full max-w-[520px] xl:max-w-[580px] aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl ring-1 ring-black/5">
-                <img
-                  src={seoAccountantDesk}
-                  alt=""
-                  aria-hidden="true"
-                  loading="lazy"
-                  className="absolute inset-0 h-full w-full object-cover"
-                />
-              </div>
-            </div>
-            <div className="lg:col-span-7">
-              <div className="relative rounded-2xl bg-secondary p-5 md:p-7 shadow-2xl text-white">
-                <h3 className="font-heading text-xl md:text-2xl font-bold uppercase">
-                  {language === "fr" ? "Obtenez 5 soumissions gratuites" : "Get 5 free quotes"}
-                </h3>
-                <p className="mt-1 text-white/90 text-sm">
-                  {language === "fr" ? "Comparez prix et services et choisissez le meilleur" : "Compare prices and services and choose the best"}
-                </p>
-                <div className="mt-5">
-                  <LeadFormCard />
-                </div>
-              </div>
-              <p className="mt-4 text-center font-bold text-primary">
-                {h.finalRepeatTagline}
+          <div className="mt-10 max-w-lg mx-auto">
+            <div className="rounded-2xl bg-white p-6 md:p-8 shadow-[var(--shadow-hero-card)]">
+              <h3 className="font-heading text-xl md:text-2xl font-bold text-primary uppercase">
+                {language === "fr" ? "Obtenez 5 soumissions gratuites" : "Get 5 free quotes"}
+              </h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                {language === "fr" ? "100% gratuit · Sans engagement · Réponse en 48h" : "100% free · No commitment · Reply in 48h"}
               </p>
-              <div className="mt-6 text-center">
-                <Link
-                  to={quotesHref}
-                  className="inline-flex items-center gap-2 rounded-md bg-primary px-7 py-3.5 text-base font-semibold text-primary-foreground hover:bg-primary-dark"
-                >
-                  {t.finalCta.button} <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
+              <Link
+                to={quotesHref}
+                className="btn-cta-primary btn-cta-pulse w-full justify-center mt-6"
+              >
+                {language === "fr" ? "Commencer ma demande gratuite →" : "Start my free request →"}
+              </Link>
+              <p className="text-xs text-center text-muted-foreground mt-3">
+                ✓ {language === "fr" ? "Cabinets agréés OECCA-CI" : "OECCA-CI certified firms"}
+              </p>
             </div>
+            <p className="mt-6 text-center font-bold text-white/90">
+              {h.finalRepeatTagline}
+            </p>
           </div>
         </div>
       </section>
