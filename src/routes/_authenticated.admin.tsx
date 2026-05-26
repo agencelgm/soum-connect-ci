@@ -15,6 +15,16 @@ import {
   getMyPartner,
 } from "@/lib/partners.functions";
 import { publishProspect } from "@/lib/marketplace.functions";
+import { rejectProspect, reactivateProspect, deleteProspect } from "@/lib/prospects.functions";
+import {
+  listTeam,
+  addTeamMember,
+  updateTeamRole,
+  resetTeamPassword,
+  suspendTeamMember,
+  unsuspendTeamMember,
+  deleteTeamMember,
+} from "@/lib/team.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -45,10 +55,14 @@ function AdminPage() {
           <TabsTrigger value="partners">Partenaires</TabsTrigger>
           <TabsTrigger value="prospects">Prospects</TabsTrigger>
           <TabsTrigger value="create">+ Créer un partenaire</TabsTrigger>
+          {roles.includes("admin") && <TabsTrigger value="team">Équipe</TabsTrigger>}
         </TabsList>
         <TabsContent value="partners" className="mt-6"><PartnersPanel isAdmin={roles.includes("admin")} /></TabsContent>
-        <TabsContent value="prospects" className="mt-6"><ProspectsPanel /></TabsContent>
+        <TabsContent value="prospects" className="mt-6"><ProspectsPanel isAdmin={roles.includes("admin")} /></TabsContent>
         <TabsContent value="create" className="mt-6"><CreatePartnerPanel /></TabsContent>
+        {roles.includes("admin") && (
+          <TabsContent value="team" className="mt-6"><TeamPanel /></TabsContent>
+        )}
       </Tabs>
     </div>
   );
