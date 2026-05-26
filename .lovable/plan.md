@@ -1,59 +1,62 @@
-# Accès admin pour les propriétaires du site
+# Deux nouvelles fonctionnalités admin
 
-## Constat
+## 1. Rejeter / supprimer un prospect (onglet Prospects)
 
-L'infra admin existe déjà côté code :
+**Cas d'usage** : après un appel, l'agent constate que le prospect n'est pas fiable (faux numéro, demande non sérieuse, doublon, hors zone). Aujourd'hui un prospect ne peut qu'être "publié comme lead" — il manque les actions négatives.
 
-- Route `/admin` (`src/routes/_authenticated.admin.tsx`) avec tableau de bord (Partenaires, Prospects, Création manuelle).
-- Table `user_roles` avec enum `app_role` (`admin`, `agent`, `user`) et fonction `has_role()` sécurisée.
-- RLS qui ouvre lecture/écriture prospects, publication leads, gestion partenaires aux rôles `admin` et `agent`.
+**Ajouts UI** dans `ProspectsPanel` (`src/routes/_authenticated.admin.tsx`) :
 
-**Mais 3 trous bloquent l'usage** :
+- Un filtre par statut en haut : Tous · En attente · Qualifiés · Rejetés
+- Sur chaque carte prospect non publié, deux nouveaux boutons à côté de "Publier comme lead" :
+  - **Rejeter** (orange, demande un motif court obligatoire — réutilise `RejectButton` existant) → passe `status = 'rejected'`, garde la ligne pour audit
+  - **Supprimer** (rouge, `admin` uniquement, confirmation native) → suppression dure (le prospect est inutile, pas de FK utile)
+- Les prospects rejetés s'affichent grisés, avec le motif visible et un bouton "Réactiver" pour annuler une erreur.
 
-1. La table `user_roles` est vide → personne n'est admin.
-2. `/connexion` redirige TOUT le monde vers `/espace-partenaire`, même un admin.
-3. Aucun lien visible vers `/admin` nulle part dans l'UI (route "cachée" qu'il faut taper à la main).
+**Backend** : 3 nouveaux serverFn dans `src/lib/prospects.server.ts` + wrappers dans un nouveau `src/lib/prospects.functions.ts` (le fichier `.server.ts` existe déjà mais n'est pas exposé en RPC) :
 
-## Ce que je propose
+- `rejectProspect({ prospect_id, reason })` — staff (admin+agent), met `status='rejected'`, stocke `qualification_notes = reason`, `qualified_by = auth.uid()`, `qualified_at = now()`
+- `reactivateProspect({ prospect_id })` — staff, repasse en `pending_qualification`
+- `deleteProspect({ prospect_id })` — admin seul, hard delete
 
-### 1. Créer ton compte propriétaire (et celui de ton équipe)
+**Migration nécessaire** :
 
-Tu te crées un compte normal via `/connexion` (ou je te crée un compte direct avec un mot de passe temporaire que tu changes ensuite). Une fois l'email connu, je lance une migration qui :
+- Ajouter la valeur `'rejected'` à l'enum `prospect_status` si absente (à vérifier — l'enum actuel a `pending_qualification` et `qualified`).
+- Ajouter policy RLS `DELETE` sur `prospects` réservée à `admin` (aujourd'hui aucun DELETE n'est autorisé).
 
-- insère ton `user_id` dans `public.user_roles` avec `role = 'admin'`,
-- (optionnel) ajoute un ou deux comptes `agent` pour ton équipe support.
+## 2. Gestion d'équipe (nouvel onglet "Équipe" dans /admin)
 
-Pour ça j'ai juste besoin de **ton email** (celui que tu veux utiliser comme compte propriétaire). Je peux aussi prévoir un second email `agent` si tu veux séparer "toi propriétaire" et "ton assistante qui qualifie les prospects".
+**Visibilité** : onglet visible uniquement si `roles.includes('admin')` — les agents ne voient pas cet onglet.
 
-### 2. Redirection intelligente après login
+**UI** : nouvel onglet `Équipe` dans le `Tabs` d'`AdminPage`, à côté de "Création manuelle". Il liste les membres staff (admin + agent) avec pour chacun :
 
-Modifier `/connexion` (et `/inscription-partenaire`) pour, après authentification, appeler un petit serverFn `getMyRedirect()` qui regarde :
+- Email, nom, rôle (badge), statut (actif / suspendu), date d'ajout
+- Actions par ligne : **Changer rôle** (admin ⇄ agent), **Réinitialiser mot de passe** (génère un nouveau mot de passe temporaire + force `must_change_password=true`), **Suspendre** / **Réactiver**, **Supprimer**
+- Bouton en haut : **+ Ajouter un membre** → formulaire (email, prénom, nom, rôle admin/agent, mot de passe temporaire généré automatiquement, copiable)
 
-- si l'utilisateur a le rôle `admin` ou `agent` → `/admin`
-- sinon (= partenaire ou nouveau) → `/espace-partenaire`
+**Backend** : nouveau `src/lib/team.functions.ts` avec serverFn protégés (`requireSupabaseAuth` + check `has_role(admin)` à l'intérieur du handler, sinon throw) utilisant `supabaseAdmin` :
 
-Comme ça un seul formulaire de connexion sert pour tout le monde, propriétaires comme cabinets. Pas de page `/admin-login` séparée (mauvaise pratique, doublon inutile).
+- `listTeam()` — retourne profils + rôles + statut suspension (jointure `profiles` + `user_roles` + lecture de `banned_until` via Admin API)
+- `addTeamMember({ email, first_name, last_name, role, password })` — crée le compte via `supabaseAdmin.auth.admin.createUser`, insère profil + `user_roles`, marque `must_change_password=true`
+- `updateTeamRole({ user_id, role })` — remplace l'entrée `user_roles` (admin ne peut pas se rétrograder lui-même)
+- `resetTeamPassword({ user_id, new_password })` — `supabaseAdmin.auth.admin.updateUserById` + remet `must_change_password=true`
+- `suspendTeamMember({ user_id })` / `unsuspendTeamMember({ user_id })` — utilise `ban_duration` de l'Admin API (ban 100 ans / `none`)
+- `deleteTeamMember({ user_id })` — `supabaseAdmin.auth.admin.deleteUser` (refuse si c'est soi-même)
 
-### 3. Lien admin visible quand pertinent
+**Garde-fous** :
 
-Dans le header du layout `_authenticated.tsx`, afficher un lien `Admin` à côté de `Déconnexion` **uniquement** si l'utilisateur a un rôle staff. Pour les cabinets normaux, le header reste identique à aujourd'hui (ils ne voient rien).
+- Un admin ne peut ni se supprimer, ni se suspendre, ni se rétrograder lui-même (sinon plus aucun admin → site bloqué)
+- Refuser la suppression du dernier admin
 
-### 4. Sécurité du `/admin`
+**Migration** : aucune nécessaire côté schéma (les rôles passent par `user_roles` qui existe déjà, la suspension via `auth.users.banned_until` est nativement gérée par Supabase).
 
-Le composant `AdminPage` vérifie déjà côté client `isStaff` et affiche "Accès réservé à l'équipe" sinon. Ajouter en plus un `beforeLoad` sur la route qui appelle `getMyPartner()` et `throw redirect({ to: "/espace-partenaire" })` si pas staff → évite le flash de chargement et bloque même si quelqu'un trafique le client.
+## Fichiers touchés
 
-## Détails techniques
+- **migration SQL** : enum `prospect_status` += `rejected` (si absent) + policy DELETE admin sur `prospects`
+- **nouveaux** : `src/lib/prospects.functions.ts`, `src/lib/team.functions.ts`
+- **édités** : `src/lib/prospects.server.ts` (3 fns reject/reactivate/delete), `src/routes/_authenticated.admin.tsx` (onglet Équipe, filtre statut + boutons sur ProspectsPanel)
 
-- **Nouveau serverFn** `getMyRole()` dans `src/lib/partners.functions.ts` (ou nouveau `src/lib/auth.functions.ts`) : protégé par `requireSupabaseAuth`, retourne `{ roles: app_role[] }` en lisant `user_roles`.
-- **Migration SQL** : `INSERT INTO public.user_roles (user_id, role) SELECT id, 'admin' FROM auth.users WHERE email = '<ton-email>' ON CONFLICT DO NOTHING;`
-- **Edits** :
-  - `src/routes/connexion.tsx` — après `signInWithPassword`, attendre `getMyRole()` et router.
-  - `src/routes/_authenticated.tsx` — afficher lien `Admin` si staff.
-  - `src/routes/_authenticated.admin.tsx` — ajouter `beforeLoad` de garde.
+## Questions avant build
 
-## Questions à confirmer avant que je passe en build
-
-1. **Quel email** veux-tu utiliser comme compte propriétaire admin ? agencelgm@gmail.com
-2. Veux-tu aussi créer un ou plusieurs comptes `agent` (équipe support qui qualifie les prospects sans accès aux fonctions destructives comme supprimer un partenaire) ? Si oui, donne-moi les emails. [fatemexpertjuniorlgm@gmail.com](mailto:fatemexpertjuniorlgm@gmail.com), [gracecoordlgm@gmail.com](mailto:gracecoordlgm@gmail.com), [loistianoulgm@gmail.com](mailto:loistianoulgm@gmail.com)
-3. OK pour que `/connexion` serve à la fois aux propriétaires ET aux cabinets (avec redirection automatique selon rôle) plutôt qu'une page `/admin-login` séparée - yes  
-4- Pour moi et mon équipe, met un mot de passe temporaire qui demande qu'on crée un nouveau à la première connection
+1. Pour la **suppression de prospect** : hard delete (la ligne disparaît) ou soft delete (on garde un flag `deleted_at` pour audit) ? Je recommande hard delete vu qu'il n'y a aucune dépendance FK et que les prospects rejetés restent visibles. - ok
+2. Le **mot de passe temporaire** à l'ajout d'un membre : généré automatiquement (12 caractères aléatoires affichés une fois, copiables) ou saisi manuellement par l'admin ? Je recommande génération auto pour éviter les mots de passe faibles. - ok
+3. **Suspension** : empêche juste la connexion (le membre garde son rôle mais ne peut plus se logger) — OK ou tu veux aussi retirer l'affichage de l'onglet Admin pour lui ? La suspension Supabase bloque déjà la connexion à la racine donc la 2e question est moot. - je veux pouvoir supprimer des utilisateurs de mon équipe, ou juste suspendre leur accès
