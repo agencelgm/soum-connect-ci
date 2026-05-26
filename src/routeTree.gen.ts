@@ -44,6 +44,7 @@ import { Route as EnCompanyRegistrationIvoryCoastRouteImport } from './routes/en
 import { Route as EnAccountingFirmAbidjanRouteImport } from './routes/en/accounting-firm-abidjan'
 import { Route as EnAboutRouteImport } from './routes/en/about'
 import { Route as AuthenticatedEspacePartenaireRouteImport } from './routes/_authenticated.espace-partenaire'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated.admin'
 import { Route as ApiPublicLeadUpsellRouteImport } from './routes/api/public/lead-upsell'
 import { Route as ApiPublicLeadRouteImport } from './routes/api/public/lead'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
@@ -232,6 +233,11 @@ const AuthenticatedEspacePartenaireRoute =
     path: '/espace-partenaire',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const ApiPublicLeadUpsellRoute = ApiPublicLeadUpsellRouteImport.update({
   id: '/api/public/lead-upsell',
   path: '/api/public/lead-upsell',
@@ -271,6 +277,7 @@ export interface FileRoutesByFullPath {
   '/offre-logo': typeof OffreLogoRoute
   '/offre-site-internet': typeof OffreSiteInternetRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/espace-partenaire': typeof AuthenticatedEspacePartenaireRoute
   '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
@@ -310,6 +317,7 @@ export interface FileRoutesByTo {
   '/offre-logo': typeof OffreLogoRoute
   '/offre-site-internet': typeof OffreSiteInternetRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/espace-partenaire': typeof AuthenticatedEspacePartenaireRoute
   '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
@@ -351,6 +359,7 @@ export interface FileRoutesById {
   '/offre-logo': typeof OffreLogoRoute
   '/offre-site-internet': typeof OffreSiteInternetRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/espace-partenaire': typeof AuthenticatedEspacePartenaireRoute
   '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
@@ -392,6 +401,7 @@ export interface FileRouteTypes {
     | '/offre-logo'
     | '/offre-site-internet'
     | '/sitemap.xml'
+    | '/admin'
     | '/espace-partenaire'
     | '/en/about'
     | '/en/accounting-firm-abidjan'
@@ -431,6 +441,7 @@ export interface FileRouteTypes {
     | '/offre-logo'
     | '/offre-site-internet'
     | '/sitemap.xml'
+    | '/admin'
     | '/espace-partenaire'
     | '/en/about'
     | '/en/accounting-firm-abidjan'
@@ -471,6 +482,7 @@ export interface FileRouteTypes {
     | '/offre-logo'
     | '/offre-site-internet'
     | '/sitemap.xml'
+    | '/_authenticated/admin'
     | '/_authenticated/espace-partenaire'
     | '/en/about'
     | '/en/accounting-firm-abidjan'
@@ -774,6 +786,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedEspacePartenaireRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/api/public/lead-upsell': {
       id: '/api/public/lead-upsell'
       path: '/api/public/lead-upsell'
@@ -799,10 +818,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedEspacePartenaireRoute: typeof AuthenticatedEspacePartenaireRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedEspacePartenaireRoute: AuthenticatedEspacePartenaireRoute,
 }
 
