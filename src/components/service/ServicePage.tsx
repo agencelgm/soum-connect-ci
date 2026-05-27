@@ -62,9 +62,7 @@ export function ServicePage({
                         {c.label}
                       </Link>
                     ) : (
-                      <span className={last ? "text-white font-medium" : ""}>
-                        {c.label}
-                      </span>
+                      <span className={last ? "text-white font-medium" : ""}>{c.label}</span>
                     )}
                     {!last && <ChevronRight className="h-3.5 w-3.5" />}
                   </li>
@@ -81,9 +79,7 @@ export function ServicePage({
               <h1 className="font-heading font-bold text-white text-3xl md:text-5xl leading-tight">
                 {title}
               </h1>
-              <p className="mt-4 max-w-2xl text-base md:text-lg text-white/85">
-                {heroSubtitle}
-              </p>
+              <p className="mt-4 max-w-2xl text-base md:text-lg text-white/85">{heroSubtitle}</p>
               <div className="mt-6">
                 <Link to={quotesHref} className="btn-cta-primary inline-flex">
                   {t.servicePage.heroBtn}
@@ -129,12 +125,8 @@ export function ServicePage({
           <aside className="hidden lg:flex flex-col gap-5 sticky top-24">
             <RelatedBlock items={relatedServices} title={t.servicePage.relatedTitle} />
             <div className="rounded-2xl bg-secondary text-white p-5 shadow-sm">
-              <p className="font-heading font-semibold leading-snug">
-                {t.servicePage.asideTitle}
-              </p>
-              <p className="mt-1 text-sm text-white/90">
-                {t.servicePage.asideSub}
-              </p>
+              <p className="font-heading font-semibold leading-snug">{t.servicePage.asideTitle}</p>
+              <p className="mt-1 text-sm text-white/90">{t.servicePage.asideSub}</p>
               <Button
                 asChild
                 variant="secondary"
@@ -152,18 +144,14 @@ export function ServicePage({
           <h2 className="font-heading font-bold text-2xl md:text-3xl">
             {t.servicePage.finalTitle}
           </h2>
-          <p className="mt-2 text-white/90">
-            {t.servicePage.finalSub}
-          </p>
+          <p className="mt-2 text-white/90">{t.servicePage.finalSub}</p>
           <div className="mt-6">
             <Button
               asChild
               size="lg"
               className="bg-white text-secondary hover:bg-white/90 font-semibold"
             >
-              <Link to={quotesHref}>
-                {t.servicePage.finalBtn}
-              </Link>
+              <Link to={quotesHref}>{t.servicePage.finalBtn}</Link>
             </Button>
           </div>
         </div>
@@ -175,9 +163,7 @@ export function ServicePage({
 function RelatedBlock({ items, title }: { items: RelatedService[]; title: string }) {
   return (
     <div className="rounded-2xl bg-white border border-border shadow-sm p-5">
-      <p className="font-heading font-semibold text-primary mb-3">
-        {title}
-      </p>
+      <p className="font-heading font-semibold text-primary mb-3">{title}</p>
       <ul className="space-y-2">
         {items.map((s) => {
           const Icon = s.icon;

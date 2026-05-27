@@ -7,8 +7,7 @@ export const Route = createFileRoute("/offre-logo")({
     const head = buildPageHead({
       path: "/offre-logo",
       title: "Offre exclusive — Conception de logo | SoumissionComptable.com",
-      description:
-        "Offre exclusive : conception de logo professionnel à partir de 50 000 FCFA.",
+      description: "Offre exclusive : conception de logo professionnel à partir de 50 000 FCFA.",
       altPath: "/en/logo-offer",
     });
     head.meta.push({ name: "robots", content: "noindex, nofollow" });

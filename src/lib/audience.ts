@@ -77,11 +77,7 @@ function fromService(service: string): Audience | null {
   const s = norm(service);
   if (!s) return null;
   if (/(creation|immatricul|rccm|cepici|constitut)/.test(s)) return "creation";
-  if (
-    /(comptabilit|declaration|fiscal|audit|paie|cnps|tva|domiciliation|dsf|bilan)/.test(
-      s,
-    )
-  )
+  if (/(comptabilit|declaration|fiscal|audit|paie|cnps|tva|domiciliation|dsf|bilan)/.test(s))
     return "gestion";
   return null;
 }

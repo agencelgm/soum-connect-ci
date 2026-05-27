@@ -11,28 +11,25 @@ export function CompteBancaireEntrepriseAbidjanContent() {
     <>
       <ArticleCallout variant="info" title="En bref">
         <p>
-          L&apos;ouverture d&apos;un compte bancaire professionnel est obligatoire pour
-          toute SARL en Côte d&apos;Ivoire — d&apos;abord pour déposer le capital lors
-          de la création, puis pour les opérations courantes. Les principales
-          banques à Abidjan (Ecobank, SGCI, NSIA, BOA, Coris Bank) ouvrent des
-          comptes en 5 à 15 jours ouvrés sur présentation du RCCM, des statuts
-          et des pièces d&apos;identité des dirigeants.
+          L&apos;ouverture d&apos;un compte bancaire professionnel est obligatoire pour toute SARL
+          en Côte d&apos;Ivoire — d&apos;abord pour déposer le capital lors de la création, puis
+          pour les opérations courantes. Les principales banques à Abidjan (Ecobank, SGCI, NSIA,
+          BOA, Coris Bank) ouvrent des comptes en 5 à 15 jours ouvrés sur présentation du RCCM, des
+          statuts et des pièces d&apos;identité des dirigeants.
         </p>
       </ArticleCallout>
 
       <ArticleSection title="Pourquoi un compte bancaire professionnel est-il obligatoire pour une SARL ?">
         <p>
-          <strong>À la création :</strong> le dépôt du capital social se fait
-          obligatoirement sur un compte ouvert au nom de la société en
-          formation. La banque délivre une attestation qui fait partie du
-          dossier CEPICI.
+          <strong>À la création :</strong> le dépôt du capital social se fait obligatoirement sur un
+          compte ouvert au nom de la société en formation. La banque délivre une attestation qui
+          fait partie du dossier CEPICI.
         </p>
         <p>
-          <strong>Après la création :</strong> le compte de dépôt est
-          transformé en compte courant professionnel. Toutes les opérations
-          doivent transiter par ce compte. Mélanger finances personnelles et
-          professionnelles est une faute de gestion qui engage la
-          responsabilité du dirigeant.
+          <strong>Après la création :</strong> le compte de dépôt est transformé en compte courant
+          professionnel. Toutes les opérations doivent transiter par ce compte. Mélanger finances
+          personnelles et professionnelles est une faute de gestion qui engage la responsabilité du
+          dirigeant.
         </p>
       </ArticleSection>
 
@@ -41,7 +38,11 @@ export function CompteBancaireEntrepriseAbidjanContent() {
           headers={["Banque", "Points forts", "Idéal pour"]}
           rows={[
             ["Ecobank", "Réseau panafricain, services digitaux", "PME avec activités régionales"],
-            ["SGCI (Société Générale)", "Financement, international", "PME avec partenaires étrangers"],
+            [
+              "SGCI (Société Générale)",
+              "Financement, international",
+              "PME avec partenaires étrangers",
+            ],
             ["NSIA Banque", "Relationnel, réactivité", "PME locales, professions libérales"],
             ["BOA (Bank of Africa)", "Tarifs compétitifs", "TPE, démarrage"],
             ["Coris Bank", "Proximité, mobile banking", "PME et commerçants"],
@@ -52,7 +53,9 @@ export function CompteBancaireEntrepriseAbidjanContent() {
       </ArticleSection>
 
       <ArticleSection title="Quels documents fournir pour ouvrir un compte professionnel ?">
-        <p><strong>Documents de la société :</strong></p>
+        <p>
+          <strong>Documents de la société :</strong>
+        </p>
         <ArticleList
           items={[
             "Original ou copie certifiée conforme du RCCM",
@@ -61,7 +64,9 @@ export function CompteBancaireEntrepriseAbidjanContent() {
             "Attestation de domiciliation du siège social",
           ]}
         />
-        <p><strong>Documents du dirigeant :</strong></p>
+        <p>
+          <strong>Documents du dirigeant :</strong>
+        </p>
         <ArticleList
           items={[
             "Pièce d'identité en cours de validité",
@@ -70,7 +75,9 @@ export function CompteBancaireEntrepriseAbidjanContent() {
             "Spécimen de signature",
           ]}
         />
-        <p><strong>Documents complémentaires :</strong></p>
+        <p>
+          <strong>Documents complémentaires :</strong>
+        </p>
         <ArticleList
           items={[
             "Plan d'affaires ou présentation de l'activité",
@@ -84,15 +91,24 @@ export function CompteBancaireEntrepriseAbidjanContent() {
         <ArticleList
           ordered
           items={[
-            <><strong>Choisir votre banque</strong> et prendre rendez-vous.</>,
-            <><strong>Déposer le dossier complet</strong> — vérification KYC possible.</>,
-            <><strong>Entretien d&apos;affaires</strong> avec un chargé d&apos;affaires.</>,
-            <><strong>Signer la convention de compte</strong> et recevoir RIB, carte et identifiants.</>,
+            <>
+              <strong>Choisir votre banque</strong> et prendre rendez-vous.
+            </>,
+            <>
+              <strong>Déposer le dossier complet</strong> — vérification KYC possible.
+            </>,
+            <>
+              <strong>Entretien d&apos;affaires</strong> avec un chargé d&apos;affaires.
+            </>,
+            <>
+              <strong>Signer la convention de compte</strong> et recevoir RIB, carte et
+              identifiants.
+            </>,
           ]}
         />
         <p>
-          <strong>Délai moyen :</strong> 5 à 15 jours ouvrés à partir du dépôt
-          d&apos;un dossier complet.
+          <strong>Délai moyen :</strong> 5 à 15 jours ouvrés à partir du dépôt d&apos;un dossier
+          complet.
         </p>
       </ArticleSection>
 
@@ -106,8 +122,8 @@ export function CompteBancaireEntrepriseAbidjanContent() {
           ]}
         />
         <p>
-          Votre mandataire local (cabinet comptable) peut déposer le dossier.
-          Certaines banques exigent une visite physique pour la signature.
+          Votre mandataire local (cabinet comptable) peut déposer le dossier. Certaines banques
+          exigent une visite physique pour la signature.
         </p>
       </ArticleSection>
 
@@ -122,8 +138,7 @@ export function CompteBancaireEntrepriseAbidjanContent() {
           ]}
         />
         <p>
-          Négociez ces frais, surtout si vous prévoyez un volume d&apos;opérations
-          significatif.
+          Négociez ces frais, surtout si vous prévoyez un volume d&apos;opérations significatif.
         </p>
       </ArticleSection>
 
@@ -134,9 +149,8 @@ export function CompteBancaireEntrepriseAbidjanContent() {
               Est-il obligatoire d&apos;avoir un compte séparé pour une SARL ?
             </h3>
             <p className="mt-2">
-              Oui. La SARL est une personne morale distincte. Utiliser un
-              compte personnel est une faute de gestion qui efface la
-              séparation des patrimoines.
+              Oui. La SARL est une personne morale distincte. Utiliser un compte personnel est une
+              faute de gestion qui efface la séparation des patrimoines.
             </p>
           </div>
           <div>
@@ -144,8 +158,8 @@ export function CompteBancaireEntrepriseAbidjanContent() {
               Quelle banque accepte les comptes pour les associations et GIE ?
             </h3>
             <p className="mt-2">
-              La plupart des banques ivoiriennes — Ecobank, BOA et Coris Bank
-              sont particulièrement actifs sur ce segment.
+              La plupart des banques ivoiriennes — Ecobank, BOA et Coris Bank sont particulièrement
+              actifs sur ce segment.
             </p>
           </div>
           <div>
@@ -153,9 +167,8 @@ export function CompteBancaireEntrepriseAbidjanContent() {
               Peut-on avoir plusieurs comptes pour une même société ?
             </h3>
             <p className="mt-2">
-              Oui. Compte courant opérationnel, épargne pour provisions
-              fiscales, compte projet. Aucune limite légale. Attention aux
-              frais de tenue multiples.
+              Oui. Compte courant opérationnel, épargne pour provisions fiscales, compte projet.
+              Aucune limite légale. Attention aux frais de tenue multiples.
             </p>
           </div>
           <div>
@@ -163,9 +176,8 @@ export function CompteBancaireEntrepriseAbidjanContent() {
               Comment obtenir un découvert ou une facilité de caisse ?
             </h3>
             <p className="mt-2">
-              Sur la base de vos relevés des 3 à 6 derniers mois. Plus facile
-              avec un historique positif, un CA régulier et une comptabilité à
-              jour.
+              Sur la base de vos relevés des 3 à 6 derniers mois. Plus facile avec un historique
+              positif, un CA régulier et une comptabilité à jour.
             </p>
           </div>
         </div>
@@ -177,8 +189,8 @@ export function CompteBancaireEntrepriseAbidjanContent() {
         ctaLabel="Obtenir mes soumissions"
       />
       <p className="mt-6 text-sm text-muted-foreground">
-        Mis à jour en mai 2026. Sources : banques partenaires SGCI, Ecobank,
-        NSIA, BOA, Coris Bank CI.
+        Mis à jour en mai 2026. Sources : banques partenaires SGCI, Ecobank, NSIA, BOA, Coris Bank
+        CI.
       </p>
     </>
   );

@@ -57,10 +57,7 @@ export const Route = createFileRoute("/guides/$slug")({
     if (!article.content) {
       return {
         ...head,
-        meta: [
-          ...head.meta,
-          { name: "robots", content: "noindex,nofollow" },
-        ],
+        meta: [...head.meta, { name: "robots", content: "noindex,nofollow" }],
       };
     }
     // Article rédigé → JSON-LD Article enrichi + indexable.
@@ -126,12 +123,7 @@ export const Route = createFileRoute("/guides/$slug")({
           "@type": "Place",
           name: `${quartierName}, Abidjan, Côte d'Ivoire`,
         },
-        serviceType: [
-          "Comptabilité",
-          "Création d'entreprise",
-          "Déclaration fiscale",
-          "Audit",
-        ],
+        serviceType: ["Comptabilité", "Création d'entreprise", "Déclaration fiscale", "Audit"],
         priceRange: "60 000 - 400 000 FCFA/mois",
       };
       extraScripts.push({
@@ -184,11 +176,15 @@ function GuideSlugPage() {
           <nav aria-label="Fil d'Ariane" className="text-sm text-muted-foreground mb-4">
             <ol className="flex flex-wrap items-center gap-2">
               <li>
-                <Link to="/" className="hover:text-primary">Accueil</Link>
+                <Link to="/" className="hover:text-primary">
+                  Accueil
+                </Link>
               </li>
               <li aria-hidden="true">/</li>
               <li>
-                <Link to="/guides" className="hover:text-primary">Guides</Link>
+                <Link to="/guides" className="hover:text-primary">
+                  Guides
+                </Link>
               </li>
               <li aria-hidden="true">/</li>
               <li className="text-foreground line-clamp-1">{article.title}</li>
@@ -210,9 +206,7 @@ function GuideSlugPage() {
           <h1 className="font-heading font-bold text-primary text-3xl md:text-5xl max-w-3xl leading-tight">
             {article.title}
           </h1>
-          <p className="mt-4 text-lg text-muted-foreground max-w-2xl">
-            {article.excerpt}
-          </p>
+          <p className="mt-4 text-lg text-muted-foreground max-w-2xl">{article.excerpt}</p>
           <p className="mt-4 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
             <Clock className="h-3.5 w-3.5" />
             {article.readTime} de lecture (estimé)
@@ -229,9 +223,8 @@ function GuideSlugPage() {
             Article en cours de rédaction
           </h2>
           <p className="mt-2 text-muted-foreground">
-            Ce guide arrive très bientôt. En attendant, vous pouvez obtenir des
-            soumissions gratuites de cabinets comptables agréés ou parcourir
-            nos autres guides.
+            Ce guide arrive très bientôt. En attendant, vous pouvez obtenir des soumissions
+            gratuites de cabinets comptables agréés ou parcourir nos autres guides.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Link
@@ -252,7 +245,13 @@ function GuideSlugPage() {
       </section>
       {(() => {
         const rel = getPageRelations("/guides");
-        return rel ? <RelatedLinks items={rel.related} title="Pages liées" subtitle="Explorez nos services et autres ressources." /> : null;
+        return rel ? (
+          <RelatedLinks
+            items={rel.related}
+            title="Pages liées"
+            subtitle="Explorez nos services et autres ressources."
+          />
+        ) : null;
       })()}
     </main>
   );

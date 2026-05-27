@@ -11,19 +11,18 @@ export function EntrepriseIndividuelleVsSarlContent() {
     <>
       <ArticleCallout variant="info" title="En bref">
         <p>
-          Une entreprise individuelle (EI) est simple et rapide à créer mais
-          expose le dirigeant à une responsabilité illimitée sur ses biens
-          personnels. Une SARL protège le patrimoine personnel, donne une image
-          plus professionnelle et offre une fiscalité parfois plus avantageuse
-          à partir d&apos;un CA annuel de 50 millions FCFA. La transformation se
-          fait via le CEPICI avec l&apos;accompagnement d&apos;un cabinet comptable.
+          Une entreprise individuelle (EI) est simple et rapide à créer mais expose le dirigeant à
+          une responsabilité illimitée sur ses biens personnels. Une SARL protège le patrimoine
+          personnel, donne une image plus professionnelle et offre une fiscalité parfois plus
+          avantageuse à partir d&apos;un CA annuel de 50 millions FCFA. La transformation se fait
+          via le CEPICI avec l&apos;accompagnement d&apos;un cabinet comptable.
         </p>
       </ArticleCallout>
 
       <ArticleSection title="Quelles sont les différences fondamentales entre EI et SARL en CI ?">
         <p>
-          L&apos;EI et la SARL diffèrent sur trois points : la responsabilité, la
-          fiscalité et la crédibilité commerciale.
+          L&apos;EI et la SARL diffèrent sur trois points : la responsabilité, la fiscalité et la
+          crédibilité commerciale.
         </p>
         <ArticleTable
           headers={["Critère", "Entreprise Individuelle", "SARL"]}
@@ -56,20 +55,34 @@ export function EntrepriseIndividuelleVsSarlContent() {
         <ArticleList
           ordered
           items={[
-            <><strong>Le CA dépasse 50 millions FCFA</strong> — bascule au régime réel simplifié et obligations renforcées.</>,
-            <><strong>Vous travaillez avec de grands comptes ou bailleurs internationaux</strong> — un RCCM de société est souvent prérequis.</>,
-            <><strong>Vous investissez et prenez des crédits</strong> — la SARL protège votre patrimoine personnel.</>,
-            <><strong>Vous voulez associer des partenaires</strong> — l&apos;EI n&apos;admet qu&apos;un seul dirigeant.</>,
-            <><strong>Vous voulez optimiser votre fiscalité</strong> — l&apos;IS à 25 % + rémunération de gérant déductible.</>,
+            <>
+              <strong>Le CA dépasse 50 millions FCFA</strong> — bascule au régime réel simplifié et
+              obligations renforcées.
+            </>,
+            <>
+              <strong>Vous travaillez avec de grands comptes ou bailleurs internationaux</strong> —
+              un RCCM de société est souvent prérequis.
+            </>,
+            <>
+              <strong>Vous investissez et prenez des crédits</strong> — la SARL protège votre
+              patrimoine personnel.
+            </>,
+            <>
+              <strong>Vous voulez associer des partenaires</strong> — l&apos;EI n&apos;admet
+              qu&apos;un seul dirigeant.
+            </>,
+            <>
+              <strong>Vous voulez optimiser votre fiscalité</strong> — l&apos;IS à 25 % +
+              rémunération de gérant déductible.
+            </>,
           ]}
         />
       </ArticleSection>
 
       <ArticleSection title="Comment transformer une EI en SARL en Côte d'Ivoire ?">
         <p>
-          La transformation est techniquement une dissolution de l&apos;EI et une
-          création de SARL, avec apport des actifs de l&apos;EI à la nouvelle
-          société.
+          La transformation est techniquement une dissolution de l&apos;EI et une création de SARL,
+          avec apport des actifs de l&apos;EI à la nouvelle société.
         </p>
         <ArticleList
           ordered
@@ -86,10 +99,9 @@ export function EntrepriseIndividuelleVsSarlContent() {
 
       <ArticleSection title="Combien coûte la transformation d'une EI en SARL ?">
         <p>
-          Honoraires cabinet comptable : <strong>150 000 à 400 000 FCFA</strong>
-          {" "}selon la complexité. Frais CEPICI : <strong>50 000 à 80 000 FCFA</strong>.
-          S&apos;ajoutent les coûts indirects : nouveau compte bancaire, mise à jour
-          des tampons, contrats à renouveler.
+          Honoraires cabinet comptable : <strong>150 000 à 400 000 FCFA</strong> selon la
+          complexité. Frais CEPICI : <strong>50 000 à 80 000 FCFA</strong>. S&apos;ajoutent les
+          coûts indirects : nouveau compte bancaire, mise à jour des tampons, contrats à renouveler.
         </p>
       </ArticleSection>
 
@@ -100,9 +112,9 @@ export function EntrepriseIndividuelleVsSarlContent() {
               Peut-on créer une SARL avec un seul associé en Côte d&apos;Ivoire ?
             </h3>
             <p className="mt-2">
-              Oui. La SARLU (associé unique) offre les mêmes protections qu&apos;une
-              SARL classique. C&apos;est la forme idéale pour passer de l&apos;EI à une
-              société sans trouver d&apos;associés.
+              Oui. La SARLU (associé unique) offre les mêmes protections qu&apos;une SARL classique.
+              C&apos;est la forme idéale pour passer de l&apos;EI à une société sans trouver
+              d&apos;associés.
             </p>
           </div>
           <div>
@@ -110,9 +122,9 @@ export function EntrepriseIndividuelleVsSarlContent() {
               L&apos;entreprise individuelle paie-t-elle moins d&apos;impôts que la SARL ?
             </h3>
             <p className="mt-2">
-              Pas nécessairement. L&apos;EI est soumise au BIC (barème progressif).
-              La SARL paie l&apos;IS à 25 %. Au-delà d&apos;un certain niveau de
-              bénéfices, la SARL est généralement plus avantageuse.
+              Pas nécessairement. L&apos;EI est soumise au BIC (barème progressif). La SARL paie
+              l&apos;IS à 25 %. Au-delà d&apos;un certain niveau de bénéfices, la SARL est
+              généralement plus avantageuse.
             </p>
           </div>
           <div>
@@ -120,8 +132,8 @@ export function EntrepriseIndividuelleVsSarlContent() {
               Peut-on garder sa clientèle en passant de l&apos;EI à la SARL ?
             </h3>
             <p className="mt-2">
-              Oui, mais il faut informer chaque client et fournisseur et mettre
-              à jour les contrats en cours via une novation ou un avenant.
+              Oui, mais il faut informer chaque client et fournisseur et mettre à jour les contrats
+              en cours via une novation ou un avenant.
             </p>
           </div>
           <div>
@@ -129,8 +141,8 @@ export function EntrepriseIndividuelleVsSarlContent() {
               Quel est le minimum de capital pour créer une SARL ?
             </h3>
             <p className="mt-2">
-              <strong>100 000 FCFA</strong> depuis la révision de l&apos;Acte
-              Uniforme OHADA. Libérable en numéraire ou en nature.
+              <strong>100 000 FCFA</strong> depuis la révision de l&apos;Acte Uniforme OHADA.
+              Libérable en numéraire ou en nature.
             </p>
           </div>
         </div>
@@ -142,8 +154,7 @@ export function EntrepriseIndividuelleVsSarlContent() {
         ctaLabel="Obtenir mes soumissions"
       />
       <p className="mt-6 text-sm text-muted-foreground">
-        Mis à jour en mai 2026. Sources : Acte Uniforme OHADA, Code Général des
-        Impôts CI 2026.
+        Mis à jour en mai 2026. Sources : Acte Uniforme OHADA, Code Général des Impôts CI 2026.
       </p>
     </>
   );

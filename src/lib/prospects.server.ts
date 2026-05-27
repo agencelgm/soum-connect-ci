@@ -1,8 +1,6 @@
 // Server-only helper: enregistre une soumission de formulaire dans la table
 // `prospects` (Lovable Cloud). Utilise le client admin car les endpoints
 // /api/public/* sont anonymes — l'utilisateur n'a pas de session Supabase.
-//
-// Ne JAMAIS bloquer l'UX : si l'insert échoue, on log et on continue.
 
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import type { Audience } from "./audience";
@@ -10,6 +8,7 @@ import type { Audience } from "./audience";
 export type ProspectFormType = "lead" | "contact";
 
 export type RecordProspectInput = {
+  id?: string;
   form_type: ProspectFormType;
   // Contact
   full_name?: string | null;
@@ -43,13 +42,15 @@ function toTimestamp(value: string | null | undefined): string | null {
 }
 
 /**
- * Enregistre un prospect en base. Ne lève jamais — log et retourne null si échec.
+ * Enregistre un prospect en base. Lève si l'insert échoue: le workflow dépend
+ * du back-office, donc une demande non enregistrée ne doit pas être confirmée.
  */
-export async function recordProspect(input: RecordProspectInput): Promise<string | null> {
+export async function recordProspect(input: RecordProspectInput): Promise<string> {
   try {
     const { data, error } = await supabaseAdmin
       .from("prospects")
       .insert({
+        id: input.id,
         form_type: input.form_type,
         full_name: input.full_name ?? null,
         email: input.email ?? null,
@@ -75,11 +76,14 @@ export async function recordProspect(input: RecordProspectInput): Promise<string
 
     if (error) {
       console.error("[prospects] insert error", error.message, error.details);
-      return null;
+      throw new Error("Prospect database insert failed");
     }
-    return data?.id ?? null;
+    if (!data?.id) {
+      throw new Error("Prospect database insert returned no id");
+    }
+    return data.id;
   } catch (err) {
     console.error("[prospects] insert threw", err);
-    return null;
+    throw err;
   }
 }

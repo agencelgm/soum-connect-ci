@@ -38,24 +38,72 @@ export function Footer() {
         <div>
           <div className="text-white font-semibold mb-3">{t.footer.ourServices}</div>
           <ul className="space-y-2 text-sm">
-            <li><Link to="/creation-entreprise-cote-divoire" className="hover:text-secondary">{t.services.creation}</Link></li>
-            <li><Link to="/creer-son-entreprise-cote-divoire" className="hover:text-secondary">Créer son entreprise en 10 jours</Link></li>
-            <li><Link to="/comptabilite-entreprise-abidjan" className="hover:text-secondary">{t.services.accounting}</Link></li>
-            <li><Link to="/declaration-fiscale-cote-divoire" className="hover:text-secondary">{t.services.tax}</Link></li>
-            <li><Link to="/domiciliation-entreprise-abidjan" className="hover:text-secondary">{t.services.domiciliation}</Link></li>
-            <li><Link to="/cabinet-comptable-abidjan" className="hover:text-secondary">{t.services.audit}</Link></li>
-            <li><Link to="/cabinet-comptable-abidjan" className="hover:text-secondary">{t.services.legal}</Link></li>
+            <li>
+              <Link to="/creation-entreprise-cote-divoire" className="hover:text-secondary">
+                {t.services.creation}
+              </Link>
+            </li>
+            <li>
+              <Link to="/creer-son-entreprise-cote-divoire" className="hover:text-secondary">
+                Créer son entreprise en 10 jours
+              </Link>
+            </li>
+            <li>
+              <Link to="/comptabilite-entreprise-abidjan" className="hover:text-secondary">
+                {t.services.accounting}
+              </Link>
+            </li>
+            <li>
+              <Link to="/declaration-fiscale-cote-divoire" className="hover:text-secondary">
+                {t.services.tax}
+              </Link>
+            </li>
+            <li>
+              <Link to="/domiciliation-entreprise-abidjan" className="hover:text-secondary">
+                {t.services.domiciliation}
+              </Link>
+            </li>
+            <li>
+              <Link to="/cabinet-comptable-abidjan" className="hover:text-secondary">
+                {t.services.audit}
+              </Link>
+            </li>
+            <li>
+              <Link to="/cabinet-comptable-abidjan" className="hover:text-secondary">
+                {t.services.legal}
+              </Link>
+            </li>
           </ul>
         </div>
 
         <div>
           <div className="text-white font-semibold mb-3">{t.footer.usefulLinks}</div>
           <ul className="space-y-2 text-sm">
-            <li><Link to="/comment-ca-marche" className="hover:text-secondary">{t.footer.links.howItWorks}</Link></li>
-            <li><Link to="/faq" className="hover:text-secondary">{t.footer.links.faq}</Link></li>
-            <li><Link to="/a-propos" className="hover:text-secondary">{t.footer.links.about}</Link></li>
-            <li><Link to="/cabinets-comptables-partenaires" className="hover:text-secondary">{t.footer.links.partners}</Link></li>
-            <li><Link to="/guides" className="hover:text-secondary">{t.footer.links.guides}</Link></li>
+            <li>
+              <Link to="/comment-ca-marche" className="hover:text-secondary">
+                {t.footer.links.howItWorks}
+              </Link>
+            </li>
+            <li>
+              <Link to="/faq" className="hover:text-secondary">
+                {t.footer.links.faq}
+              </Link>
+            </li>
+            <li>
+              <Link to="/a-propos" className="hover:text-secondary">
+                {t.footer.links.about}
+              </Link>
+            </li>
+            <li>
+              <Link to="/cabinets-comptables-partenaires" className="hover:text-secondary">
+                {t.footer.links.partners}
+              </Link>
+            </li>
+            <li>
+              <Link to="/guides" className="hover:text-secondary">
+                {t.footer.links.guides}
+              </Link>
+            </li>
           </ul>
         </div>
 
@@ -80,9 +128,13 @@ export function Footer() {
         <div className="max-w-[1200px] mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-slate-400">
           <div>{t.footer.rights}</div>
           <div className="flex items-center gap-2">
-            <a href="#" className="hover:text-secondary">{t.footer.privacy}</a>
+            <a href="#" className="hover:text-secondary">
+              {t.footer.privacy}
+            </a>
             <span>|</span>
-            <a href="#" className="hover:text-secondary">{t.footer.terms}</a>
+            <a href="#" className="hover:text-secondary">
+              {t.footer.terms}
+            </a>
           </div>
           <div>{t.footer.byLgm}</div>
         </div>

@@ -160,7 +160,8 @@ const COPY = {
     lService: "Which service are you looking for?",
     lStatut: "What's your current status?",
     lDescription: "Can you share details about your project?",
-    descPh: "E.g. I want to register a SARL in Abidjan with 2 partners. Capital of 1,000,000 FCFA...",
+    descPh:
+      "E.g. I want to register a SARL in Abidjan with 2 partners. Capital of 1,000,000 FCFA...",
     lAssocies: "How many business partners do you have?",
     lBureau: "Do you have an office?",
     lLogo: "Do you have a logo?",
@@ -295,7 +296,7 @@ export function MultiStepLeadForm({
 
   const next = async () => {
     const ok = await trigger(STEP_FIELDS[step]);
-    if (ok) setStep((s) => ((s < 4 ? s + 1 : s) as 1 | 2 | 3 | 4));
+    if (ok) setStep((s) => (s < 4 ? s + 1 : s) as 1 | 2 | 3 | 4);
   };
 
   const onSubmit = async (values: FormValues) => {
@@ -313,9 +314,12 @@ export function MultiStepLeadForm({
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       try {
-        const json = (await res.json()) as { leadId?: string };
+        const json = (await res.json()) as { leadId?: string; prospectId?: string };
         if (json?.leadId) sessionStorage.setItem("leadId", json.leadId);
-      } catch {}
+        if (json?.prospectId) sessionStorage.setItem("prospectId", json.prospectId);
+      } catch {
+        // Response body is best-effort; submission success is already known from HTTP status.
+      }
       trackEvent("soumission_envoyee", {
         service: values.service,
         localisation: values.localisation,
@@ -347,9 +351,7 @@ export function MultiStepLeadForm({
       )}
     >
       {title && (
-        <h2 className="font-heading text-lg md:text-xl font-semibold text-primary mb-4">
-          {title}
-        </h2>
+        <h2 className="font-heading text-lg md:text-xl font-semibold text-primary mb-4">{title}</h2>
       )}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-3">
@@ -358,9 +360,11 @@ export function MultiStepLeadForm({
               <div
                 className={[
                   "h-8 w-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300",
-                  s < step ? "bg-accent text-white" :
-                  s === step ? "bg-secondary text-white shadow-[var(--shadow-cta)]" :
-                  "bg-muted text-muted-foreground"
+                  s < step
+                    ? "bg-accent text-white"
+                    : s === step
+                      ? "bg-secondary text-white shadow-[var(--shadow-cta)]"
+                      : "bg-muted text-muted-foreground",
                 ].join(" ")}
               >
                 {s < step ? "✓" : s}
@@ -393,7 +397,9 @@ export function MultiStepLeadForm({
               <select id="service" {...register("service")} className={selectClass}>
                 <option value="">{c.choose}</option>
                 {SERVICES.map((s) => (
-                  <option key={s} value={s}>{s}</option>
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
                 ))}
               </select>
             </Field>
@@ -402,7 +408,9 @@ export function MultiStepLeadForm({
               <select id="statut" {...register("statut")} className={selectClass}>
                 <option value="">{c.choose}</option>
                 {STATUTS.map((s) => (
-                  <option key={s} value={s}>{s}</option>
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
                 ))}
               </select>
             </Field>
@@ -421,12 +429,7 @@ export function MultiStepLeadForm({
               />
             </Field>
 
-            <Field
-              id="nbAssocies"
-              label={c.lAssocies}
-              required
-              error={errors.nbAssocies?.message}
-            >
+            <Field id="nbAssocies" label={c.lAssocies} required error={errors.nbAssocies?.message}>
               <Input
                 id="nbAssocies"
                 type="number"
@@ -502,16 +505,13 @@ export function MultiStepLeadForm({
               {c.s3Title}
             </h3>
 
-            <Field
-              id="localisation"
-              label={c.lLoc}
-              required
-              error={errors.localisation?.message}
-            >
+            <Field id="localisation" label={c.lLoc} required error={errors.localisation?.message}>
               <select id="localisation" {...register("localisation")} className={selectClass}>
                 <option value="">{c.choose}</option>
                 {LOCALISATIONS.map((s) => (
-                  <option key={s} value={s}>{s}</option>
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
                 ))}
               </select>
             </Field>
@@ -520,7 +520,9 @@ export function MultiStepLeadForm({
               <select id="delai" {...register("delai")} className={selectClass}>
                 <option value="">{c.choose}</option>
                 {DELAIS.map((s) => (
-                  <option key={s} value={s}>{s}</option>
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
                 ))}
               </select>
             </Field>
@@ -529,7 +531,9 @@ export function MultiStepLeadForm({
               <select id="budget" {...register("budget")} className={selectClass}>
                 <option value="">{c.choose}</option>
                 {BUDGETS.map((s) => (
-                  <option key={s} value={s}>{s}</option>
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
                 ))}
               </select>
             </Field>
@@ -579,12 +583,7 @@ export function MultiStepLeadForm({
               <Input id="email" type="email" autoComplete="email" {...register("email")} />
             </Field>
 
-            <Field
-              id="entreprise"
-              label={c.lEnt}
-              required
-              error={errors.entreprise?.message}
-            >
+            <Field id="entreprise" label={c.lEnt} required error={errors.entreprise?.message}>
               <Input id="entreprise" placeholder={c.entPh} {...register("entreprise")} />
             </Field>
 
@@ -593,11 +592,9 @@ export function MultiStepLeadForm({
                 id="consent"
                 checked={watch("consent") === true}
                 onCheckedChange={(v) =>
-                  setValue(
-                    "consent",
-                    v === true ? true : (false as unknown as true),
-                    { shouldValidate: true },
-                  )
+                  setValue("consent", v === true ? true : (false as unknown as true), {
+                    shouldValidate: true,
+                  })
                 }
               />
               <Label htmlFor="consent" className="text-sm font-normal leading-snug">
@@ -683,12 +680,7 @@ function RadioYesNo({
           key={opt.v}
           className="flex-1 cursor-pointer rounded-md border border-input bg-white px-3 py-3 min-h-[48px] text-sm text-foreground flex items-center justify-center gap-2 hover:border-secondary has-[:checked]:border-secondary has-[:checked]:bg-secondary/5 has-[:checked]:text-secondary-dark transition-colors"
         >
-          <input
-            type="radio"
-            value={opt.v}
-            className="accent-secondary"
-            {...register(name)}
-          />
+          <input type="radio" value={opt.v} className="accent-secondary" {...register(name)} />
           <span className="font-medium">{opt.label}</span>
         </label>
       ))}

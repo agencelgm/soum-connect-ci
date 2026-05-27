@@ -31,20 +31,14 @@ export function getLangFromPath(pathname: string): Language {
 /** Return the counterpart path for `pathname` in `targetLang`, or fallback. */
 export function getCounterpart(pathname: string, targetLang: Language): string {
   const normalized = pathname.replace(/\/+$/, "") || "/";
-  const pair = ROUTE_PAIRS.find(
-    (p) => p.fr === normalized || p.en === normalized,
-  );
+  const pair = ROUTE_PAIRS.find((p) => p.fr === normalized || p.en === normalized);
   if (pair) return targetLang === "en" ? pair.en : pair.fr;
   // No mirror — drop user back to the language home.
   return targetLang === "en" ? "/en" : "/";
 }
 
 /** Return the {fr, en} pair for an arbitrary pathname (for hreflang). */
-export function getPairForPath(
-  pathname: string,
-): { fr: string; en: string } | null {
+export function getPairForPath(pathname: string): { fr: string; en: string } | null {
   const normalized = pathname.replace(/\/+$/, "") || "/";
-  return (
-    ROUTE_PAIRS.find((p) => p.fr === normalized || p.en === normalized) ?? null
-  );
+  return ROUTE_PAIRS.find((p) => p.fr === normalized || p.en === normalized) ?? null;
 }

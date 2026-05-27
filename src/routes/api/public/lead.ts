@@ -16,7 +16,12 @@ const LeadSchema = z.object({
   delai: z.string().max(200).optional().default(""),
   budget: z.string().max(200).optional().default(""),
   nom: z.string().trim().min(2).max(100),
-  mobile: z.string().trim().min(6).max(32).regex(/^[+0-9 ]+$/),
+  mobile: z
+    .string()
+    .trim()
+    .min(6)
+    .max(32)
+    .regex(/^[+0-9 ]+$/),
   email: z.string().trim().email().max(255),
   entreprise: z.string().max(120).optional().default(""),
   consent: z.boolean().refine((v) => v === true, "Consent required"),
@@ -47,6 +52,7 @@ export const Route = createFileRoute("/api/public/lead")({
           );
         }
 
+        const prospectId = crypto.randomUUID();
         const payload = {
           ...parsed.data,
           audience: inferAudience({
@@ -56,33 +62,38 @@ export const Route = createFileRoute("/api/public/lead")({
             service: parsed.data.service,
           }),
           tag: "soumissioncomptable",
-          leadId: crypto.randomUUID(),
+          leadId: prospectId,
+          prospectId,
           received_at: new Date().toISOString(),
           user_agent: request.headers.get("user-agent") ?? "",
         };
 
-        // Enregistre en base (non bloquant — log si échec, n'impacte pas l'UX)
-        await recordProspect({
-          form_type: "lead",
-          full_name: parsed.data.nom,
-          email: parsed.data.email,
-          phone: parsed.data.mobile,
-          company_name: parsed.data.entreprise || null,
-          statut: parsed.data.statut || null,
-          service: parsed.data.service,
-          city: parsed.data.localisation || null,
-          budget: parsed.data.budget || null,
-          message: parsed.data.description || null,
-          legal_form: null,
-          audience: payload.audience,
-          audience_hint: parsed.data.audience_hint ?? null,
-          source: parsed.data.source,
-          page_url: parsed.data.page_url || null,
-          referrer: parsed.data.referrer || null,
-          user_agent: payload.user_agent,
-          submitted_at: parsed.data.submitted_at || null,
-          raw_payload: payload as unknown as Record<string, unknown>,
-        });
+        try {
+          await recordProspect({
+            id: prospectId,
+            form_type: "lead",
+            full_name: parsed.data.nom,
+            email: parsed.data.email,
+            phone: parsed.data.mobile,
+            company_name: parsed.data.entreprise || null,
+            statut: parsed.data.statut || null,
+            service: parsed.data.service,
+            city: parsed.data.localisation || null,
+            budget: parsed.data.budget || null,
+            message: parsed.data.description || null,
+            legal_form: null,
+            audience: payload.audience,
+            audience_hint: parsed.data.audience_hint ?? null,
+            source: parsed.data.source,
+            page_url: parsed.data.page_url || null,
+            referrer: parsed.data.referrer || null,
+            user_agent: payload.user_agent,
+            submitted_at: parsed.data.submitted_at || null,
+            raw_payload: payload as unknown as Record<string, unknown>,
+          });
+        } catch {
+          return Response.json({ ok: false, error: "Database insert failed" }, { status: 500 });
+        }
 
         const webhookUrl = process.env.GHL_WEBHOOK_URL;
         if (webhookUrl) {
@@ -93,7 +104,11 @@ export const Route = createFileRoute("/api/public/lead")({
               body: JSON.stringify(payload),
             });
             if (!upstream.ok) {
-              console.error("[lead] GHL webhook non-2xx", upstream.status, await upstream.text().catch(() => ""));
+              console.error(
+                "[lead] GHL webhook non-2xx",
+                upstream.status,
+                await upstream.text().catch(() => ""),
+              );
               // We still acknowledge to the client to avoid losing the lead UX,
               // but log so it can be replayed from the server logs.
               console.error("[lead] LOST_LEAD (webhook failed)", JSON.stringify(payload));
@@ -107,7 +122,7 @@ export const Route = createFileRoute("/api/public/lead")({
           console.log("[lead] NEW_LEAD (no GHL_WEBHOOK_URL set)", JSON.stringify(payload));
         }
 
-        return Response.json({ ok: true, leadId: payload.leadId });
+        return Response.json({ ok: true, leadId: payload.leadId, prospectId });
       },
     },
   },

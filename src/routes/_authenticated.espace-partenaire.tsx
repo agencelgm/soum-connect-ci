@@ -7,7 +7,9 @@ import { toast } from "sonner";
 import { useState } from "react";
 
 export const Route = createFileRoute("/_authenticated/espace-partenaire")({
-  head: () => ({ meta: [{ title: "Espace partenaire" }, { name: "robots", content: "noindex,nofollow" }] }),
+  head: () => ({
+    meta: [{ title: "Espace partenaire" }, { name: "robots", content: "noindex,nofollow" }],
+  }),
   component: EspacePartenaire,
 });
 
@@ -35,32 +37,36 @@ function EspacePartenaire() {
         )}
       </div>
 
-      {!partner && !isStaff && (
-        <BootstrapOrInscriptionCard onDone={refetch} />
-      )}
+      {!partner && !isStaff && <BootstrapOrInscriptionCard onDone={refetch} />}
 
       {partner && partner.status === "pending_review" && (
         <StatusCard title="Compte en cours d'analyse" tone="warning">
-          Merci pour votre inscription. Notre équipe analyse votre dossier et vous contacte
-          dans les <strong>24 à 48 heures ouvrables</strong>. Vous recevrez un email dès
-          l'activation de votre compte.
+          Merci pour votre inscription. Notre équipe analyse votre dossier et vous contacte dans les{" "}
+          <strong>24 à 48 heures ouvrables</strong>. Vous recevrez un email dès l'activation de
+          votre compte.
         </StatusCard>
       )}
       {partner && partner.status === "rejected" && (
         <StatusCard title="Compte non validé" tone="danger">
           Votre demande n'a pas été retenue.
-          {partner.rejection_reason ? <span className="block mt-2 text-sm">Motif : {partner.rejection_reason}</span> : null}
+          {partner.rejection_reason ? (
+            <span className="block mt-2 text-sm">Motif : {partner.rejection_reason}</span>
+          ) : null}
         </StatusCard>
       )}
       {partner && partner.status === "paused" && (
         <StatusCard title="Compte en pause" tone="warning">
           Votre compte est temporairement suspendu.
-          {partner.pause_reason ? <span className="block mt-2 text-sm">Motif : {partner.pause_reason}</span> : null}
+          {partner.pause_reason ? (
+            <span className="block mt-2 text-sm">Motif : {partner.pause_reason}</span>
+          ) : null}
         </StatusCard>
       )}
       {partner && partner.status === "approved" && (
         <StatusCard title={`Bienvenue, ${partner.cabinet_name}`} tone="success">
-          <p>Crédits disponibles : <strong>{partner.credits_balance}</strong></p>
+          <p>
+            Crédits disponibles : <strong>{partner.credits_balance}</strong>
+          </p>
           <div className="mt-3">
             <Button asChild>
               <Link to="/marketplace">Accéder à la marketplace</Link>
@@ -91,8 +97,8 @@ function BootstrapOrInscriptionCard({ onDone }: { onDone: () => void }) {
     <div className="rounded-lg border bg-card p-6 space-y-4">
       <h2 className="text-xl font-semibold">Aucun cabinet associé</h2>
       <p className="text-muted-foreground text-sm">
-        Votre compte n'a pas de profil cabinet. Soit vous souhaitez vous inscrire comme
-        partenaire, soit vous êtes le premier administrateur de la plateforme.
+        Votre compte n'a pas de profil cabinet. Soit vous souhaitez vous inscrire comme partenaire,
+        soit vous êtes le premier administrateur de la plateforme.
       </p>
       <div className="flex flex-wrap gap-3">
         <Button asChild>
@@ -106,12 +112,21 @@ function BootstrapOrInscriptionCard({ onDone }: { onDone: () => void }) {
   );
 }
 
-function StatusCard({ title, children, tone }: { title: string; children: React.ReactNode; tone: "success" | "warning" | "danger" }) {
-  const toneCls = tone === "success"
-    ? "border-emerald-200 bg-emerald-50"
-    : tone === "warning"
-    ? "border-amber-200 bg-amber-50"
-    : "border-red-200 bg-red-50";
+function StatusCard({
+  title,
+  children,
+  tone,
+}: {
+  title: string;
+  children: React.ReactNode;
+  tone: "success" | "warning" | "danger";
+}) {
+  const toneCls =
+    tone === "success"
+      ? "border-emerald-200 bg-emerald-50"
+      : tone === "warning"
+        ? "border-amber-200 bg-amber-50"
+        : "border-red-200 bg-red-50";
   return (
     <div className={`rounded-lg border p-6 ${toneCls}`}>
       <h2 className="text-xl font-semibold mb-2">{title}</h2>

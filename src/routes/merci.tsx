@@ -30,26 +30,19 @@ function MerciPage() {
           <div className="mx-auto w-16 h-16 rounded-full bg-accent/15 flex items-center justify-center">
             <CheckCircle2 className="w-10 h-10 text-accent" />
           </div>
-          <h1 className="mt-6 font-heading text-3xl md:text-4xl font-bold text-primary">
-            Merci !
-          </h1>
+          <h1 className="mt-6 font-heading text-3xl md:text-4xl font-bold text-primary">Merci !</h1>
           <p className="mt-4 text-base md:text-lg text-foreground leading-relaxed">
-            Merci, toutes vos réponses ont bien été enregistrées pour ce
-            service ainsi que pour les services supplémentaires. Un conseiller
-            vous contactera dans les <strong>prochaines 24 heures ouvrables</strong>.
+            Merci, toutes vos réponses ont bien été enregistrées pour ce service ainsi que pour les
+            services supplémentaires. Un conseiller vous contactera dans les{" "}
+            <strong>prochaines 24 heures ouvrables</strong>.
           </p>
 
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
             <Button asChild variant="outline">
               <Link to="/">← Retour à l'accueil</Link>
             </Button>
-            <Button
-              asChild
-              className="bg-secondary hover:bg-secondary-dark text-white"
-            >
-              <Link to="/cabinet-comptable-abidjan">
-                Découvrir nos services →
-              </Link>
+            <Button asChild className="bg-secondary hover:bg-secondary-dark text-white">
+              <Link to="/cabinet-comptable-abidjan">Découvrir nos services →</Link>
             </Button>
           </div>
         </div>

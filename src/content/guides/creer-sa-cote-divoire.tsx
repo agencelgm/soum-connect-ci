@@ -11,21 +11,19 @@ export function CreerSaCoteDivoireContent() {
     <>
       <ArticleCallout variant="info" title="En bref">
         <p>
-          La Société Anonyme (SA) en Côte d&apos;Ivoire exige un capital minimum
-          de 10 000 000 FCFA, au moins 3 actionnaires, et un commissaire aux
-          comptes obligatoire dès la constitution. Elle offre une structure de
-          gouvernance plus formelle que la SARL (conseil d&apos;administration ou
-          directoire) et est adaptée aux projets d&apos;envergure, aux levées de
-          fonds et aux entreprises qui souhaitent s&apos;introduire en bourse.
+          La Société Anonyme (SA) en Côte d&apos;Ivoire exige un capital minimum de 10 000 000 FCFA,
+          au moins 3 actionnaires, et un commissaire aux comptes obligatoire dès la constitution.
+          Elle offre une structure de gouvernance plus formelle que la SARL (conseil
+          d&apos;administration ou directoire) et est adaptée aux projets d&apos;envergure, aux
+          levées de fonds et aux entreprises qui souhaitent s&apos;introduire en bourse.
         </p>
       </ArticleCallout>
 
       <ArticleSection title="Qu'est-ce qu'une Société Anonyme (SA) et à qui s'adresse-t-elle ?">
         <p>
-          La <strong>SA</strong> est la forme juridique la plus élaborée du
-          droit des sociétés OHADA. Elle se distingue de la SARL par un capital
-          minimum plus élevé, une gouvernance formalisée et une possibilité
-          d&apos;accès aux marchés financiers.
+          La <strong>SA</strong> est la forme juridique la plus élaborée du droit des sociétés
+          OHADA. Elle se distingue de la SARL par un capital minimum plus élevé, une gouvernance
+          formalisée et une possibilité d&apos;accès aux marchés financiers.
         </p>
         <p>La SA s&apos;adresse principalement aux entrepreneurs qui :</p>
         <ArticleList
@@ -40,28 +38,24 @@ export function CreerSaCoteDivoireContent() {
       </ArticleSection>
 
       <ArticleSection title="Quelles sont les conditions pour créer une SA en Côte d'Ivoire ?">
-        <h3 className="font-heading font-semibold text-lg text-foreground mt-4">
-          Capital minimum
-        </h3>
+        <h3 className="font-heading font-semibold text-lg text-foreground mt-4">Capital minimum</h3>
         <p>
-          <strong>10 000 000 FCFA</strong>. Au moins la moitié doit être
-          libérée à la constitution (5 000 000 FCFA), le solde dans les{" "}
-          <strong>3 ans</strong> suivant l&apos;immatriculation.
+          <strong>10 000 000 FCFA</strong>. Au moins la moitié doit être libérée à la constitution
+          (5 000 000 FCFA), le solde dans les <strong>3 ans</strong> suivant l&apos;immatriculation.
         </p>
         <h3 className="font-heading font-semibold text-lg text-foreground mt-4">
           Nombre d&apos;actionnaires
         </h3>
         <p>
-          Au moins <strong>3 actionnaires</strong>, sans maximum légal. Les
-          actions peuvent en principe être librement cédées, sauf clause
-          d&apos;agrément.
+          Au moins <strong>3 actionnaires</strong>, sans maximum légal. Les actions peuvent en
+          principe être librement cédées, sauf clause d&apos;agrément.
         </p>
         <h3 className="font-heading font-semibold text-lg text-foreground mt-4">
           Commissaire aux comptes obligatoire
         </h3>
         <p>
-          Toute SA doit nommer dès sa constitution <strong>au moins un CAC
-          titulaire et un suppléant</strong>, inscrits à l&apos;OECCA-CI.
+          Toute SA doit nommer dès sa constitution{" "}
+          <strong>au moins un CAC titulaire et un suppléant</strong>, inscrits à l&apos;OECCA-CI.
         </p>
       </ArticleSection>
 
@@ -70,16 +64,15 @@ export function CreerSaCoteDivoireContent() {
           Option 1 : SA avec conseil d&apos;administration (CA)
         </h3>
         <p>
-          Structure classique. CA de 3 à 12 administrateurs nommés par l&apos;AG, et
-          un <strong>PDG</strong> ou un Président du CA + Directeur Général
-          distincts.
+          Structure classique. CA de 3 à 12 administrateurs nommés par l&apos;AG, et un{" "}
+          <strong>PDG</strong> ou un Président du CA + Directeur Général distincts.
         </p>
         <h3 className="font-heading font-semibold text-lg text-foreground mt-4">
           Option 2 : SA avec directoire et conseil de surveillance
         </h3>
         <p>
-          Plus rare. Sépare gestion (directoire) et contrôle (conseil de
-          surveillance). Inspirée du modèle allemand.
+          Plus rare. Sépare gestion (directoire) et contrôle (conseil de surveillance). Inspirée du
+          modèle allemand.
         </p>
       </ArticleSection>
 
@@ -100,9 +93,8 @@ export function CreerSaCoteDivoireContent() {
         />
         <ArticleCallout variant="warning" title="Notaire obligatoire">
           <p>
-            Contrairement à la SARL, la SA requiert obligatoirement
-            l&apos;intervention d&apos;un <strong>notaire</strong>. Le coût s&apos;ajoute aux
-            frais de création.
+            Contrairement à la SARL, la SA requiert obligatoirement l&apos;intervention d&apos;un{" "}
+            <strong>notaire</strong>. Le coût s&apos;ajoute aux frais de création.
           </p>
         </ArticleCallout>
       </ArticleSection>
@@ -136,8 +128,8 @@ export function CreerSaCoteDivoireContent() {
           ]}
         />
         <p>
-          <strong>Règle pratique :</strong> commencez en SARL et transformez-
-          vous en SA quand votre projet nécessite une levée de fonds importante.
+          <strong>Règle pratique :</strong> commencez en SARL et transformez- vous en SA quand votre
+          projet nécessite une levée de fonds importante.
         </p>
       </ArticleSection>
 
@@ -148,8 +140,8 @@ export function CreerSaCoteDivoireContent() {
               Peut-on créer une SA avec 3 actionnaires de la même famille ?
             </h3>
             <p className="mt-2">
-              Oui. Aucune obligation de diversité. Les SA familiales sont
-              courantes, surtout lors de la transformation d&apos;une SARL.
+              Oui. Aucune obligation de diversité. Les SA familiales sont courantes, surtout lors de
+              la transformation d&apos;une SARL.
             </p>
           </div>
           <div>
@@ -157,9 +149,8 @@ export function CreerSaCoteDivoireContent() {
               La SA peut-elle être créée par des étrangers non résidents ?
             </h3>
             <p className="mt-2">
-              Oui. Des investisseurs étrangers peuvent créer une SA. Certains
-              secteurs réglementés (banque, assurance) imposent des conditions
-              supplémentaires.
+              Oui. Des investisseurs étrangers peuvent créer une SA. Certains secteurs réglementés
+              (banque, assurance) imposent des conditions supplémentaires.
             </p>
           </div>
           <div>
@@ -167,8 +158,8 @@ export function CreerSaCoteDivoireContent() {
               Combien de temps prend la création d&apos;une SA au CEPICI ?
             </h3>
             <p className="mt-2">
-              Généralement <strong>10 à 20 jours ouvrés</strong>, compte tenu de
-              la complexité du dossier et de l&apos;intervention du notaire.
+              Généralement <strong>10 à 20 jours ouvrés</strong>, compte tenu de la complexité du
+              dossier et de l&apos;intervention du notaire.
             </p>
           </div>
           <div>
@@ -176,8 +167,8 @@ export function CreerSaCoteDivoireContent() {
               Une SA peut-elle se transformer en SARL ?
             </h3>
             <p className="mt-2">
-              Oui, mais rare car cela implique une réduction de capital. La
-              transformation inverse (SARL → SA) est beaucoup plus fréquente.
+              Oui, mais rare car cela implique une réduction de capital. La transformation inverse
+              (SARL → SA) est beaucoup plus fréquente.
             </p>
           </div>
         </div>
@@ -189,8 +180,7 @@ export function CreerSaCoteDivoireContent() {
         ctaLabel="Obtenir mes soumissions"
       />
       <p className="mt-6 text-sm text-muted-foreground">
-        Mis à jour en mai 2026. Sources : Acte Uniforme OHADA sur les sociétés
-        commerciales, CEPICI.
+        Mis à jour en mai 2026. Sources : Acte Uniforme OHADA sur les sociétés commerciales, CEPICI.
       </p>
     </>
   );

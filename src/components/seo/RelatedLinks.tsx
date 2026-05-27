@@ -34,9 +34,7 @@ export function RelatedLinks({
           >
             {title}
           </h2>
-          {subtitle && (
-            <p className="mt-2 text-muted-foreground">{subtitle}</p>
-          )}
+          {subtitle && <p className="mt-2 text-muted-foreground">{subtitle}</p>}
         </div>
         <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {items.map((item) => (

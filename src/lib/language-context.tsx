@@ -23,7 +23,11 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     (lang: Language) => {
       if (lang === language) return;
       const target = getCounterpart(pathname, lang);
-      try { localStorage.setItem("lang", lang); } catch {}
+      try {
+        localStorage.setItem("lang", lang);
+      } catch {
+        // Invalid stored values fall back to the route-derived language.
+      }
       router.navigate({ to: target });
     },
     [language, pathname, router],

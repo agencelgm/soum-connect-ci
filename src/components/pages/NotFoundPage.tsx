@@ -6,10 +6,7 @@ export function NotFoundPage() {
   const { language } = useLanguage();
   const isEn = language === "en";
   const homeHref = isEn ? "/en" : "/";
-  const quotesHref = getCounterpart(
-    isEn ? "/demande-soumissions" : "/en/get-quotes",
-    language,
-  );
+  const quotesHref = getCounterpart(isEn ? "/demande-soumissions" : "/en/get-quotes", language);
 
   const t = isEn
     ? {
@@ -28,11 +25,7 @@ export function NotFoundPage() {
   return (
     <section className="flex min-h-[70vh] items-center justify-center px-6 py-16">
       <div className="mx-auto max-w-md text-center">
-        <svg
-          viewBox="0 0 200 160"
-          className="mx-auto h-40 w-40 text-foreground"
-          aria-hidden="true"
-        >
+        <svg viewBox="0 0 200 160" className="mx-auto h-40 w-40 text-foreground" aria-hidden="true">
           <circle cx="100" cy="90" r="50" className="fill-muted" />
           <circle cx="84" cy="82" r="4" fill="currentColor" />
           <circle cx="116" cy="82" r="4" fill="currentColor" />
@@ -50,12 +43,8 @@ export function NotFoundPage() {
             ?
           </text>
         </svg>
-        <p className="mt-6 text-sm font-semibold tracking-widest text-secondary">
-          404
-        </p>
-        <h1 className="mt-2 font-heading text-3xl font-bold text-foreground sm:text-4xl">
-          {t.h1}
-        </h1>
+        <p className="mt-6 text-sm font-semibold tracking-widest text-secondary">404</p>
+        <h1 className="mt-2 font-heading text-3xl font-bold text-foreground sm:text-4xl">{t.h1}</h1>
         <p className="mt-3 text-base text-muted-foreground">{t.sub}</p>
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link

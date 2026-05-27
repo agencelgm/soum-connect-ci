@@ -205,11 +205,20 @@ export function CreerEntreprisePage() {
         whatYouGetSub:
           "Tous les documents officiels nécessaires pour exercer légalement et facturer dès le premier jour.",
         docs: [
-          { t: "RCCM", d: "Registre du Commerce et du Crédit Mobilier — votre numéro d'entreprise officiel." },
+          {
+            t: "RCCM",
+            d: "Registre du Commerce et du Crédit Mobilier — votre numéro d'entreprise officiel.",
+          },
           { t: "DFE", d: "Déclaration Fiscale d'Existence — votre identifiant auprès de la DGI." },
-          { t: "IDU", d: "Identifiant Unique — numéro qui regroupe vos identifications administratives." },
+          {
+            t: "IDU",
+            d: "Identifiant Unique — numéro qui regroupe vos identifications administratives.",
+          },
           { t: "Statuts", d: "Statuts juridiques de la société, signés et enregistrés." },
-          { t: "PV de constitution", d: "Procès-verbal officiel de constitution de votre société." },
+          {
+            t: "PV de constitution",
+            d: "Procès-verbal officiel de constitution de votre société.",
+          },
           { t: "Annexe fiscale", d: "Annexe fiscale validée par la DGI." },
           { t: "Déclaration CNPS", d: "Inscription à la Caisse Nationale de Prévoyance Sociale." },
         ],
@@ -245,7 +254,11 @@ export function CreerEntreprisePage() {
         ],
         costTitle: "Combien ça coûte, combien de temps ça prend ?",
         costRows: [
-          { f: "EI (Entreprise Individuelle)", c: "≈ 75 000 – 120 000 FCFA", t: "7 à 10 jours ouvrés" },
+          {
+            f: "EI (Entreprise Individuelle)",
+            c: "≈ 75 000 – 120 000 FCFA",
+            t: "7 à 10 jours ouvrés",
+          },
           { f: "SARLU", c: "≈ 100 000 – 150 000 FCFA", t: "10 à 15 jours ouvrés" },
           { f: "SARL", c: "≈ 120 000 – 200 000 FCFA", t: "10 à 15 jours ouvrés" },
           { f: "SA", c: "Sur devis (dossier complexe)", t: "15 à 30 jours ouvrés" },
@@ -328,17 +341,42 @@ export function CreerEntreprisePage() {
           { t: "CNPS registration", d: "Registration with the national social security fund." },
         ],
         formsTitle: "Legal forms available in Côte d'Ivoire (OHADA)",
-        formsSub: "The firm helps you pick the form that best fits your project, taxes and partners.",
+        formsSub:
+          "The firm helps you pick the form that best fits your project, taxes and partners.",
         forms: [
-          { t: "SARL", cap: "Min. capital XOF 100,000", d: "The most common form for SMEs. Liability limited to capital. 1 to 50 partners." },
-          { t: "SARLU", cap: "Min. capital XOF 100,000", d: "Single-shareholder SARL. Perfect to start alone while protecting your assets." },
-          { t: "SA", cap: "Min. capital XOF 10,000,000", d: "For larger structures, with multiple shareholders and a board." },
-          { t: "EI", cap: "No capital required", d: "Sole proprietorship. Fast to set up, but unlimited owner liability." },
-          { t: "GIE", cap: "No mandatory capital", d: "Economic Interest Grouping: companies or people joining around a shared project." },
+          {
+            t: "SARL",
+            cap: "Min. capital XOF 100,000",
+            d: "The most common form for SMEs. Liability limited to capital. 1 to 50 partners.",
+          },
+          {
+            t: "SARLU",
+            cap: "Min. capital XOF 100,000",
+            d: "Single-shareholder SARL. Perfect to start alone while protecting your assets.",
+          },
+          {
+            t: "SA",
+            cap: "Min. capital XOF 10,000,000",
+            d: "For larger structures, with multiple shareholders and a board.",
+          },
+          {
+            t: "EI",
+            cap: "No capital required",
+            d: "Sole proprietorship. Fast to set up, but unlimited owner liability.",
+          },
+          {
+            t: "GIE",
+            cap: "No mandatory capital",
+            d: "Economic Interest Grouping: companies or people joining around a shared project.",
+          },
         ],
         costTitle: "How much, how long?",
         costRows: [
-          { f: "EI (sole proprietorship)", c: "≈ XOF 75,000 – 120,000", t: "7 to 10 business days" },
+          {
+            f: "EI (sole proprietorship)",
+            c: "≈ XOF 75,000 – 120,000",
+            t: "7 to 10 business days",
+          },
           { f: "SARLU", c: "≈ XOF 100,000 – 150,000", t: "10 to 15 business days" },
           { f: "SARL", c: "≈ XOF 120,000 – 200,000", t: "10 to 15 business days" },
           { f: "SA", c: "On quote (complex file)", t: "15 to 30 business days" },
@@ -353,15 +391,36 @@ export function CreerEntreprisePage() {
         stepsKicker: "How it works",
         stepsTitle: "Your company in 3 steps",
         steps: [
-          { name: "Describe your project in 2 minutes", text: "Fill out the form: legal form, activity, city. No commitment." },
-          { name: "Receive 5 quotes from CEPICI-approved firms", text: "Within 24–48h, up to 5 OECCA-CI approved firms send you a detailed quote: price, lead time, included documents." },
-          { name: "Pick and get your documents in 7–15 days", text: "Pick the firm that suits you. They handle everything: RCCM, DFE, IDU, articles, minutes and CNPS." },
+          {
+            name: "Describe your project in 2 minutes",
+            text: "Fill out the form: legal form, activity, city. No commitment.",
+          },
+          {
+            name: "Receive 5 quotes from CEPICI-approved firms",
+            text: "Within 24–48h, up to 5 OECCA-CI approved firms send you a detailed quote: price, lead time, included documents.",
+          },
+          {
+            name: "Pick and get your documents in 7–15 days",
+            text: "Pick the firm that suits you. They handle everything: RCCM, DFE, IDU, articles, minutes and CNPS.",
+          },
         ],
         testimonialsTitle: "They started their company with our partner firms",
         testimonials: [
-          { name: "Léa Goré", quote: "I got my RCCM, DFE and IDU in 9 days. The firm handled everything, I didn't even have to go to CEPICI." },
-          { name: "Maxime Doudou", quote: "I compared 4 quotes in 48h, picked the best value and launched my SARLU stress-free. Truly free service." },
-          { name: "Vanessa Tehé", quote: "From Paris I could register my company in Abidjan remotely. All official documents in less than 2 weeks." },
+          {
+            name: "Léa Goré",
+            quote:
+              "I got my RCCM, DFE and IDU in 9 days. The firm handled everything, I didn't even have to go to CEPICI.",
+          },
+          {
+            name: "Maxime Doudou",
+            quote:
+              "I compared 4 quotes in 48h, picked the best value and launched my SARLU stress-free. Truly free service.",
+          },
+          {
+            name: "Vanessa Tehé",
+            quote:
+              "From Paris I could register my company in Abidjan remotely. All official documents in less than 2 weeks.",
+          },
         ],
         faqTitle: "Frequently asked questions about company registration",
         faqs: FAQS_EN,
@@ -373,8 +432,13 @@ export function CreerEntreprisePage() {
 
   const TRUST_ICONS = [Users, ShieldCheck, Award, Clock];
   const DOC_ICONS = [
-    FileText, FileText, FileText, ClipboardList, ClipboardList,
-    FileText, ShieldCheck,
+    FileText,
+    FileText,
+    FileText,
+    ClipboardList,
+    ClipboardList,
+    FileText,
+    ShieldCheck,
   ];
 
   return (
@@ -401,14 +465,15 @@ export function CreerEntreprisePage() {
             >
               {tx.h1}
             </h1>
-            <p className="mt-3 text-base md:text-lg text-muted-foreground max-w-xl">
-              {tx.sub}
-            </p>
+            <p className="mt-3 text-base md:text-lg text-muted-foreground max-w-xl">{tx.sub}</p>
 
             <ul className="mt-5 space-y-2">
               {tx.bullets.map((b, i) => (
                 <li key={i} className="flex items-start gap-2 text-sm md:text-base text-foreground">
-                  <CheckCircle2 className="h-5 w-5 text-secondary shrink-0 mt-0.5" aria-hidden="true" />
+                  <CheckCircle2
+                    className="h-5 w-5 text-secondary shrink-0 mt-0.5"
+                    aria-hidden="true"
+                  />
                   <span>{b}</span>
                 </li>
               ))}
@@ -445,7 +510,10 @@ export function CreerEntreprisePage() {
       {/* ============== TRUST ============== */}
       <section aria-labelledby="trust-title" className="bg-white border-y border-border">
         <div className="container-app py-10 md:py-14">
-          <h2 id="trust-title" className="text-center font-heading text-2xl md:text-3xl font-bold text-primary">
+          <h2
+            id="trust-title"
+            className="text-center font-heading text-2xl md:text-3xl font-bold text-primary"
+          >
             {tx.trustTitle}
           </h2>
           <div className="mt-8 grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
@@ -477,7 +545,10 @@ export function CreerEntreprisePage() {
             <p className="font-semibold text-muted-foreground uppercase tracking-wide text-sm">
               {tx.stepsKicker}
             </p>
-            <h2 id="steps-title" className="mt-2 font-heading text-3xl md:text-4xl font-bold text-primary">
+            <h2
+              id="steps-title"
+              className="mt-2 font-heading text-3xl md:text-4xl font-bold text-primary"
+            >
               {tx.stepsTitle}
             </h2>
           </div>
@@ -499,7 +570,10 @@ export function CreerEntreprisePage() {
       <section aria-labelledby="what-title" className="bg-white">
         <div className="container-app section">
           <div className="text-center max-w-3xl mx-auto">
-            <h2 id="what-title" className="font-heading text-3xl md:text-4xl font-bold text-primary">
+            <h2
+              id="what-title"
+              className="font-heading text-3xl md:text-4xl font-bold text-primary"
+            >
               {tx.whatYouGetTitle}
             </h2>
             <p className="mt-3 text-muted-foreground">{tx.whatYouGetSub}</p>
@@ -530,7 +604,10 @@ export function CreerEntreprisePage() {
       <section aria-labelledby="forms-title" className="bg-[#F8FAFC]">
         <div className="container-app section">
           <div className="text-center max-w-3xl mx-auto">
-            <h2 id="forms-title" className="font-heading text-3xl md:text-4xl font-bold text-primary">
+            <h2
+              id="forms-title"
+              className="font-heading text-3xl md:text-4xl font-bold text-primary"
+            >
               {tx.formsTitle}
             </h2>
             <p className="mt-3 text-muted-foreground">{tx.formsSub}</p>
@@ -562,7 +639,10 @@ export function CreerEntreprisePage() {
       {/* ============== COST / TIME ============== */}
       <section aria-labelledby="cost-title" className="bg-white">
         <div className="container-app section max-w-4xl">
-          <h2 id="cost-title" className="font-heading text-3xl md:text-4xl font-bold text-primary text-center">
+          <h2
+            id="cost-title"
+            className="font-heading text-3xl md:text-4xl font-bold text-primary text-center"
+          >
             {tx.costTitle}
           </h2>
           <div className="mt-8 overflow-x-auto rounded-xl border border-border">
@@ -570,7 +650,9 @@ export function CreerEntreprisePage() {
               <thead className="bg-[#F8FAFC] text-primary">
                 <tr>
                   <th className="text-left p-4 font-semibold">{fr ? "Forme" : "Form"}</th>
-                  <th className="text-left p-4 font-semibold">{fr ? "Honoraires cabinet" : "Firm fees"}</th>
+                  <th className="text-left p-4 font-semibold">
+                    {fr ? "Honoraires cabinet" : "Firm fees"}
+                  </th>
                   <th className="text-left p-4 font-semibold">{fr ? "Délai" : "Lead time"}</th>
                 </tr>
               </thead>
@@ -602,7 +684,11 @@ export function CreerEntreprisePage() {
             </h2>
             <p className="mt-4 text-foreground leading-relaxed">{tx.diasporaText}</p>
             <Link
-              to={fr ? "/creation-entreprise-diaspora-ivoirienne" : "/creation-entreprise-diaspora-ivoirienne"}
+              to={
+                fr
+                  ? "/creation-entreprise-diaspora-ivoirienne"
+                  : "/creation-entreprise-diaspora-ivoirienne"
+              }
               className="mt-5 inline-flex items-center gap-1 font-semibold text-secondary hover:underline"
             >
               {tx.diasporaCta}
@@ -611,7 +697,9 @@ export function CreerEntreprisePage() {
           <div>
             <img
               src={svcDiaspora}
-              alt={fr ? "Créer son entreprise depuis l'étranger" : "Register your company from abroad"}
+              alt={
+                fr ? "Créer son entreprise depuis l'étranger" : "Register your company from abroad"
+              }
               loading="lazy"
               width={800}
               height={600}
@@ -624,7 +712,10 @@ export function CreerEntreprisePage() {
       {/* ============== TESTIMONIALS ============== */}
       <section aria-labelledby="testi-title" className="bg-white">
         <div className="container-app section">
-          <h2 id="testi-title" className="text-center font-heading text-3xl md:text-4xl font-bold text-primary">
+          <h2
+            id="testi-title"
+            className="text-center font-heading text-3xl md:text-4xl font-bold text-primary"
+          >
             {tx.testimonialsTitle}
           </h2>
           <div className="mt-10 grid gap-8 md:grid-cols-3">
@@ -644,7 +735,10 @@ export function CreerEntreprisePage() {
       {/* ============== FAQ ============== */}
       <section aria-labelledby="faq-title" className="bg-[#F8FAFC]">
         <div className="container-app section max-w-3xl">
-          <h2 id="faq-title" className="text-center font-heading text-3xl md:text-4xl font-bold text-primary">
+          <h2
+            id="faq-title"
+            className="text-center font-heading text-3xl md:text-4xl font-bold text-primary"
+          >
             {tx.faqTitle}
           </h2>
           <Accordion type="single" collapsible className="mt-8">
@@ -688,7 +782,10 @@ export function CreerEntreprisePage() {
               {fr ? "Guide complet création d'entreprise CI" : "Full company registration guide"}
             </Link>
             <span className="text-muted-foreground">·</span>
-            <Link to="/creation-entreprise-diaspora-ivoirienne" className="text-secondary hover:underline">
+            <Link
+              to="/creation-entreprise-diaspora-ivoirienne"
+              className="text-secondary hover:underline"
+            >
               {fr ? "Création depuis la diaspora" : "Registration from the diaspora"}
             </Link>
             <span className="text-muted-foreground">·</span>

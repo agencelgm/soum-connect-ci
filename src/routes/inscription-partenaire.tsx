@@ -77,8 +77,14 @@ function InscriptionPage() {
           city: form.city,
           website: form.website,
           facebook_url: form.facebook_url,
-          services: form.services.split(",").map((s) => s.trim()).filter(Boolean),
-          zones: form.zones.split(",").map((s) => s.trim()).filter(Boolean),
+          services: form.services
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean),
+          zones: form.zones
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean),
         },
       });
 
@@ -101,22 +107,39 @@ function InscriptionPage() {
       <form onSubmit={onSubmit} className="space-y-4">
         <div>
           <Label>Nom du cabinet *</Label>
-          <Input required value={form.cabinet_name} onChange={(e) => up("cabinet_name", e.target.value)} />
+          <Input
+            required
+            value={form.cabinet_name}
+            onChange={(e) => up("cabinet_name", e.target.value)}
+          />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Label>Prénom contact *</Label>
-            <Input required value={form.contact_first_name} onChange={(e) => up("contact_first_name", e.target.value)} />
+            <Input
+              required
+              value={form.contact_first_name}
+              onChange={(e) => up("contact_first_name", e.target.value)}
+            />
           </div>
           <div>
             <Label>Nom contact *</Label>
-            <Input required value={form.contact_last_name} onChange={(e) => up("contact_last_name", e.target.value)} />
+            <Input
+              required
+              value={form.contact_last_name}
+              onChange={(e) => up("contact_last_name", e.target.value)}
+            />
           </div>
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Label>Email *</Label>
-            <Input type="email" required value={form.email} onChange={(e) => up("email", e.target.value)} />
+            <Input
+              type="email"
+              required
+              value={form.email}
+              onChange={(e) => up("email", e.target.value)}
+            />
           </div>
           <div>
             <Label>Téléphone *</Label>
@@ -125,7 +148,13 @@ function InscriptionPage() {
         </div>
         <div>
           <Label>Mot de passe * (8 caractères minimum)</Label>
-          <Input type="password" required minLength={8} value={form.password} onChange={(e) => up("password", e.target.value)} />
+          <Input
+            type="password"
+            required
+            minLength={8}
+            value={form.password}
+            onChange={(e) => up("password", e.target.value)}
+          />
         </div>
         <div>
           <Label>Ville *</Label>
@@ -134,7 +163,11 @@ function InscriptionPage() {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Label>Site web</Label>
-            <Input value={form.website} onChange={(e) => up("website", e.target.value)} placeholder="https://" />
+            <Input
+              value={form.website}
+              onChange={(e) => up("website", e.target.value)}
+              placeholder="https://"
+            />
           </div>
           <div>
             <Label>Facebook</Label>
@@ -143,11 +176,19 @@ function InscriptionPage() {
         </div>
         <div>
           <Label>Services (séparés par virgules)</Label>
-          <Textarea value={form.services} onChange={(e) => up("services", e.target.value)} placeholder="création d'entreprise, comptabilité, fiscalité" />
+          <Textarea
+            value={form.services}
+            onChange={(e) => up("services", e.target.value)}
+            placeholder="création d'entreprise, comptabilité, fiscalité"
+          />
         </div>
         <div>
           <Label>Zones d'intervention (séparées par virgules)</Label>
-          <Textarea value={form.zones} onChange={(e) => up("zones", e.target.value)} placeholder="Abidjan, Yamoussoukro, Bouaké" />
+          <Textarea
+            value={form.zones}
+            onChange={(e) => up("zones", e.target.value)}
+            placeholder="Abidjan, Yamoussoukro, Bouaké"
+          />
         </div>
         <Button type="submit" disabled={submitting} className="w-full">
           {submitting ? "Création…" : "Créer mon compte cabinet"}

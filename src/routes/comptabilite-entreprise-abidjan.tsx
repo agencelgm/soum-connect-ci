@@ -1,5 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Calculator, Building2, Receipt, MapPin, TrendingDown, GraduationCap, Target } from "lucide-react";
+import {
+  Calculator,
+  Building2,
+  Receipt,
+  MapPin,
+  TrendingDown,
+  GraduationCap,
+  Target,
+} from "lucide-react";
 import { ServicePage, type Faq, type RelatedService } from "@/components/service/ServicePage";
 import { buildPageHead, faqSchema, LOCAL_BUSINESS_SCHEMA } from "@/lib/seo";
 
@@ -78,9 +86,21 @@ function Page() {
             </h2>
             <div className="grid md:grid-cols-3 gap-4">
               {[
-                { icon: TrendingDown, title: "Coût maîtrisé", desc: "Un forfait mensuel prévisible, sans charges sociales ni recrutement." },
-                { icon: GraduationCap, title: "Expertise OHADA & SYSCOHADA", desc: "Des experts à jour des évolutions fiscales et comptables ivoiriennes." },
-                { icon: Target, title: "Focus sur votre métier", desc: "Vous libérez du temps pour développer votre activité, pas pour saisir des écritures." },
+                {
+                  icon: TrendingDown,
+                  title: "Coût maîtrisé",
+                  desc: "Un forfait mensuel prévisible, sans charges sociales ni recrutement.",
+                },
+                {
+                  icon: GraduationCap,
+                  title: "Expertise OHADA & SYSCOHADA",
+                  desc: "Des experts à jour des évolutions fiscales et comptables ivoiriennes.",
+                },
+                {
+                  icon: Target,
+                  title: "Focus sur votre métier",
+                  desc: "Vous libérez du temps pour développer votre activité, pas pour saisir des écritures.",
+                },
               ].map((c) => (
                 <div key={c.title} className="rounded-xl border border-border bg-white p-5">
                   <c.icon className="h-6 w-6 text-secondary" />
@@ -92,7 +112,10 @@ function Page() {
           </section>
 
           <section aria-labelledby="services">
-            <h2 id="services" className="font-heading font-bold text-primary text-2xl md:text-3xl mb-3">
+            <h2
+              id="services"
+              className="font-heading font-bold text-primary text-2xl md:text-3xl mb-3"
+            >
               Services inclus dans une mission de comptabilité
             </h2>
             <ul className="list-disc pl-5 space-y-2 text-foreground">
@@ -105,7 +128,10 @@ function Page() {
           </section>
 
           <section aria-labelledby="compare">
-            <h2 id="compare" className="font-heading font-bold text-primary text-2xl md:text-3xl mb-4">
+            <h2
+              id="compare"
+              className="font-heading font-bold text-primary text-2xl md:text-3xl mb-4"
+            >
               Comptable interne vs cabinet externalisé
             </h2>
             <div className="overflow-x-auto rounded-xl border border-border">
@@ -118,26 +144,49 @@ function Page() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
-                  <tr><td className="p-3 font-semibold">Coût mensuel</td><td className="p-3">400 000 FCFA et + (charges incluses)</td><td className="p-3">50 000 – 300 000 FCFA</td></tr>
-                  <tr><td className="p-3 font-semibold">Compétence</td><td className="p-3">Une seule personne</td><td className="p-3">Équipe pluridisciplinaire</td></tr>
-                  <tr><td className="p-3 font-semibold">Flexibilité</td><td className="p-3">Faible (CDI)</td><td className="p-3">Élevée (contrat ajustable)</td></tr>
-                  <tr><td className="p-3 font-semibold">Risque</td><td className="p-3">Absence, rotation</td><td className="p-3">Continuité de service</td></tr>
-                  <tr><td className="p-3 font-semibold">Idéal pour</td><td className="p-3">Grandes entreprises</td><td className="p-3">TPE, PME, startups</td></tr>
+                  <tr>
+                    <td className="p-3 font-semibold">Coût mensuel</td>
+                    <td className="p-3">400 000 FCFA et + (charges incluses)</td>
+                    <td className="p-3">50 000 – 300 000 FCFA</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3 font-semibold">Compétence</td>
+                    <td className="p-3">Une seule personne</td>
+                    <td className="p-3">Équipe pluridisciplinaire</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3 font-semibold">Flexibilité</td>
+                    <td className="p-3">Faible (CDI)</td>
+                    <td className="p-3">Élevée (contrat ajustable)</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3 font-semibold">Risque</td>
+                    <td className="p-3">Absence, rotation</td>
+                    <td className="p-3">Continuité de service</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3 font-semibold">Idéal pour</td>
+                    <td className="p-3">Grandes entreprises</td>
+                    <td className="p-3">TPE, PME, startups</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
           </section>
 
           <section aria-labelledby="price">
-            <h2 id="price" className="font-heading font-bold text-primary text-2xl md:text-3xl mb-3">
+            <h2
+              id="price"
+              className="font-heading font-bold text-primary text-2xl md:text-3xl mb-3"
+            >
               Fourchette de prix à Abidjan
             </h2>
             <p className="text-foreground leading-relaxed">
               Les cabinets comptables à Abidjan facturent généralement entre{" "}
-              <strong>50 000 et 300 000 FCFA / mois</strong> selon la taille de l'entreprise
-              et le volume de transactions. Une TPE en démarrage avec peu de mouvements
-              démarre souvent autour de 50 000 FCFA, tandis qu'une PME avec salariés et
-              TVA mensuelle se situe plutôt entre 150 000 et 300 000 FCFA.
+              <strong>50 000 et 300 000 FCFA / mois</strong> selon la taille de l'entreprise et le
+              volume de transactions. Une TPE en démarrage avec peu de mouvements démarre souvent
+              autour de 50 000 FCFA, tandis qu'une PME avec salariés et TVA mensuelle se situe
+              plutôt entre 150 000 et 300 000 FCFA.
             </p>
           </section>
         </div>

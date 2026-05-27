@@ -16,7 +16,10 @@ export function MobileCtaBar() {
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-40 bg-secondary px-3 pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-4px_20px_rgba(244,115,42,0.3)] lg:hidden relative">
-      <div aria-hidden className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-white/50 to-transparent" />
+      <div
+        aria-hidden
+        className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-white/50 to-transparent"
+      />
       <p className="text-[10px] text-white/85 text-center mb-1.5 font-medium tracking-wide">
         ⭐ {t.hero.rating}
       </p>

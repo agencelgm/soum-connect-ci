@@ -5,8 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ServicePage, type Faq, type RelatedService } from "@/components/service/ServicePage";
 import { buildPageHead, faqSchema } from "@/lib/seo";
 
-const META_TITLE =
-  "Créer une Entreprise en CI depuis l'Étranger — Diaspora";
+const META_TITLE = "Créer une Entreprise en CI depuis l'Étranger — Diaspora";
 const META_DESC =
   "Diaspora ivoirienne (France, Canada, USA) : créez votre SARL ou SA en CI à distance via le CEPICI. Cabinet mandataire, étapes, documents requis.";
 
@@ -77,7 +76,11 @@ const FAQS: Faq[] = [
 ];
 
 const RELATED: RelatedService[] = [
-  { title: "Création d'entreprise en CI", link: "/creation-entreprise-cote-divoire", icon: Building2 },
+  {
+    title: "Création d'entreprise en CI",
+    link: "/creation-entreprise-cote-divoire",
+    icon: Building2,
+  },
   { title: "Comptabilité Abidjan", link: "/comptabilite-entreprise-abidjan", icon: Calculator },
   { title: "Domiciliation Abidjan", link: "/domiciliation-entreprise-abidjan", icon: MapPin },
 ];
@@ -114,24 +117,29 @@ function Page() {
       mainContent={
         <div className="space-y-10">
           <section aria-labelledby="reassure">
-            <h2 id="reassure" className="font-heading font-bold text-primary text-2xl md:text-3xl mb-3">
+            <h2
+              id="reassure"
+              className="font-heading font-bold text-primary text-2xl md:text-3xl mb-3"
+            >
               Oui, c'est possible depuis l'étranger
             </h2>
             <p className="text-foreground leading-relaxed">
-              Que vous soyez à Paris, Montréal, New York ou Bruxelles, vous pouvez créer
-              votre entreprise en Côte d'Ivoire sans prendre l'avion. Le CEPICI a digitalisé
-              l'essentiel de ses démarches depuis 2016, et l'Acte Uniforme OHADA autorise
-              expressément la représentation par mandataire. Des milliers de membres de la
-              diaspora ivoirienne ont déjà monté leur SARL ou SARLU à distance, avec
-              l'appui d'un cabinet comptable local. Le cadre juridique est clair, les
-              délais maîtrisés (2 à 4 semaines) et les coûts prévisibles. La seule
-              condition : s'entourer d'un cabinet mandataire sérieux, agréé OECCA-CI, qui
-              sécurisera chaque étape en votre nom.
+              Que vous soyez à Paris, Montréal, New York ou Bruxelles, vous pouvez créer votre
+              entreprise en Côte d'Ivoire sans prendre l'avion. Le CEPICI a digitalisé l'essentiel
+              de ses démarches depuis 2016, et l'Acte Uniforme OHADA autorise expressément la
+              représentation par mandataire. Des milliers de membres de la diaspora ivoirienne ont
+              déjà monté leur SARL ou SARLU à distance, avec l'appui d'un cabinet comptable local.
+              Le cadre juridique est clair, les délais maîtrisés (2 à 4 semaines) et les coûts
+              prévisibles. La seule condition : s'entourer d'un cabinet mandataire sérieux, agréé
+              OECCA-CI, qui sécurisera chaque étape en votre nom.
             </p>
           </section>
 
           <section aria-labelledby="online">
-            <h2 id="online" className="font-heading font-bold text-primary text-2xl md:text-3xl mb-3">
+            <h2
+              id="online"
+              className="font-heading font-bold text-primary text-2xl md:text-3xl mb-3"
+            >
               Ce que le CEPICI permet en ligne
             </h2>
             <ul className="list-disc pl-5 space-y-2 text-foreground">
@@ -145,23 +153,28 @@ function Page() {
           </section>
 
           <section aria-labelledby="mandataire">
-            <h2 id="mandataire" className="font-heading font-bold text-primary text-2xl md:text-3xl mb-3">
+            <h2
+              id="mandataire"
+              className="font-heading font-bold text-primary text-2xl md:text-3xl mb-3"
+            >
               Le rôle du cabinet mandataire
             </h2>
             <p className="text-foreground leading-relaxed">
-              Le cabinet mandataire est un cabinet comptable agréé OECCA-CI qui agit en
-              votre nom en Côte d'Ivoire sur la base d'une procuration légalisée. Il
-              rédige les statuts, ouvre le compte de souscription du capital, dépose le
-              dossier au CEPICI, récupère vos documents officiels (RCCM, DFE, CNPS), et
-              peut aller jusqu'à domicilier le siège social et ouvrir le compte bancaire
-              professionnel. C'est votre relais juridique et administratif local — la
-              garantie que rien ne bloque entre l'envoi de vos documents depuis l'étranger
-              et la remise des documents officiels de votre société.
+              Le cabinet mandataire est un cabinet comptable agréé OECCA-CI qui agit en votre nom en
+              Côte d'Ivoire sur la base d'une procuration légalisée. Il rédige les statuts, ouvre le
+              compte de souscription du capital, dépose le dossier au CEPICI, récupère vos documents
+              officiels (RCCM, DFE, CNPS), et peut aller jusqu'à domicilier le siège social et
+              ouvrir le compte bancaire professionnel. C'est votre relais juridique et administratif
+              local — la garantie que rien ne bloque entre l'envoi de vos documents depuis
+              l'étranger et la remise des documents officiels de votre société.
             </p>
           </section>
 
           <section aria-labelledby="steps">
-            <h2 id="steps" className="font-heading font-bold text-primary text-2xl md:text-3xl mb-4">
+            <h2
+              id="steps"
+              className="font-heading font-bold text-primary text-2xl md:text-3xl mb-4"
+            >
               Créer votre entreprise en CI depuis l'étranger en 6 étapes
             </h2>
             <ol className="space-y-3">
@@ -204,8 +217,8 @@ function Page() {
               Trouvez votre cabinet mandataire en CI
             </h2>
             <p className="mt-2 text-white/90 max-w-xl mx-auto">
-              Recevez jusqu'à 5 propositions de cabinets agréés OECCA-CI qui acceptent
-              d'agir comme mandataire pour la diaspora. Gratuit, sous 48h.
+              Recevez jusqu'à 5 propositions de cabinets agréés OECCA-CI qui acceptent d'agir comme
+              mandataire pour la diaspora. Gratuit, sous 48h.
             </p>
             <div className="mt-5">
               <Button

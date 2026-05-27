@@ -131,10 +131,12 @@ export const addTeamMember = createServerFn({ method: "POST" })
 export const updateTeamRole = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) =>
-    z.object({
-      user_id: z.string().uuid(),
-      role: z.enum(["admin", "agent"]),
-    }).parse(input),
+    z
+      .object({
+        user_id: z.string().uuid(),
+        role: z.enum(["admin", "agent"]),
+      })
+      .parse(input),
   )
   .handler(async ({ data, context }) => {
     await assertAdmin(context.userId);

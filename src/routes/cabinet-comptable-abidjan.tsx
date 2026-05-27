@@ -1,5 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Building2, Calculator, Receipt, MapPin, BadgeCheck, Sparkles, Wallet, Clock } from "lucide-react";
+import {
+  Building2,
+  Calculator,
+  Receipt,
+  MapPin,
+  BadgeCheck,
+  Sparkles,
+  Wallet,
+  Clock,
+} from "lucide-react";
 import { ServicePage, type Faq, type RelatedService } from "@/components/service/ServicePage";
 import { buildPageHead, faqSchema, LOCAL_BUSINESS_SCHEMA } from "@/lib/seo";
 
@@ -53,10 +62,7 @@ export const Route = createFileRoute("/cabinet-comptable-abidjan")({
         { name: "Abidjan", path: "/cabinet-comptable-abidjan" },
       ],
       altPath: "/en/accounting-firm-abidjan",
-      extraSchemas: [
-        LOCAL_BUSINESS_SCHEMA,
-        faqSchema(FAQS),
-      ],
+      extraSchemas: [LOCAL_BUSINESS_SCHEMA, faqSchema(FAQS)],
     }),
   component: Page,
 });
@@ -67,37 +73,38 @@ function Page() {
       title="Cabinet Comptable à Abidjan — Comparez 5 Offres Gratuitement"
       heroSubtitle="Plateau, Cocody, Marcory… Trouvez un cabinet comptable agréé OECCA-CI adapté à votre quartier, votre secteur et votre budget."
       serviceIcon={MapPin}
-      breadcrumb={[
-        { label: "Accueil", to: "/" },
-        { label: "Villes" },
-        { label: "Abidjan" },
-      ]}
+      breadcrumb={[{ label: "Accueil", to: "/" }, { label: "Villes" }, { label: "Abidjan" }]}
       faqs={FAQS}
       relatedServices={RELATED}
       mainContent={
         <div className="space-y-10">
           <section aria-labelledby="why-abj">
-            <h2 id="why-abj" className="font-heading font-bold text-primary text-2xl md:text-3xl mb-3">
+            <h2
+              id="why-abj"
+              className="font-heading font-bold text-primary text-2xl md:text-3xl mb-3"
+            >
               Pourquoi Abidjan concentre la majorité des cabinets comptables de Côte d'Ivoire
             </h2>
             <p className="text-foreground leading-relaxed">
-              Capitale économique du pays, Abidjan accueille les sièges sociaux des
-              grandes entreprises, les administrations clés (CEPICI, DGI, Trésor) et
-              l'Ordre des Experts-Comptables et Comptables Agréés (OECCA-CI). Cette
-              concentration en fait le hub naturel de la profession comptable
-              ivoirienne, avec une offre dense de cabinets allant des Big Four aux
-              structures spécialisées TPE/PME.
+              Capitale économique du pays, Abidjan accueille les sièges sociaux des grandes
+              entreprises, les administrations clés (CEPICI, DGI, Trésor) et l'Ordre des
+              Experts-Comptables et Comptables Agréés (OECCA-CI). Cette concentration en fait le hub
+              naturel de la profession comptable ivoirienne, avec une offre dense de cabinets allant
+              des Big Four aux structures spécialisées TPE/PME.
             </p>
           </section>
 
           <section aria-labelledby="quartiers">
-            <h2 id="quartiers" className="font-heading font-bold text-primary text-2xl md:text-3xl mb-4">
+            <h2
+              id="quartiers"
+              className="font-heading font-bold text-primary text-2xl md:text-3xl mb-4"
+            >
               Les quartiers d'affaires d'Abidjan
             </h2>
             <p className="text-foreground leading-relaxed mb-4">
-              Trois quartiers concentrent la majorité des cabinets comptables : le
-              Plateau (CBD historique), Cocody (résidentiel et tertiaire de standing)
-              et Marcory — notamment la Zone 4 — orientée PME et import-export.
+              Trois quartiers concentrent la majorité des cabinets comptables : le Plateau (CBD
+              historique), Cocody (résidentiel et tertiaire de standing) et Marcory — notamment la
+              Zone 4 — orientée PME et import-export.
             </p>
             <div className="overflow-x-auto rounded-xl border border-border">
               <table className="w-full text-sm">
@@ -109,32 +116,116 @@ function Page() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
-                  <tr><td className="p-3 font-semibold"><Link to="/guides/$slug" params={{ slug: "cabinet-comptable-plateau-abidjan" }} className="text-secondary hover:underline">Plateau</Link></td><td className="p-3">Big Four, cabinets internationaux, audit</td><td className="p-3">Grandes entreprises, multinationales</td></tr>
-                  <tr><td className="p-3 font-semibold"><Link to="/guides/$slug" params={{ slug: "cabinet-comptable-cocody-abidjan" }} className="text-secondary hover:underline">Cocody / Deux Plateaux</Link></td><td className="p-3">Cabinets de taille moyenne, conseil</td><td className="p-3">PME, professions libérales, ONG</td></tr>
-                  <tr><td className="p-3 font-semibold"><Link to="/guides/$slug" params={{ slug: "cabinet-comptable-angre-abidjan" }} className="text-secondary hover:underline">Angré (Cocody)</Link></td><td className="p-3">Cabinets de proximité, taille humaine</td><td className="p-3">TPE/PME, restaurants, écoles, cliniques</td></tr>
-                  <tr><td className="p-3 font-semibold">Marcory (Zone 4)</td><td className="p-3">Cabinets spécialisés PME, fiscal</td><td className="p-3">PME, import-export, commerce</td></tr>
-                  <tr><td className="p-3 font-semibold">Yopougon / Adjamé</td><td className="p-3">Cabinets de proximité</td><td className="p-3">TPE, commerçants, artisans</td></tr>
+                  <tr>
+                    <td className="p-3 font-semibold">
+                      <Link
+                        to="/guides/$slug"
+                        params={{ slug: "cabinet-comptable-plateau-abidjan" }}
+                        className="text-secondary hover:underline"
+                      >
+                        Plateau
+                      </Link>
+                    </td>
+                    <td className="p-3">Big Four, cabinets internationaux, audit</td>
+                    <td className="p-3">Grandes entreprises, multinationales</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3 font-semibold">
+                      <Link
+                        to="/guides/$slug"
+                        params={{ slug: "cabinet-comptable-cocody-abidjan" }}
+                        className="text-secondary hover:underline"
+                      >
+                        Cocody / Deux Plateaux
+                      </Link>
+                    </td>
+                    <td className="p-3">Cabinets de taille moyenne, conseil</td>
+                    <td className="p-3">PME, professions libérales, ONG</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3 font-semibold">
+                      <Link
+                        to="/guides/$slug"
+                        params={{ slug: "cabinet-comptable-angre-abidjan" }}
+                        className="text-secondary hover:underline"
+                      >
+                        Angré (Cocody)
+                      </Link>
+                    </td>
+                    <td className="p-3">Cabinets de proximité, taille humaine</td>
+                    <td className="p-3">TPE/PME, restaurants, écoles, cliniques</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3 font-semibold">Marcory (Zone 4)</td>
+                    <td className="p-3">Cabinets spécialisés PME, fiscal</td>
+                    <td className="p-3">PME, import-export, commerce</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3 font-semibold">Yopougon / Adjamé</td>
+                    <td className="p-3">Cabinets de proximité</td>
+                    <td className="p-3">TPE, commerçants, artisans</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
             <p className="mt-4 text-sm text-muted-foreground">
               Guides détaillés par quartier :{" "}
-              <Link to="/guides/$slug" params={{ slug: "cabinet-comptable-plateau-abidjan" }} className="text-secondary hover:underline">Plateau</Link>{" "}·{" "}
-              <Link to="/guides/$slug" params={{ slug: "cabinet-comptable-cocody-abidjan" }} className="text-secondary hover:underline">Cocody</Link>{" "}·{" "}
-              <Link to="/guides/$slug" params={{ slug: "cabinet-comptable-angre-abidjan" }} className="text-secondary hover:underline">Angré</Link>.
+              <Link
+                to="/guides/$slug"
+                params={{ slug: "cabinet-comptable-plateau-abidjan" }}
+                className="text-secondary hover:underline"
+              >
+                Plateau
+              </Link>{" "}
+              ·{" "}
+              <Link
+                to="/guides/$slug"
+                params={{ slug: "cabinet-comptable-cocody-abidjan" }}
+                className="text-secondary hover:underline"
+              >
+                Cocody
+              </Link>{" "}
+              ·{" "}
+              <Link
+                to="/guides/$slug"
+                params={{ slug: "cabinet-comptable-angre-abidjan" }}
+                className="text-secondary hover:underline"
+              >
+                Angré
+              </Link>
+              .
             </p>
           </section>
 
           <section aria-labelledby="howto">
-            <h2 id="howto" className="font-heading font-bold text-primary text-2xl md:text-3xl mb-4">
+            <h2
+              id="howto"
+              className="font-heading font-bold text-primary text-2xl md:text-3xl mb-4"
+            >
               Comment choisir un cabinet comptable à Abidjan
             </h2>
             <div className="grid md:grid-cols-2 gap-4">
               {[
-                { icon: BadgeCheck, title: "Agrément OECCA-CI", desc: "Vérifiez l'inscription au tableau de l'Ordre — gage de compétence et de responsabilité professionnelle." },
-                { icon: Sparkles, title: "Spécialisation sectorielle", desc: "Privilégiez un cabinet ayant déjà accompagné des entreprises de votre secteur (BTP, commerce, ONG, tech…)." },
-                { icon: Wallet, title: "Tarifs transparents", desc: "Demandez un devis détaillé : forfait mensuel, prestations incluses, options facturées en sus." },
-                { icon: Clock, title: "Disponibilité & proximité", desc: "Réactivité aux échéances DGI, accessibilité du cabinet et qualité du suivi au quotidien." },
+                {
+                  icon: BadgeCheck,
+                  title: "Agrément OECCA-CI",
+                  desc: "Vérifiez l'inscription au tableau de l'Ordre — gage de compétence et de responsabilité professionnelle.",
+                },
+                {
+                  icon: Sparkles,
+                  title: "Spécialisation sectorielle",
+                  desc: "Privilégiez un cabinet ayant déjà accompagné des entreprises de votre secteur (BTP, commerce, ONG, tech…).",
+                },
+                {
+                  icon: Wallet,
+                  title: "Tarifs transparents",
+                  desc: "Demandez un devis détaillé : forfait mensuel, prestations incluses, options facturées en sus.",
+                },
+                {
+                  icon: Clock,
+                  title: "Disponibilité & proximité",
+                  desc: "Réactivité aux échéances DGI, accessibilité du cabinet et qualité du suivi au quotidien.",
+                },
               ].map((c) => (
                 <div key={c.title} className="rounded-xl border border-border bg-white p-5">
                   <c.icon className="h-6 w-6 text-secondary" />

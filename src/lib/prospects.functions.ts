@@ -30,13 +30,25 @@ async function assertAdmin(userId: string) {
 export const rejectProspect = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) =>
-    z.object({
-      prospect_id: z.string().uuid(),
-      reason: z.string().trim().min(2).max(500),
-    }).parse(input),
+    z
+      .object({
+        prospect_id: z.string().uuid(),
+        reason: z.string().trim().min(2).max(500),
+      })
+      .parse(input),
   )
   .handler(async ({ data, context }) => {
     await assertStaff(context.userId);
+    const { data: prospect, error: readError } = await supabaseAdmin
+      .from("prospects")
+      .select("status")
+      .eq("id", data.prospect_id)
+      .maybeSingle();
+    if (readError) throw new Error(readError.message);
+    if (!prospect) throw new Error("Prospect introuvable");
+    if (prospect.status === "published") {
+      throw new Error("Un prospect publié ne peut pas être rejeté.");
+    }
     const { error } = await supabaseAdmin
       .from("prospects")
       .update({
@@ -75,10 +87,17 @@ export const deleteProspect = createServerFn({ method: "POST" })
   .inputValidator((input) => z.object({ prospect_id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     await assertAdmin(context.userId);
-    const { error } = await supabaseAdmin
+    const { data: prospect, error: readError } = await supabaseAdmin
       .from("prospects")
-      .delete()
-      .eq("id", data.prospect_id);
+      .select("status")
+      .eq("id", data.prospect_id)
+      .maybeSingle();
+    if (readError) throw new Error(readError.message);
+    if (!prospect) throw new Error("Prospect introuvable");
+    if (prospect.status === "published") {
+      throw new Error("Un prospect publié ne peut pas être supprimé depuis cette action.");
+    }
+    const { error } = await supabaseAdmin.from("prospects").delete().eq("id", data.prospect_id);
     if (error) throw new Error(error.message);
     return { ok: true };
   });

@@ -28,8 +28,7 @@ const COPY = {
   fr: {
     heroEyebrow: "Support client",
     heroTitle: "Nous contacter",
-    heroSub:
-      "Décrivez-nous votre problème, notre équipe vous répond sous 24 heures ouvrables.",
+    heroSub: "Décrivez-nous votre problème, notre équipe vous répond sous 24 heures ouvrables.",
     reassure: [
       { icon: Clock, label: "Réponse < 24h ouvrables" },
       { icon: MapPin, label: "Équipe locale à Abidjan" },
@@ -88,8 +87,7 @@ const COPY = {
   en: {
     heroEyebrow: "Customer support",
     heroTitle: "Contact us",
-    heroSub:
-      "Tell us what went wrong — our team replies within 24 business hours.",
+    heroSub: "Tell us what went wrong — our team replies within 24 business hours.",
     reassure: [
       { icon: Clock, label: "Reply within 24 business hours" },
       { icon: MapPin, label: "Local team in Abidjan" },
@@ -127,11 +125,9 @@ const COPY = {
     ],
     occurredAt: "Date the issue occurred (optional)",
     description: "Issue description",
-    descriptionPh:
-      "Tell us exactly what happened, the dates and people involved...",
+    descriptionPh: "Tell us exactly what happened, the dates and people involved...",
     descriptionHelp: "Between 20 and 1000 characters.",
-    consent:
-      "I agree to be contacted by the SoumissionComptable.com team about this request.",
+    consent: "I agree to be contacted by the SoumissionComptable.com team about this request.",
     submit: "Send my request",
     sending: "Sending...",
     security: "Your information stays confidential.",
@@ -165,11 +161,7 @@ export function ContactForm({ language }: { language: Lang }) {
     subject: z.string().min(1, t.errReq),
     service: z.string().optional().or(z.literal("")),
     occurredAt: z.string().optional().or(z.literal("")),
-    description: z
-      .string()
-      .trim()
-      .min(20, t.errDescMin)
-      .max(1000, t.errDescMax),
+    description: z.string().trim().min(20, t.errDescMin).max(1000, t.errDescMax),
     consent: z.literal(true, { errorMap: () => ({ message: t.errConsent }) }),
   });
   type FormValues = z.infer<typeof schema>;
@@ -247,9 +239,7 @@ export function ContactForm({ language }: { language: Lang }) {
           <p className="text-xs md:text-sm font-semibold tracking-widest text-secondary uppercase">
             {t.heroEyebrow}
           </p>
-          <h1 className="mt-3 font-heading text-3xl md:text-5xl font-bold">
-            {t.heroTitle}
-          </h1>
+          <h1 className="mt-3 font-heading text-3xl md:text-5xl font-bold">{t.heroTitle}</h1>
           <p className="mt-4 max-w-2xl mx-auto text-base md:text-lg text-primary-foreground/90">
             {t.heroSub}
           </p>
@@ -270,15 +260,9 @@ export function ContactForm({ language }: { language: Lang }) {
       {/* Form */}
       <section className="container-app py-12 md:py-16">
         <div className="mx-auto max-w-[720px] rounded-2xl bg-white shadow-lg border border-border p-6 md:p-10">
-          <h2 className="font-heading text-2xl font-bold text-primary">
-            {t.formTitle}
-          </h2>
+          <h2 className="font-heading text-2xl font-bold text-primary">{t.formTitle}</h2>
 
-          <form
-            onSubmit={handleSubmit(onSubmit, onInvalid)}
-            noValidate
-            className="mt-6 space-y-5"
-          >
+          <form onSubmit={handleSubmit(onSubmit, onInvalid)} noValidate className="mt-6 space-y-5">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="space-y-1.5">
                 <RequiredLabel htmlFor="fullName">{t.fullName}</RequiredLabel>
@@ -286,16 +270,11 @@ export function ContactForm({ language }: { language: Lang }) {
                   id="fullName"
                   placeholder={t.fullNamePh}
                   aria-invalid={!!errors.fullName}
-                  className={cn(
-                    errors.fullName &&
-                      "border-destructive ring-1 ring-destructive/40",
-                  )}
+                  className={cn(errors.fullName && "border-destructive ring-1 ring-destructive/40")}
                   {...register("fullName")}
                 />
                 {errors.fullName && (
-                  <p className="text-xs text-destructive">
-                    {errors.fullName.message}
-                  </p>
+                  <p className="text-xs text-destructive">{errors.fullName.message}</p>
                 )}
               </div>
 
@@ -306,17 +285,10 @@ export function ContactForm({ language }: { language: Lang }) {
                   type="email"
                   placeholder={t.emailPh}
                   aria-invalid={!!errors.email}
-                  className={cn(
-                    errors.email &&
-                      "border-destructive ring-1 ring-destructive/40",
-                  )}
+                  className={cn(errors.email && "border-destructive ring-1 ring-destructive/40")}
                   {...register("email")}
                 />
-                {errors.email && (
-                  <p className="text-xs text-destructive">
-                    {errors.email.message}
-                  </p>
-                )}
+                {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
               </div>
             </div>
 
@@ -335,26 +307,19 @@ export function ContactForm({ language }: { language: Lang }) {
                     aria-invalid={!!errors.mobile}
                     className={cn(
                       "rounded-l-none",
-                      errors.mobile &&
-                        "border-destructive ring-1 ring-destructive/40",
+                      errors.mobile && "border-destructive ring-1 ring-destructive/40",
                     )}
                     {...register("mobile")}
                   />
                 </div>
                 {errors.mobile && (
-                  <p className="text-xs text-destructive">
-                    {errors.mobile.message}
-                  </p>
+                  <p className="text-xs text-destructive">{errors.mobile.message}</p>
                 )}
               </div>
 
               <div className="space-y-1.5">
                 <Label htmlFor="company">{t.company}</Label>
-                <Input
-                  id="company"
-                  placeholder={t.companyPh}
-                  {...register("company")}
-                />
+                <Input id="company" placeholder={t.companyPh} {...register("company")} />
               </div>
             </div>
 
@@ -362,17 +327,12 @@ export function ContactForm({ language }: { language: Lang }) {
               <RequiredLabel htmlFor="subject">{t.subject}</RequiredLabel>
               <Select
                 value={subject}
-                onValueChange={(v) =>
-                  setValue("subject", v, { shouldValidate: true })
-                }
+                onValueChange={(v) => setValue("subject", v, { shouldValidate: true })}
               >
                 <SelectTrigger
                   id="subject"
                   aria-invalid={!!errors.subject}
-                  className={cn(
-                    errors.subject &&
-                      "border-destructive ring-1 ring-destructive/40",
-                  )}
+                  className={cn(errors.subject && "border-destructive ring-1 ring-destructive/40")}
                 >
                   <SelectValue placeholder={t.subjectPh} />
                 </SelectTrigger>
@@ -385,19 +345,14 @@ export function ContactForm({ language }: { language: Lang }) {
                 </SelectContent>
               </Select>
               {errors.subject && (
-                <p className="text-xs text-destructive">
-                  {errors.subject.message}
-                </p>
+                <p className="text-xs text-destructive">{errors.subject.message}</p>
               )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="space-y-1.5">
                 <Label htmlFor="service">{t.service}</Label>
-                <Select
-                  value={service}
-                  onValueChange={(v) => setValue("service", v)}
-                >
+                <Select value={service} onValueChange={(v) => setValue("service", v)}>
                   <SelectTrigger id="service">
                     <SelectValue placeholder={t.servicePh} />
                   </SelectTrigger>
@@ -413,36 +368,25 @@ export function ContactForm({ language }: { language: Lang }) {
 
               <div className="space-y-1.5">
                 <Label htmlFor="occurredAt">{t.occurredAt}</Label>
-                <Input
-                  id="occurredAt"
-                  type="date"
-                  {...register("occurredAt")}
-                />
+                <Input id="occurredAt" type="date" {...register("occurredAt")} />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <RequiredLabel htmlFor="description">
-                {t.description}
-              </RequiredLabel>
+              <RequiredLabel htmlFor="description">{t.description}</RequiredLabel>
               <Textarea
                 id="description"
                 rows={6}
                 placeholder={t.descriptionPh}
                 aria-invalid={!!errors.description}
                 className={cn(
-                  errors.description &&
-                    "border-destructive ring-1 ring-destructive/40",
+                  errors.description && "border-destructive ring-1 ring-destructive/40",
                 )}
                 {...register("description")}
               />
-              <p className="text-xs text-muted-foreground">
-                {t.descriptionHelp}
-              </p>
+              <p className="text-xs text-muted-foreground">{t.descriptionHelp}</p>
               {errors.description && (
-                <p className="text-xs text-destructive">
-                  {errors.description.message}
-                </p>
+                <p className="text-xs text-destructive">{errors.description.message}</p>
               )}
             </div>
 
@@ -466,9 +410,7 @@ export function ContactForm({ language }: { language: Lang }) {
                 </Label>
               </div>
               {errors.consent && (
-                <p className="text-xs text-destructive">
-                  {errors.consent.message as string}
-                </p>
+                <p className="text-xs text-destructive">{errors.consent.message as string}</p>
               )}
             </div>
 

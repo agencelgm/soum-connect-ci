@@ -8,11 +8,7 @@ import { getServiceLinksForCategories } from "@/lib/category-services-map";
  * Affiche les services SoumissionComptable.com les plus pertinents
  * en fonction des catégories de l'article courant.
  */
-export function CategoryServiceLinks({
-  categories,
-}: {
-  categories: Category[];
-}) {
+export function CategoryServiceLinks({ categories }: { categories: Category[] }) {
   const items = getServiceLinksForCategories(categories, 4);
   if (items.length === 0) return null;
   return (
@@ -33,8 +29,7 @@ export function CategoryServiceLinks({
             Services recommandés pour ce sujet
           </h2>
           <p className="mt-2 text-muted-foreground">
-            Passez de la lecture à l'action avec les prestations directement
-            liées à ce guide.
+            Passez de la lecture à l'action avec les prestations directement liées à ce guide.
           </p>
         </div>
         <ul className="grid sm:grid-cols-2 gap-4">

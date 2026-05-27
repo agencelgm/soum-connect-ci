@@ -73,7 +73,10 @@ function Page() {
       mainContent={
         <div className="space-y-10">
           <section aria-labelledby="calendar">
-            <h2 id="calendar" className="font-heading font-bold text-primary text-2xl md:text-3xl mb-4">
+            <h2
+              id="calendar"
+              className="font-heading font-bold text-primary text-2xl md:text-3xl mb-4"
+            >
               Calendrier fiscal en Côte d'Ivoire
             </h2>
             <div className="overflow-x-auto rounded-xl border border-border">
@@ -86,26 +89,61 @@ function Page() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
-                  <tr><td className="p-3 font-semibold">DSF</td><td className="p-3">Annuelle</td><td className="p-3">Au plus tard le 30 juin</td></tr>
-                  <tr><td className="p-3 font-semibold">TVA</td><td className="p-3">Mensuelle</td><td className="p-3">15 du mois suivant</td></tr>
-                  <tr><td className="p-3 font-semibold">IS (acomptes)</td><td className="p-3">Trimestrielle</td><td className="p-3">15 avr., 15 juin, 15 sept., 15 déc.</td></tr>
-                  <tr><td className="p-3 font-semibold">CNPS</td><td className="p-3">Mensuelle / Trimestrielle</td><td className="p-3">15 du mois suivant</td></tr>
-                  <tr><td className="p-3 font-semibold">ITS</td><td className="p-3">Mensuelle</td><td className="p-3">15 du mois suivant</td></tr>
+                  <tr>
+                    <td className="p-3 font-semibold">DSF</td>
+                    <td className="p-3">Annuelle</td>
+                    <td className="p-3">Au plus tard le 30 juin</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3 font-semibold">TVA</td>
+                    <td className="p-3">Mensuelle</td>
+                    <td className="p-3">15 du mois suivant</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3 font-semibold">IS (acomptes)</td>
+                    <td className="p-3">Trimestrielle</td>
+                    <td className="p-3">15 avr., 15 juin, 15 sept., 15 déc.</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3 font-semibold">CNPS</td>
+                    <td className="p-3">Mensuelle / Trimestrielle</td>
+                    <td className="p-3">15 du mois suivant</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3 font-semibold">ITS</td>
+                    <td className="p-3">Mensuelle</td>
+                    <td className="p-3">15 du mois suivant</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
           </section>
 
           <section aria-labelledby="taxes">
-            <h2 id="taxes" className="font-heading font-bold text-primary text-2xl md:text-3xl mb-4">
+            <h2
+              id="taxes"
+              className="font-heading font-bold text-primary text-2xl md:text-3xl mb-4"
+            >
               Principaux impôts d'une entreprise en Côte d'Ivoire
             </h2>
             <div className="grid md:grid-cols-2 gap-4">
               {[
-                { name: "Impôt sur les Sociétés (IS)", desc: "Taux de 25 % du bénéfice imposable. Acomptes trimestriels et solde lors du dépôt de la DSF." },
-                { name: "TVA", desc: "Taux normal 18 %, taux réduit 9 % sur certains produits. Déclaration mensuelle obligatoire." },
-                { name: "CNPS", desc: "Cotisations sociales employeur et salarié sur la masse salariale (retraite, prestations familiales, accidents du travail)." },
-                { name: "Patente / TPS", desc: "Contribution annuelle des entreprises. La TPS (Taxe sur Prestations de Services) s'applique au secteur des services." },
+                {
+                  name: "Impôt sur les Sociétés (IS)",
+                  desc: "Taux de 25 % du bénéfice imposable. Acomptes trimestriels et solde lors du dépôt de la DSF.",
+                },
+                {
+                  name: "TVA",
+                  desc: "Taux normal 18 %, taux réduit 9 % sur certains produits. Déclaration mensuelle obligatoire.",
+                },
+                {
+                  name: "CNPS",
+                  desc: "Cotisations sociales employeur et salarié sur la masse salariale (retraite, prestations familiales, accidents du travail).",
+                },
+                {
+                  name: "Patente / TPS",
+                  desc: "Contribution annuelle des entreprises. La TPS (Taxe sur Prestations de Services) s'applique au secteur des services.",
+                },
               ].map((t) => (
                 <div key={t.name} className="rounded-xl border border-border bg-white p-5">
                   <p className="font-heading font-semibold text-primary">{t.name}</p>
@@ -116,7 +154,10 @@ function Page() {
           </section>
 
           <section aria-labelledby="risks">
-            <h2 id="risks" className="font-heading font-bold text-primary text-2xl md:text-3xl mb-3">
+            <h2
+              id="risks"
+              className="font-heading font-bold text-primary text-2xl md:text-3xl mb-3"
+            >
               Risques en cas de non-conformité
             </h2>
             <div className="rounded-xl border border-border bg-white p-5 flex gap-4">
@@ -124,13 +165,14 @@ function Page() {
               <div className="text-foreground leading-relaxed space-y-2">
                 <p>
                   Un retard ou une omission de déclaration auprès de la DGI entraîne des
-                  <strong> intérêts de retard</strong>, des <strong>majorations de 10 % à 100 %</strong> du
-                  montant dû et expose votre entreprise à un <strong>contrôle fiscal</strong>.
+                  <strong> intérêts de retard</strong>, des{" "}
+                  <strong>majorations de 10 % à 100 %</strong> du montant dû et expose votre
+                  entreprise à un <strong>contrôle fiscal</strong>.
                 </p>
                 <p>
-                  En cas de manquements répétés : taxation d'office, redressement,
-                  blocage du NCC voire fermeture administrative. Un cabinet comptable
-                  réduit drastiquement ce risque en sécurisant chaque échéance.
+                  En cas de manquements répétés : taxation d'office, redressement, blocage du NCC
+                  voire fermeture administrative. Un cabinet comptable réduit drastiquement ce
+                  risque en sécurisant chaque échéance.
                 </p>
               </div>
             </div>

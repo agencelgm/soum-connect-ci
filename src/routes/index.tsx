@@ -84,13 +84,32 @@ export function Index() {
   const FEATURE_ICONS = [MapPin, ShieldCheck, Briefcase];
   const STAT_ICONS = [Truck, ClipboardList, MapPin];
   const SERVICE_ICONS = [
-    Calculator, Building2, FileCheck, Search, Users, Scale,
-    MapPin, Globe2, BarChart3, Landmark, AlertTriangle, ShieldAlert,
+    Calculator,
+    Building2,
+    FileCheck,
+    Search,
+    Users,
+    Scale,
+    MapPin,
+    Globe2,
+    BarChart3,
+    Landmark,
+    AlertTriangle,
+    ShieldAlert,
   ];
   const SERVICE_IMAGES = [
-    svcComptaGenerale, svcCreationEntreprise, svcFiscalite, svcAudit,
-    svcPaieCnps, svcConseilJuridique, svcDomiciliation, svcDiaspora,
-    svcReporting, svcBancaire, svcConformiteFiscale, svcAuditInterne,
+    svcComptaGenerale,
+    svcCreationEntreprise,
+    svcFiscalite,
+    svcAudit,
+    svcPaieCnps,
+    svcConseilJuridique,
+    svcDomiciliation,
+    svcDiaspora,
+    svcReporting,
+    svcBancaire,
+    svcConformiteFiscale,
+    svcAuditInterne,
   ];
   const STEP_ICONS = [FileText, ClipboardList, CheckCircle];
   const TRUST_ICONS = [ClipboardList, Users, Award, Smartphone];
@@ -101,19 +120,24 @@ export function Index() {
     if (!emblaApi) return;
     const onSelect = () => setSelectedIndex(emblaApi.selectedScrollSnap());
     emblaApi.on("select", onSelect);
-    return () => { emblaApi.off("select", onSelect); };
+    return () => {
+      emblaApi.off("select", onSelect);
+    };
   }, [emblaApi]);
 
   return (
     <>
       {/* ====== 1. HERO SPLIT ====== */}
-      <section
-        aria-labelledby="hero-title"
-        className="hero-gradient-bg relative overflow-hidden"
-      >
+      <section aria-labelledby="hero-title" className="hero-gradient-bg relative overflow-hidden">
         {/* Decorative depth circles */}
-        <div aria-hidden className="absolute -top-[10%] right-[-5%] h-80 w-80 rounded-full bg-white/5 blur-3xl pointer-events-none" />
-        <div aria-hidden className="absolute bottom-[-5%] left-[-5%] h-64 w-64 rounded-full bg-[#F4732A]/10 blur-3xl pointer-events-none" />
+        <div
+          aria-hidden
+          className="absolute -top-[10%] right-[-5%] h-80 w-80 rounded-full bg-white/5 blur-3xl pointer-events-none"
+        />
+        <div
+          aria-hidden
+          className="absolute bottom-[-5%] left-[-5%] h-64 w-64 rounded-full bg-[#F4732A]/10 blur-3xl pointer-events-none"
+        />
 
         <div className="relative container-app pt-10 md:pt-16 pb-0 grid gap-8 lg:gap-4 lg:grid-cols-12 lg:items-stretch">
           {/* Left: photo comptable au bureau (desktop only) */}
@@ -134,28 +158,36 @@ export function Index() {
               <span className="inline-block rounded-full bg-white/15 border border-white/25 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
                 {t.hero.badge}
               </span>
-              <h1 id="hero-title" className="mt-3 font-heading font-extrabold text-white leading-[1.15]">
+              <h1
+                id="hero-title"
+                className="mt-3 font-heading font-extrabold text-white leading-[1.15]"
+              >
                 {t.hero.h1}
               </h1>
-              <p className="mt-3 text-white/85 text-base md:text-lg max-w-lg">
-                {t.hero.sub}
-              </p>
+              <p className="mt-3 text-white/85 text-base md:text-lg max-w-lg">{t.hero.sub}</p>
               <div className="mt-4 flex items-center gap-3 text-sm text-white/80 flex-wrap">
                 <span>{t.hero.rating}</span>
               </div>
             </div>
             <div className="rounded-2xl bg-white p-5 md:p-7 shadow-[var(--shadow-hero-card)]">
               <h2 className="font-heading text-xl md:text-2xl font-bold text-primary uppercase">
-                {language === "fr" ? "Obtenez 5 soumissions gratuites de cabinets comptables" : "Get 5 free quotes from accounting firms"}
+                {language === "fr"
+                  ? "Obtenez 5 soumissions gratuites de cabinets comptables"
+                  : "Get 5 free quotes from accounting firms"}
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                {language === "fr" ? "Comparez prix et services — 100% gratuit, sans engagement" : "Compare prices and services — 100% free, no commitment"}
+                {language === "fr"
+                  ? "Comparez prix et services — 100% gratuit, sans engagement"
+                  : "Compare prices and services — 100% free, no commitment"}
               </p>
               <div className="mt-5">
                 <LeadFormCard source="home-hero" />
               </div>
               <p className="text-xs text-muted-foreground/70 text-center mt-3">
-                ✓ {language === "fr" ? "Cabinets agréés OECCA-CI · Réponse sous 48h · 0 engagement" : "OECCA-CI certified firms · Reply within 48h · No commitment"}
+                ✓{" "}
+                {language === "fr"
+                  ? "Cabinets agréés OECCA-CI · Réponse sous 48h · 0 engagement"
+                  : "OECCA-CI certified firms · Reply within 48h · No commitment"}
               </p>
             </div>
           </div>
@@ -261,7 +293,10 @@ export function Index() {
           {h.highlights.map((card, i) => {
             const Icon = [Globe2, Award, Building2][i];
             return (
-              <article key={i} className="bg-white rounded-xl overflow-hidden shadow-sm border border-border">
+              <article
+                key={i}
+                className="bg-white rounded-xl overflow-hidden shadow-sm border border-border"
+              >
                 <div className="relative aspect-[16/9] md:aspect-auto md:h-44 bg-gradient-to-br from-primary to-[#1a2f5a] flex items-center justify-center">
                   <Icon className="h-16 w-16 md:h-20 md:w-20 text-white/20" aria-hidden="true" />
                   <div className="absolute -bottom-6 left-6 flex h-12 w-12 items-center justify-center rounded-full bg-secondary text-secondary-foreground shadow-lg ring-4 ring-white">
@@ -272,7 +307,9 @@ export function Index() {
                   <h3 className="font-heading text-base md:text-lg font-bold text-primary uppercase leading-snug">
                     {card.title}
                   </h3>
-                  <p className="mt-2 md:mt-3 text-sm text-muted-foreground leading-relaxed">{card.text}</p>
+                  <p className="mt-2 md:mt-3 text-sm text-muted-foreground leading-relaxed">
+                    {card.text}
+                  </p>
                 </div>
               </article>
             );
@@ -284,20 +321,28 @@ export function Index() {
       <section aria-labelledby="services-title" className="bg-white">
         <div className="container-app section">
           <div className="text-center max-w-3xl mx-auto">
-            <h2 id="services-title" className="font-heading text-3xl md:text-4xl font-bold text-primary uppercase">
+            <h2
+              id="services-title"
+              className="font-heading text-3xl md:text-4xl font-bold text-primary uppercase"
+            >
               {language === "fr" ? "Services" : "Services"}
             </h2>
             <p className="mt-3 text-muted-foreground">{h.servicesIntroSub}</p>
           </div>
-          <div className="mt-10 -mx-4 px-4 sm:mx-0 sm:px-0
+          <div
+            className="mt-10 -mx-4 px-4 sm:mx-0 sm:px-0
                           flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4
                           sm:grid sm:grid-cols-2 sm:overflow-visible sm:snap-none sm:pb-0
-                          lg:grid-cols-3 xl:grid-cols-4">
+                          lg:grid-cols-3 xl:grid-cols-4"
+          >
             {h.services12.map((s, i) => {
               const Icon = SERVICE_ICONS[i];
               const img = SERVICE_IMAGES[i];
               return (
-                <article key={i} className="snap-start shrink-0 w-[72vw] max-w-[260px] sm:w-auto sm:max-w-none sm:shrink rounded-xl bg-white overflow-hidden border border-border shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-card-hover)] transition-shadow">
+                <article
+                  key={i}
+                  className="snap-start shrink-0 w-[72vw] max-w-[260px] sm:w-auto sm:max-w-none sm:shrink rounded-xl bg-white overflow-hidden border border-border shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-card-hover)] transition-shadow"
+                >
                   <div className="relative aspect-[4/3] overflow-hidden bg-muted">
                     <img
                       src={img}
@@ -312,45 +357,70 @@ export function Index() {
                     </div>
                   </div>
                   <div className="p-5">
-                    <h3 className="font-heading text-base font-bold text-primary uppercase">{s.title}</h3>
+                    <h3 className="font-heading text-base font-bold text-primary uppercase">
+                      {s.title}
+                    </h3>
                     <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.text}</p>
                   </div>
                 </article>
               );
             })}
           </div>
-          <p className="mt-2 text-center text-xs text-muted-foreground sm:hidden">← {language === "fr" ? "Faites défiler" : "Scroll"} →</p>
+          <p className="mt-2 text-center text-xs text-muted-foreground sm:hidden">
+            ← {language === "fr" ? "Faites défiler" : "Scroll"} →
+          </p>
         </div>
       </section>
 
       <section aria-labelledby="steps-title" className="bg-white">
         <div className="container-app section">
           <div className="text-center max-w-3xl mx-auto">
-            <h2 id="steps-title" className="font-heading text-2xl md:text-3xl font-bold text-primary uppercase">
+            <h2
+              id="steps-title"
+              className="font-heading text-2xl md:text-3xl font-bold text-primary uppercase"
+            >
               {h.stepsKicker}
             </h2>
-            <p className="mt-2 font-semibold text-muted-foreground uppercase tracking-wide">{h.stepsSub}</p>
-            <p className="mt-4 font-heading text-4xl md:text-5xl font-extrabold text-secondary">{h.stepsTitle}</p>
+            <p className="mt-2 font-semibold text-muted-foreground uppercase tracking-wide">
+              {h.stepsSub}
+            </p>
+            <p className="mt-4 font-heading text-4xl md:text-5xl font-extrabold text-secondary">
+              {h.stepsTitle}
+            </p>
           </div>
 
           <div className="mt-10 flex flex-col md:grid md:grid-cols-3 gap-8 relative">
             {/* Vertical connecting line on mobile */}
-            <div aria-hidden className="absolute left-[2.25rem] top-8 bottom-8 w-0.5 bg-gradient-to-b from-secondary/20 via-secondary to-secondary/20 md:hidden" />
+            <div
+              aria-hidden
+              className="absolute left-[2.25rem] top-8 bottom-8 w-0.5 bg-gradient-to-b from-secondary/20 via-secondary to-secondary/20 md:hidden"
+            />
             {h.steps3.map((s, i) => {
               const Icon = STEP_ICONS[i];
               return (
-                <article key={i} className="flex flex-row items-start gap-5 md:flex-col md:items-center md:text-center">
+                <article
+                  key={i}
+                  className="flex flex-row items-start gap-5 md:flex-col md:items-center md:text-center"
+                >
                   <div className="relative flex-shrink-0 h-[4.5rem] w-[4.5rem] md:h-36 md:w-36 rounded-full bg-gradient-to-br from-primary to-[#1a2f5a] flex items-center justify-center z-10">
-                    <span className="font-heading text-2xl md:text-5xl font-bold text-white/15">{i + 1}</span>
+                    <span className="font-heading text-2xl md:text-5xl font-bold text-white/15">
+                      {i + 1}
+                    </span>
                     <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 md:-bottom-3 flex h-8 w-8 md:h-12 md:w-12 items-center justify-center rounded-full bg-secondary text-secondary-foreground ring-2 md:ring-4 ring-white shadow">
                       <Icon className="h-4 w-4 md:h-6 md:w-6" aria-hidden="true" />
                     </div>
                   </div>
                   <div className="pt-1">
-                    <p className="font-heading font-extrabold text-secondary text-lg md:text-xl">{s.tag}</p>
-                    <p className="mt-0.5 font-heading font-bold text-primary text-sm md:text-base">{s.title}</p>
+                    <p className="font-heading font-extrabold text-secondary text-lg md:text-xl">
+                      {s.tag}
+                    </p>
+                    <p className="mt-0.5 font-heading font-bold text-primary text-sm md:text-base">
+                      {s.title}
+                    </p>
                     <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.text}</p>
-                    <p className="mt-2 text-xs uppercase tracking-wider text-muted-foreground/80 italic">{s.footer}</p>
+                    <p className="mt-2 text-xs uppercase tracking-wider text-muted-foreground/80 italic">
+                      {s.footer}
+                    </p>
                   </div>
                 </article>
               );
@@ -432,17 +502,23 @@ export function Index() {
               <p className="text-[15px] md:text-base text-muted-foreground leading-relaxed">
                 {h.seoP2}
               </p>
-              <h3 className="mt-6 font-heading text-base font-bold text-primary">{h.seoTypesTitle}</h3>
+              <h3 className="mt-6 font-heading text-base font-bold text-primary">
+                {h.seoTypesTitle}
+              </h3>
               <ul className="mt-3 space-y-3 md:space-y-2 text-[15px] md:text-sm text-muted-foreground">
                 {h.seoTypes.map((tt, i) => (
                   <li key={i} className="flex items-start gap-2">
-                    <CheckCircle className="h-5 w-5 md:h-4 md:w-4 text-accent mt-0.5 shrink-0" aria-hidden="true" />
+                    <CheckCircle
+                      className="h-5 w-5 md:h-4 md:w-4 text-accent mt-0.5 shrink-0"
+                      aria-hidden="true"
+                    />
                     <span>{tt}</span>
                   </li>
                 ))}
               </ul>
               <p className="mt-4 text-[15px] md:text-base text-muted-foreground leading-relaxed">
-                <strong className="text-primary">{h.seoP3Strong}</strong>{h.seoP3}
+                <strong className="text-primary">{h.seoP3Strong}</strong>
+                {h.seoP3}
               </p>
             </div>
           </div>
@@ -454,7 +530,10 @@ export function Index() {
               <ul className="mt-3 space-y-3 md:space-y-2 text-[15px] md:text-sm text-muted-foreground">
                 {h.seoNeeds.map((nn, i) => (
                   <li key={i} className="flex items-start gap-2">
-                    <CheckCircle className="h-5 w-5 md:h-4 md:w-4 text-accent mt-0.5 shrink-0" aria-hidden="true" />
+                    <CheckCircle
+                      className="h-5 w-5 md:h-4 md:w-4 text-accent mt-0.5 shrink-0"
+                      aria-hidden="true"
+                    />
                     <span>{nn}</span>
                   </li>
                 ))}
@@ -488,11 +567,16 @@ export function Index() {
               />
             </div>
             <div>
-              <h3 className="font-heading text-base font-bold text-primary">{h.seoAdvantagesTitle}</h3>
+              <h3 className="font-heading text-base font-bold text-primary">
+                {h.seoAdvantagesTitle}
+              </h3>
               <ul className="mt-3 space-y-3 md:space-y-2 text-[15px] md:text-sm text-muted-foreground">
                 {h.seoAdvantages.map((aa, i) => (
                   <li key={i} className="flex items-start gap-2">
-                    <CheckCircle className="h-5 w-5 md:h-4 md:w-4 text-accent mt-0.5 shrink-0" aria-hidden="true" />
+                    <CheckCircle
+                      className="h-5 w-5 md:h-4 md:w-4 text-accent mt-0.5 shrink-0"
+                      aria-hidden="true"
+                    />
                     <span>{aa}</span>
                   </li>
                 ))}
@@ -535,7 +619,9 @@ export function Index() {
                   <div className="flex h-10 w-10 md:h-16 md:w-16 items-center justify-center rounded-full border-2 border-white/80 text-white shrink-0">
                     <Icon className="h-5 w-5 md:h-8 md:w-8" aria-hidden="true" />
                   </div>
-                  <p className="text-xs md:text-sm font-semibold max-w-[220px] leading-snug sm:mt-3 md:mt-4">{b}</p>
+                  <p className="text-xs md:text-sm font-semibold max-w-[220px] leading-snug sm:mt-3 md:mt-4">
+                    {b}
+                  </p>
                 </div>
               );
             })}
@@ -546,7 +632,10 @@ export function Index() {
       {/* ====== 12. FAQ ====== */}
       <section aria-labelledby="faq-title" className="bg-white">
         <div className="container-app section max-w-3xl">
-          <h2 id="faq-title" className="font-heading text-3xl md:text-4xl font-bold text-primary text-center">
+          <h2
+            id="faq-title"
+            className="font-heading text-3xl md:text-4xl font-bold text-primary text-center"
+          >
             {t.homeFaq.title}
           </h2>
           <Accordion type="single" collapsible className="mt-8">
@@ -555,9 +644,7 @@ export function Index() {
                 <AccordionTrigger className="text-base font-semibold text-primary">
                   {item.q}
                 </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground">
-                  {item.a}
-                </AccordionContent>
+                <AccordionContent className="text-muted-foreground">{item.a}</AccordionContent>
               </AccordionItem>
             ))}
           </Accordion>
@@ -566,14 +653,19 @@ export function Index() {
               {language === "fr" ? "Prêt à commencer ?" : "Ready to get started?"}
             </p>
             <p className="text-sm text-muted-foreground mt-1">
-              {language === "fr" ? "Obtenez vos soumissions gratuitement en 2 minutes." : "Get your free quotes in 2 minutes."}
+              {language === "fr"
+                ? "Obtenez vos soumissions gratuitement en 2 minutes."
+                : "Get your free quotes in 2 minutes."}
             </p>
             <Link to={quotesHref} className="btn-cta-primary mt-4 inline-flex">
               {language === "fr" ? "Obtenir mes soumissions →" : "Get my quotes →"}
             </Link>
           </div>
           <div className="mt-6 text-center">
-            <Link to="/faq" className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline">
+            <Link
+              to="/faq"
+              className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
+            >
               {t.cta.viewAllFaq} <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
@@ -582,10 +674,19 @@ export function Index() {
 
       {/* ====== 13. FINAL CTA REPEAT ====== */}
       <section aria-labelledby="final-title" className="hero-gradient-bg relative overflow-hidden">
-        <div aria-hidden className="absolute -top-[10%] right-[-5%] h-80 w-80 rounded-full bg-white/5 blur-3xl pointer-events-none" />
-        <div aria-hidden className="absolute bottom-[-5%] left-[-5%] h-64 w-64 rounded-full bg-[#F4732A]/10 blur-3xl pointer-events-none" />
+        <div
+          aria-hidden
+          className="absolute -top-[10%] right-[-5%] h-80 w-80 rounded-full bg-white/5 blur-3xl pointer-events-none"
+        />
+        <div
+          aria-hidden
+          className="absolute bottom-[-5%] left-[-5%] h-64 w-64 rounded-full bg-[#F4732A]/10 blur-3xl pointer-events-none"
+        />
         <div className="relative container-app section">
-          <h2 id="final-title" className="text-center font-heading text-2xl md:text-3xl font-bold text-white max-w-3xl mx-auto">
+          <h2
+            id="final-title"
+            className="text-center font-heading text-2xl md:text-3xl font-bold text-white max-w-3xl mx-auto"
+          >
             {h.finalRepeatTitle}
           </h2>
           <div className="mt-10 max-w-lg mx-auto">
@@ -594,7 +695,9 @@ export function Index() {
                 {language === "fr" ? "Obtenez 5 soumissions gratuites" : "Get 5 free quotes"}
               </h3>
               <p className="mt-2 text-sm text-muted-foreground">
-                {language === "fr" ? "100% gratuit · Sans engagement · Réponse en 48h" : "100% free · No commitment · Reply in 48h"}
+                {language === "fr"
+                  ? "100% gratuit · Sans engagement · Réponse en 48h"
+                  : "100% free · No commitment · Reply in 48h"}
               </p>
               <Link
                 to={quotesHref}
@@ -606,9 +709,7 @@ export function Index() {
                 ✓ {language === "fr" ? "Cabinets agréés OECCA-CI" : "OECCA-CI certified firms"}
               </p>
             </div>
-            <p className="mt-6 text-center font-bold text-white/90">
-              {h.finalRepeatTagline}
-            </p>
+            <p className="mt-6 text-center font-bold text-white/90">{h.finalRepeatTagline}</p>
           </div>
         </div>
       </section>

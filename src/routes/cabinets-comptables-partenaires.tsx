@@ -2,14 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
-import {
-  TrendingUp,
-  Target,
-  Briefcase,
-  ArrowRight,
-  CheckCircle2,
-  Quote,
-} from "lucide-react";
+import { TrendingUp, Target, Briefcase, ArrowRight, CheckCircle2, Quote } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -46,17 +39,14 @@ export const Route = createFileRoute("/cabinets-comptables-partenaires")({
   head: () =>
     buildPageHead({
       path: "/cabinets-comptables-partenaires",
-      title:
-        "Rejoignez notre Réseau | Cabinets Comptables Partenaires | SoumissionComptable.com",
+      title: "Rejoignez notre Réseau | Cabinets Comptables Partenaires | SoumissionComptable.com",
       description:
         "Vous êtes cabinet comptable agréé en Côte d'Ivoire ? Rejoignez SoumissionComptable.com et recevez des leads qualifiés d'entrepreneurs qui cherchent vos services. Inscription simple.",
       breadcrumb: [
         { name: "Accueil", path: "/" },
         { name: "Cabinets partenaires", path: "/cabinets-comptables-partenaires" },
       ],
-      extraSchemas: [
-        faqSchema(PARTNER_FAQS.map((f) => ({ question: f.q, answer: f.a }))),
-      ],
+      extraSchemas: [faqSchema(PARTNER_FAQS.map((f) => ({ question: f.q, answer: f.a })))],
     }),
   component: Page,
 });
@@ -70,13 +60,7 @@ const SERVICES = [
   "Domiciliation",
 ] as const;
 
-const ZONES = [
-  "Plateau",
-  "Cocody",
-  "Yopougon",
-  "Marcory",
-  "Toute la CI",
-] as const;
+const ZONES = ["Plateau", "Cocody", "Yopougon", "Marcory", "Toute la CI"] as const;
 
 const VALUE_PROPS = [
   {
@@ -97,10 +81,26 @@ const VALUE_PROPS = [
 ];
 
 const STEPS = [
-  { n: 1, title: "Inscrivez votre cabinet", text: "5 minutes pour créer votre profil et joindre votre agrément OECCA-CI." },
-  { n: 2, title: "Définissez vos critères", text: "Services, zones géographiques, taille des clients ciblés." },
-  { n: 3, title: "Recevez des leads correspondants", text: "Notifications email et SMS dès qu'une demande matche votre profil." },
-  { n: 4, title: "Contactez et soumettez votre offre", text: "Vous échangez directement avec le prospect et envoyez votre proposition." },
+  {
+    n: 1,
+    title: "Inscrivez votre cabinet",
+    text: "5 minutes pour créer votre profil et joindre votre agrément OECCA-CI.",
+  },
+  {
+    n: 2,
+    title: "Définissez vos critères",
+    text: "Services, zones géographiques, taille des clients ciblés.",
+  },
+  {
+    n: 3,
+    title: "Recevez des leads correspondants",
+    text: "Notifications email et SMS dès qu'une demande matche votre profil.",
+  },
+  {
+    n: 4,
+    title: "Contactez et soumettez votre offre",
+    text: "Vous échangez directement avec le prospect et envoyez votre proposition.",
+  },
 ];
 
 const partnerSchema = z.object({
@@ -125,11 +125,7 @@ function Page() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [consent, setConsent] = useState(false);
 
-  const toggle = (
-    value: string,
-    list: string[],
-    setter: (v: string[]) => void,
-  ) => {
+  const toggle = (value: string, list: string[], setter: (v: string[]) => void) => {
     setter(list.includes(value) ? list.filter((v) => v !== value) : [...list, value]);
   };
 
@@ -159,11 +155,7 @@ function Page() {
     if (Object.keys(fieldErrors).length > 0) {
       setErrors(fieldErrors);
       const count = Object.keys(fieldErrors).length;
-      toast.error(
-        count === 1
-          ? "1 champ à corriger"
-          : `${count} champs à corriger`,
-      );
+      toast.error(count === 1 ? "1 champ à corriger" : `${count} champs à corriger`);
       // scroll to first invalid field
       const firstKey = Object.keys(fieldErrors)[0];
       const el = document.getElementById(firstKey);
@@ -195,7 +187,8 @@ function Page() {
             Développez votre Cabinet avec des Leads Qualifiés
           </h1>
           <p className="mt-5 text-lg md:text-xl text-primary-foreground/85 max-w-2xl mx-auto">
-            Rejoignez le premier réseau de mise en relation comptable de Côte d'Ivoire. Recevez des demandes d'entrepreneurs prêts à signer.
+            Rejoignez le premier réseau de mise en relation comptable de Côte d'Ivoire. Recevez des
+            demandes d'entrepreneurs prêts à signer.
           </p>
           <div className="mt-8">
             <Button
@@ -251,10 +244,7 @@ function Page() {
           </div>
           <ol className="mt-12 grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {STEPS.map((s) => (
-              <li
-                key={s.n}
-                className="relative rounded-xl bg-background border border-border p-6"
-              >
+              <li key={s.n} className="relative rounded-xl bg-background border border-border p-6">
                 <div className="h-10 w-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold mb-4">
                   {s.n}
                 </div>
@@ -271,7 +261,8 @@ function Page() {
         <figure className="max-w-3xl mx-auto rounded-2xl bg-primary text-primary-foreground p-8 md:p-12 relative">
           <Quote className="absolute top-6 left-6 h-10 w-10 text-secondary opacity-60" />
           <blockquote className="text-lg md:text-2xl font-medium leading-relaxed pl-12">
-            "Depuis que nous sommes sur SoumissionComptable.com, nous recevons 3 à 5 nouveaux prospects qualifiés par mois sans effort de prospection."
+            "Depuis que nous sommes sur SoumissionComptable.com, nous recevons 3 à 5 nouveaux
+            prospects qualifiés par mois sans effort de prospection."
           </blockquote>
           <figcaption className="mt-6 pl-12 text-primary-foreground/80 text-sm">
             — Cabinet Expertise Plus, Abidjan Plateau
@@ -305,11 +296,11 @@ function Page() {
                     name="cabinet"
                     maxLength={120}
                     aria-invalid={!!errors.cabinet}
-                    className={cn(errors.cabinet && "border-destructive ring-1 ring-destructive/40")}
+                    className={cn(
+                      errors.cabinet && "border-destructive ring-1 ring-destructive/40",
+                    )}
                   />
-                  {errors.cabinet && (
-                    <p className="text-xs text-destructive">{errors.cabinet}</p>
-                  )}
+                  {errors.cabinet && <p className="text-xs text-destructive">{errors.cabinet}</p>}
                 </div>
                 <div className="space-y-2">
                   <RequiredLabel htmlFor="director">
@@ -320,29 +311,27 @@ function Page() {
                     name="director"
                     maxLength={120}
                     aria-invalid={!!errors.director}
-                    className={cn(errors.director && "border-destructive ring-1 ring-destructive/40")}
+                    className={cn(
+                      errors.director && "border-destructive ring-1 ring-destructive/40",
+                    )}
                   />
-                  {errors.director && (
-                    <p className="text-xs text-destructive">{errors.director}</p>
-                  )}
+                  {errors.director && <p className="text-xs text-destructive">{errors.director}</p>}
                 </div>
               </div>
 
               <div className="grid sm:grid-cols-2 gap-5">
                 <div className="space-y-2">
-                  <RequiredLabel htmlFor="agrement">
-                    Numéro d'agrément OECCA-CI
-                  </RequiredLabel>
+                  <RequiredLabel htmlFor="agrement">Numéro d'agrément OECCA-CI</RequiredLabel>
                   <Input
                     id="agrement"
                     name="agrement"
                     maxLength={60}
                     aria-invalid={!!errors.agrement}
-                    className={cn(errors.agrement && "border-destructive ring-1 ring-destructive/40")}
+                    className={cn(
+                      errors.agrement && "border-destructive ring-1 ring-destructive/40",
+                    )}
                   />
-                  {errors.agrement && (
-                    <p className="text-xs text-destructive">{errors.agrement}</p>
-                  )}
+                  {errors.agrement && <p className="text-xs text-destructive">{errors.agrement}</p>}
                 </div>
                 <div className="space-y-2">
                   <RequiredLabel htmlFor="email">Email professionnel</RequiredLabel>
@@ -354,9 +343,7 @@ function Page() {
                     aria-invalid={!!errors.email}
                     className={cn(errors.email && "border-destructive ring-1 ring-destructive/40")}
                   />
-                  {errors.email && (
-                    <p className="text-xs text-destructive">{errors.email}</p>
-                  )}
+                  {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
                 </div>
               </div>
 
@@ -371,15 +358,11 @@ function Page() {
                   aria-invalid={!!errors.mobile}
                   className={cn(errors.mobile && "border-destructive ring-1 ring-destructive/40")}
                 />
-                {errors.mobile && (
-                  <p className="text-xs text-destructive">{errors.mobile}</p>
-                )}
+                {errors.mobile && <p className="text-xs text-destructive">{errors.mobile}</p>}
               </div>
 
               <div className="space-y-3">
-                <RequiredLabel
-                  className={cn(errors.services && "text-destructive")}
-                >
+                <RequiredLabel className={cn(errors.services && "text-destructive")}>
                   Services proposés
                 </RequiredLabel>
                 <div className="grid sm:grid-cols-2 gap-3">
@@ -398,24 +381,18 @@ function Page() {
                         <Checkbox
                           id={id}
                           checked={checked}
-                          onCheckedChange={() =>
-                            toggle(s, services, setServices)
-                          }
+                          onCheckedChange={() => toggle(s, services, setServices)}
                         />
                         <span className="text-sm text-foreground">{s}</span>
                       </label>
                     );
                   })}
                 </div>
-                {errors.services && (
-                  <p className="text-xs text-destructive">{errors.services}</p>
-                )}
+                {errors.services && <p className="text-xs text-destructive">{errors.services}</p>}
               </div>
 
               <div className="space-y-3">
-                <RequiredLabel
-                  className={cn(errors.zones && "text-destructive")}
-                >
+                <RequiredLabel className={cn(errors.zones && "text-destructive")}>
                   Zones desservies
                 </RequiredLabel>
                 <div className="grid sm:grid-cols-2 gap-3">
@@ -441,9 +418,7 @@ function Page() {
                     );
                   })}
                 </div>
-                {errors.zones && (
-                  <p className="text-xs text-destructive">{errors.zones}</p>
-                )}
+                {errors.zones && <p className="text-xs text-destructive">{errors.zones}</p>}
               </div>
 
               <div className="flex items-start gap-3">
@@ -453,16 +428,14 @@ function Page() {
                   onCheckedChange={(v) => setConsent(v === true)}
                 />
                 <Label htmlFor="consent" className="text-sm font-normal leading-snug">
-                  J'accepte d'être contacté(e) par SoumissionComptable.com pour
-                  finaliser mon inscription{" "}
+                  J'accepte d'être contacté(e) par SoumissionComptable.com pour finaliser mon
+                  inscription{" "}
                   <span className="text-destructive" aria-hidden>
                     *
                   </span>
                 </Label>
               </div>
-              {errors.consent && (
-                <p className="text-xs text-destructive -mt-3">{errors.consent}</p>
-              )}
+              {errors.consent && <p className="text-xs text-destructive -mt-3">{errors.consent}</p>}
 
               <Button
                 type="submit"
@@ -476,7 +449,8 @@ function Page() {
 
               <p className="flex items-start gap-2 text-sm text-muted-foreground">
                 <CheckCircle2 className="h-4 w-4 text-secondary mt-0.5 shrink-0" />
-                Notre équipe vous contactera sous 48h pour valider votre agrément et finaliser votre accès à la plateforme.
+                Notre équipe vous contactera sous 48h pour valider votre agrément et finaliser votre
+                accès à la plateforme.
               </p>
             </form>
           </div>

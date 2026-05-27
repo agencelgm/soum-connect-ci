@@ -42,8 +42,7 @@ const ASIDE_COPY = {
     asideSat: "4.8/5 satisfaction",
     asideData: "Secure data",
     asideAccred: "OECCA-CI certified firms",
-    quote:
-      "\"I received 4 quotes within 24h. I saved 40% compared to my previous firm.\"",
+    quote: '"I received 4 quotes within 24h. I saved 40% compared to my previous firm."',
     quoteAuthor: "— Aya K., Abidjan",
   },
 } as const;
@@ -68,9 +67,7 @@ function Page() {
 
           <aside className="hidden lg:flex flex-col gap-5 sticky top-24">
             <div className="rounded-2xl bg-white border border-border shadow-sm p-5">
-              <p className="font-heading font-semibold text-primary mb-3">
-                {c.asideTitle}
-              </p>
+              <p className="font-heading font-semibold text-primary mb-3">{c.asideTitle}</p>
               <ul className="space-y-3 text-sm">
                 <li className="flex items-center gap-2">
                   <Star className="w-4 h-4 text-secondary" /> {c.asideSat}

@@ -7,15 +7,9 @@ import { buildPageHead } from "@/lib/seo";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { RelatedLinks } from "@/components/seo/RelatedLinks";
 import { getPageRelations } from "@/lib/page-relations";
-import {
-  ARTICLES_SORTED,
-  FILTERS,
-  type Article,
-  type Category,
-} from "@/lib/guides-data";
+import { ARTICLES_SORTED, FILTERS, type Article, type Category } from "@/lib/guides-data";
 
-const META_TITLE =
-  "Guides & Ressources | Création d'Entreprise & Comptabilité en CI";
+const META_TITLE = "Guides & Ressources | Création d'Entreprise & Comptabilité en CI";
 const META_DESC =
   "Tous nos guides sur la création d'entreprise, la comptabilité et la fiscalité en Côte d'Ivoire. Des ressources gratuites pour les entrepreneurs ivoiriens.";
 
@@ -48,9 +42,7 @@ function ArticleCard({ article, featured = false }: { article: Article; featured
           src={article.image}
           alt={article.title}
           loading="lazy"
-          className={`object-cover ${
-            featured ? "md:w-2/5 w-full h-56 md:h-auto" : "h-44 w-full"
-          }`}
+          className={`object-cover ${featured ? "md:w-2/5 w-full h-56 md:h-auto" : "h-44 w-full"}`}
         />
       ) : (
         <div
@@ -67,7 +59,11 @@ function ArticleCard({ article, featured = false }: { article: Article; featured
       <div className="p-6 flex-1 flex flex-col">
         <div className="flex flex-wrap gap-2 mb-3">
           {article.categories.map((c) => (
-            <Badge key={c} variant="secondary" className="bg-secondary/10 text-secondary hover:bg-secondary/20">
+            <Badge
+              key={c}
+              variant="secondary"
+              className="bg-secondary/10 text-secondary hover:bg-secondary/20"
+            >
               {c}
             </Badge>
           ))}
@@ -79,7 +75,9 @@ function ArticleCard({ article, featured = false }: { article: Article; featured
         >
           {article.title}
         </h3>
-        <p className={`mt-2 text-muted-foreground leading-relaxed ${featured ? "text-base" : "text-sm"}`}>
+        <p
+          className={`mt-2 text-muted-foreground leading-relaxed ${featured ? "text-base" : "text-sm"}`}
+        >
           {article.excerpt}
         </p>
         <div className="mt-4 flex items-center justify-between pt-4 border-t border-border">
@@ -138,7 +136,8 @@ function Page() {
             Guides & Ressources pour Entrepreneurs en Côte d'Ivoire
           </h1>
           <p className="mt-4 text-lg text-white/85 max-w-2xl mx-auto">
-            Tous nos guides pratiques sur la création d'entreprise, la comptabilité et la fiscalité en CI.
+            Tous nos guides pratiques sur la création d'entreprise, la comptabilité et la fiscalité
+            en CI.
           </p>
         </div>
       </section>
@@ -199,8 +198,8 @@ function Page() {
                 Derniers guides publiés
               </h2>
               <p className="mt-2 text-muted-foreground">
-                Les articles les plus récents pour rester à jour sur la
-                création d'entreprise, la comptabilité et la fiscalité en CI.
+                Les articles les plus récents pour rester à jour sur la création d'entreprise, la
+                comptabilité et la fiscalité en CI.
               </p>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

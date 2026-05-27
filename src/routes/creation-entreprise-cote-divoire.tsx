@@ -3,8 +3,7 @@ import { Building2, Calculator, Receipt, MapPin } from "lucide-react";
 import { ServicePage, type Faq, type RelatedService } from "@/components/service/ServicePage";
 import { buildPageHead, faqSchema, howToSchema } from "@/lib/seo";
 
-const META_TITLE =
-  "Création d'Entreprise Côte d'Ivoire — Cabinets Agréés CEPICI";
+const META_TITLE = "Création d'Entreprise Côte d'Ivoire — Cabinets Agréés CEPICI";
 const META_DESC =
   "Créez votre SARL, SA, EI ou GIE en Côte d'Ivoire via le CEPICI. Démarches, documents, coûts. 5 soumissions gratuites de cabinets agréés OECCA-CI.";
 
@@ -77,16 +76,12 @@ export const Route = createFileRoute("/creation-entreprise-cote-divoire")({
       ],
       altPath: "/en/company-registration-ivory-coast",
       extraSchemas: [
-        howToSchema(
-          "Comment créer une entreprise en Côte d'Ivoire via le CEPICI",
-          STEPS,
-          {
-            description:
-              "Guide étape par étape pour créer votre SARL, SA ou Entreprise Individuelle en Côte d'Ivoire via le CEPICI.",
-            totalTime: "P7D",
-            estimatedCost: { currency: "XOF", minValue: 150000, maxValue: 500000 },
-          },
-        ),
+        howToSchema("Comment créer une entreprise en Côte d'Ivoire via le CEPICI", STEPS, {
+          description:
+            "Guide étape par étape pour créer votre SARL, SA ou Entreprise Individuelle en Côte d'Ivoire via le CEPICI.",
+          totalTime: "P7D",
+          estimatedCost: { currency: "XOF", minValue: 150000, maxValue: 500000 },
+        }),
         faqSchema(FAQS),
       ],
     }),
@@ -109,21 +104,26 @@ function Page() {
       mainContent={
         <div className="space-y-10">
           <section aria-labelledby="why-cabinet">
-            <h2 id="why-cabinet" className="font-heading font-bold text-primary text-2xl md:text-3xl mb-3">
+            <h2
+              id="why-cabinet"
+              className="font-heading font-bold text-primary text-2xl md:text-3xl mb-3"
+            >
               Pourquoi faire appel à un cabinet comptable pour créer son entreprise ?
             </h2>
             <p className="text-foreground leading-relaxed">
-              Créer une entreprise en Côte d'Ivoire implique des démarches précises auprès
-              du CEPICI, de la DGI et du RCCM, dans le cadre juridique OHADA. Un cabinet
-              comptable agréé OECCA-CI sécurise le choix de la forme juridique, la rédaction
-              des statuts et le dépôt du dossier — vous évitant erreurs, allers-retours et
-              retards. C'est aussi la garantie de démarrer avec une comptabilité conforme
-              dès le premier mois d'activité.
+              Créer une entreprise en Côte d'Ivoire implique des démarches précises auprès du
+              CEPICI, de la DGI et du RCCM, dans le cadre juridique OHADA. Un cabinet comptable
+              agréé OECCA-CI sécurise le choix de la forme juridique, la rédaction des statuts et le
+              dépôt du dossier — vous évitant erreurs, allers-retours et retards. C'est aussi la
+              garantie de démarrer avec une comptabilité conforme dès le premier mois d'activité.
             </p>
           </section>
 
           <section aria-labelledby="howto">
-            <h2 id="howto" className="font-heading font-bold text-primary text-2xl md:text-3xl mb-4">
+            <h2
+              id="howto"
+              className="font-heading font-bold text-primary text-2xl md:text-3xl mb-4"
+            >
               Comment créer une entreprise en CI en 5 étapes
             </h2>
             <ol className="space-y-3">
@@ -142,7 +142,10 @@ function Page() {
           </section>
 
           <section aria-labelledby="compare">
-            <h2 id="compare" className="font-heading font-bold text-primary text-2xl md:text-3xl mb-4">
+            <h2
+              id="compare"
+              className="font-heading font-bold text-primary text-2xl md:text-3xl mb-4"
+            >
               SARL vs SA vs Entreprise Individuelle en Côte d'Ivoire
             </h2>
             <div className="overflow-x-auto rounded-xl border border-border">
@@ -212,10 +215,10 @@ function Page() {
               >
                 cepici.ci
               </a>
-              . Les honoraires d'un cabinet comptable pour vous accompagner dans la
-              création varient en général entre <strong>150 000 et 500 000 FCFA</strong>{" "}
-              selon la forme juridique choisie, la complexité du dossier et les options
-              (rédaction des statuts, dépôt RCCM, immatriculation DGI, domiciliation).
+              . Les honoraires d'un cabinet comptable pour vous accompagner dans la création varient
+              en général entre <strong>150 000 et 500 000 FCFA</strong> selon la forme juridique
+              choisie, la complexité du dossier et les options (rédaction des statuts, dépôt RCCM,
+              immatriculation DGI, domiciliation).
             </p>
           </section>
         </div>

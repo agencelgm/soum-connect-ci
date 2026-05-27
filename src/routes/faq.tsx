@@ -159,8 +159,7 @@ export const Route = createFileRoute("/faq")({
   head: () =>
     buildPageHead({
       path: "/faq",
-      title:
-        "FAQ — Questions sur les Cabinets Comptables en CI | SoumissionComptable.com",
+      title: "FAQ — Questions sur les Cabinets Comptables en CI | SoumissionComptable.com",
       description:
         "Toutes vos questions sur les cabinets comptables en Côte d'Ivoire, la création d'entreprise via CEPICI, les impôts et la comptabilité. Réponses claires et détaillées.",
       breadcrumb: [
@@ -184,7 +183,8 @@ function Page() {
             Questions Fréquentes sur les Cabinets Comptables en Côte d'Ivoire
           </h1>
           <p className="mt-4 text-lg text-white/85 max-w-2xl mx-auto">
-            Trouvez rapidement les réponses à vos questions sur nos services, la création d'entreprise, la fiscalité et la comptabilité en CI.
+            Trouvez rapidement les réponses à vos questions sur nos services, la création
+            d'entreprise, la fiscalité et la comptabilité en CI.
           </p>
           <div className="mt-8 max-w-xl mx-auto relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-white/60" />
@@ -223,9 +223,7 @@ function Page() {
           <div className="space-y-12 min-w-0">
             {categories.map((cat) => (
               <div key={cat.id} id={cat.id} className="scroll-mt-24">
-                <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-6">
-                  {cat.title}
-                </h2>
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-6">{cat.title}</h2>
                 <div className="w-full divide-y divide-border border-y border-border">
                   {cat.items.map((it, i) => (
                     <details
@@ -263,7 +261,8 @@ function Page() {
             Vous n'avez pas trouvé votre réponse ?
           </h2>
           <p className="mt-3 text-primary-foreground/90 max-w-xl mx-auto">
-            Notre équipe vous répond directement. Posez-nous votre question, nous revenons vers vous sous 24h.
+            Notre équipe vous répond directement. Posez-nous votre question, nous revenons vers vous
+            sous 24h.
           </p>
           <div className="mt-6">
             <Button asChild size="lg" variant="secondary">

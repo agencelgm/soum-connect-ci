@@ -60,10 +60,7 @@ export function ArticleLayout({
             </div>
 
             <div>
-              <LeadFormCard
-                source={`guide-${article.slug}`}
-                audienceHint={article.audience}
-              />
+              <LeadFormCard source={`guide-${article.slug}`} audienceHint={article.audience} />
             </div>
           </div>
         </div>
@@ -89,13 +86,17 @@ export function ArticleLayout({
               Accueil
             </Link>
           </li>
-          <li aria-hidden="true" className="shrink-0">/</li>
+          <li aria-hidden="true" className="shrink-0">
+            /
+          </li>
           <li className="shrink-0">
             <Link to="/guides" className="hover:text-primary">
               Blog
             </Link>
           </li>
-          <li aria-hidden="true" className="shrink-0">/</li>
+          <li aria-hidden="true" className="shrink-0">
+            /
+          </li>
           <li className="text-foreground truncate min-w-0 basis-full sm:basis-auto sm:flex-1">
             {article.title}
           </li>
@@ -165,9 +166,7 @@ export function ArticleLayout({
             <p className="text-sm font-semibold uppercase tracking-wide text-secondary mb-1.5">
               En bref
             </p>
-            <p className="text-base text-foreground/90 leading-relaxed m-0">
-              {summary}
-            </p>
+            <p className="text-base text-foreground/90 leading-relaxed m-0">{summary}</p>
           </aside>
 
           <div itemProp="articleBody">{children}</div>

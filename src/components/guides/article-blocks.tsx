@@ -13,15 +13,10 @@ export function ArticleSection({
 }) {
   return (
     <section className="mt-10 first:mt-0">
-      <h2
-        id={id}
-        className="font-heading font-bold text-primary text-2xl md:text-3xl scroll-mt-24"
-      >
+      <h2 id={id} className="font-heading font-bold text-primary text-2xl md:text-3xl scroll-mt-24">
         {title}
       </h2>
-      <div className="mt-4 space-y-4 text-foreground/90 leading-relaxed">
-        {children}
-      </div>
+      <div className="mt-4 space-y-4 text-foreground/90 leading-relaxed">{children}</div>
     </section>
   );
 }
@@ -46,11 +41,7 @@ export function ArticleTable({
         <thead className="bg-primary text-white">
           <tr>
             {headers.map((h) => (
-              <th
-                key={h}
-                scope="col"
-                className="px-4 py-3 text-left font-semibold"
-              >
+              <th key={h} scope="col" className="px-4 py-3 text-left font-semibold">
                 {h}
               </th>
             ))}
@@ -58,10 +49,7 @@ export function ArticleTable({
         </thead>
         <tbody className="bg-white">
           {rows.map((row, i) => (
-            <tr
-              key={i}
-              className="border-t border-border even:bg-[#F8FAFC]"
-            >
+            <tr key={i} className="border-t border-border even:bg-[#F8FAFC]">
               {row.map((cell, j) => (
                 <td key={j} className="px-4 py-3 align-top">
                   {cell}
@@ -77,10 +65,7 @@ export function ArticleTable({
 
 type CalloutVariant = "info" | "warning" | "tip";
 
-const calloutStyles: Record<
-  CalloutVariant,
-  { wrap: string; icon: ReactNode; label: string }
-> = {
+const calloutStyles: Record<CalloutVariant, { wrap: string; icon: ReactNode; label: string }> = {
   info: {
     wrap: "border-primary/30 bg-primary/5 text-primary",
     icon: <Info className="h-5 w-5 shrink-0" />,
@@ -109,9 +94,7 @@ export function ArticleCallout({
 }) {
   const s = calloutStyles[variant];
   return (
-    <aside
-      className={`my-6 flex gap-3 rounded-xl border-l-4 ${s.wrap} p-4 md:p-5`}
-    >
+    <aside className={`my-6 flex gap-3 rounded-xl border-l-4 ${s.wrap} p-4 md:p-5`}>
       <div className="pt-0.5">{s.icon}</div>
       <div className="text-sm md:text-base">
         <p className="font-semibold">{title ?? s.label}</p>
@@ -121,13 +104,7 @@ export function ArticleCallout({
   );
 }
 
-export function ArticleList({
-  items,
-  ordered = false,
-}: {
-  items: ReactNode[];
-  ordered?: boolean;
-}) {
+export function ArticleList({ items, ordered = false }: { items: ReactNode[]; ordered?: boolean }) {
   const Tag = ordered ? "ol" : "ul";
   return (
     <Tag

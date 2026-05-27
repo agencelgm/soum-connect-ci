@@ -60,9 +60,7 @@ export function AboutPage() {
 
       <section className="container-app py-16 md:py-20">
         <div className="max-w-3xl mx-auto">
-          <h2 className="font-heading font-bold text-primary text-2xl md:text-3xl">
-            {a.whoTitle}
-          </h2>
+          <h2 className="font-heading font-bold text-primary text-2xl md:text-3xl">{a.whoTitle}</h2>
           <div className="mt-5 space-y-4 text-foreground leading-relaxed">
             <p>
               <strong>{a.whoP1Strong}</strong>
@@ -93,12 +91,8 @@ export function AboutPage() {
                   <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-secondary/10 text-secondary mb-4">
                     <Icon className="h-6 w-6" />
                   </div>
-                  <h3 className="font-heading font-semibold text-primary text-lg">
-                    {p.title}
-                  </h3>
-                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                    {p.text}
-                  </p>
+                  <h3 className="font-heading font-semibold text-primary text-lg">{p.title}</h3>
+                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{p.text}</p>
                 </div>
               );
             })}
@@ -125,9 +119,7 @@ export function AboutPage() {
                   <Icon className="h-6 w-6" />
                 </div>
                 <h3 className="font-heading font-semibold text-lg">{v.title}</h3>
-                <p className="mt-2 text-sm text-primary-foreground/85 leading-relaxed">
-                  {v.text}
-                </p>
+                <p className="mt-2 text-sm text-primary-foreground/85 leading-relaxed">{v.text}</p>
               </div>
             );
           })}
@@ -177,9 +169,7 @@ export function AboutPage() {
                 <p className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">
                   {c.label}
                 </p>
-                <p className="mt-2 text-foreground font-medium break-words">
-                  {c.value}
-                </p>
+                <p className="mt-2 text-foreground font-medium break-words">{c.value}</p>
               </>
             );
             return c.href ? (
@@ -206,9 +196,7 @@ export function AboutPage() {
 
       <section className="bg-secondary">
         <div className="container-app py-12 md:py-16 text-center">
-          <h2 className="font-heading font-bold text-white text-2xl md:text-3xl">
-            {a.ctaTitle}
-          </h2>
+          <h2 className="font-heading font-bold text-white text-2xl md:text-3xl">{a.ctaTitle}</h2>
           <p className="mt-3 text-white/90 max-w-xl mx-auto">{a.ctaSub}</p>
           <div className="mt-6">
             <Button

@@ -5,9 +5,12 @@ import { listMarketplace, unlockLead, myUnlockedLeads } from "@/lib/marketplace.
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useState } from "react";
+import { sanitizeLeadDetails } from "@/lib/lead-details";
 
 export const Route = createFileRoute("/_authenticated/marketplace")({
-  head: () => ({ meta: [{ title: "Marketplace de leads" }, { name: "robots", content: "noindex,nofollow" }] }),
+  head: () => ({
+    meta: [{ title: "Marketplace de leads" }, { name: "robots", content: "noindex,nofollow" }],
+  }),
   component: MarketplacePage,
 });
 
@@ -24,7 +27,9 @@ function MarketplacePage() {
     return (
       <div className="rounded-lg border bg-card p-6">
         <p>Aucun compte partenaire approuvé.</p>
-        <Button asChild className="mt-3"><Link to="/espace-partenaire">Retour</Link></Button>
+        <Button asChild className="mt-3">
+          <Link to="/espace-partenaire">Retour</Link>
+        </Button>
       </div>
     );
   }
@@ -32,7 +37,9 @@ function MarketplacePage() {
     return (
       <div className="rounded-lg border border-amber-200 bg-amber-50 p-6">
         <p>Votre compte n'est pas encore activé. Vous ne pouvez pas accéder à la marketplace.</p>
-        <Button asChild variant="outline" className="mt-3"><Link to="/espace-partenaire">Retour</Link></Button>
+        <Button asChild variant="outline" className="mt-3">
+          <Link to="/espace-partenaire">Retour</Link>
+        </Button>
       </div>
     );
   }
@@ -48,10 +55,8 @@ function MarketplacePage() {
           <div className="rounded-lg border bg-card px-4 py-3">
             <div className="text-xs uppercase text-muted-foreground">Crédits</div>
             <div className="text-2xl font-bold">{data.partner.credits_balance}</div>
+            <div className="text-xs text-muted-foreground">Ajoutés par l'administrateur</div>
           </div>
-          <Button asChild variant={data.partner.credits_balance < 3 ? "default" : "outline"}>
-            <Link to="/recharger">Recharger</Link>
-          </Button>
         </div>
       </div>
 
@@ -59,17 +64,23 @@ function MarketplacePage() {
         <button
           className={`px-4 py-2 text-sm font-medium border-b-2 ${tab === "available" ? "border-primary text-primary" : "border-transparent text-muted-foreground"}`}
           onClick={() => setTab("available")}
-        >Leads disponibles ({data.leads.length})</button>
+        >
+          Leads disponibles ({data.leads.length})
+        </button>
         <button
           className={`px-4 py-2 text-sm font-medium border-b-2 ${tab === "mine" ? "border-primary text-primary" : "border-transparent text-muted-foreground"}`}
           onClick={() => setTab("mine")}
-        >Mes leads débloqués ({mine?.items.length ?? 0})</button>
+        >
+          Mes leads débloqués ({mine?.items.length ?? 0})
+        </button>
       </div>
 
       {tab === "available" && (
         <div className="grid gap-4 md:grid-cols-2">
           {data.leads.length === 0 && (
-            <p className="text-muted-foreground col-span-2">Aucun lead disponible pour le moment.</p>
+            <p className="text-muted-foreground col-span-2">
+              Aucun lead disponible pour le moment.
+            </p>
           )}
           {data.leads.map((lead) => (
             <LeadCard
@@ -104,20 +115,34 @@ type Lead = {
   legal_form: string | null;
   budget: string | null;
   summary: string | null;
+  non_contact_details: unknown;
   unlock_count: number;
   max_unlocks: number;
   published_at: string;
 };
 
-function LeadCard({ lead, alreadyUnlocked, credits }: { lead: Lead; alreadyUnlocked: boolean; credits: number }) {
+function LeadCard({
+  lead,
+  alreadyUnlocked,
+  credits,
+}: {
+  lead: Lead;
+  alreadyUnlocked: boolean;
+  credits: number;
+}) {
   const qc = useQueryClient();
   const unlock = useServerFn(unlockLead);
-  const [revealed, setRevealed] = useState<Record<string, string | number | boolean | null> | null>(null);
+  const [revealed, setRevealed] = useState<Record<string, string | number | boolean | null> | null>(
+    null,
+  );
+  const details = sanitizeLeadDetails(lead.non_contact_details);
   const mut = useMutation({
     mutationFn: () => unlock({ data: { publication_id: lead.id } }),
     onSuccess: (res) => {
       setRevealed(res.prospect);
-      toast.success(res.already_unlocked ? "Lead déjà débloqué" : "Lead débloqué — 1 crédit utilisé");
+      toast.success(
+        res.already_unlocked ? "Lead déjà débloqué" : "Lead débloqué — 1 crédit utilisé",
+      );
       qc.invalidateQueries({ queryKey: ["marketplace"] });
       qc.invalidateQueries({ queryKey: ["my-unlocks"] });
     },
@@ -132,20 +157,58 @@ function LeadCard({ lead, alreadyUnlocked, credits }: { lead: Lead; alreadyUnloc
         <div>
           <h3 className="font-semibold">{lead.service || "Prestation à définir"}</h3>
           <p className="text-sm text-muted-foreground">
-            {lead.city || "Ville non précisée"} · {lead.audience} · {lead.legal_form || "Forme non précisée"}
+            {lead.city || "Ville non précisée"} · {lead.audience} ·{" "}
+            {lead.legal_form || "Forme non précisée"}
           </p>
         </div>
-        <span className="text-xs rounded-full bg-muted px-2 py-1 whitespace-nowrap">{remaining} place{remaining > 1 ? "s" : ""}</span>
+        <span className="text-xs rounded-full bg-muted px-2 py-1 whitespace-nowrap">
+          {remaining} place{remaining > 1 ? "s" : ""}
+        </span>
       </div>
-      {lead.budget && <p className="text-sm"><strong>Budget :</strong> {lead.budget}</p>}
+      {lead.budget && (
+        <p className="text-sm">
+          <strong>Budget :</strong> {lead.budget}
+        </p>
+      )}
       {lead.summary && <p className="text-sm text-muted-foreground line-clamp-3">{lead.summary}</p>}
+      {details.length > 0 && (
+        <div className="grid gap-2 sm:grid-cols-2">
+          {details.map((detail) => (
+            <p key={detail.key} className="rounded-md bg-muted px-3 py-2 text-xs">
+              <strong>{detail.label} :</strong> {detail.value}
+            </p>
+          ))}
+        </div>
+      )}
 
       {revealed ? (
         <div className="rounded-md border border-emerald-200 bg-emerald-50 p-3 text-sm space-y-1">
-          {revealed.full_name && <p><strong>Nom :</strong> {String(revealed.full_name)}</p>}
-          {revealed.company_name && <p><strong>Entreprise :</strong> {String(revealed.company_name)}</p>}
-          {revealed.email && <p><strong>Email :</strong> <a className="text-primary underline" href={`mailto:${revealed.email}`}>{String(revealed.email)}</a></p>}
-          {revealed.phone && <p><strong>Téléphone :</strong> <a className="text-primary underline" href={`tel:${revealed.phone}`}>{String(revealed.phone)}</a></p>}
+          {revealed.full_name && (
+            <p>
+              <strong>Nom :</strong> {String(revealed.full_name)}
+            </p>
+          )}
+          {revealed.company_name && (
+            <p>
+              <strong>Entreprise :</strong> {String(revealed.company_name)}
+            </p>
+          )}
+          {revealed.email && (
+            <p>
+              <strong>Email :</strong>{" "}
+              <a className="text-primary underline" href={`mailto:${revealed.email}`}>
+                {String(revealed.email)}
+              </a>
+            </p>
+          )}
+          {revealed.phone && (
+            <p>
+              <strong>Téléphone :</strong>{" "}
+              <a className="text-primary underline" href={`tel:${revealed.phone}`}>
+                {String(revealed.phone)}
+              </a>
+            </p>
+          )}
           {revealed.message && <p className="pt-2 italic">"{String(revealed.message)}"</p>}
         </div>
       ) : alreadyUnlocked ? (
@@ -153,8 +216,8 @@ function LeadCard({ lead, alreadyUnlocked, credits }: { lead: Lead; alreadyUnloc
           {mut.isPending ? "…" : "Afficher les coordonnées"}
         </Button>
       ) : credits < 1 ? (
-        <Button asChild variant="default">
-          <Link to="/recharger">Recharger pour débloquer</Link>
+        <Button variant="secondary" disabled>
+          Crédits insuffisants — contactez l'administrateur
         </Button>
       ) : (
         <Button onClick={() => mut.mutate()} disabled={mut.isPending}>
@@ -185,16 +248,35 @@ function UnlockedRow({ item }: { item: UnlockedItem }) {
     <div className="rounded-lg border bg-card p-4 text-sm">
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
-          <p className="font-semibold">{item.service || "Lead"} — {item.city || "—"}</p>
-          <p className="text-xs text-muted-foreground">Débloqué le {new Date(item.unlocked_at).toLocaleString("fr-FR")}</p>
+          <p className="font-semibold">
+            {item.service || "Lead"} — {item.city || "—"}
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Débloqué le {new Date(item.unlocked_at).toLocaleString("fr-FR")}
+          </p>
         </div>
         <div className="text-right">
-          {item.prospect?.email && <a href={`mailto:${item.prospect.email}`} className="text-primary underline block">{item.prospect.email}</a>}
-          {item.prospect?.phone && <a href={`tel:${item.prospect.phone}`} className="text-primary underline block">{item.prospect.phone}</a>}
+          {item.prospect?.email && (
+            <a href={`mailto:${item.prospect.email}`} className="text-primary underline block">
+              {item.prospect.email}
+            </a>
+          )}
+          {item.prospect?.phone && (
+            <a href={`tel:${item.prospect.phone}`} className="text-primary underline block">
+              {item.prospect.phone}
+            </a>
+          )}
         </div>
       </div>
-      {item.prospect?.full_name && <p className="mt-2"><strong>{item.prospect.full_name}</strong>{item.prospect.company_name ? ` · ${item.prospect.company_name}` : ""}</p>}
-      {item.prospect?.message && <p className="mt-1 italic text-muted-foreground">"{item.prospect.message}"</p>}
+      {item.prospect?.full_name && (
+        <p className="mt-2">
+          <strong>{item.prospect.full_name}</strong>
+          {item.prospect.company_name ? ` · ${item.prospect.company_name}` : ""}
+        </p>
+      )}
+      {item.prospect?.message && (
+        <p className="mt-1 italic text-muted-foreground">"{item.prospect.message}"</p>
+      )}
     </div>
   );
 }

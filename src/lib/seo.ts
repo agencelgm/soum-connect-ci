@@ -10,11 +10,7 @@ export const DEFAULT_OG_IMAGE = "/og-image.png";
  * en évitant de couper au milieu d'un mot. Ajoute le suffixe de marque si
  * la place le permet.
  */
-export function truncateTitle(
-  title: string,
-  suffix: string = ` | ${SITE_NAME}`,
-  max = 60,
-): string {
+export function truncateTitle(title: string, suffix: string = ` | ${SITE_NAME}`, max = 60): string {
   const full = `${title}${suffix}`;
   if (full.length <= max) return full;
   if (title.length <= max) return title;
@@ -81,16 +77,16 @@ export const LOCAL_BUSINESS_SCHEMA: Schema = {
 
 function websiteSchema(lang: Lang): Schema {
   return {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  name: SITE_NAME,
-  url: SITE_URL,
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: SITE_NAME,
+    url: SITE_URL,
     inLanguage: lang === "en" ? "en" : "fr-CI",
-  potentialAction: {
-    "@type": "SearchAction",
-    target: `${SITE_URL}/?q={search_term_string}`,
-    "query-input": "required name=search_term_string",
-  },
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${SITE_URL}/?q={search_term_string}`,
+      "query-input": "required name=search_term_string",
+    },
   };
 }
 
@@ -173,8 +169,7 @@ export function buildPageHead({
 
   const schemas: Schema[] = [ORG_SCHEMA];
   if (includeWebSite) schemas.push(websiteSchema(lang));
-  if (breadcrumb && breadcrumb.length > 0)
-    schemas.push(breadcrumbSchema(breadcrumb));
+  if (breadcrumb && breadcrumb.length > 0) schemas.push(breadcrumbSchema(breadcrumb));
   schemas.push(...extraSchemas);
 
   const scripts: ScriptEntry[] = schemas.map((s) => ({

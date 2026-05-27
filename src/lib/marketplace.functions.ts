@@ -32,10 +32,22 @@ export const listMarketplace = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const partner = await getCallerPartner(context.userId);
     if (!partner) return { partner: null, leads: [], unlocked_ids: [] };
+    const partnerSummary = {
+      id: partner.id,
+      status: partner.status,
+      credits_balance: partner.credits_balance,
+      cabinet_name: partner.cabinet_name,
+    };
+
+    if (partner.status !== "approved") {
+      return { partner: partnerSummary, leads: [], unlocked_ids: [] };
+    }
 
     const { data: pubs, error } = await supabaseAdmin
       .from("lead_publications")
-      .select("id, service, city, audience, legal_form, budget, summary, unlock_count, max_unlocks, is_active, published_at")
+      .select(
+        "id, service, city, audience, legal_form, budget, summary, non_contact_details, unlock_count, max_unlocks, is_active, published_at",
+      )
       .eq("is_active", true)
       .order("published_at", { ascending: false })
       .limit(100);
@@ -48,7 +60,7 @@ export const listMarketplace = createServerFn({ method: "GET" })
     const unlocked_ids = (unlocks ?? []).map((u) => u.publication_id);
 
     return {
-      partner: { id: partner.id, status: partner.status, credits_balance: partner.credits_balance, cabinet_name: partner.cabinet_name },
+      partner: partnerSummary,
       leads: pubs ?? [],
       unlocked_ids,
     };
@@ -59,7 +71,9 @@ export const unlockLead = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => z.object({ publication_id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
-    const { data: result, error } = await context.supabase.rpc("unlock_lead", { _publication_id: data.publication_id });
+    const { data: result, error } = await context.supabase.rpc("unlock_lead", {
+      _publication_id: data.publication_id,
+    });
     if (error) {
       const map: Record<string, string> = {
         partner_not_found: "Aucun compte partenaire trouvé.",
@@ -68,6 +82,9 @@ export const unlockLead = createServerFn({ method: "POST" })
         publication_not_found: "Lead introuvable.",
         publication_inactive: "Ce lead n'est plus disponible.",
         publication_full: "Ce lead a atteint le nombre maximum de déblocages.",
+        prospect_rejected: "Ce prospect a été rejeté.",
+        prospect_already_published: "Ce prospect est déjà publié.",
+        prospect_already_has_publication: "Ce prospect est déjà publié.",
       };
       throw new Error(map[error.message] ?? error.message);
     }
@@ -80,7 +97,11 @@ export const unlockLead = createServerFn({ method: "POST" })
         await emitPartnerEvent(partner, balance === 0 ? "zero_credits" : "low_credits");
       }
     }
-    const r = result as { already_unlocked: boolean; credits_balance: number; prospect: Record<string, string | number | boolean | null> };
+    const r = result as {
+      already_unlocked: boolean;
+      credits_balance: number;
+      prospect: Record<string, string | number | boolean | null>;
+    };
     return r;
   });
 
@@ -92,7 +113,9 @@ export const myUnlockedLeads = createServerFn({ method: "GET" })
     if (!partner) return { items: [] };
     const { data, error } = await supabaseAdmin
       .from("lead_unlocks")
-      .select("id, unlocked_at, credits_spent, publication_id, lead_publications!inner(prospect_id, service, city)")
+      .select(
+        "id, unlocked_at, credits_spent, publication_id, lead_publications!inner(prospect_id, service, city)",
+      )
       .eq("partner_id", partner.id)
       .order("unlocked_at", { ascending: false });
     if (error) throw new Error(error.message);
@@ -108,7 +131,11 @@ export const myUnlockedLeads = createServerFn({ method: "GET" })
     const byId = new Map((prospects ?? []).map((p) => [p.id, p]));
     return {
       items: items.map((i) => {
-        const pub = i.lead_publications as { prospect_id: string; service: string | null; city: string | null };
+        const pub = i.lead_publications as {
+          prospect_id: string;
+          service: string | null;
+          city: string | null;
+        };
         return {
           id: i.id,
           unlocked_at: i.unlocked_at,
@@ -125,11 +152,13 @@ export const myUnlockedLeads = createServerFn({ method: "GET" })
 export const publishProspect = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) =>
-    z.object({
-      prospect_id: z.string().uuid(),
-      summary: z.string().trim().min(10).max(2000).optional(),
-      max_unlocks: z.number().int().min(1).max(20).default(6),
-    }).parse(input),
+    z
+      .object({
+        prospect_id: z.string().uuid(),
+        summary: z.string().trim().min(10).max(2000).optional(),
+        max_unlocks: z.number().int().min(1).max(20).default(6),
+      })
+      .parse(input),
   )
   .handler(async ({ data, context }) => {
     await assertStaff(context.userId);
@@ -138,7 +167,16 @@ export const publishProspect = createServerFn({ method: "POST" })
       _summary: data.summary ?? undefined,
       _max_unlocks: data.max_unlocks,
     });
-    if (error) throw new Error(error.message);
+    if (error) {
+      const map: Record<string, string> = {
+        forbidden: "Action réservée à l'équipe.",
+        prospect_not_found: "Prospect introuvable.",
+        prospect_rejected: "Un prospect rejeté ne peut pas être publié.",
+        prospect_already_published: "Ce prospect est déjà publié.",
+        prospect_already_has_publication: "Ce prospect a déjà une publication.",
+      };
+      throw new Error(map[error.message] ?? error.message);
+    }
     return { publication_id: pubId as string };
   });
 

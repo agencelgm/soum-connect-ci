@@ -12,33 +12,30 @@ export function CabinetComptableCocodyAbidjanContent() {
     <>
       <ArticleCallout variant="info" title="En bref">
         <p>
-          Cocody est l&apos;un des quartiers résidentiels et tertiaires les plus
-          dynamiques d&apos;Abidjan. Riviera, Deux-Plateaux, Angré et le Plateau-Dokui
-          y concentrent une forte population de PME, ONG, professions libérales,
-          cliniques privées et startups. Les cabinets comptables agréés OECCA-CI
-          de Cocody offrent un excellent rapport qualité-prix face à ceux du
-          Plateau, pour des honoraires généralement inférieurs de 20 à 30 %.
+          Cocody est l&apos;un des quartiers résidentiels et tertiaires les plus dynamiques
+          d&apos;Abidjan. Riviera, Deux-Plateaux, Angré et le Plateau-Dokui y concentrent une forte
+          population de PME, ONG, professions libérales, cliniques privées et startups. Les cabinets
+          comptables agréés OECCA-CI de Cocody offrent un excellent rapport qualité-prix face à ceux
+          du Plateau, pour des honoraires généralement inférieurs de 20 à 30 %.
         </p>
       </ArticleCallout>
 
       <ArticleSection title="Pourquoi choisir un cabinet comptable à Cocody ?">
         <p>
-          <strong>Cocody</strong> est la commune la plus peuplée du Grand Abidjan
-          (plus de 700 000 habitants) et le second pôle économique de la ville
-          après le Plateau. Son tissu économique se caractérise par une forte
-          densité de PME de services (conseil, communication, IT), de
-          professions libérales (médecins, avocats, architectes), de cliniques
-          et d&apos;écoles privées, ainsi que d&apos;ONG internationales installées
-          en Riviera Golf et à la Riviera 2 Plateaux.
+          <strong>Cocody</strong> est la commune la plus peuplée du Grand Abidjan (plus de 700 000
+          habitants) et le second pôle économique de la ville après le Plateau. Son tissu économique
+          se caractérise par une forte densité de PME de services (conseil, communication, IT), de
+          professions libérales (médecins, avocats, architectes), de cliniques et d&apos;écoles
+          privées, ainsi que d&apos;ONG internationales installées en Riviera Golf et à la Riviera 2
+          Plateaux.
         </p>
         <p>
-          Les sous-quartiers les plus actifs pour l&apos;activité comptable sont
-          la <strong>Riviera</strong> (Palmeraie, Bonoumin, Faya), les{" "}
-          <strong>Deux-Plateaux</strong> (Vallons, ENA, Aghien), <strong>Angré</strong>{" "}
-          (8e, 9e tranche) et le <strong>Plateau-Dokui</strong>. La proximité
-          avec le siège du <strong>CEPICI</strong> à la Riviera Golf et le centre
-          des impôts <strong>DGE/CME Cocody</strong> en fait un point d&apos;ancrage
-          stratégique pour la gestion fiscale.
+          Les sous-quartiers les plus actifs pour l&apos;activité comptable sont la{" "}
+          <strong>Riviera</strong> (Palmeraie, Bonoumin, Faya), les <strong>Deux-Plateaux</strong>{" "}
+          (Vallons, ENA, Aghien), <strong>Angré</strong> (8e, 9e tranche) et le{" "}
+          <strong>Plateau-Dokui</strong>. La proximité avec le siège du <strong>CEPICI</strong> à la
+          Riviera Golf et le centre des impôts <strong>DGE/CME Cocody</strong> en fait un point
+          d&apos;ancrage stratégique pour la gestion fiscale.
         </p>
       </ArticleSection>
 
@@ -59,10 +56,18 @@ export function CabinetComptableCocodyAbidjanContent() {
         <ArticleTable
           headers={["Administration", "Localisation", "Utilité"]}
           rows={[
-            ["CEPICI (siège)", "Riviera Golf, Cocody", "Création RCCM, IDU, modifications statutaires"],
+            [
+              "CEPICI (siège)",
+              "Riviera Golf, Cocody",
+              "Création RCCM, IDU, modifications statutaires",
+            ],
             ["CME Cocody (DGI)", "Cocody Centre", "Déclarations TVA, IS, ITS pour PME"],
             ["DGE", "Plateau (15 min en heures creuses)", "Grandes entreprises (CA > 3 Mds FCFA)"],
-            ["CNPS agence Cocody", "Angré 8e tranche", "Immatriculation employeur, cotisations sociales"],
+            [
+              "CNPS agence Cocody",
+              "Angré 8e tranche",
+              "Immatriculation employeur, cotisations sociales",
+            ],
             ["OECCA-CI (siège)", "Plateau", "Vérification de l'agrément des experts-comptables"],
           ]}
         />
@@ -79,20 +84,35 @@ export function CabinetComptableCocodyAbidjanContent() {
           ]}
         />
         <p className="mt-4">
-          Les écarts de prix s&apos;expliquent par la structure de coûts : un
-          cabinet du Plateau supporte des loyers de bureau 2 à 3 fois supérieurs
-          à un cabinet équivalent installé à Cocody Angré ou Riviera Palmeraie.
+          Les écarts de prix s&apos;expliquent par la structure de coûts : un cabinet du Plateau
+          supporte des loyers de bureau 2 à 3 fois supérieurs à un cabinet équivalent installé à
+          Cocody Angré ou Riviera Palmeraie.
         </p>
       </ArticleSection>
 
       <ArticleSection title="Comment choisir le bon cabinet comptable à Cocody ?">
         <ArticleList
           items={[
-            <><strong>Vérifiez l&apos;agrément OECCA-CI</strong> sur oecca-ci.org — sans agrément, aucune DSF signée n&apos;est recevable.</>,
-            <><strong>Privilégiez un cabinet implanté dans votre sous-quartier</strong> (Riviera, Angré, 2 Plateaux) pour limiter les déplacements.</>,
-            <><strong>Demandez 3 références clients</strong> dans votre secteur d&apos;activité (santé, ONG, services).</>,
-            <><strong>Exigez un devis détaillé</strong> distinguant tenue comptable, déclarations fiscales, DSF et conseil.</>,
-            <><strong>Comparez au moins 3 propositions</strong> avant de signer une lettre de mission annuelle.</>,
+            <>
+              <strong>Vérifiez l&apos;agrément OECCA-CI</strong> sur oecca-ci.org — sans agrément,
+              aucune DSF signée n&apos;est recevable.
+            </>,
+            <>
+              <strong>Privilégiez un cabinet implanté dans votre sous-quartier</strong> (Riviera,
+              Angré, 2 Plateaux) pour limiter les déplacements.
+            </>,
+            <>
+              <strong>Demandez 3 références clients</strong> dans votre secteur d&apos;activité
+              (santé, ONG, services).
+            </>,
+            <>
+              <strong>Exigez un devis détaillé</strong> distinguant tenue comptable, déclarations
+              fiscales, DSF et conseil.
+            </>,
+            <>
+              <strong>Comparez au moins 3 propositions</strong> avant de signer une lettre de
+              mission annuelle.
+            </>,
           ]}
         />
       </ArticleSection>
@@ -104,10 +124,9 @@ export function CabinetComptableCocodyAbidjanContent() {
               Où se trouve le centre des impôts DGI le plus proche de Cocody ?
             </h3>
             <p className="mt-2">
-              Le <strong>Centre Moyennes Entreprises (CME) Cocody</strong> est
-              situé à Cocody Centre, à proximité du carrefour Saint-Jean. Les
-              grandes entreprises dépendent de la <strong>DGE</strong> au
-              Plateau. Votre cabinet comptable connaît votre centre de
+              Le <strong>Centre Moyennes Entreprises (CME) Cocody</strong> est situé à Cocody
+              Centre, à proximité du carrefour Saint-Jean. Les grandes entreprises dépendent de la{" "}
+              <strong>DGE</strong> au Plateau. Votre cabinet comptable connaît votre centre de
               rattachement selon votre chiffre d&apos;affaires.
             </p>
           </div>
@@ -116,9 +135,9 @@ export function CabinetComptableCocodyAbidjanContent() {
               Y a-t-il beaucoup de cabinets agréés OECCA-CI à Cocody ?
             </h3>
             <p className="mt-2">
-              Oui. Cocody est, après le Plateau, la commune qui compte le plus
-              grand nombre de cabinets d&apos;expertise comptable agréés. La
-              majorité sont implantés en Riviera, aux Deux-Plateaux et à Angré.
+              Oui. Cocody est, après le Plateau, la commune qui compte le plus grand nombre de
+              cabinets d&apos;expertise comptable agréés. La majorité sont implantés en Riviera, aux
+              Deux-Plateaux et à Angré.
             </p>
           </div>
           <div>
@@ -126,10 +145,9 @@ export function CabinetComptableCocodyAbidjanContent() {
               Un cabinet de Cocody peut-il gérer une entreprise basée à Yopougon ?
             </h3>
             <p className="mt-2">
-              Oui, sans difficulté. La dématérialisation des factures et la
-              télédéclaration sur le portail e-impôts de la DGI permettent à un
-              cabinet de Cocody de suivre des clients dans tout le Grand
-              Abidjan, voire à l&apos;intérieur du pays.
+              Oui, sans difficulté. La dématérialisation des factures et la télédéclaration sur le
+              portail e-impôts de la DGI permettent à un cabinet de Cocody de suivre des clients
+              dans tout le Grand Abidjan, voire à l&apos;intérieur du pays.
             </p>
           </div>
           <div>
@@ -137,9 +155,9 @@ export function CabinetComptableCocodyAbidjanContent() {
               Combien coûte un comptable à Cocody pour une SARL débutante ?
             </h3>
             <p className="mt-2">
-              Comptez entre <strong>80 000 et 150 000 FCFA par mois</strong>{" "}
-              pour une SARL réalisant moins de 100 millions FCFA de chiffre
-              d&apos;affaires, hors DSF annuelle facturée séparément.
+              Comptez entre <strong>80 000 et 150 000 FCFA par mois</strong> pour une SARL réalisant
+              moins de 100 millions FCFA de chiffre d&apos;affaires, hors DSF annuelle facturée
+              séparément.
             </p>
           </div>
         </div>
@@ -148,9 +166,32 @@ export function CabinetComptableCocodyAbidjanContent() {
       <ArticleSection title="Voir aussi">
         <ArticleList
           items={[
-            <><Link to="/cabinet-comptable-abidjan" className="text-primary underline">Cabinet comptable Abidjan : guide complet</Link> — page hub de référence.</>,
-            <><Link to="/guides/$slug" params={{ slug: "cabinet-comptable-plateau-abidjan" }} className="text-primary underline">Cabinet comptable Plateau Abidjan</Link> — alternative pour grands comptes.</>,
-            <><Link to="/guides/$slug" params={{ slug: "cabinet-comptable-angre-abidjan" }} className="text-primary underline">Cabinet comptable Angré Abidjan</Link> — sous-quartier voisin.</>,
+            <>
+              <Link to="/cabinet-comptable-abidjan" className="text-primary underline">
+                Cabinet comptable Abidjan : guide complet
+              </Link>{" "}
+              — page hub de référence.
+            </>,
+            <>
+              <Link
+                to="/guides/$slug"
+                params={{ slug: "cabinet-comptable-plateau-abidjan" }}
+                className="text-primary underline"
+              >
+                Cabinet comptable Plateau Abidjan
+              </Link>{" "}
+              — alternative pour grands comptes.
+            </>,
+            <>
+              <Link
+                to="/guides/$slug"
+                params={{ slug: "cabinet-comptable-angre-abidjan" }}
+                className="text-primary underline"
+              >
+                Cabinet comptable Angré Abidjan
+              </Link>{" "}
+              — sous-quartier voisin.
+            </>,
           ]}
         />
       </ArticleSection>

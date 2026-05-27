@@ -11,7 +11,12 @@ const ContactSchema = z.object({
   submitted_at: z.string().max(40).optional().default(""),
   nom: z.string().trim().min(2).max(100),
   email: z.string().trim().email().max(255),
-  mobile: z.string().trim().min(6).max(32).regex(/^[+0-9 ]+$/),
+  mobile: z
+    .string()
+    .trim()
+    .min(6)
+    .max(32)
+    .regex(/^[+0-9 ]+$/),
   entreprise: z.string().max(120).optional().default(""),
   sujet: z.string().min(1).max(200),
   service: z.string().max(200).optional().default(""),
@@ -29,10 +34,7 @@ export const Route = createFileRoute("/api/public/contact")({
         try {
           body = await request.json();
         } catch {
-          return Response.json(
-            { ok: false, error: "Invalid JSON" },
-            { status: 400 },
-          );
+          return Response.json({ ok: false, error: "Invalid JSON" }, { status: 400 });
         }
 
         const parsed = ContactSchema.safeParse(body);
@@ -47,6 +49,7 @@ export const Route = createFileRoute("/api/public/contact")({
           );
         }
 
+        const prospectId = crypto.randomUUID();
         const payload = {
           ...parsed.data,
           audience: inferAudience({
@@ -55,29 +58,34 @@ export const Route = createFileRoute("/api/public/contact")({
             service: parsed.data.service,
           }),
           tag: "soumissioncomptable",
-          leadId: crypto.randomUUID(),
+          leadId: prospectId,
+          prospectId,
           received_at: new Date().toISOString(),
           user_agent: request.headers.get("user-agent") ?? "",
         };
 
-        // Enregistre en base (non bloquant)
-        await recordProspect({
-          form_type: "contact",
-          full_name: parsed.data.nom,
-          email: parsed.data.email,
-          phone: parsed.data.mobile,
-          company_name: parsed.data.entreprise || null,
-          service: parsed.data.service || null,
-          message: parsed.data.description,
-          audience: payload.audience,
-          audience_hint: parsed.data.audience_hint ?? null,
-          source: parsed.data.source,
-          page_url: parsed.data.page_url || null,
-          referrer: parsed.data.referrer || null,
-          user_agent: payload.user_agent,
-          submitted_at: parsed.data.submitted_at || null,
-          raw_payload: payload as unknown as Record<string, unknown>,
-        });
+        try {
+          await recordProspect({
+            id: prospectId,
+            form_type: "contact",
+            full_name: parsed.data.nom,
+            email: parsed.data.email,
+            phone: parsed.data.mobile,
+            company_name: parsed.data.entreprise || null,
+            service: parsed.data.service || null,
+            message: parsed.data.description,
+            audience: payload.audience,
+            audience_hint: parsed.data.audience_hint ?? null,
+            source: parsed.data.source,
+            page_url: parsed.data.page_url || null,
+            referrer: parsed.data.referrer || null,
+            user_agent: payload.user_agent,
+            submitted_at: parsed.data.submitted_at || null,
+            raw_payload: payload as unknown as Record<string, unknown>,
+          });
+        } catch {
+          return Response.json({ ok: false, error: "Database insert failed" }, { status: 500 });
+        }
 
         const webhookUrl = process.env.GHL_WEBHOOK_URL;
         if (webhookUrl) {
@@ -93,26 +101,17 @@ export const Route = createFileRoute("/api/public/contact")({
                 upstream.status,
                 await upstream.text().catch(() => ""),
               );
-              console.error(
-                "[contact] LOST_LEAD (webhook failed)",
-                JSON.stringify(payload),
-              );
+              console.error("[contact] LOST_LEAD (webhook failed)", JSON.stringify(payload));
             }
           } catch (err) {
             console.error("[contact] GHL webhook threw", err);
-            console.error(
-              "[contact] LOST_LEAD (webhook threw)",
-              JSON.stringify(payload),
-            );
+            console.error("[contact] LOST_LEAD (webhook threw)", JSON.stringify(payload));
           }
         } else {
-          console.log(
-            "[contact] NEW_CONTACT (no GHL_WEBHOOK_URL set)",
-            JSON.stringify(payload),
-          );
+          console.log("[contact] NEW_CONTACT (no GHL_WEBHOOK_URL set)", JSON.stringify(payload));
         }
 
-        return Response.json({ ok: true, leadId: payload.leadId });
+        return Response.json({ ok: true, leadId: payload.leadId, prospectId });
       },
     },
   },

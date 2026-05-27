@@ -22,16 +22,56 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/", changefreq: "weekly", priority: "1.0", lastmod: today },
           // Conversion pages
           { path: "/demande-soumissions", changefreq: "monthly", priority: "0.9", lastmod: today },
-          { path: "/creer-son-entreprise-cote-divoire", changefreq: "weekly", priority: "0.9", lastmod: today },
+          {
+            path: "/creer-son-entreprise-cote-divoire",
+            changefreq: "weekly",
+            priority: "0.9",
+            lastmod: today,
+          },
           // Service pages
-          { path: "/creation-entreprise-cote-divoire", changefreq: "monthly", priority: "0.8", lastmod: today },
-          { path: "/comptabilite-entreprise-abidjan", changefreq: "monthly", priority: "0.8", lastmod: today },
-          { path: "/declaration-fiscale-cote-divoire", changefreq: "monthly", priority: "0.8", lastmod: today },
-          { path: "/domiciliation-entreprise-abidjan", changefreq: "monthly", priority: "0.8", lastmod: today },
+          {
+            path: "/creation-entreprise-cote-divoire",
+            changefreq: "monthly",
+            priority: "0.8",
+            lastmod: today,
+          },
+          {
+            path: "/comptabilite-entreprise-abidjan",
+            changefreq: "monthly",
+            priority: "0.8",
+            lastmod: today,
+          },
+          {
+            path: "/declaration-fiscale-cote-divoire",
+            changefreq: "monthly",
+            priority: "0.8",
+            lastmod: today,
+          },
+          {
+            path: "/domiciliation-entreprise-abidjan",
+            changefreq: "monthly",
+            priority: "0.8",
+            lastmod: today,
+          },
           // Geo + diaspora + partners + FAQ
-          { path: "/cabinet-comptable-abidjan", changefreq: "monthly", priority: "0.7", lastmod: today },
-          { path: "/creation-entreprise-diaspora-ivoirienne", changefreq: "monthly", priority: "0.7", lastmod: today },
-          { path: "/cabinets-comptables-partenaires", changefreq: "monthly", priority: "0.7", lastmod: today },
+          {
+            path: "/cabinet-comptable-abidjan",
+            changefreq: "monthly",
+            priority: "0.7",
+            lastmod: today,
+          },
+          {
+            path: "/creation-entreprise-diaspora-ivoirienne",
+            changefreq: "monthly",
+            priority: "0.7",
+            lastmod: today,
+          },
+          {
+            path: "/cabinets-comptables-partenaires",
+            changefreq: "monthly",
+            priority: "0.7",
+            lastmod: today,
+          },
           { path: "/faq", changefreq: "monthly", priority: "0.7", lastmod: today },
           // Secondary pages
           { path: "/guides", changefreq: "monthly", priority: "0.6", lastmod: today },
@@ -51,10 +91,25 @@ export const Route = createFileRoute("/sitemap.xml")({
           })),
           // English mirrors
           { path: "/en", changefreq: "weekly", priority: "0.8", lastmod: today },
-          { path: "/en/start-a-business-ivory-coast", changefreq: "weekly", priority: "0.8", lastmod: today },
+          {
+            path: "/en/start-a-business-ivory-coast",
+            changefreq: "weekly",
+            priority: "0.8",
+            lastmod: today,
+          },
           { path: "/en/get-quotes", changefreq: "monthly", priority: "0.7", lastmod: today },
-          { path: "/en/company-registration-ivory-coast", changefreq: "monthly", priority: "0.6", lastmod: today },
-          { path: "/en/accounting-firm-abidjan", changefreq: "monthly", priority: "0.6", lastmod: today },
+          {
+            path: "/en/company-registration-ivory-coast",
+            changefreq: "monthly",
+            priority: "0.6",
+            lastmod: today,
+          },
+          {
+            path: "/en/accounting-firm-abidjan",
+            changefreq: "monthly",
+            priority: "0.6",
+            lastmod: today,
+          },
           { path: "/en/about", changefreq: "monthly", priority: "0.5", lastmod: today },
           { path: "/en/contact-us", changefreq: "monthly", priority: "0.5", lastmod: today },
           { path: "/en/logo-offer", changefreq: "monthly", priority: "0.4", lastmod: today },

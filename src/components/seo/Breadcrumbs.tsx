@@ -14,10 +14,7 @@ type Props = {
 export function Breadcrumbs({ items, className }: Props) {
   if (!items || items.length === 0) return null;
   return (
-    <nav
-      aria-label="Fil d'Ariane"
-      className={className ?? "container-app pt-6"}
-    >
+    <nav aria-label="Fil d'Ariane" className={className ?? "container-app pt-6"}>
       <ol className="flex flex-wrap items-center gap-1 text-sm text-muted-foreground">
         {items.map((c, i) => {
           const last = i === items.length - 1;
@@ -28,9 +25,7 @@ export function Breadcrumbs({ items, className }: Props) {
                   {c.label}
                 </Link>
               ) : (
-                <span className={last ? "text-foreground font-medium" : ""}>
-                  {c.label}
-                </span>
+                <span className={last ? "text-foreground font-medium" : ""}>{c.label}</span>
               )}
               {!last && <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />}
             </li>

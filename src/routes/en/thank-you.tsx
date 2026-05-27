@@ -32,22 +32,17 @@ function ThankYouPage() {
             Thank you!
           </h1>
           <p className="mt-4 text-base md:text-lg text-foreground leading-relaxed">
-            Thank you, all your answers have been recorded for this service as
-            well as for the additional services. An advisor will contact you
-            within the <strong>next 24 business hours</strong>.
+            Thank you, all your answers have been recorded for this service as well as for the
+            additional services. An advisor will contact you within the{" "}
+            <strong>next 24 business hours</strong>.
           </p>
 
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
             <Button asChild variant="outline">
               <Link to="/en">← Back to home</Link>
             </Button>
-            <Button
-              asChild
-              className="bg-secondary hover:bg-secondary-dark text-white"
-            >
-              <Link to="/en/accounting-firm-abidjan">
-                Explore our services →
-              </Link>
+            <Button asChild className="bg-secondary hover:bg-secondary-dark text-white">
+              <Link to="/en/accounting-firm-abidjan">Explore our services →</Link>
             </Button>
           </div>
         </div>

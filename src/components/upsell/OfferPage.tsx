@@ -39,7 +39,9 @@ export function OfferPage({
     let leadId: string | undefined;
     try {
       leadId = sessionStorage.getItem("leadId") ?? undefined;
-    } catch {}
+    } catch {
+      // sessionStorage is optional; upsell tracking can continue without a lead id.
+    }
     try {
       const source =
         (offer === "logo" ? "upsell-logo" : "upsell-site-internet") +
@@ -89,13 +91,9 @@ export function OfferPage({
               {title}
             </h1>
 
-            <p className="mt-4 text-3xl md:text-4xl font-extrabold text-secondary">
-              {price}
-            </p>
+            <p className="mt-4 text-3xl md:text-4xl font-extrabold text-secondary">{price}</p>
 
-            <p className="mt-4 text-base text-foreground leading-relaxed">
-              {description}
-            </p>
+            <p className="mt-4 text-base text-foreground leading-relaxed">{description}</p>
 
             <div className="mt-8 flex flex-col gap-3">
               <Button

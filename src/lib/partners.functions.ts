@@ -83,10 +83,7 @@ export const signupPartner = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
 
     // Assign 'partner' role
-    await supabaseAdmin
-      .from("user_roles")
-      .insert({ user_id: userId, role: "partner" })
-      .select();
+    await supabaseAdmin.from("user_roles").insert({ user_id: userId, role: "partner" }).select();
 
     const partner = await fetchPartner(inserted.id);
     if (partner) await emitPartnerEvent(partner, "signup");
@@ -183,7 +180,9 @@ export const approvePartner = createServerFn({ method: "POST" })
 export const rejectPartner = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) =>
-    z.object({ partner_id: z.string().uuid(), reason: z.string().trim().min(2).max(500) }).parse(input),
+    z
+      .object({ partner_id: z.string().uuid(), reason: z.string().trim().min(2).max(500) })
+      .parse(input),
   )
   .handler(async ({ data, context }) => {
     await assertStaff(context.userId);
@@ -210,13 +209,16 @@ export const rejectPartner = createServerFn({ method: "POST" })
 export const pausePartner = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) =>
-    z.object({ partner_id: z.string().uuid(), reason: z.string().trim().min(2).max(500) }).parse(input),
+    z
+      .object({ partner_id: z.string().uuid(), reason: z.string().trim().min(2).max(500) })
+      .parse(input),
   )
   .handler(async ({ data, context }) => {
     await assertStaff(context.userId);
     const partner = await fetchPartner(data.partner_id);
     if (!partner) throw new Error("Partenaire introuvable");
-    if (partner.status !== "approved") throw new Error("Seul un compte actif peut être mis en pause");
+    if (partner.status !== "approved")
+      throw new Error("Seul un compte actif peut être mis en pause");
     const { error } = await supabaseAdmin
       .from("partners")
       .update({
@@ -336,11 +338,13 @@ export const createPartnerManually = createServerFn({ method: "POST" })
 export const adminGrantCredits = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) =>
-    z.object({
-      partner_id: z.string().uuid(),
-      amount: z.number().int().min(1).max(1000),
-      note: z.string().trim().max(255).optional(),
-    }).parse(input),
+    z
+      .object({
+        partner_id: z.string().uuid(),
+        amount: z.number().int().min(1).max(1000),
+        note: z.string().trim().max(255).optional(),
+      })
+      .parse(input),
   )
   .handler(async ({ data, context }) => {
     await assertAdmin(context.userId);

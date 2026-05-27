@@ -9,7 +9,8 @@ export const Route = createFileRoute("/en/accounting-firm-abidjan")({
     buildPageHead({
       path: "/en/accounting-firm-abidjan",
       title: "Accounting Firm in Abidjan | Compare 5 Free Offers | SoumissionComptable.com",
-      description: "Find the best accounting firm in Abidjan (Plateau, Cocody, Marcory). OECCA-CI certified firms. Get 5 free quotes within 48h.",
+      description:
+        "Find the best accounting firm in Abidjan (Plateau, Cocody, Marcory). OECCA-CI certified firms. Get 5 free quotes within 48h.",
       lang: "en",
       altPath: "/cabinet-comptable-abidjan",
       breadcrumb: [

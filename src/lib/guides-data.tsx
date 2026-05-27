@@ -37,24 +37,24 @@ const U = (id: string) =>
   `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=1280&q=70`;
 
 const IMG = {
-  domiciliation: U("1497366216548-37526070297c"),       // bureaux modernes
-  obligations: U("1554224155-6726b3ff858f"),            // calculatrice / compta
-  cepici: U("1450101499163-c8848c66ca85"),              // documents bureau
-  creerSa: U("1556761175-5973dc0f32e7"),                // réunion conseil
-  tva: U("1554224154-22dec7ec8818"),                    // factures / chiffres
-  canada: U("1436491865332-7a61a109cc05"),              // avion / voyage
-  plateau: U("1486406146926-c627a92ad1ab"),             // bureau pro
-  cocody: U("1497366811353-6870744d04b2"),              // espace de travail
-  angre: U("1497366216548-37526070297c"),               // bureau ouvert
-  capital: U("1601597111158-2fceff292cdc"),             // billets de banque
-  cnps: U("1573164713714-d95e436ab8d6"),                // équipe RH
-  banque: U("1556742049-0cfed4f6a45d"),                 // carte bancaire
-  eiVsSarl: U("1454165804606-c3d57bc86b40"),            // graphiques décision
-  audit: U("1551836022-d5d88e9218df"),                  // loupe sur dossier
-  erreurs: U("1521791136064-7986c2920216"),             // checklist / réunion
-  coutCreation: U("1565514020179-026b92b84bb6"),        // billets FCFA
-  rccm: U("1450101499163-c8848c66ca85"),                // registre officiel
-  aides: U("1559526324-4b87b5e36e44"),                  // poignée de main
+  domiciliation: U("1497366216548-37526070297c"), // bureaux modernes
+  obligations: U("1554224155-6726b3ff858f"), // calculatrice / compta
+  cepici: U("1450101499163-c8848c66ca85"), // documents bureau
+  creerSa: U("1556761175-5973dc0f32e7"), // réunion conseil
+  tva: U("1554224154-22dec7ec8818"), // factures / chiffres
+  canada: U("1436491865332-7a61a109cc05"), // avion / voyage
+  plateau: U("1486406146926-c627a92ad1ab"), // bureau pro
+  cocody: U("1497366811353-6870744d04b2"), // espace de travail
+  angre: U("1497366216548-37526070297c"), // bureau ouvert
+  capital: U("1601597111158-2fceff292cdc"), // billets de banque
+  cnps: U("1573164713714-d95e436ab8d6"), // équipe RH
+  banque: U("1556742049-0cfed4f6a45d"), // carte bancaire
+  eiVsSarl: U("1454165804606-c3d57bc86b40"), // graphiques décision
+  audit: U("1551836022-d5d88e9218df"), // loupe sur dossier
+  erreurs: U("1521791136064-7986c2920216"), // checklist / réunion
+  coutCreation: U("1565514020179-026b92b84bb6"), // billets FCFA
+  rccm: U("1450101499163-c8848c66ca85"), // registre officiel
+  aides: U("1559526324-4b87b5e36e44"), // poignée de main
 };
 
 export type Category =
@@ -165,8 +165,7 @@ export const ARTICLES: Article[] = [
   {
     slug: "calendrier-fiscal-ci-2026",
     audience: "gestion",
-    title:
-      "Calendrier fiscal 2026 en Côte d'Ivoire : dates clés pour les entreprises",
+    title: "Calendrier fiscal 2026 en Côte d'Ivoire : dates clés pour les entreprises",
     excerpt:
       "Découvrez le calendrier fiscal 2026 en Côte d'Ivoire : TVA, ITS, BIC, BNC, patentes, déclarations fiscales et dates clés à respecter pour les entreprises.",
     categories: ["Fiscalité"],
@@ -357,19 +356,23 @@ export const ARTICLES: Article[] = [
     faqs: [
       {
         question: "Les cabinets du Plateau sont-ils meilleurs que les autres ?",
-        answer: "Pas nécessairement. La qualité d'un cabinet dépend de son agrément OECCA-CI, de l'expérience de ses experts-comptables et de sa réactivité — pas de son adresse.",
+        answer:
+          "Pas nécessairement. La qualité d'un cabinet dépend de son agrément OECCA-CI, de l'expérience de ses experts-comptables et de sa réactivité — pas de son adresse.",
       },
       {
         question: "Un cabinet du Plateau peut-il suivre mon entreprise si je suis à Yopougon ?",
-        answer: "Oui, sans aucun problème. La gestion comptable se fait principalement à distance grâce à la dématérialisation et à la télédéclaration sur le portail e-impôts de la DGI.",
+        answer:
+          "Oui, sans aucun problème. La gestion comptable se fait principalement à distance grâce à la dématérialisation et à la télédéclaration sur le portail e-impôts de la DGI.",
       },
       {
         question: "Comment vérifier qu'un cabinet est agréé OECCA-CI ?",
-        answer: "Demandez le numéro d'inscription à l'Ordre et vérifiez-le sur le site officiel oecca-ci.org. Sans agrément, aucune DSF signée n'est recevable.",
+        answer:
+          "Demandez le numéro d'inscription à l'Ordre et vérifiez-le sur le site officiel oecca-ci.org. Sans agrément, aucune DSF signée n'est recevable.",
       },
       {
         question: "Quel est le tarif moyen d'une tenue comptable mensuelle au Plateau ?",
-        answer: "Entre 150 000 et 400 000 FCFA par mois pour une PME, contre 80 000 à 250 000 FCFA dans des quartiers comme Cocody ou Marcory.",
+        answer:
+          "Entre 150 000 et 400 000 FCFA par mois pour une PME, contre 80 000 à 250 000 FCFA dans des quartiers comme Cocody ou Marcory.",
       },
     ],
   },
@@ -391,19 +394,23 @@ export const ARTICLES: Article[] = [
     faqs: [
       {
         question: "Où se trouve le centre des impôts DGI le plus proche de Cocody ?",
-        answer: "Le Centre Moyennes Entreprises (CME) Cocody se trouve à Cocody Centre, près du carrefour Saint-Jean. Les grandes entreprises (CA > 3 milliards FCFA) dépendent de la DGE au Plateau.",
+        answer:
+          "Le Centre Moyennes Entreprises (CME) Cocody se trouve à Cocody Centre, près du carrefour Saint-Jean. Les grandes entreprises (CA > 3 milliards FCFA) dépendent de la DGE au Plateau.",
       },
       {
         question: "Y a-t-il beaucoup de cabinets agréés OECCA-CI à Cocody ?",
-        answer: "Oui. Cocody est, après le Plateau, la commune qui concentre le plus grand nombre de cabinets d'expertise comptable agréés, principalement en Riviera, Deux-Plateaux et Angré.",
+        answer:
+          "Oui. Cocody est, après le Plateau, la commune qui concentre le plus grand nombre de cabinets d'expertise comptable agréés, principalement en Riviera, Deux-Plateaux et Angré.",
       },
       {
         question: "Un cabinet de Cocody peut-il gérer une entreprise basée à Yopougon ?",
-        answer: "Oui, sans difficulté. La dématérialisation des factures et la télédéclaration sur le portail e-impôts permettent à un cabinet de Cocody de suivre des clients partout dans le Grand Abidjan.",
+        answer:
+          "Oui, sans difficulté. La dématérialisation des factures et la télédéclaration sur le portail e-impôts permettent à un cabinet de Cocody de suivre des clients partout dans le Grand Abidjan.",
       },
       {
         question: "Combien coûte un comptable à Cocody pour une SARL débutante ?",
-        answer: "Entre 80 000 et 150 000 FCFA par mois pour une SARL réalisant moins de 100 millions FCFA de chiffre d'affaires, hors DSF annuelle facturée séparément (250 000 à 600 000 FCFA).",
+        answer:
+          "Entre 80 000 et 150 000 FCFA par mois pour une SARL réalisant moins de 100 millions FCFA de chiffre d'affaires, hors DSF annuelle facturée séparément (250 000 à 600 000 FCFA).",
       },
     ],
   },
@@ -425,19 +432,23 @@ export const ARTICLES: Article[] = [
     faqs: [
       {
         question: "Où se trouve le centre des impôts DGI le plus proche d'Angré ?",
-        answer: "Le CME Cocody (Centre Moyennes Entreprises) à Cocody Centre est le centre de rattachement par défaut des PME d'Angré, à 10-15 minutes en voiture hors heures de pointe.",
+        answer:
+          "Le CME Cocody (Centre Moyennes Entreprises) à Cocody Centre est le centre de rattachement par défaut des PME d'Angré, à 10-15 minutes en voiture hors heures de pointe.",
       },
       {
         question: "Y a-t-il des cabinets agréés OECCA-CI à Angré ?",
-        answer: "Oui, une vingtaine de cabinets agréés sont installés à Angré, principalement de la 7e à la 9e tranche. Vérifiez l'agrément sur oecca-ci.org avant toute signature.",
+        answer:
+          "Oui, une vingtaine de cabinets agréés sont installés à Angré, principalement de la 7e à la 9e tranche. Vérifiez l'agrément sur oecca-ci.org avant toute signature.",
       },
       {
         question: "Un cabinet d'Angré peut-il créer ma SARL au CEPICI ?",
-        answer: "Oui. Le CEPICI est à Riviera Golf, à 15 minutes d'Angré. La plupart des cabinets locaux proposent une création SARL clé en main (statuts, dépôt, RCCM, IDU) entre 180 000 et 350 000 FCFA.",
+        answer:
+          "Oui. Le CEPICI est à Riviera Golf, à 15 minutes d'Angré. La plupart des cabinets locaux proposent une création SARL clé en main (statuts, dépôt, RCCM, IDU) entre 180 000 et 350 000 FCFA.",
       },
       {
         question: "Quelle différence avec un cabinet de Cocody-Riviera ?",
-        answer: "Riviera cible une clientèle plus haut de gamme (ONG, expatriés, cliniques) avec des honoraires supérieurs. Angré est plus orienté TPE/PME locales. La qualité technique est identique dès lors que les deux sont agréés OECCA-CI.",
+        answer:
+          "Riviera cible une clientèle plus haut de gamme (ONG, expatriés, cliniques) avec des honoraires supérieurs. Angré est plus orienté TPE/PME locales. La qualité technique est identique dès lors que les deux sont agréés OECCA-CI.",
       },
     ],
   },
@@ -540,8 +551,7 @@ export const ARTICLES: Article[] = [
   {
     slug: "cout-creation-entreprise-cote-divoire",
     audience: "creation",
-    title:
-      "Combien coûte la création d'une entreprise en Côte d'Ivoire en 2026 ?",
+    title: "Combien coûte la création d'une entreprise en Côte d'Ivoire en 2026 ?",
     excerpt:
       "Frais CEPICI, honoraires de cabinet, capital, notaire : tous les prix réels pour créer sa société en CI.",
     categories: ["Création d'entreprise"],
@@ -604,27 +614,18 @@ export function getArticleBySlug(slug: string): Article | undefined {
 }
 
 /** Articles triés par priorité (1 → 3), ordre stable au sein d'une même priorité. */
-export const ARTICLES_SORTED: Article[] = [...ARTICLES].sort(
-  (a, b) => a.priority - b.priority,
-);
+export const ARTICLES_SORTED: Article[] = [...ARTICLES].sort((a, b) => a.priority - b.priority);
 
 /**
  * Retourne jusqu'à `limit` articles similaires à celui passé en paramètre.
  * Priorise les articles partageant au moins une catégorie, puis complète
  * avec les plus prioritaires. N'inclut que les articles rédigés.
  */
-export function getRelatedArticles(
-  currentSlug: string,
-  limit = 3,
-): Article[] {
+export function getRelatedArticles(currentSlug: string, limit = 3): Article[] {
   const current = getArticleBySlug(currentSlug);
   if (!current) return [];
-  const pool = ARTICLES_SORTED.filter(
-    (a) => a.slug !== currentSlug && !!a.content,
-  );
-  const sameCategory = pool.filter((a) =>
-    a.categories.some((c) => current.categories.includes(c)),
-  );
+  const pool = ARTICLES_SORTED.filter((a) => a.slug !== currentSlug && !!a.content);
+  const sameCategory = pool.filter((a) => a.categories.some((c) => current.categories.includes(c)));
   const others = pool.filter((a) => !sameCategory.includes(a));
   return [...sameCategory, ...others].slice(0, limit);
 }

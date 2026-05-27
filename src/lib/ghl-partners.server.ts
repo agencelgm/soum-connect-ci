@@ -50,9 +50,19 @@ export async function notifyPartnerEvent(payload: PartnerEventPayload): Promise<
       body: JSON.stringify(body),
     });
     if (!res.ok) {
-      console.error("[ghl-partners] LOST_PARTNER_EVENT", res.status, payload.event_type, payload.partner_id);
+      console.error(
+        "[ghl-partners] LOST_PARTNER_EVENT",
+        res.status,
+        payload.event_type,
+        payload.partner_id,
+      );
     }
   } catch (err) {
-    console.error("[ghl-partners] LOST_PARTNER_EVENT threw", err, payload.event_type, payload.partner_id);
+    console.error(
+      "[ghl-partners] LOST_PARTNER_EVENT threw",
+      err,
+      payload.event_type,
+      payload.partner_id,
+    );
   }
 }

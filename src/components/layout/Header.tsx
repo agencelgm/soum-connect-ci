@@ -13,21 +13,28 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 
-
 function LangToggle() {
   const { language, setLanguage } = useLanguage();
   return (
     <div className="flex items-center gap-1 text-xs">
       <button
         onClick={() => setLanguage("fr")}
-        className={language === "fr" ? "text-primary font-semibold" : "text-muted-foreground hover:text-primary"}
+        className={
+          language === "fr"
+            ? "text-primary font-semibold"
+            : "text-muted-foreground hover:text-primary"
+        }
       >
         FR
       </button>
       <span className="text-muted-foreground">|</span>
       <button
         onClick={() => setLanguage("en")}
-        className={language === "en" ? "text-primary font-semibold" : "text-muted-foreground hover:text-primary"}
+        className={
+          language === "en"
+            ? "text-primary font-semibold"
+            : "text-muted-foreground hover:text-primary"
+        }
       >
         EN
       </button>
@@ -47,11 +54,17 @@ export function Header() {
   );
 
   const SERVICES = [
-    { to: getCounterpart("/creation-entreprise-cote-divoire", language), label: t.services.creation },
+    {
+      to: getCounterpart("/creation-entreprise-cote-divoire", language),
+      label: t.services.creation,
+    },
     { to: "/comptabilite-entreprise-abidjan", label: t.services.accounting },
     { to: "/declaration-fiscale-cote-divoire", label: t.services.tax },
     { to: "/domiciliation-entreprise-abidjan", label: t.services.domiciliation },
-    { to: getCounterpart("/cabinet-comptable-abidjan", language), label: "Cabinet comptable à Abidjan" },
+    {
+      to: getCounterpart("/cabinet-comptable-abidjan", language),
+      label: "Cabinet comptable à Abidjan",
+    },
     { to: "/creation-entreprise-diaspora-ivoirienne", label: "Création — diaspora ivoirienne" },
     { to: "/cabinets-comptables-partenaires", label: "Cabinets partenaires" },
   ];
@@ -68,7 +81,11 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-border shadow-sm">
       <div className="max-w-[1200px] mx-auto px-6 h-16 md:h-24 lg:h-32 flex items-center justify-between gap-4">
-        <Link to={homeHref} aria-label="SoumissionComptable.com — Accueil" className="flex items-center shrink-0">
+        <Link
+          to={homeHref}
+          aria-label="SoumissionComptable.com — Accueil"
+          className="flex items-center shrink-0"
+        >
           <img
             src={logo}
             alt="SoumissionComptable.com"
@@ -91,7 +108,10 @@ export function Header() {
               ))}
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
-                <Link to={getCounterpart("/cabinet-comptable-abidjan", language)} className="text-secondary font-semibold">
+                <Link
+                  to={getCounterpart("/cabinet-comptable-abidjan", language)}
+                  className="text-secondary font-semibold"
+                >
                   {t.nav.allServices}
                 </Link>
               </DropdownMenuItem>
@@ -111,10 +131,7 @@ export function Header() {
 
         <div className="hidden lg:flex items-center gap-3">
           <LangToggle />
-          <Link
-            to="/connexion"
-            className="text-sm font-medium text-foreground hover:text-primary"
-          >
+          <Link to="/connexion" className="text-sm font-medium text-foreground hover:text-primary">
             Espace partenaire
           </Link>
           <Link
@@ -150,7 +167,9 @@ export function Header() {
               className="flex items-center justify-between rounded-md px-3 py-3 min-h-[48px] text-sm font-medium text-foreground hover:bg-muted w-full"
             >
               {t.nav.services}
-              <ChevronDown className={`h-4 w-4 transition-transform ${mobileServicesOpen ? "rotate-180" : ""}`} />
+              <ChevronDown
+                className={`h-4 w-4 transition-transform ${mobileServicesOpen ? "rotate-180" : ""}`}
+              />
             </button>
             {mobileServicesOpen && (
               <div className="ml-3 flex flex-col gap-1 border-l border-border pl-3">

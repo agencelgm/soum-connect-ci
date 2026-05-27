@@ -11,10 +11,8 @@ export function ReadingProgressBar() {
     let ticking = false;
 
     const update = () => {
-      const scrollTop =
-        window.scrollY || document.documentElement.scrollTop || 0;
-      const docHeight =
-        document.documentElement.scrollHeight - window.innerHeight;
+      const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
       const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
       setProgress(Math.min(100, Math.max(0, pct)));
       ticking = false;

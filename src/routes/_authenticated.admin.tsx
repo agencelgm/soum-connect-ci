@@ -37,6 +37,46 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminPage,
 });
 
+type PartnerAdminRow = {
+  id: string;
+  cabinet_name: string;
+  contact_first_name: string;
+  contact_last_name: string;
+  email: string;
+  phone: string;
+  city: string;
+  services: string[];
+  status: "pending_review" | "approved" | "paused" | "rejected";
+  credits_balance: number;
+  rejection_reason?: string | null;
+  pause_reason?: string | null;
+};
+
+type ProspectAdminRow = {
+  id: string;
+  full_name: string | null;
+  email: string | null;
+  phone: string | null;
+  audience: string;
+  status: "pending_qualification" | "qualified" | "published" | "rejected";
+  created_at: string;
+  service: string | null;
+  city: string | null;
+  budget: string | null;
+  legal_form: string | null;
+  message: string | null;
+  qualification_notes: string | null;
+};
+
+type TeamMemberRow = {
+  user_id: string;
+  email: string;
+  full_name: string | null;
+  role: "admin" | "agent";
+  suspended: boolean;
+  must_change_password: boolean;
+};
+
 function AdminPage() {
   const meFn = useServerFn(getMyPartner);
   const { data: me } = useQuery({ queryKey: ["my-partner"], queryFn: () => meFn() });
@@ -57,11 +97,19 @@ function AdminPage() {
           <TabsTrigger value="create">+ Créer un partenaire</TabsTrigger>
           {roles.includes("admin") && <TabsTrigger value="team">Équipe</TabsTrigger>}
         </TabsList>
-        <TabsContent value="partners" className="mt-6"><PartnersPanel isAdmin={roles.includes("admin")} /></TabsContent>
-        <TabsContent value="prospects" className="mt-6"><ProspectsPanel isAdmin={roles.includes("admin")} /></TabsContent>
-        <TabsContent value="create" className="mt-6"><CreatePartnerPanel /></TabsContent>
+        <TabsContent value="partners" className="mt-6">
+          <PartnersPanel isAdmin={roles.includes("admin")} />
+        </TabsContent>
+        <TabsContent value="prospects" className="mt-6">
+          <ProspectsPanel isAdmin={roles.includes("admin")} />
+        </TabsContent>
+        <TabsContent value="create" className="mt-6">
+          <CreatePartnerPanel />
+        </TabsContent>
         {roles.includes("admin") && (
-          <TabsContent value="team" className="mt-6"><TeamPanel /></TabsContent>
+          <TabsContent value="team" className="mt-6">
+            <TeamPanel />
+          </TabsContent>
         )}
       </Tabs>
     </div>
@@ -72,7 +120,7 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
   const listFn = useServerFn(listPartners);
   const qc = useQueryClient();
   const { data, isLoading } = useQuery({ queryKey: ["partners"], queryFn: () => listFn() });
-  const partners = data?.partners ?? [];
+  const partners = (data?.partners ?? []) as PartnerAdminRow[];
 
   const buckets = {
     pending_review: partners.filter((p) => p.status === "pending_review"),
@@ -86,16 +134,25 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
   return (
     <Tabs defaultValue="pending_review">
       <TabsList>
-        <TabsTrigger value="pending_review">En attente ({buckets.pending_review.length})</TabsTrigger>
+        <TabsTrigger value="pending_review">
+          En attente ({buckets.pending_review.length})
+        </TabsTrigger>
         <TabsTrigger value="approved">Actifs ({buckets.approved.length})</TabsTrigger>
         <TabsTrigger value="paused">En pause ({buckets.paused.length})</TabsTrigger>
         <TabsTrigger value="rejected">Rejetés ({buckets.rejected.length})</TabsTrigger>
       </TabsList>
       {(["pending_review", "approved", "paused", "rejected"] as const).map((k) => (
         <TabsContent key={k} value={k} className="mt-4 space-y-3">
-          {buckets[k].length === 0 && <p className="text-sm text-muted-foreground">Aucun cabinet.</p>}
+          {buckets[k].length === 0 && (
+            <p className="text-sm text-muted-foreground">Aucun cabinet.</p>
+          )}
           {buckets[k].map((p) => (
-            <PartnerCard key={p.id} partner={p} isAdmin={isAdmin} onChange={() => qc.invalidateQueries({ queryKey: ["partners"] })} />
+            <PartnerCard
+              key={p.id}
+              partner={p}
+              isAdmin={isAdmin}
+              onChange={() => qc.invalidateQueries({ queryKey: ["partners"] })}
+            />
           ))}
         </TabsContent>
       ))}
@@ -103,7 +160,15 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
   );
 }
 
-function PartnerCard({ partner, isAdmin, onChange }: { partner: any; isAdmin: boolean; onChange: () => void }) {
+function PartnerCard({
+  partner,
+  isAdmin,
+  onChange,
+}: {
+  partner: PartnerAdminRow;
+  isAdmin: boolean;
+  onChange: () => void;
+}) {
   const approveFn = useServerFn(approvePartner);
   const rejectFn = useServerFn(rejectPartner);
   const pauseFn = useServerFn(pausePartner);
@@ -114,9 +179,15 @@ function PartnerCard({ partner, isAdmin, onChange }: { partner: any; isAdmin: bo
 
   async function run(fn: () => Promise<unknown>) {
     setBusy(true);
-    try { await fn(); toast.success("Action effectuée"); onChange(); }
-    catch (e) { toast.error(e instanceof Error ? e.message : "Erreur"); }
-    finally { setBusy(false); }
+    try {
+      await fn();
+      toast.success("Action effectuée");
+      onChange();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Erreur");
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
@@ -125,7 +196,8 @@ function PartnerCard({ partner, isAdmin, onChange }: { partner: any; isAdmin: bo
         <div>
           <h3 className="font-semibold">{partner.cabinet_name}</h3>
           <p className="text-sm text-muted-foreground">
-            {partner.contact_first_name} {partner.contact_last_name} · {partner.email} · {partner.phone}
+            {partner.contact_first_name} {partner.contact_last_name} · {partner.email} ·{" "}
+            {partner.phone}
           </p>
           <p className="text-xs text-muted-foreground mt-1">
             {partner.city} · Crédits : <strong>{partner.credits_balance}</strong>
@@ -137,27 +209,57 @@ function PartnerCard({ partner, isAdmin, onChange }: { partner: any; isAdmin: bo
         <div className="flex flex-wrap gap-2 items-start">
           {partner.status === "pending_review" && (
             <>
-              <Button size="sm" disabled={busy} onClick={() => run(() => approveFn({ data: { partner_id: partner.id } }))}>
+              <Button
+                size="sm"
+                disabled={busy}
+                onClick={() => run(() => approveFn({ data: { partner_id: partner.id } }))}
+              >
                 Approuver (+10 crédits)
               </Button>
-              <RejectButton disabled={busy} onConfirm={(reason) => run(() => rejectFn({ data: { partner_id: partner.id, reason } }))} />
+              <RejectButton
+                disabled={busy}
+                onConfirm={(reason) =>
+                  run(() => rejectFn({ data: { partner_id: partner.id, reason } }))
+                }
+              />
             </>
           )}
           {partner.status === "approved" && (
-            <RejectButton label="Mettre en pause" disabled={busy} onConfirm={(reason) => run(() => pauseFn({ data: { partner_id: partner.id, reason } }))} />
+            <RejectButton
+              label="Mettre en pause"
+              disabled={busy}
+              onConfirm={(reason) =>
+                run(() => pauseFn({ data: { partner_id: partner.id, reason } }))
+              }
+            />
           )}
           {partner.status === "paused" && (
-            <Button size="sm" disabled={busy} onClick={() => run(() => reactivateFn({ data: { partner_id: partner.id } }))}>
+            <Button
+              size="sm"
+              disabled={busy}
+              onClick={() => run(() => reactivateFn({ data: { partner_id: partner.id } }))}
+            >
               Réactiver
             </Button>
           )}
           {isAdmin && partner.status === "approved" && (
-            <GrantButton disabled={busy} onConfirm={(amount, note) => run(() => grantFn({ data: { partner_id: partner.id, amount, note } }))} />
+            <GrantButton
+              disabled={busy}
+              onConfirm={(amount, note) =>
+                run(() => grantFn({ data: { partner_id: partner.id, amount, note } }))
+              }
+            />
           )}
           {isAdmin && (
-            <Button size="sm" variant="destructive" disabled={busy} onClick={() => {
-              if (confirm("Supprimer ce partenaire ?")) run(() => deleteFn({ data: { partner_id: partner.id } }));
-            }}>
+            <Button
+              size="sm"
+              variant="destructive"
+              disabled={busy}
+              onClick={() => {
+                if (confirm("Supprimer ce partenaire ?"))
+                  run(() => deleteFn({ data: { partner_id: partner.id } }));
+              }}
+            >
               Supprimer
             </Button>
           )}
@@ -167,30 +269,93 @@ function PartnerCard({ partner, isAdmin, onChange }: { partner: any; isAdmin: bo
   );
 }
 
-function RejectButton({ label = "Rejeter", disabled, onConfirm }: { label?: string; disabled?: boolean; onConfirm: (reason: string) => void }) {
+function RejectButton({
+  label = "Rejeter",
+  disabled,
+  onConfirm,
+}: {
+  label?: string;
+  disabled?: boolean;
+  onConfirm: (reason: string) => void;
+}) {
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState("");
-  if (!open) return <Button size="sm" variant="outline" disabled={disabled} onClick={() => setOpen(true)}>{label}</Button>;
+  if (!open)
+    return (
+      <Button size="sm" variant="outline" disabled={disabled} onClick={() => setOpen(true)}>
+        {label}
+      </Button>
+    );
   return (
     <div className="flex gap-1 items-center">
-      <Input className="h-8 w-44" value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Motif" />
-      <Button size="sm" disabled={disabled || reason.length < 2} onClick={() => { onConfirm(reason); setOpen(false); setReason(""); }}>OK</Button>
-      <Button size="sm" variant="ghost" onClick={() => setOpen(false)}>×</Button>
+      <Input
+        className="h-8 w-44"
+        value={reason}
+        onChange={(e) => setReason(e.target.value)}
+        placeholder="Motif"
+      />
+      <Button
+        size="sm"
+        disabled={disabled || reason.length < 2}
+        onClick={() => {
+          onConfirm(reason);
+          setOpen(false);
+          setReason("");
+        }}
+      >
+        OK
+      </Button>
+      <Button size="sm" variant="ghost" onClick={() => setOpen(false)}>
+        ×
+      </Button>
     </div>
   );
 }
 
-function GrantButton({ disabled, onConfirm }: { disabled?: boolean; onConfirm: (amount: number, note?: string) => void }) {
+function GrantButton({
+  disabled,
+  onConfirm,
+}: {
+  disabled?: boolean;
+  onConfirm: (amount: number, note?: string) => void;
+}) {
   const [open, setOpen] = useState(false);
   const [amount, setAmount] = useState(10);
   const [note, setNote] = useState("");
-  if (!open) return <Button size="sm" variant="secondary" disabled={disabled} onClick={() => setOpen(true)}>+ Crédits</Button>;
+  if (!open)
+    return (
+      <Button size="sm" variant="secondary" disabled={disabled} onClick={() => setOpen(true)}>
+        + Crédits
+      </Button>
+    );
   return (
     <div className="flex gap-1 items-center">
-      <Input className="h-8 w-20" type="number" min={1} value={amount} onChange={(e) => setAmount(Number(e.target.value))} />
-      <Input className="h-8 w-32" value={note} onChange={(e) => setNote(e.target.value)} placeholder="Note" />
-      <Button size="sm" disabled={disabled || amount < 1} onClick={() => { onConfirm(amount, note || undefined); setOpen(false); }}>OK</Button>
-      <Button size="sm" variant="ghost" onClick={() => setOpen(false)}>×</Button>
+      <Input
+        className="h-8 w-20"
+        type="number"
+        min={1}
+        value={amount}
+        onChange={(e) => setAmount(Number(e.target.value))}
+      />
+      <Input
+        className="h-8 w-32"
+        value={note}
+        onChange={(e) => setNote(e.target.value)}
+        placeholder="Note"
+      />
+      <Button
+        size="sm"
+        disabled={disabled || amount < 1}
+        onClick={() => {
+          onConfirm(amount, note || undefined);
+          setOpen(false);
+        }}
+      >
+        OK
+      </Button>
+      <Button size="sm" variant="ghost" onClick={() => setOpen(false)}>
+        ×
+      </Button>
     </div>
   );
 }
@@ -204,13 +369,20 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
   const deleteFn = useServerFn(deleteProspect);
   const { data, isLoading } = useQuery({ queryKey: ["prospects"], queryFn: () => listFn() });
   const [busyId, setBusyId] = useState<string | null>(null);
-  const [filter, setFilter] = useState<"all" | "pending_qualification" | "qualified" | "rejected">("all");
+  const [filter, setFilter] = useState<"all" | "pending_qualification" | "published" | "rejected">(
+    "all",
+  );
 
   async function run(id: string, fn: () => Promise<unknown>) {
     setBusyId(id);
-    try { await fn(); qc.invalidateQueries({ queryKey: ["prospects"] }); }
-    catch (e) { toast.error(e instanceof Error ? e.message : "Erreur"); }
-    finally { setBusyId(null); }
+    try {
+      await fn();
+      qc.invalidateQueries({ queryKey: ["prospects"] });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Erreur");
+    } finally {
+      setBusyId(null);
+    }
   }
 
   async function onPublish(prospect_id: string) {
@@ -220,29 +392,51 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
     });
   }
   if (isLoading) return <p>Chargement…</p>;
-  const all = data?.prospects ?? [];
-  const prospects = filter === "all" ? all : all.filter((p: any) => p.status === filter);
+  const all = (data?.prospects ?? []) as ProspectAdminRow[];
+  const prospects = filter === "all" ? all : all.filter((p) => p.status === filter);
   return (
     <div className="space-y-2">
       <div className="flex justify-between items-center flex-wrap gap-2">
-        <p className="text-sm text-muted-foreground">{prospects.length} prospect(s) affichés (sur {all.length})</p>
+        <p className="text-sm text-muted-foreground">
+          {prospects.length} prospect(s) affichés (sur {all.length})
+        </p>
         <div className="flex gap-1 text-xs">
-          {(["all", "pending_qualification", "qualified", "rejected"] as const).map((k) => (
-            <Button key={k} size="sm" variant={filter === k ? "default" : "outline"} onClick={() => setFilter(k)}>
-              {k === "all" ? "Tous" : k === "pending_qualification" ? "En attente" : k === "qualified" ? "Qualifiés" : "Rejetés"}
+          {(["all", "pending_qualification", "published", "rejected"] as const).map((k) => (
+            <Button
+              key={k}
+              size="sm"
+              variant={filter === k ? "default" : "outline"}
+              onClick={() => setFilter(k)}
+            >
+              {k === "all"
+                ? "Tous"
+                : k === "pending_qualification"
+                  ? "En attente"
+                  : k === "published"
+                    ? "Publiés"
+                    : "Rejetés"}
             </Button>
           ))}
         </div>
       </div>
-      {prospects.map((p: any) => (
-        <div key={p.id} className={`rounded border p-3 bg-card text-sm ${p.status === "rejected" ? "opacity-60" : ""}`}>
+      {prospects.map((p) => (
+        <div
+          key={p.id}
+          className={`rounded border p-3 bg-card text-sm ${p.status === "rejected" ? "opacity-60" : ""}`}
+        >
           <div className="flex justify-between flex-wrap gap-2">
             <div>
               <strong>{p.full_name || "—"}</strong> · {p.email || "—"} · {p.phone || "—"}
-              <span className="ml-2 inline-block rounded bg-muted px-2 py-0.5 text-xs">{p.audience}</span>
-              <span className="ml-1 inline-block rounded bg-muted px-2 py-0.5 text-xs">{p.status}</span>
+              <span className="ml-2 inline-block rounded bg-muted px-2 py-0.5 text-xs">
+                {p.audience}
+              </span>
+              <span className="ml-1 inline-block rounded bg-muted px-2 py-0.5 text-xs">
+                {p.status}
+              </span>
             </div>
-            <span className="text-xs text-muted-foreground">{new Date(p.created_at).toLocaleString("fr-FR")}</span>
+            <span className="text-xs text-muted-foreground">
+              {new Date(p.created_at).toLocaleString("fr-FR")}
+            </span>
           </div>
           <div className="text-xs text-muted-foreground mt-1">
             {p.service && <>Service : {p.service} · </>}
@@ -255,27 +449,59 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
             <p className="mt-1 text-xs text-destructive">Motif rejet : {p.qualification_notes}</p>
           )}
           <div className="mt-2 flex justify-end gap-2 flex-wrap">
-            {p.status !== "rejected" && p.status !== "qualified" && (
+            {(p.status === "pending_qualification" || p.status === "qualified") && (
               <>
-                <Button size="sm" variant="outline" disabled={busyId === p.id} onClick={() => onPublish(p.id)}>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={busyId === p.id}
+                  onClick={() => onPublish(p.id)}
+                >
                   {busyId === p.id ? "…" : "Publier comme lead (6 places)"}
                 </Button>
-                <RejectButton label="Rejeter" disabled={busyId === p.id} onConfirm={(reason) =>
-                  run(p.id, async () => { await rejectFn({ data: { prospect_id: p.id, reason } }); toast.success("Prospect rejeté"); })
-                } />
+                <RejectButton
+                  label="Rejeter"
+                  disabled={busyId === p.id}
+                  onConfirm={(reason) =>
+                    run(p.id, async () => {
+                      await rejectFn({ data: { prospect_id: p.id, reason } });
+                      toast.success("Prospect rejeté");
+                    })
+                  }
+                />
               </>
             )}
             {p.status === "rejected" && (
-              <Button size="sm" variant="outline" disabled={busyId === p.id} onClick={() =>
-                run(p.id, async () => { await reactivateFn({ data: { prospect_id: p.id } }); toast.success("Prospect réactivé"); })
-              }>Réactiver</Button>
-            )}
-            {isAdmin && (
-              <Button size="sm" variant="destructive" disabled={busyId === p.id} onClick={() => {
-                if (confirm("Supprimer définitivement ce prospect ?")) {
-                  run(p.id, async () => { await deleteFn({ data: { prospect_id: p.id } }); toast.success("Prospect supprimé"); });
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={busyId === p.id}
+                onClick={() =>
+                  run(p.id, async () => {
+                    await reactivateFn({ data: { prospect_id: p.id } });
+                    toast.success("Prospect réactivé");
+                  })
                 }
-              }}>Supprimer</Button>
+              >
+                Réactiver
+              </Button>
+            )}
+            {isAdmin && p.status !== "published" && (
+              <Button
+                size="sm"
+                variant="destructive"
+                disabled={busyId === p.id}
+                onClick={() => {
+                  if (confirm("Supprimer définitivement ce prospect ?")) {
+                    run(p.id, async () => {
+                      await deleteFn({ data: { prospect_id: p.id } });
+                      toast.success("Prospect supprimé");
+                    });
+                  }
+                }}
+              >
+                Supprimer
+              </Button>
             )}
           </div>
         </div>
@@ -289,11 +515,21 @@ function CreatePartnerPanel() {
   const qc = useQueryClient();
   const [busy, setBusy] = useState(false);
   const [form, setForm] = useState({
-    cabinet_name: "", contact_first_name: "", contact_last_name: "",
-    email: "", phone: "", city: "", password: "",
-    website: "", facebook_url: "", services: "", zones: "",
+    cabinet_name: "",
+    contact_first_name: "",
+    contact_last_name: "",
+    email: "",
+    phone: "",
+    city: "",
+    password: "",
+    website: "",
+    facebook_url: "",
+    services: "",
+    zones: "",
   });
-  function up<K extends keyof typeof form>(k: K, v: string) { setForm((f) => ({ ...f, [k]: v })); }
+  function up<K extends keyof typeof form>(k: K, v: string) {
+    setForm((f) => ({ ...f, [k]: v }));
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -310,44 +546,120 @@ function CreatePartnerPanel() {
           password: form.password,
           website: form.website,
           facebook_url: form.facebook_url,
-          services: form.services.split(",").map((s) => s.trim()).filter(Boolean),
-          zones: form.zones.split(",").map((s) => s.trim()).filter(Boolean),
+          services: form.services
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean),
+          zones: form.zones
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean),
         },
       });
       toast.success("Partenaire créé (10 crédits attribués)");
-      setForm({ cabinet_name: "", contact_first_name: "", contact_last_name: "", email: "", phone: "", city: "", password: "", website: "", facebook_url: "", services: "", zones: "" });
+      setForm({
+        cabinet_name: "",
+        contact_first_name: "",
+        contact_last_name: "",
+        email: "",
+        phone: "",
+        city: "",
+        password: "",
+        website: "",
+        facebook_url: "",
+        services: "",
+        zones: "",
+      });
       qc.invalidateQueries({ queryKey: ["partners"] });
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Erreur");
-    } finally { setBusy(false); }
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
     <form onSubmit={onSubmit} className="space-y-4 max-w-2xl">
       <p className="text-sm text-muted-foreground">
-        Création manuelle : le cabinet est immédiatement actif avec 10 crédits. Aucune validation requise.
+        Création manuelle : le cabinet est immédiatement actif avec 10 crédits. Aucune validation
+        requise.
       </p>
       <div>
         <Label>Nom du cabinet *</Label>
-        <Input required value={form.cabinet_name} onChange={(e) => up("cabinet_name", e.target.value)} />
+        <Input
+          required
+          value={form.cabinet_name}
+          onChange={(e) => up("cabinet_name", e.target.value)}
+        />
       </div>
       <div className="grid grid-cols-2 gap-4">
-        <div><Label>Prénom *</Label><Input required value={form.contact_first_name} onChange={(e) => up("contact_first_name", e.target.value)} /></div>
-        <div><Label>Nom *</Label><Input required value={form.contact_last_name} onChange={(e) => up("contact_last_name", e.target.value)} /></div>
+        <div>
+          <Label>Prénom *</Label>
+          <Input
+            required
+            value={form.contact_first_name}
+            onChange={(e) => up("contact_first_name", e.target.value)}
+          />
+        </div>
+        <div>
+          <Label>Nom *</Label>
+          <Input
+            required
+            value={form.contact_last_name}
+            onChange={(e) => up("contact_last_name", e.target.value)}
+          />
+        </div>
       </div>
       <div className="grid grid-cols-2 gap-4">
-        <div><Label>Email *</Label><Input type="email" required value={form.email} onChange={(e) => up("email", e.target.value)} /></div>
-        <div><Label>Téléphone *</Label><Input required value={form.phone} onChange={(e) => up("phone", e.target.value)} /></div>
+        <div>
+          <Label>Email *</Label>
+          <Input
+            type="email"
+            required
+            value={form.email}
+            onChange={(e) => up("email", e.target.value)}
+          />
+        </div>
+        <div>
+          <Label>Téléphone *</Label>
+          <Input required value={form.phone} onChange={(e) => up("phone", e.target.value)} />
+        </div>
       </div>
-      <div><Label>Mot de passe initial *</Label><Input type="password" required minLength={8} value={form.password} onChange={(e) => up("password", e.target.value)} /></div>
-      <div><Label>Ville *</Label><Input required value={form.city} onChange={(e) => up("city", e.target.value)} /></div>
+      <div>
+        <Label>Mot de passe initial *</Label>
+        <Input
+          type="password"
+          required
+          minLength={8}
+          value={form.password}
+          onChange={(e) => up("password", e.target.value)}
+        />
+      </div>
+      <div>
+        <Label>Ville *</Label>
+        <Input required value={form.city} onChange={(e) => up("city", e.target.value)} />
+      </div>
       <div className="grid grid-cols-2 gap-4">
-        <div><Label>Site web</Label><Input value={form.website} onChange={(e) => up("website", e.target.value)} /></div>
-        <div><Label>Facebook</Label><Input value={form.facebook_url} onChange={(e) => up("facebook_url", e.target.value)} /></div>
+        <div>
+          <Label>Site web</Label>
+          <Input value={form.website} onChange={(e) => up("website", e.target.value)} />
+        </div>
+        <div>
+          <Label>Facebook</Label>
+          <Input value={form.facebook_url} onChange={(e) => up("facebook_url", e.target.value)} />
+        </div>
       </div>
-      <div><Label>Services (virgules)</Label><Textarea value={form.services} onChange={(e) => up("services", e.target.value)} /></div>
-      <div><Label>Zones (virgules)</Label><Textarea value={form.zones} onChange={(e) => up("zones", e.target.value)} /></div>
-      <Button type="submit" disabled={busy}>{busy ? "…" : "Créer le partenaire"}</Button>
+      <div>
+        <Label>Services (virgules)</Label>
+        <Textarea value={form.services} onChange={(e) => up("services", e.target.value)} />
+      </div>
+      <div>
+        <Label>Zones (virgules)</Label>
+        <Textarea value={form.zones} onChange={(e) => up("zones", e.target.value)} />
+      </div>
+      <Button type="submit" disabled={busy}>
+        {busy ? "…" : "Créer le partenaire"}
+      </Button>
     </form>
   );
 }
@@ -365,15 +677,30 @@ function TeamPanel() {
   const [busyId, setBusyId] = useState<string | null>(null);
   const [showAdd, setShowAdd] = useState(false);
   const [tempPwdDialog, setTempPwdDialog] = useState<{ email: string; pwd: string } | null>(null);
-  const [form, setForm] = useState({ email: "", first_name: "", last_name: "", role: "agent" as "admin" | "agent" });
+  const [form, setForm] = useState({
+    email: "",
+    first_name: "",
+    last_name: "",
+    role: "agent" as "admin" | "agent",
+  });
 
-  function up<K extends keyof typeof form>(k: K, v: string) { setForm((f) => ({ ...f, [k]: v as any })); }
+  function up<K extends keyof typeof form>(k: K, v: string) {
+    setForm((f) => ({
+      ...f,
+      [k]: k === "role" ? (v as "admin" | "agent") : v,
+    }));
+  }
 
   async function run(id: string, fn: () => Promise<unknown>) {
     setBusyId(id);
-    try { await fn(); qc.invalidateQueries({ queryKey: ["team"] }); }
-    catch (e) { toast.error(e instanceof Error ? e.message : "Erreur"); }
-    finally { setBusyId(null); }
+    try {
+      await fn();
+      qc.invalidateQueries({ queryKey: ["team"] });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Erreur");
+    } finally {
+      setBusyId(null);
+    }
   }
 
   async function onAdd(e: React.FormEvent) {
@@ -387,11 +714,13 @@ function TeamPanel() {
       qc.invalidateQueries({ queryKey: ["team"] });
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Erreur");
-    } finally { setBusyId(null); }
+    } finally {
+      setBusyId(null);
+    }
   }
 
   if (isLoading) return <p>Chargement…</p>;
-  const members = data?.members ?? [];
+  const members = (data?.members ?? []) as TeamMemberRow[];
   const me = data?.me;
 
   return (
@@ -399,11 +728,26 @@ function TeamPanel() {
       {tempPwdDialog && (
         <div className="rounded-lg border-2 border-primary bg-primary/5 p-4 space-y-2">
           <p className="font-semibold">Mot de passe temporaire pour {tempPwdDialog.email}</p>
-          <p className="text-sm text-muted-foreground">Communique-le au membre. Il devra le changer à sa première connexion. Ce mot de passe ne sera plus affiché.</p>
+          <p className="text-sm text-muted-foreground">
+            Communique-le au membre. Il devra le changer à sa première connexion. Ce mot de passe ne
+            sera plus affiché.
+          </p>
           <div className="flex gap-2 items-center">
-            <code className="flex-1 rounded bg-background border px-3 py-2 font-mono text-sm">{tempPwdDialog.pwd}</code>
-            <Button size="sm" onClick={() => { navigator.clipboard.writeText(tempPwdDialog.pwd); toast.success("Copié"); }}>Copier</Button>
-            <Button size="sm" variant="ghost" onClick={() => setTempPwdDialog(null)}>Fermer</Button>
+            <code className="flex-1 rounded bg-background border px-3 py-2 font-mono text-sm">
+              {tempPwdDialog.pwd}
+            </code>
+            <Button
+              size="sm"
+              onClick={() => {
+                navigator.clipboard.writeText(tempPwdDialog.pwd);
+                toast.success("Copié");
+              }}
+            >
+              Copier
+            </Button>
+            <Button size="sm" variant="ghost" onClick={() => setTempPwdDialog(null)}>
+              Fermer
+            </Button>
           </div>
         </div>
       )}
@@ -418,15 +762,51 @@ function TeamPanel() {
       {showAdd && (
         <form onSubmit={onAdd} className="rounded-lg border p-4 bg-card space-y-3">
           <div className="grid grid-cols-2 gap-3">
-            <div><Label>Prénom *</Label><Input required value={form.first_name} onChange={(e) => up("first_name", e.target.value)} /></div>
-            <div><Label>Nom *</Label><Input required value={form.last_name} onChange={(e) => up("last_name", e.target.value)} /></div>
+            <div>
+              <Label>Prénom *</Label>
+              <Input
+                required
+                value={form.first_name}
+                onChange={(e) => up("first_name", e.target.value)}
+              />
+            </div>
+            <div>
+              <Label>Nom *</Label>
+              <Input
+                required
+                value={form.last_name}
+                onChange={(e) => up("last_name", e.target.value)}
+              />
+            </div>
           </div>
-          <div><Label>Email *</Label><Input type="email" required value={form.email} onChange={(e) => up("email", e.target.value)} /></div>
+          <div>
+            <Label>Email *</Label>
+            <Input
+              type="email"
+              required
+              value={form.email}
+              onChange={(e) => up("email", e.target.value)}
+            />
+          </div>
           <div>
             <Label>Rôle *</Label>
             <div className="flex gap-2 mt-1">
-              <Button type="button" size="sm" variant={form.role === "agent" ? "default" : "outline"} onClick={() => up("role", "agent")}>Agent</Button>
-              <Button type="button" size="sm" variant={form.role === "admin" ? "default" : "outline"} onClick={() => up("role", "admin")}>Administrateur</Button>
+              <Button
+                type="button"
+                size="sm"
+                variant={form.role === "agent" ? "default" : "outline"}
+                onClick={() => up("role", "agent")}
+              >
+                Agent
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                variant={form.role === "admin" ? "default" : "outline"}
+                onClick={() => up("role", "admin")}
+              >
+                Administrateur
+              </Button>
             </div>
             <p className="text-xs text-muted-foreground mt-1">
               Un mot de passe temporaire sera généré et affiché une seule fois.
@@ -439,59 +819,124 @@ function TeamPanel() {
       )}
 
       <div className="space-y-2">
-        {members.map((m: any) => {
+        {members.map((m) => {
           const isMe = m.user_id === me;
           return (
-            <div key={m.user_id} className={`rounded-lg border p-4 bg-card ${m.suspended ? "opacity-60" : ""}`}>
+            <div
+              key={m.user_id}
+              className={`rounded-lg border p-4 bg-card ${m.suspended ? "opacity-60" : ""}`}
+            >
               <div className="flex justify-between flex-wrap gap-3">
                 <div>
                   <div className="flex items-center gap-2 flex-wrap">
                     <strong>{m.full_name || m.email}</strong>
-                    <span className={`inline-block rounded px-2 py-0.5 text-xs ${m.role === "admin" ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
+                    <span
+                      className={`inline-block rounded px-2 py-0.5 text-xs ${m.role === "admin" ? "bg-primary text-primary-foreground" : "bg-muted"}`}
+                    >
                       {m.role === "admin" ? "Administrateur" : "Agent"}
                     </span>
-                    {m.suspended && <span className="inline-block rounded bg-destructive text-destructive-foreground px-2 py-0.5 text-xs">Suspendu</span>}
-                    {m.must_change_password && <span className="inline-block rounded bg-amber-500/20 text-amber-700 dark:text-amber-300 px-2 py-0.5 text-xs">Doit changer mdp</span>}
-                    {isMe && <span className="inline-block rounded bg-muted px-2 py-0.5 text-xs">Vous</span>}
+                    {m.suspended && (
+                      <span className="inline-block rounded bg-destructive text-destructive-foreground px-2 py-0.5 text-xs">
+                        Suspendu
+                      </span>
+                    )}
+                    {m.must_change_password && (
+                      <span className="inline-block rounded bg-amber-500/20 text-amber-700 dark:text-amber-300 px-2 py-0.5 text-xs">
+                        Doit changer mdp
+                      </span>
+                    )}
+                    {isMe && (
+                      <span className="inline-block rounded bg-muted px-2 py-0.5 text-xs">
+                        Vous
+                      </span>
+                    )}
                   </div>
                   <p className="text-sm text-muted-foreground mt-1">{m.email}</p>
                 </div>
                 <div className="flex flex-wrap gap-2 items-start">
                   {!isMe && (
-                    <Button size="sm" variant="outline" disabled={busyId === m.user_id} onClick={() =>
-                      run(m.user_id, async () => {
-                        const newRole = m.role === "admin" ? "agent" : "admin";
-                        await updRoleFn({ data: { user_id: m.user_id, role: newRole } });
-                        toast.success("Rôle modifié");
-                      })
-                    }>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      disabled={busyId === m.user_id}
+                      onClick={() =>
+                        run(m.user_id, async () => {
+                          const newRole = m.role === "admin" ? "agent" : "admin";
+                          await updRoleFn({ data: { user_id: m.user_id, role: newRole } });
+                          toast.success("Rôle modifié");
+                        })
+                      }
+                    >
                       → {m.role === "admin" ? "Agent" : "Admin"}
                     </Button>
                   )}
-                  <Button size="sm" variant="outline" disabled={busyId === m.user_id} onClick={() => {
-                    if (!confirm(`Réinitialiser le mot de passe de ${m.email} ?`)) return;
-                    setBusyId(m.user_id);
-                    resetPwdFn({ data: { user_id: m.user_id } })
-                      .then((res) => { setTempPwdDialog({ email: m.email, pwd: res.temp_password }); })
-                      .catch((e) => toast.error(e instanceof Error ? e.message : "Erreur"))
-                      .finally(() => setBusyId(null));
-                  }}>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    disabled={busyId === m.user_id}
+                    onClick={() => {
+                      if (!confirm(`Réinitialiser le mot de passe de ${m.email} ?`)) return;
+                      setBusyId(m.user_id);
+                      resetPwdFn({ data: { user_id: m.user_id } })
+                        .then((res) => {
+                          setTempPwdDialog({ email: m.email, pwd: res.temp_password });
+                        })
+                        .catch((e) => toast.error(e instanceof Error ? e.message : "Erreur"))
+                        .finally(() => setBusyId(null));
+                    }}
+                  >
                     Reset mdp
                   </Button>
-                  {!isMe && (m.suspended ? (
-                    <Button size="sm" variant="outline" disabled={busyId === m.user_id} onClick={() =>
-                      run(m.user_id, async () => { await unsuspendFn({ data: { user_id: m.user_id } }); toast.success("Réactivé"); })
-                    }>Réactiver</Button>
-                  ) : (
-                    <Button size="sm" variant="outline" disabled={busyId === m.user_id} onClick={() =>
-                      run(m.user_id, async () => { await suspendFn({ data: { user_id: m.user_id } }); toast.success("Suspendu"); })
-                    }>Suspendre</Button>
-                  ))}
+                  {!isMe &&
+                    (m.suspended ? (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        disabled={busyId === m.user_id}
+                        onClick={() =>
+                          run(m.user_id, async () => {
+                            await unsuspendFn({ data: { user_id: m.user_id } });
+                            toast.success("Réactivé");
+                          })
+                        }
+                      >
+                        Réactiver
+                      </Button>
+                    ) : (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        disabled={busyId === m.user_id}
+                        onClick={() =>
+                          run(m.user_id, async () => {
+                            await suspendFn({ data: { user_id: m.user_id } });
+                            toast.success("Suspendu");
+                          })
+                        }
+                      >
+                        Suspendre
+                      </Button>
+                    ))}
                   {!isMe && (
-                    <Button size="sm" variant="destructive" disabled={busyId === m.user_id} onClick={() => {
-                      if (!confirm(`Supprimer définitivement ${m.email} ? Cette action est irréversible.`)) return;
-                      run(m.user_id, async () => { await deleteFn({ data: { user_id: m.user_id } }); toast.success("Membre supprimé"); });
-                    }}>Supprimer</Button>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      disabled={busyId === m.user_id}
+                      onClick={() => {
+                        if (
+                          !confirm(
+                            `Supprimer définitivement ${m.email} ? Cette action est irréversible.`,
+                          )
+                        )
+                          return;
+                        run(m.user_id, async () => {
+                          await deleteFn({ data: { user_id: m.user_id } });
+                          toast.success("Membre supprimé");
+                        });
+                      }}
+                    >
+                      Supprimer
+                    </Button>
                   )}
                 </div>
               </div>

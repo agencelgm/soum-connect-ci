@@ -258,12 +258,8 @@ function Page() {
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary/10 text-2xl">
                   {r.emoji}
                 </div>
-                <h3 className="mt-4 font-heading text-lg font-bold text-foreground">
-                  {r.q}
-                </h3>
-                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                  {r.a}
-                </p>
+                <h3 className="mt-4 font-heading text-lg font-bold text-foreground">{r.q}</h3>
+                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{r.a}</p>
               </article>
             ))}
           </div>
@@ -286,9 +282,7 @@ function Page() {
                 className="rounded-2xl border border-border bg-white p-6 text-center shadow-sm"
               >
                 <div className="text-5xl">{p.emoji}</div>
-                <h3 className="mt-4 font-heading text-lg font-bold text-foreground">
-                  {p.title}
-                </h3>
+                <h3 className="mt-4 font-heading text-lg font-bold text-foreground">{p.title}</h3>
                 <p className="mt-2 text-sm text-muted-foreground">{p.desc}</p>
               </article>
             ))}
@@ -299,10 +293,7 @@ function Page() {
       {/* SECTION 4 — CTA */}
       <section className="bg-secondary text-white" aria-labelledby="cta-title">
         <div className="container-app section text-center">
-          <h2
-            id="cta-title"
-            className="font-heading text-2xl md:text-4xl font-bold"
-          >
+          <h2 id="cta-title" className="font-heading text-2xl md:text-4xl font-bold">
             Prêt ? C'est gratuit et sans engagement
           </h2>
           <p className="mt-3 text-white/90 max-w-xl mx-auto">

@@ -28,7 +28,11 @@ function AuthLayout() {
   }, [me?.mustChangePassword, navigate]);
 
   if (loading) {
-    return <div className="mx-auto max-w-md px-6 py-16 text-center text-muted-foreground">Chargement…</div>;
+    return (
+      <div className="mx-auto max-w-md px-6 py-16 text-center text-muted-foreground">
+        Chargement…
+      </div>
+    );
   }
   if (!user) {
     // Soft redirect (no SSR session)
@@ -60,7 +64,9 @@ function AuthLayout() {
               </Button>
             </>
           )}
-          <Button variant="outline" size="sm" onClick={signOut}>Déconnexion</Button>
+          <Button variant="outline" size="sm" onClick={signOut}>
+            Déconnexion
+          </Button>
         </div>
       </div>
       <Outlet />

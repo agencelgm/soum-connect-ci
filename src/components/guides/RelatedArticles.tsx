@@ -9,10 +9,7 @@ import type { Article } from "@/lib/guides-data";
 export function RelatedArticles({ articles }: { articles: Article[] }) {
   if (!articles || articles.length === 0) return null;
   return (
-    <section
-      aria-labelledby="related-articles-title"
-      className="bg-white border-t border-border"
-    >
+    <section aria-labelledby="related-articles-title" className="bg-white border-t border-border">
       <div className="container-app py-12 md:py-16">
         <div className="max-w-2xl mb-8">
           <h2

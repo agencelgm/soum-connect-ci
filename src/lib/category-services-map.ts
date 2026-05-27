@@ -55,10 +55,7 @@ const MAP: Record<Category, RelatedLink[]> = {
  * Retourne jusqu'à `limit` liens services pertinents pour un ensemble de
  * catégories d'article (déduplication par URL, ordre stable).
  */
-export function getServiceLinksForCategories(
-  categories: Category[],
-  limit = 4,
-): RelatedLink[] {
+export function getServiceLinksForCategories(categories: Category[], limit = 4): RelatedLink[] {
   const seen = new Set<string>();
   const out: RelatedLink[] = [];
   for (const cat of categories) {

@@ -7,8 +7,7 @@ export const Route = createFileRoute("/en/logo-offer")({
     const head = buildPageHead({
       path: "/en/logo-offer",
       title: "Exclusive offer — Logo design | SoumissionComptable.com",
-      description:
-        "Exclusive offer: professional logo design starting from 50,000 FCFA.",
+      description: "Exclusive offer: professional logo design starting from 50,000 FCFA.",
       lang: "en",
       altPath: "/offre-logo",
     });

@@ -11,92 +11,91 @@ export function CepiciCoteDivoireContent() {
     <>
       <ArticleCallout variant="info" title="En bref">
         <p>
-          Le CEPICI (Centre de Promotion des Investissements en Côte d&apos;Ivoire)
-          est l&apos;organisme public qui centralise toutes les formalités de
-          création d&apos;entreprise via un guichet unique. Il permet d&apos;obtenir
-          le RCCM, la DFE et l&apos;IDU en 24 à 72 heures pour une SARL standard.
+          Le CEPICI (Centre de Promotion des Investissements en Côte d&apos;Ivoire) est
+          l&apos;organisme public qui centralise toutes les formalités de création d&apos;entreprise
+          via un guichet unique. Il permet d&apos;obtenir le RCCM, la DFE et l&apos;IDU en 24 à 72
+          heures pour une SARL standard.
         </p>
       </ArticleCallout>
 
       <ArticleSection title="Qu'est-ce que le CEPICI ?">
         <p>
-          Le <strong>CEPICI</strong> — Centre de Promotion des Investissements en
-          Côte d&apos;Ivoire — est un établissement public créé pour simplifier et
-          accélérer la création d&apos;entreprise dans le pays. Il fonctionne comme
-          un guichet unique qui regroupe en un seul endroit les services qui
-          relevaient autrefois de plusieurs administrations : le greffe du
-          tribunal de commerce, la DGI, la CNPS et le Trésor public.
+          Le <strong>CEPICI</strong> — Centre de Promotion des Investissements en Côte d&apos;Ivoire
+          — est un établissement public créé pour simplifier et accélérer la création
+          d&apos;entreprise dans le pays. Il fonctionne comme un guichet unique qui regroupe en un
+          seul endroit les services qui relevaient autrefois de plusieurs administrations : le
+          greffe du tribunal de commerce, la DGI, la CNPS et le Trésor public.
         </p>
         <p>
-          Avant la création du CEPICI, un entrepreneur devait se rendre
-          successivement dans plusieurs ministères et administrations, parfois
-          pendant plusieurs semaines. Aujourd&apos;hui, le CEPICI centralise ces
-          démarches et les compresse en un délai moyen de 24 à 72 heures ouvrées
-          pour une SARL ou une SARLU standard.
+          Avant la création du CEPICI, un entrepreneur devait se rendre successivement dans
+          plusieurs ministères et administrations, parfois pendant plusieurs semaines.
+          Aujourd&apos;hui, le CEPICI centralise ces démarches et les compresse en un délai moyen de
+          24 à 72 heures ouvrées pour une SARL ou une SARLU standard.
         </p>
         <p>
-          Le CEPICI a aussi une mission d&apos;attraction des investissements
-          étrangers : il accompagne les investisseurs nationaux et
-          internationaux dans leur implantation en Côte d&apos;Ivoire et gère les
-          régimes d&apos;investissement préférentiels (exonérations fiscales, zones
-          franches).
+          Le CEPICI a aussi une mission d&apos;attraction des investissements étrangers : il
+          accompagne les investisseurs nationaux et internationaux dans leur implantation en Côte
+          d&apos;Ivoire et gère les régimes d&apos;investissement préférentiels (exonérations
+          fiscales, zones franches).
         </p>
       </ArticleSection>
 
       <ArticleSection title="Quel est le rôle exact du CEPICI dans la création d'entreprise ?">
         <p>Le rôle du CEPICI dans la création d&apos;entreprise est triple.</p>
         <p>
-          <strong>1. Centralisation des formalités.</strong> Le CEPICI reçoit
-          votre dossier et le transmet aux différentes administrations
-          partenaires. Vous n&apos;avez qu&apos;un seul interlocuteur et un seul dépôt de
-          dossier.
+          <strong>1. Centralisation des formalités.</strong> Le CEPICI reçoit votre dossier et le
+          transmet aux différentes administrations partenaires. Vous n&apos;avez qu&apos;un seul
+          interlocuteur et un seul dépôt de dossier.
         </p>
         <p>
-          <strong>2. Délivrance des documents officiels.</strong> À l&apos;issue de
-          la procédure, le CEPICI remet :
+          <strong>2. Délivrance des documents officiels.</strong> À l&apos;issue de la procédure, le
+          CEPICI remet :
         </p>
         <ArticleList
           items={[
-            <><strong>RCCM</strong> — Registre du Commerce et du Crédit Mobilier</>,
-            <><strong>DFE</strong> — Déclaration Fiscale d&apos;Existence (DGI)</>,
-            <><strong>IDU</strong> — Identifiant Unique de l&apos;entreprise</>,
+            <>
+              <strong>RCCM</strong> — Registre du Commerce et du Crédit Mobilier
+            </>,
+            <>
+              <strong>DFE</strong> — Déclaration Fiscale d&apos;Existence (DGI)
+            </>,
+            <>
+              <strong>IDU</strong> — Identifiant Unique de l&apos;entreprise
+            </>,
             <>La fiche de notification d&apos;immatriculation employeur (CNPS)</>,
           ]}
         />
         <p>
-          <strong>3. Gestion des régimes d&apos;investissement.</strong> Le CEPICI
-          instruit les demandes d&apos;agrément au Code des Investissements, qui
-          ouvre droit à des exonérations d&apos;IS, de TVA et de droits de douane
-          pendant 5 à 15 ans selon la zone géographique et le secteur d&apos;activité.
+          <strong>3. Gestion des régimes d&apos;investissement.</strong> Le CEPICI instruit les
+          demandes d&apos;agrément au Code des Investissements, qui ouvre droit à des exonérations
+          d&apos;IS, de TVA et de droits de douane pendant 5 à 15 ans selon la zone géographique et
+          le secteur d&apos;activité.
         </p>
       </ArticleSection>
 
       <ArticleSection title="Comment fonctionne le guichet unique du CEPICI ?">
         <p>
-          Le guichet unique du CEPICI est accessible de deux façons : en
-          présentiel à Abidjan (et dans certaines villes de l&apos;intérieur) et en
-          ligne via le portail e-CEPICI.
+          Le guichet unique du CEPICI est accessible de deux façons : en présentiel à Abidjan (et
+          dans certaines villes de l&apos;intérieur) et en ligne via le portail e-CEPICI.
         </p>
         <p>
-          <strong>Dépôt en présentiel :</strong> le siège du CEPICI est situé à
-          Abidjan au Plateau, rue Gourgas. Vous ou votre mandataire y déposez le
-          dossier complet, les pièces sont vérifiées sur place, et un récépissé
-          de dépôt vous est remis. Les documents finaux (RCCM, DFE, IDU) sont
-          généralement remis dans les 24 à 72 heures ouvrées.
+          <strong>Dépôt en présentiel :</strong> le siège du CEPICI est situé à Abidjan au Plateau,
+          rue Gourgas. Vous ou votre mandataire y déposez le dossier complet, les pièces sont
+          vérifiées sur place, et un récépissé de dépôt vous est remis. Les documents finaux (RCCM,
+          DFE, IDU) sont généralement remis dans les 24 à 72 heures ouvrées.
         </p>
         <p>
-          <strong>Dépôt en ligne (e-CEPICI) :</strong> depuis 2016, le CEPICI a
-          numérisé une grande partie de ses procédures. Il est possible de
-          réserver le nom commercial, télécharger les formulaires et suivre
-          l&apos;état de traitement du dossier. Pour la diaspora, le dossier peut
-          être déposé par un mandataire local muni d&apos;une procuration légalisée.
+          <strong>Dépôt en ligne (e-CEPICI) :</strong> depuis 2016, le CEPICI a numérisé une grande
+          partie de ses procédures. Il est possible de réserver le nom commercial, télécharger les
+          formulaires et suivre l&apos;état de traitement du dossier. Pour la diaspora, le dossier
+          peut être déposé par un mandataire local muni d&apos;une procuration légalisée.
         </p>
       </ArticleSection>
 
       <ArticleSection title="Quels types d'entreprises peut-on créer au CEPICI ?">
         <p>
-          Le CEPICI traite la création de toutes les formes juridiques reconnues
-          par l&apos;Acte Uniforme OHADA :
+          Le CEPICI traite la création de toutes les formes juridiques reconnues par l&apos;Acte
+          Uniforme OHADA :
         </p>
         <ArticleTable
           headers={["Forme juridique", "Capital minimum", "Associés", "Délai CEPICI"]}
@@ -109,9 +108,9 @@ export function CepiciCoteDivoireContent() {
           ]}
         />
         <p>
-          La SARL et la SARLU sont les formes les plus utilisées par les
-          entrepreneurs ivoiriens en raison de leur capital faible, de leur
-          responsabilité limitée et de leur délai de création court.
+          La SARL et la SARLU sont les formes les plus utilisées par les entrepreneurs ivoiriens en
+          raison de leur capital faible, de leur responsabilité limitée et de leur délai de création
+          court.
         </p>
       </ArticleSection>
 
@@ -133,20 +132,18 @@ export function CepiciCoteDivoireContent() {
 
       <ArticleSection title="Combien coûtent les démarches au CEPICI ?">
         <p>
-          À titre indicatif, pour une SARL avec un capital de 100 000 FCFA, les
-          frais officiels au CEPICI se situent autour de{" "}
-          <strong>50 000 à 80 000 FCFA</strong> en 2026. S&apos;y ajoutent les
-          honoraires du cabinet comptable ou du conseil juridique qui vous
-          accompagne, généralement compris entre{" "}
-          <strong>100 000 et 400 000 FCFA</strong> selon la complexité du
+          À titre indicatif, pour une SARL avec un capital de 100 000 FCFA, les frais officiels au
+          CEPICI se situent autour de <strong>50 000 à 80 000 FCFA</strong> en 2026. S&apos;y
+          ajoutent les honoraires du cabinet comptable ou du conseil juridique qui vous accompagne,
+          généralement compris entre <strong>100 000 et 400 000 FCFA</strong> selon la complexité du
           dossier.
         </p>
       </ArticleSection>
 
       <ArticleSection title="Le CEPICI gère-t-il aussi les régimes d'exonération fiscale ?">
         <p>
-          Oui. Le CEPICI instruit les dossiers d&apos;agrément au Code des
-          Investissements, qui permet aux entreprises éligibles de bénéficier :
+          Oui. Le CEPICI instruit les dossiers d&apos;agrément au Code des Investissements, qui
+          permet aux entreprises éligibles de bénéficier :
         </p>
         <ArticleList
           items={[
@@ -165,10 +162,9 @@ export function CepiciCoteDivoireContent() {
               Peut-on créer une entreprise au CEPICI en ligne ?
             </h3>
             <p className="mt-2">
-              Oui, partiellement. Le portail e-CEPICI permet de réserver le nom
-              commercial, télécharger les formulaires et suivre le traitement.
-              Le dépôt complet peut être effectué à distance via un mandataire
-              local muni d&apos;une procuration légalisée.
+              Oui, partiellement. Le portail e-CEPICI permet de réserver le nom commercial,
+              télécharger les formulaires et suivre le traitement. Le dépôt complet peut être
+              effectué à distance via un mandataire local muni d&apos;une procuration légalisée.
             </p>
           </div>
           <div>
@@ -176,8 +172,8 @@ export function CepiciCoteDivoireContent() {
               Combien de temps prend la création d&apos;une SARL au CEPICI ?
             </h3>
             <p className="mt-2">
-              Pour un dossier complet, le CEPICI délivre le RCCM, la DFE et
-              l&apos;IDU en 24 à 72 heures ouvrées.
+              Pour un dossier complet, le CEPICI délivre le RCCM, la DFE et l&apos;IDU en 24 à 72
+              heures ouvrées.
             </p>
           </div>
           <div>
@@ -185,8 +181,8 @@ export function CepiciCoteDivoireContent() {
               Quelle est la différence entre le CEPICI et le RCCM ?
             </h3>
             <p className="mt-2">
-              Le CEPICI est l&apos;organisme qui gère la procédure. Le RCCM est l&apos;un
-              des documents délivrés à l&apos;issue de cette procédure.
+              Le CEPICI est l&apos;organisme qui gère la procédure. Le RCCM est l&apos;un des
+              documents délivrés à l&apos;issue de cette procédure.
             </p>
           </div>
           <div>
@@ -194,9 +190,9 @@ export function CepiciCoteDivoireContent() {
               Peut-on créer une entreprise au CEPICI depuis la France ou le Canada ?
             </h3>
             <p className="mt-2">
-              Oui. Des milliers de membres de la diaspora créent leur entreprise
-              chaque année depuis l&apos;étranger, via un mandataire local muni d&apos;une
-              procuration légalisée au consulat ivoirien.
+              Oui. Des milliers de membres de la diaspora créent leur entreprise chaque année depuis
+              l&apos;étranger, via un mandataire local muni d&apos;une procuration légalisée au
+              consulat ivoirien.
             </p>
           </div>
           <div>
@@ -204,8 +200,8 @@ export function CepiciCoteDivoireContent() {
               Le CEPICI est-il obligatoire pour créer une entreprise en CI ?
             </h3>
             <p className="mt-2">
-              Oui. Il est impossible de créer une SARL, SA, SARLU ou GIE
-              légalement sans passer par le CEPICI.
+              Oui. Il est impossible de créer une SARL, SA, SARLU ou GIE légalement sans passer par
+              le CEPICI.
             </p>
           </div>
         </div>
@@ -217,8 +213,8 @@ export function CepiciCoteDivoireContent() {
         ctaLabel="Obtenir mes soumissions"
       />
       <p className="mt-6 text-sm text-muted-foreground">
-        Mis à jour en mai 2026. Sources : CEPICI, Acte Uniforme OHADA, Code
-        général des impôts CI 2026.
+        Mis à jour en mai 2026. Sources : CEPICI, Acte Uniforme OHADA, Code général des impôts CI
+        2026.
       </p>
     </>
   );
