@@ -42,6 +42,8 @@ import seoAccountantDesk from "@/assets/home/seo-accountant-desk.jpg";
 import seoHandshake from "@/assets/home/seo-handshake-client.jpg";
 import seoOfficeAbidjan from "@/assets/home/seo-office-abidjan.jpg";
 import seoEntrepreneurs from "@/assets/home/seo-entrepreneurs.jpg";
+import heroOfficeBg from "@/assets/home/hero-office-bg.jpg";
+import heroDuo from "@/assets/home/hero-duo.png";
 import svcComptaGenerale from "@/assets/services/comptabilite-generale.jpg";
 import svcCreationEntreprise from "@/assets/services/creation-entreprise.jpg";
 import svcFiscalite from "@/assets/services/fiscalite.jpg";
@@ -109,23 +111,30 @@ export function Index() {
       {/* ====== 1. HERO SPLIT ====== */}
       <section
         aria-labelledby="hero-title"
-        className="hero-gradient-bg relative overflow-hidden"
+        className="relative overflow-hidden bg-primary"
       >
+        {/* Background photo floutée + overlay marine */}
+        <img
+          src={heroOfficeBg}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover scale-110 blur-2xl opacity-60"
+        />
+        <div aria-hidden className="absolute inset-0 bg-primary/75" />
+
         {/* Decorative depth circles */}
         <div aria-hidden className="absolute -top-[10%] right-[-5%] h-80 w-80 rounded-full bg-white/5 blur-3xl pointer-events-none" />
         <div aria-hidden className="absolute bottom-[-5%] left-[-5%] h-64 w-64 rounded-full bg-[#F4732A]/10 blur-3xl pointer-events-none" />
 
         <div className="relative container-app pt-10 md:pt-16 pb-0 grid gap-8 lg:gap-4 lg:grid-cols-12 lg:items-stretch">
-          {/* Left: photo comptable au bureau (desktop only) */}
+          {/* Left: duo détouré, fondu naturel sur le background */}
           <div className="hidden lg:flex lg:col-span-5 items-end justify-center lg:-mr-2 xl:-mr-4">
-            <div className="relative w-full max-w-[520px] xl:max-w-[580px] aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/10">
-              <img
-                src={seoAccountantDesk}
-                alt=""
-                aria-hidden="true"
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-            </div>
+            <img
+              src={heroDuo}
+              alt=""
+              aria-hidden="true"
+              className="w-full max-w-[520px] xl:max-w-[580px] h-auto object-contain drop-shadow-2xl"
+            />
           </div>
 
           {/* Right: headline + white form card */}
