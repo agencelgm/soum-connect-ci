@@ -42,6 +42,8 @@ import seoAccountantDesk from "@/assets/home/seo-accountant-desk.jpg";
 import seoHandshake from "@/assets/home/seo-handshake-client.jpg";
 import seoOfficeAbidjan from "@/assets/home/seo-office-abidjan.jpg";
 import seoEntrepreneurs from "@/assets/home/seo-entrepreneurs.jpg";
+import heroOfficeBg from "@/assets/home/hero-office-bg.jpg";
+import heroDuo from "@/assets/home/hero-duo.png";
 import svcComptaGenerale from "@/assets/services/comptabilite-generale.jpg";
 import svcCreationEntreprise from "@/assets/services/creation-entreprise.jpg";
 import svcFiscalite from "@/assets/services/fiscalite.jpg";
