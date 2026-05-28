@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { getMyPartner, bootstrapAdmin } from "@/lib/partners.functions";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useState } from "react";
@@ -15,7 +16,12 @@ function EspacePartenaire() {
   const fetchMe = useServerFn(getMyPartner);
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["my-partner"],
-    queryFn: () => fetchMe(),
+    queryFn: async () => {
+      const { data } = await supabase.auth.getSession();
+      if (!data.session) return null;
+      return fetchMe();
+    },
+    retry: false,
   });
 
   if (isLoading) return <p className="text-muted-foreground">Chargement…</p>;

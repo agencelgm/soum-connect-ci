@@ -17,8 +17,13 @@ function AuthLayout() {
   const meFn = useServerFn(getMyPartner);
   const { data: me } = useQuery({
     queryKey: ["my-partner"],
-    queryFn: () => meFn(),
+    queryFn: async () => {
+      const { data } = await supabase.auth.getSession();
+      if (!data.session) return null;
+      return meFn();
+    },
     enabled: !!user,
+    retry: false,
   });
 
   useEffect(() => {

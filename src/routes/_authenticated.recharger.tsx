@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { getMyPartner } from "@/lib/partners.functions";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_authenticated/recharger")({
@@ -17,7 +18,15 @@ const PACKS = [
 
 function RechargerPage() {
   const meFn = useServerFn(getMyPartner);
-  const { data } = useQuery({ queryKey: ["my-partner"], queryFn: () => meFn() });
+  const { data } = useQuery({
+    queryKey: ["my-partner"],
+    queryFn: async () => {
+      const { data } = await supabase.auth.getSession();
+      if (!data.session) return null;
+      return meFn();
+    },
+    retry: false,
+  });
   const partner = data?.partner;
 
   return (
