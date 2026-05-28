@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      chariow_payments: {
+        Row: {
+          amount_label: string | null
+          credits_granted: number
+          email: string
+          error_message: string | null
+          id: string
+          license_code: string
+          partner_id: string | null
+          processed_at: string | null
+          product_id: string
+          raw_payload: Json
+          received_at: string
+          status: string
+        }
+        Insert: {
+          amount_label?: string | null
+          credits_granted?: number
+          email: string
+          error_message?: string | null
+          id?: string
+          license_code: string
+          partner_id?: string | null
+          processed_at?: string | null
+          product_id: string
+          raw_payload?: Json
+          received_at?: string
+          status?: string
+        }
+        Update: {
+          amount_label?: string | null
+          credits_granted?: number
+          email?: string
+          error_message?: string | null
+          id?: string
+          license_code?: string
+          partner_id?: string | null
+          processed_at?: string | null
+          product_id?: string
+          raw_payload?: Json
+          received_at?: string
+          status?: string
+        }
+        Relationships: []
+      }
       credit_transactions: {
         Row: {
           amount: number
@@ -406,6 +451,7 @@ export type Database = {
         | "admin_revoke"
         | "unlock_spend"
         | "recharge"
+        | "chariow_purchase"
       partner_status: "pending_review" | "approved" | "paused" | "rejected"
       prospect_status:
         | "pending_qualification"
@@ -548,6 +594,7 @@ export const Constants = {
         "admin_revoke",
         "unlock_spend",
         "recharge",
+        "chariow_purchase",
       ],
       partner_status: ["pending_review", "approved", "paused", "rejected"],
       prospect_status: [

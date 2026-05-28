@@ -121,25 +121,37 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  // Routes immersives : pas de header/footer public, le shell auth prend tout.
+  const immersiveAuth =
+    pathname === "/marketplace" ||
+    pathname.startsWith("/marketplace/") ||
+    pathname === "/recharger" ||
+    pathname.startsWith("/recharger/") ||
+    pathname === "/admin" ||
+    pathname.startsWith("/admin/") ||
+    pathname === "/espace-partenaire" ||
+    pathname.startsWith("/espace-partenaire/") ||
+    pathname === "/changer-mot-de-passe";
 
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <AuthSync />
         <LanguageProvider>
-        <div className="flex min-h-screen flex-col bg-background pb-16 lg:pb-0">
+        <div className={`flex min-h-screen flex-col bg-background ${immersiveAuth ? "" : "pb-16 lg:pb-0"}`}>
           <a
             href="#main"
             className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[60] focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-primary-foreground"
           >
             Aller au contenu principal
           </a>
-          <Header />
+          {!immersiveAuth && <Header />}
           <main id="main" tabIndex={-1} className="flex-1 outline-none overflow-x-hidden">
             <Outlet />
           </main>
-          <Footer />
-          <MobileCtaBar />
+          {!immersiveAuth && <Footer />}
+          {!immersiveAuth && <MobileCtaBar />}
           <Toaster />
         </div>
         </LanguageProvider>
