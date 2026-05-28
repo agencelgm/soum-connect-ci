@@ -546,3 +546,157 @@ function TeamPanel() {
     </div>
   );
 }
+
+// ============= Détails Prospect / Partenaire =============
+
+const PROSPECT_FIELD_LABELS: Record<string, string> = {
+  logo: "A déjà un logo ?",
+  siteWeb: "A déjà un site internet ?",
+  bureau: "A un bureau physique ?",
+  publicite: "Fait de la publicité ?",
+  delai: "Délai souhaité",
+  nbAssocies: "Nombre d'associés",
+  entreprise: "Nom envisagé pour l'entreprise",
+  description: "Description du projet",
+  localisation: "Localisation précise",
+  statut: "Situation actuelle",
+  nom: "Nom",
+  mobile: "Téléphone",
+  email: "Email",
+  service: "Service demandé",
+  budget: "Budget",
+  audience: "Audience",
+  source: "Source",
+  consent: "Consentement RGPD",
+};
+
+const PROSPECT_TECHNICAL_KEYS = new Set([
+  "leadId", "tag", "received_at", "submitted_at", "user_agent", "language",
+  "page_url", "referrer",
+]);
+
+function formatValue(v: unknown): string {
+  if (v === null || v === undefined || v === "") return "—";
+  if (typeof v === "boolean") return v ? "Oui" : "Non";
+  if (typeof v === "object") return JSON.stringify(v, null, 2);
+  return String(v);
+}
+
+function DetailRow({ label, value }: { label: string; value: unknown }) {
+  return (
+    <div className="grid grid-cols-[160px_1fr] gap-3 py-1.5 border-b border-border/50 last:border-0">
+      <span className="text-xs text-muted-foreground">{label}</span>
+      <span className="text-sm break-words whitespace-pre-wrap">{formatValue(value)}</span>
+    </div>
+  );
+}
+
+function ProspectDetailsDialog({ prospect, onClose }: { prospect: any; onClose: () => void }) {
+  if (!prospect) return null;
+  const raw = (prospect.raw_payload ?? {}) as Record<string, unknown>;
+  const businessKeys = Object.keys(raw).filter((k) => !PROSPECT_TECHNICAL_KEYS.has(k));
+  const techKeys = Object.keys(raw).filter((k) => PROSPECT_TECHNICAL_KEYS.has(k));
+
+  return (
+    <Dialog open={!!prospect} onOpenChange={(o) => { if (!o) onClose(); }}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>{prospect.full_name || prospect.email || "Prospect"}</DialogTitle>
+        </DialogHeader>
+
+        <section className="space-y-1">
+          <h4 className="font-semibold text-sm mb-2">Informations principales</h4>
+          <DetailRow label="Nom complet" value={prospect.full_name} />
+          <DetailRow label="Email" value={prospect.email} />
+          <DetailRow label="Téléphone" value={prospect.phone} />
+          <DetailRow label="Entreprise" value={prospect.company_name} />
+          <DetailRow label="Audience" value={prospect.audience} />
+          <DetailRow label="Statut" value={prospect.status} />
+          <DetailRow label="Service demandé" value={prospect.service} />
+          <DetailRow label="Ville" value={prospect.city} />
+          <DetailRow label="Budget" value={prospect.budget} />
+          <DetailRow label="Forme juridique" value={prospect.legal_form} />
+          <DetailRow label="Situation" value={prospect.statut} />
+          <DetailRow label="Message" value={prospect.message} />
+          <DetailRow label="Type de formulaire" value={prospect.form_type} />
+          <DetailRow label="Reçu le" value={new Date(prospect.created_at).toLocaleString("fr-FR")} />
+          {prospect.qualification_notes && (
+            <DetailRow label="Notes qualification" value={prospect.qualification_notes} />
+          )}
+        </section>
+
+        {businessKeys.length > 0 && (
+          <section className="space-y-1 mt-4">
+            <h4 className="font-semibold text-sm mb-2">Réponses détaillées du formulaire</h4>
+            {businessKeys.map((k) => (
+              <DetailRow key={k} label={PROSPECT_FIELD_LABELS[k] ?? k} value={raw[k]} />
+            ))}
+          </section>
+        )}
+
+        {techKeys.length > 0 && (
+          <details className="mt-4">
+            <summary className="cursor-pointer text-xs text-muted-foreground hover:text-foreground">
+              Métadonnées techniques ({techKeys.length})
+            </summary>
+            <div className="mt-2">
+              {techKeys.map((k) => (
+                <DetailRow key={k} label={k} value={raw[k]} />
+              ))}
+            </div>
+          </details>
+        )}
+
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>Fermer</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function PartnerDetailsDialog({ open, onClose, partner }: { open: boolean; onClose: () => void; partner: any }) {
+  return (
+    <Dialog open={open} onOpenChange={(o) => { if (!o) onClose(); }}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>{partner.cabinet_name}</DialogTitle>
+        </DialogHeader>
+
+        <section className="space-y-1">
+          <h4 className="font-semibold text-sm mb-2">Cabinet</h4>
+          <DetailRow label="Nom du cabinet" value={partner.cabinet_name} />
+          <DetailRow label="Statut" value={partner.status} />
+          <DetailRow label="Crédits" value={partner.credits_balance} />
+          <DetailRow label="Ville" value={partner.city} />
+          <DetailRow label="Site web" value={partner.website} />
+          <DetailRow label="Facebook" value={partner.facebook_url} />
+          <DetailRow label="Services" value={partner.services?.join(", ")} />
+          <DetailRow label="Zones d'intervention" value={partner.zones?.join(", ")} />
+        </section>
+
+        <section className="space-y-1 mt-4">
+          <h4 className="font-semibold text-sm mb-2">Contact</h4>
+          <DetailRow label="Prénom" value={partner.contact_first_name} />
+          <DetailRow label="Nom" value={partner.contact_last_name} />
+          <DetailRow label="Email" value={partner.email} />
+          <DetailRow label="Téléphone" value={partner.phone} />
+        </section>
+
+        <section className="space-y-1 mt-4">
+          <h4 className="font-semibold text-sm mb-2">Historique</h4>
+          <DetailRow label="Inscrit le" value={new Date(partner.created_at).toLocaleString("fr-FR")} />
+          {partner.approved_at && <DetailRow label="Approuvé le" value={new Date(partner.approved_at).toLocaleString("fr-FR")} />}
+          {partner.paused_at && <DetailRow label="Mis en pause le" value={new Date(partner.paused_at).toLocaleString("fr-FR")} />}
+          {partner.pause_reason && <DetailRow label="Motif pause" value={partner.pause_reason} />}
+          {partner.rejected_at && <DetailRow label="Rejeté le" value={new Date(partner.rejected_at).toLocaleString("fr-FR")} />}
+          {partner.rejection_reason && <DetailRow label="Motif rejet" value={partner.rejection_reason} />}
+        </section>
+
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>Fermer</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
