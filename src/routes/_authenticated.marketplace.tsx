@@ -9,6 +9,7 @@ import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 import { isUnauthorizedError } from "@/lib/auth-actions";
 import { UnauthorizedScreen } from "@/components/auth/UnauthorizedScreen";
+import { MapPin, Building2, Wallet, Users, Lock, Sparkles, Clock, Unlock } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/marketplace")({
   head: () => ({ meta: [{ title: "Marketplace de leads" }, { name: "robots", content: "noindex,nofollow" }] }),
@@ -155,20 +156,68 @@ function LeadCard({ lead, alreadyUnlocked, credits }: { lead: Lead; alreadyUnloc
   });
 
   const remaining = lead.max_unlocks - lead.unlock_count;
+  const ageHours = Math.max(0, Math.floor((Date.now() - new Date(lead.published_at).getTime()) / 36e5));
+  const isFresh = ageHours < 48;
+  const timeAgo = ageHours < 1
+    ? "à l'instant"
+    : ageHours < 24
+      ? `il y a ${ageHours} h`
+      : `il y a ${Math.floor(ageHours / 24)} j`;
+  const fillRatio = lead.unlock_count / lead.max_unlocks;
+  const urgencyColor = remaining <= 1 ? "bg-red-500" : remaining <= 3 ? "bg-orange-500" : "bg-emerald-500";
+  const urgencyText = remaining <= 1 ? "text-red-600" : remaining <= 3 ? "text-orange-600" : "text-emerald-700";
+  const audienceLabel = lead.audience === "particulier" ? "Particulier" : lead.audience === "entreprise" ? "Entreprise" : "À qualifier";
 
   return (
-    <div className="rounded-lg border bg-card p-5 space-y-3">
+    <div className="group rounded-xl border bg-card p-5 space-y-4 transition-all hover:shadow-lg hover:border-primary/40">
       <div className="flex items-start justify-between gap-3">
-        <div>
-          <h3 className="font-semibold">{lead.service || "Prestation à définir"}</h3>
-          <p className="text-sm text-muted-foreground">
-            {lead.city || "Ville non précisée"} · {lead.audience} · {lead.legal_form || "Forme non précisée"}
-          </p>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2 flex-wrap mb-1">
+            {isFresh && (
+              <span className="inline-flex items-center gap-1 text-[11px] font-semibold rounded-full bg-primary/10 text-primary px-2 py-0.5">
+                <Sparkles className="h-3 w-3" /> Nouveau
+              </span>
+            )}
+            <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
+              <Clock className="h-3 w-3" /> Publié {timeAgo}
+            </span>
+          </div>
+          <h3 className="text-lg font-bold leading-tight">{lead.service || "Prestation à définir"}</h3>
         </div>
-        <span className="text-xs rounded-full bg-muted px-2 py-1 whitespace-nowrap">{remaining} place{remaining > 1 ? "s" : ""}</span>
+        <div className="flex flex-col items-end gap-1 shrink-0">
+          <span className={`text-xs font-semibold rounded-full bg-muted px-2.5 py-1 whitespace-nowrap ${urgencyText}`}>
+            {remaining} place{remaining > 1 ? "s" : ""} sur {lead.max_unlocks}
+          </span>
+          <div className="h-1.5 w-24 rounded-full bg-muted overflow-hidden">
+            <div className={`h-full ${urgencyColor} transition-all`} style={{ width: `${Math.min(100, fillRatio * 100)}%` }} />
+          </div>
+        </div>
       </div>
-      {lead.budget && <p className="text-sm"><strong>Budget :</strong> {lead.budget}</p>}
-      {lead.summary && <p className="text-sm text-muted-foreground line-clamp-3">{lead.summary}</p>}
+
+      <div className="grid grid-cols-2 gap-2 text-sm">
+        <div className="flex items-center gap-2 text-foreground/80">
+          <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
+          <span className="truncate">{lead.city || "Ville non précisée"}</span>
+        </div>
+        <div className="flex items-center gap-2 text-foreground/80">
+          <Users className="h-4 w-4 text-muted-foreground shrink-0" />
+          <span className="truncate">{audienceLabel}</span>
+        </div>
+        <div className="flex items-center gap-2 text-foreground/80">
+          <Building2 className="h-4 w-4 text-muted-foreground shrink-0" />
+          <span className="truncate">{lead.legal_form || "Forme non précisée"}</span>
+        </div>
+        <div className="flex items-center gap-2 text-foreground/80">
+          <Wallet className="h-4 w-4 text-muted-foreground shrink-0" />
+          <span className="truncate font-medium">{lead.budget || "Budget non précisé"}</span>
+        </div>
+      </div>
+
+      {lead.summary && (
+        <blockquote className="border-l-4 border-primary/60 bg-muted/40 px-3 py-2 text-sm italic text-foreground/80 rounded-r">
+          « {lead.summary} »
+        </blockquote>
+      )}
 
       {revealed ? (
         <div className="rounded-md border border-emerald-200 bg-emerald-50 p-3 text-sm space-y-1">
@@ -179,17 +228,27 @@ function LeadCard({ lead, alreadyUnlocked, credits }: { lead: Lead; alreadyUnloc
           {revealed.message && <p className="pt-2 italic">"{String(revealed.message)}"</p>}
         </div>
       ) : alreadyUnlocked ? (
-        <Button variant="outline" onClick={() => mut.mutate()} disabled={mut.isPending}>
+        <Button variant="outline" size="lg" className="w-full" onClick={() => mut.mutate()} disabled={mut.isPending}>
+          <Unlock className="h-4 w-4 mr-2" />
           {mut.isPending ? "…" : "Afficher les coordonnées"}
         </Button>
       ) : credits < 1 ? (
-        <Button asChild variant="default">
-          <Link to="/recharger">Recharger pour débloquer</Link>
-        </Button>
+        <div className="space-y-1">
+          <Button asChild variant="default" size="lg" className="w-full">
+            <Link to="/recharger">Recharger pour débloquer</Link>
+          </Button>
+          <p className="text-[11px] text-center text-muted-foreground">Crédits insuffisants</p>
+        </div>
       ) : (
-        <Button onClick={() => mut.mutate()} disabled={mut.isPending}>
-          {mut.isPending ? "Déblocage…" : "Débloquer (1 crédit)"}
-        </Button>
+        <div className="space-y-1.5 pt-1">
+          <Button onClick={() => mut.mutate()} disabled={mut.isPending} size="lg" className="w-full font-semibold shadow-sm">
+            <Lock className="h-4 w-4 mr-2" />
+            {mut.isPending ? "Déblocage…" : "Débloquer ce lead (1 crédit)"}
+          </Button>
+          <p className="text-[11px] text-center text-muted-foreground">
+            Vous obtiendrez : nom, email, téléphone et message complet
+          </p>
+        </div>
       )}
     </div>
   );
