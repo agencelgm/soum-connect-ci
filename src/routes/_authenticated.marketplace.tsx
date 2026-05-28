@@ -7,6 +7,8 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
+import { isUnauthorizedError } from "@/lib/auth-actions";
+import { UnauthorizedScreen } from "@/components/auth/UnauthorizedScreen";
 
 export const Route = createFileRoute("/_authenticated/marketplace")({
   head: () => ({ meta: [{ title: "Marketplace de leads" }, { name: "robots", content: "noindex,nofollow" }] }),
@@ -17,7 +19,7 @@ function MarketplacePage() {
   const { user } = useAuth();
   const fetchList = useServerFn(listMarketplace);
   const fetchMine = useServerFn(myUnlockedLeads);
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ["marketplace"],
     queryFn: async () => {
       const { data: authData, error } = await supabase.auth.getUser();
@@ -27,7 +29,7 @@ function MarketplacePage() {
     enabled: !!user,
     retry: false,
   });
-  const { data: mine } = useQuery({
+  const { data: mine, error: mineError } = useQuery({
     queryKey: ["my-unlocks"],
     queryFn: async () => {
       const { data: authData, error } = await supabase.auth.getUser();
@@ -39,6 +41,9 @@ function MarketplacePage() {
   });
   const [tab, setTab] = useState<"available" | "mine">("available");
 
+  if (isUnauthorizedError(error) || isUnauthorizedError(mineError)) {
+    return <UnauthorizedScreen />;
+  }
   if (isLoading) return <p className="text-muted-foreground">Chargement…</p>;
 
   if (!data?.partner) {
