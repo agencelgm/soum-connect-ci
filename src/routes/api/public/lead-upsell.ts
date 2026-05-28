@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 const UpsellSchema = z.object({
   leadId: z.string().min(1).max(64).optional(),
@@ -38,6 +39,39 @@ export const Route = createFileRoute("/api/public/lead-upsell")({
           received_at: new Date().toISOString(),
           user_agent: request.headers.get("user-agent") ?? "",
         };
+
+        // Persist the answer on the matching prospect so admins can see it
+        // in the prospect details dialog. We match by raw_payload->>'leadId'.
+        if (parsed.data.leadId) {
+          try {
+            const { data: rows, error: findErr } = await supabaseAdmin
+              .from("prospects")
+              .select("id, raw_payload")
+              .eq("raw_payload->>leadId", parsed.data.leadId)
+              .limit(1);
+            if (findErr) {
+              console.error("[lead-upsell] lookup failed", findErr);
+            } else if (rows && rows.length > 0) {
+              const row = rows[0];
+              const field = parsed.data.offer === "logo" ? "upsell_logo" : "upsell_site";
+              const ts = parsed.data.offer === "logo" ? "upsell_logo_at" : "upsell_site_at";
+              const merged = {
+                ...((row.raw_payload as Record<string, unknown>) ?? {}),
+                [field]: parsed.data.interested ? "oui" : "non",
+                [ts]: payload.received_at,
+              };
+              const { error: updErr } = await supabaseAdmin
+                .from("prospects")
+                .update({ raw_payload: merged, updated_at: new Date().toISOString() })
+                .eq("id", row.id);
+              if (updErr) console.error("[lead-upsell] update failed", updErr);
+            } else {
+              console.warn("[lead-upsell] no prospect for leadId", parsed.data.leadId);
+            }
+          } catch (err) {
+            console.error("[lead-upsell] persist threw", err);
+          }
+        }
 
         const webhookUrl = process.env.GHL_WEBHOOK_URL;
         if (webhookUrl) {
