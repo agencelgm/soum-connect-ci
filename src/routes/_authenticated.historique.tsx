@@ -25,10 +25,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Coins, Unlock, Users, Receipt, AlertCircle } from "lucide-react";
+import { Coins, Unlock, Users, Receipt, AlertCircle, History } from "lucide-react";
 import { ReceiptPdfButton } from "@/components/historique/ReceiptPdfButton";
 
 export const Route = createFileRoute("/_authenticated/historique")({
+  head: () => ({ meta: [{ title: "Historique" }, { name: "robots", content: "noindex,nofollow" }] }),
   component: HistoriquePage,
 });
 
@@ -49,15 +50,19 @@ function formatDateTime(iso: string | null | undefined): string {
 
 function HistoriquePage() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Historique</h1>
-        <p className="text-muted-foreground mt-1">
-          Vos achats de crédits, vos déblocages de leads et l'activité de votre équipe.
-        </p>
-      </div>
+    <div className="min-h-full -my-6 lg:-my-8 py-10 lg:py-14 bg-gradient-to-b from-background via-background to-muted/40">
+      <div className="w-full max-w-6xl mx-auto px-2">
+        <div className="text-center max-w-2xl mx-auto mb-10">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wider mb-4">
+            <History className="h-3.5 w-3.5" /> Suivi de votre activité
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight">Historique</h1>
+          <p className="mt-3 text-base md:text-lg text-muted-foreground">
+            Vos achats de crédits, vos déblocages de leads et l'activité de votre équipe.
+          </p>
+        </div>
 
-      <Tabs defaultValue="achats" className="space-y-4">
+        <Tabs defaultValue="achats" className="space-y-6">
         <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:inline-flex">
           <TabsTrigger value="achats" className="gap-2">
             <Receipt className="h-4 w-4" /> Achats
@@ -80,6 +85,7 @@ function HistoriquePage() {
           <EquipeTab />
         </TabsContent>
       </Tabs>
+      </div>
     </div>
   );
 }
