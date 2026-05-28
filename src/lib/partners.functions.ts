@@ -173,7 +173,7 @@ export const approvePartner = createServerFn({ method: "POST" })
       .eq("id", partner.id);
     if (error) throw new Error(error.message);
     partner.status = "approved";
-    await grantCredits(partner, 10, "signup_bonus", context.userId, "Bonus d'approbation");
+    await grantCredits(partner, 30, "signup_bonus", context.userId, "Bonus d'approbation");
     await emitPartnerEvent(partner, "approved");
     return { ok: true };
   });
@@ -325,7 +325,7 @@ export const createPartnerManually = createServerFn({ method: "POST" })
 
     const partner = await fetchPartner(inserted.id);
     if (partner) {
-      await grantCredits(partner, 10, "manual_creation_bonus", context.userId, "Création manuelle");
+      await grantCredits(partner, 30, "manual_creation_bonus", context.userId, "Création manuelle");
       await emitPartnerEvent(partner, "manual_creation");
     }
     return { id: inserted.id };

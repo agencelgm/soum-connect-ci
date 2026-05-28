@@ -11,9 +11,9 @@ export const Route = createFileRoute("/_authenticated/recharger")({
 });
 
 const PACKS = [
-  { credits: 10, price: "15 000 FCFA", popular: false },
-  { credits: 25, price: "35 000 FCFA", popular: true },
-  { credits: 60, price: "75 000 FCFA", popular: false },
+  { credits: 10, price: "10 000 FCFA", popular: false },
+  { credits: 25, price: "25 000 FCFA", popular: true },
+  { credits: 60, price: "60 000 FCFA", popular: false },
 ];
 
 function RechargerPage() {
