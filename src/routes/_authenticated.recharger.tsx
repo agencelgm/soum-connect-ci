@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
+import { useEffect } from "react";
 import { getMyPartner } from "@/lib/partners.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -11,10 +12,44 @@ export const Route = createFileRoute("/_authenticated/recharger")({
 });
 
 const PACKS = [
-  { credits: 10, price: "10 000 FCFA", popular: false },
-  { credits: 25, price: "25 000 FCFA", popular: true },
-  { credits: 60, price: "60 000 FCFA", popular: false },
+  { credits: 10, price: "10 000 FCFA", popular: false, productId: "prd_kui1kil8" },
+  { credits: 25, price: "25 000 FCFA", popular: true, productId: "prd_ak61x0fl" },
+  { credits: 60, price: "60 000 FCFA", popular: false, productId: "prd_mm3xnkwg" },
 ];
+
+function ChariowButton({ productId, ctaText }: { productId: string; ctaText: string }) {
+  useEffect(() => {
+    if (!document.querySelector('link[href="https://js.chariowcdn.com/v1/widget.min.css"]')) {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "https://js.chariowcdn.com/v1/widget.min.css";
+      document.head.appendChild(link);
+    }
+    if (!document.querySelector('script[src="https://js.chariowcdn.com/v1/widget.min.js"]')) {
+      const script = document.createElement("script");
+      script.src = "https://js.chariowcdn.com/v1/widget.min.js";
+      script.async = true;
+      document.head.appendChild(script);
+    }
+  }, []);
+
+  return (
+    <div
+      id="chariow-widget"
+      className="chariow-widget"
+      data-product-id={productId}
+      data-store-domain="academielgm.com"
+      data-style="tap"
+      data-border-style="rounded"
+      data-cta-width="xs"
+      data-cta-animation="pulse_glow"
+      data-locale="fr"
+      data-primary-color="#ffcc00"
+      data-background-color="#FFFFFF"
+      data-custom-cta-text={ctaText}
+    />
+  );
+}
 
 function RechargerPage() {
   const meFn = useServerFn(getMyPartner);
@@ -65,9 +100,10 @@ function RechargerPage() {
             <p className="text-xs text-muted-foreground">
               1 crédit = 1 lead débloqué (coordonnées complètes).
             </p>
-            <Button className="w-full" disabled>
-              Bientôt disponible
-            </Button>
+            <ChariowButton
+              productId={pack.productId}
+              ctaText={`Recharger ${pack.credits} crédits`}
+            />
           </div>
         ))}
       </div>
