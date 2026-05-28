@@ -46,10 +46,10 @@ function AuthLayout() {
   const isStaff = (me?.roles ?? []).some((r) => r === "admin" || r === "agent");
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-8">
-      <div className="flex justify-between items-center mb-8 pb-4 border-b">
-        <div className="text-sm text-muted-foreground">{user.email}</div>
-        <div className="flex items-center gap-2">
+    <div className="mx-auto max-w-6xl px-4 sm:px-6 py-8 overflow-x-hidden">
+      <div className="flex flex-wrap justify-between items-center gap-2 mb-8 pb-4 border-b">
+        <div className="text-sm text-muted-foreground truncate max-w-full">{user.email}</div>
+        <div className="flex items-center gap-2 flex-wrap">
           {isStaff && (
             <>
               <Button asChild variant="ghost" size="sm">
