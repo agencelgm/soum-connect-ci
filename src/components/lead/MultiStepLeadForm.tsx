@@ -404,7 +404,6 @@ export function MultiStepLeadForm({
   const STATUTS = language === "en" ? STATUTS_EN : STATUTS_FR;
   const LOCALISATIONS = language === "en" ? LOCALISATIONS_EN : LOCALISATIONS_FR;
   const DELAIS = language === "en" ? DELAIS_EN : DELAIS_FR;
-  const BUDGETS = language === "en" ? BUDGETS_EN : BUDGETS_FR;
   const navigate = useNavigate();
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
 
@@ -433,6 +432,25 @@ export function MultiStepLeadForm({
 
   const { register, handleSubmit, trigger, formState, setValue, watch } = form;
   const errors: FieldErrors<FormValues> = formState.errors;
+
+  const watchedService = watch("service");
+  const watchedBudget = watch("budget");
+  const budgetCfg = getBudgetConfig(watchedService ?? "", language);
+  const budgetLabel =
+    budgetCfg.kind === "monthly"
+      ? c.lBudgetMonthly
+      : budgetCfg.kind === "project"
+        ? c.lBudgetProject
+        : c.lBudgetGeneric;
+
+  // Si l'utilisateur change de service, on réinitialise le budget si l'ancienne
+  // valeur n'est plus proposée par les nouvelles tranches.
+  useEffect(() => {
+    if (watchedBudget && !budgetCfg.options.includes(watchedBudget)) {
+      setValue("budget", "", { shouldValidate: false });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watchedService]);
 
   const next = async () => {
     const ok = await trigger(STEP_FIELDS[step]);
@@ -666,10 +684,10 @@ export function MultiStepLeadForm({
               </select>
             </Field>
 
-            <Field id="budget" label={c.lBudget} required error={errors.budget?.message}>
+            <Field id="budget" label={budgetLabel} required error={errors.budget?.message}>
               <select id="budget" {...register("budget")} className={selectClass}>
                 <option value="">{c.choose}</option>
-                {BUDGETS.map((s) => (
+                {budgetCfg.options.map((s) => (
                   <option key={s} value={s}>{s}</option>
                 ))}
               </select>
