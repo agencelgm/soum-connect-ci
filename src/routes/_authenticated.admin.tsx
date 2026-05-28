@@ -30,6 +30,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -56,14 +57,25 @@ function AdminPage() {
     return <p className="text-muted-foreground">Accès réservé à l'équipe.</p>;
   }
 
+  return <AdminPageInner roles={roles} />;
+}
+
+function AdminPageInner({ roles }: { roles: string[] }) {
+  const listPartnersFn = useServerFn(listPartners);
+  const listProspectsFn = useServerFn(listProspects);
+  const { data: partnersData } = useQuery({ queryKey: ["partners"], queryFn: () => listPartnersFn() });
+  const { data: prospectsData } = useQuery({ queryKey: ["prospects"], queryFn: () => listProspectsFn() });
+  const pendingPartners = (partnersData?.partners ?? []).filter((p: any) => p.status === "pending_review").length;
+  const pendingProspects = (prospectsData?.prospects ?? []).filter((p: any) => p.status === "pending_qualification").length;
+
   return (
     <div className="min-w-0">
       <h1 className="text-3xl font-bold mb-6">Tableau de bord</h1>
       <Tabs defaultValue="partners">
         <div className="-mx-4 sm:mx-0 overflow-x-auto px-4 sm:px-0">
           <TabsList className="w-max flex-nowrap">
-            <TabsTrigger value="partners">Partenaires</TabsTrigger>
-            <TabsTrigger value="prospects">Prospects</TabsTrigger>
+            <TabsTrigger value="partners">Partenaires <PendingBadge count={pendingPartners} /></TabsTrigger>
+            <TabsTrigger value="prospects">Prospects <PendingBadge count={pendingProspects} /></TabsTrigger>
             <TabsTrigger value="create">+ Créer un partenaire</TabsTrigger>
             {roles.includes("admin") && <TabsTrigger value="team">Équipe</TabsTrigger>}
           </TabsList>
@@ -76,6 +88,15 @@ function AdminPage() {
         )}
       </Tabs>
     </div>
+  );
+}
+
+function PendingBadge({ count }: { count: number }) {
+  if (!count) return null;
+  return (
+    <span className="ml-1.5 inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full bg-destructive text-destructive-foreground text-xs font-semibold animate-pulse">
+      {count}
+    </span>
   );
 }
 
