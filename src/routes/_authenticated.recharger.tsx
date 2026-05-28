@@ -1,20 +1,17 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect } from "react";
 import { getMyPartner } from "@/lib/partners.functions";
 import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { CREDIT_PACKS } from "@/lib/credit-packs";
+import { ArrowLeft } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/recharger")({
   head: () => ({ meta: [{ title: "Recharger mes crédits" }, { name: "robots", content: "noindex,nofollow" }] }),
   component: RechargerPage,
 });
-
-const PACKS = [
-  { credits: 10, price: "10 000 FCFA", popular: false, productId: "prd_kui1kil8" },
-  { credits: 25, price: "25 000 FCFA", popular: true, productId: "prd_ak61x0fl" },
-  { credits: 60, price: "60 000 FCFA", popular: false, productId: "prd_mm3xnkwg" },
-];
 
 function ChariowButton({ productId, ctaText }: { productId: string; ctaText: string }) {
   useEffect(() => {
@@ -65,6 +62,9 @@ function RechargerPage() {
 
   return (
     <div className="space-y-8">
+      <Button asChild variant="ghost" size="sm" className="-ml-2">
+        <Link to="/marketplace"><ArrowLeft className="h-4 w-4 mr-1" /> Retour à la marketplace</Link>
+      </Button>
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-3xl font-bold">Recharger mes crédits</h1>
@@ -81,7 +81,7 @@ function RechargerPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
-        {PACKS.map((pack) => (
+        {CREDIT_PACKS.map((pack) => (
           <div
             key={pack.credits}
             className={`rounded-lg border bg-card p-6 space-y-4 relative ${pack.popular ? "border-primary shadow-md" : ""}`}
