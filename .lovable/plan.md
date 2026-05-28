@@ -1,54 +1,50 @@
-## Problème
+## Vérifications avant ton prochain test
 
-Le webhook Chariow ne crédite pas automatiquement parce que :
-1. **`data-metadata-partner-id` n'est pas transmis** par le widget Chariow → `product.metadata: null` dans le payload reçu.
-2. **L'email du paiement** (kkaderkonan@gmail.com) **ne correspond pas** à l'email du compte partenaire connecté → fallback email échoue.
-3. Aucun mécanisme fiable ne lie un paiement Chariow à un partenaire connecté.
+### 1. Erreur SSR à neutraliser
+Le serveur log répète :
+```
+TypeError: Cannot use 'in' operator to search for 'Symbol(TSS_SERVER_FUNCTION_FACTORY)' in undefined
+  at partners.functions.ts:82 (.middleware([requireSupabaseAuth]))
+```
+→ Pendant le SSR de `/_authenticated`, `requireSupabaseAuth` est `undefined`. Le client bascule en rendu client donc l'utilisateur ne voit rien, mais ça pollue les logs et peut faire échouer un loader protégé.
 
-## Solution — 3 niveaux de matching
+**Action** : redémarrer le dev server pour purger le cache HMR du plugin TanStack server-fn. Si l'erreur revient après redémarrage → vraie cause (probablement une dépendance circulaire entre `partners.functions.ts` ↔ `partners.server.ts` ↔ un module qui re-import `requireSupabaseAuth`), à corriger en inlinant l'import ou en cassant le cycle.
 
-### Niveau 1 — Table d'intentions de paiement (le vrai fix)
+### 2. Webhook Chariow — vérifier le code
+Relire `src/routes/api/public/chariow-webhook.ts` :
+- ✅ Idempotence par `license_code` (unique)
+- ✅ Ordre de matching : `metadata.partner_id` → email partners → email profiles → intent <30 min → unmatched
+- ✅ Consommation de l'intent (`consumed_at` + `chariow_payment_id`)
 
-Avant d'ouvrir le widget Chariow, on enregistre une "intention" côté serveur, indexée par `(product_id, partner_id, created_at)`. Le webhook matche le paiement le plus récent pour ce `product_id` dans une fenêtre courte (ex. 30 min) si aucun autre indice ne fonctionne.
+### 3. Server fn `createChariowIntent` — vérifier
+- ✅ Auth requise (`requireSupabaseAuth`)
+- ✅ Validation Zod du `productId`
+- ✅ INSERT dans `chariow_payment_intents`
 
-**Migration** : nouvelle table `chariow_payment_intents`
-- `id`, `partner_id` (FK partners), `product_id`, `created_at`, `consumed_at`, `chariow_payment_id` (nullable)
-- RLS : partner peut INSERT pour son propre partner_id, lecture admin uniquement
-- Index sur `(product_id, created_at DESC) WHERE consumed_at IS NULL`
+### 4. Page Recharger — vérifier
+- ✅ `onClickCapture` + `onPointerDownCapture` autour du widget Chariow déclenchent `createChariowIntent` avant l'ouverture
+- ✅ Affichage de l'email du compte avec bouton "copier"
+- ✅ Bloc "J'ai payé mais je n'ai pas reçu mes crédits" toujours présent comme filet de sécurité
 
-**Server fn** `createChariowIntent(productId)` (auth requis) appelée au clic sur le bouton Chariow, juste avant d'ouvrir le widget.
+### 5. Test end-to-end (toi)
+Une fois le dev server redémarré et l'erreur SSR partie :
+1. Ouvrir `/recharger` en étant connecté avec ton compte
+2. Vérifier dans la console réseau qu'un POST vers `/_serverFn/createChariowIntent_*` part **avant** que le widget Chariow ne s'ouvre
+3. Faire le paiement Chariow (avec n'importe quel email)
+4. Vérifier en BDD :
+   - `chariow_payment_intents` : ton intent doit avoir `consumed_at` rempli
+   - `chariow_payments` : `status='credited'`, `partner_id` rempli
+   - `partners.credits_balance` : incrémenté
+   - `credit_transactions` : nouvelle ligne `chariow_purchase`
 
-### Niveau 2 — Matching dans le webhook
+### 6. Notes
+- Le widget Chariow est rendu par un script externe : si Chariow met du temps à s'ouvrir, l'intent partira quand même au tout premier clic.
+- Fenêtre de 30 min entre intent et webhook : largement suffisant pour un paiement.
+- Si plusieurs partenaires tentent d'acheter le même pack dans la même fenêtre, le plus récent gagne (rare en pratique).
 
-Ordre de résolution du `partner_id` :
-1. `metadata.partner_id` (au cas où Chariow finit par le transmettre)
-2. **Email exact** sur `partners.email`
-3. **Email exact** sur `profiles.email` → remonter au `partners.profile_id`
-4. **Intention non consommée** la plus récente (<30 min) pour ce `product_id` → marquer `consumed_at`
-5. Sinon `status = unmatched` (UI de réclamation existante)
+## Plan d'exécution
 
-### Niveau 3 — UX recharger
-
-- Afficher clairement : "Payez avec **votre email de compte : `<email>`** pour un crédit automatique"
-- Bouton "Copier mon email" à côté du widget
-- Garder le formulaire "J'ai payé mais pas reçu" avec le `license_code`
-
-## Fichiers à modifier
-
-- **Migration SQL** : créer `chariow_payment_intents` + GRANTs + RLS + index
-- **`src/lib/chariow.functions.ts`** : nouvelle server fn `createChariowIntent`
-- **`src/routes/api/public/chariow-webhook.ts`** : ajouter niveaux 3 (profiles) et 4 (intent), consommer l'intent
-- **`src/routes/_authenticated.recharger.tsx`** :
-  - Appeler `createChariowIntent` au clic via un wrapper autour du bouton Chariow
-  - Afficher l'email du compte avec bouton copier
-  - Garder l'attribut `data-metadata-partner-id` (au cas où, sans dépendre de lui)
-
-## Notes techniques
-
-- Le widget Chariow n'expose visiblement pas de mécanisme fiable de metadata custom → l'intent table est plus robuste qu'un attribut HTML qu'on ne maîtrise pas.
-- Idempotence : le webhook reste sécurisé par `chariow_payments.license_code UNIQUE`.
-- Le paiement actuel non matché (`9a08baa4...`, kkaderkonan@gmail.com) sera traité manuellement après confirmation de l'utilisateur (créer un partner pour kkaderkonan ou créditer un partner existant).
-
-## Question avant build
-
-Pour le paiement test actuel non matché (10 crédits, kkaderkonan@gmail.com) : à qui les attribuer ? Au même compte test que la dernière fois (test1@gmail.com / partner `78661ae8…`), ou bien créer un partner pour kkaderkonan ?
+1. Redémarrer le dev server
+2. Confirmer dans les logs que l'erreur TSS n'apparaît plus
+3. Si elle revient : ouvrir `partners.functions.ts` + `partners.server.ts` + `ghl-partners.server.ts` et casser le cycle d'imports
+4. Te donner le feu vert pour ton test
