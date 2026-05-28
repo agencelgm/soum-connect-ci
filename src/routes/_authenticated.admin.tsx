@@ -174,7 +174,7 @@ function PartnerCard({ partner, isAdmin, onChange }: { partner: any; isAdmin: bo
           {partner.status === "pending_review" && (
             <>
               <Button size="sm" disabled={busy} onClick={() => run(() => approveFn({ data: { partner_id: partner.id } }))}>
-                Approuver (+10 crédits)
+                Approuver (+30 crédits)
               </Button>
               <RejectButton disabled={busy} onConfirm={(reason) => run(() => rejectFn({ data: { partner_id: partner.id, reason } }))} />
             </>
@@ -358,7 +358,7 @@ function CreatePartnerPanel() {
           zones: form.zones.split(",").map((s) => s.trim()).filter(Boolean),
         },
       });
-      toast.success("Partenaire créé (10 crédits attribués)");
+      toast.success("Partenaire créé (30 crédits attribués)");
       setForm({ cabinet_name: "", contact_first_name: "", contact_last_name: "", email: "", phone: "", city: "", password: "", website: "", facebook_url: "", services: "", zones: "" });
       qc.invalidateQueries({ queryKey: ["partners"] });
     } catch (e) {
@@ -369,7 +369,7 @@ function CreatePartnerPanel() {
   return (
     <form onSubmit={onSubmit} className="space-y-4 max-w-2xl">
       <p className="text-sm text-muted-foreground">
-        Création manuelle : le cabinet est immédiatement actif avec 10 crédits. Aucune validation requise.
+        Création manuelle : le cabinet est immédiatement actif avec 30 crédits. Aucune validation requise.
       </p>
       <div>
         <Label>Nom du cabinet *</Label>
