@@ -37,7 +37,7 @@ function ConnexionPage() {
         } else if (me.roles.includes("admin") || me.roles.includes("agent")) {
           navigate({ to: "/admin", replace: true });
         } else {
-          navigate({ to: "/espace-partenaire", replace: true });
+          navigate({ to: "/marketplace", replace: true });
         }
       });
     }
@@ -60,10 +60,10 @@ function ConnexionPage() {
       } else if (me.roles.includes("admin") || me.roles.includes("agent")) {
         navigate({ to: "/admin", replace: true });
       } else {
-        navigate({ to: "/espace-partenaire", replace: true });
+        navigate({ to: "/marketplace", replace: true });
       }
     } catch {
-      navigate({ to: "/espace-partenaire", replace: true });
+      navigate({ to: "/marketplace", replace: true });
     }
   }
 

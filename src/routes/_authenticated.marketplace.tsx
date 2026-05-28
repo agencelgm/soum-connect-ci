@@ -36,7 +36,7 @@ function MarketplacePage() {
     return (
       <div className="rounded-lg border bg-card p-6">
         <p>Aucun compte partenaire approuvé.</p>
-        <Button asChild className="mt-3"><Link to="/espace-partenaire">Retour</Link></Button>
+        <Button asChild className="mt-3"><Link to="/marketplace">Retour</Link></Button>
       </div>
     );
   }
@@ -44,7 +44,7 @@ function MarketplacePage() {
     return (
       <div className="rounded-lg border border-amber-200 bg-amber-50 p-6">
         <p>Votre compte n'est pas encore activé. Vous ne pouvez pas accéder à la marketplace.</p>
-        <Button asChild variant="outline" className="mt-3"><Link to="/espace-partenaire">Retour</Link></Button>
+        <Button asChild variant="outline" className="mt-3"><Link to="/marketplace">Retour</Link></Button>
       </div>
     );
   }
