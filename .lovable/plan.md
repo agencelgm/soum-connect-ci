@@ -1,28 +1,40 @@
-## Problème 1 — Erreur "invalid input value for enum credit_tx_type"
+# Corrections marketplace & affichage des réponses
 
-La fonction RPC `unlock_lead` insère `'lead_unlock'` dans `credit_transactions.tx_type`, mais l'enum `credit_tx_type` n'a pas cette valeur. Valeurs existantes : `signup_bonus`, `manual_creation_bonus`, `admin_grant`, `admin_revoke`, `unlock_spend`, `recharge`.
+## 1. Afficher le « délai souhaité » sur la carte lead (visible avant déblocage)
 
-**Correction** : migration qui remplace `CREATE OR REPLACE FUNCTION public.unlock_lead(...)` en utilisant `'unlock_spend'` à la place de `'lead_unlock'` (le reste de la fonction reste identique).
+Le délai est déjà collecté par le formulaire et stocké dans `prospects.raw_payload.delai`, mais il n'est ni dans la table `lead_publications` ni dans la réponse `listMarketplace`. À corriger :
 
-## Problème 2 — Carte lead peu attractive
+- **`src/lib/marketplace.functions.ts` → `listMarketplace`** : après avoir récupéré les `lead_publications`, charger en une requête les `prospects` correspondants (`prospect_id`) et extraire uniquement les champs non-PII / non-internes du `raw_payload` : `delai`, et éventuellement `nbAssocies`, `bureau` (utiles au cabinet). Renvoyer ces champs en plus sur chaque lead (`delai`, `nb_associes`, `a_bureau`).
+- **`src/routes/_authenticated.marketplace.tsx` → `LeadCard`** : ajouter une ligne avec une icône `CalendarClock` (lucide) pour afficher « Démarrage : {delai} » dans la grille d'infos, si présent.
 
-Refonte du composant `LeadCard` dans `src/routes/_authenticated.marketplace.tsx` pour donner envie de débloquer. Aucune modif des données serveur ; uniquement présentation.
+## 2. Ne JAMAIS divulguer les infos internes au partenaire (même après déblocage)
 
-Améliorations visuelles :
+Champs à garder strictement internes (visibles uniquement dans l'admin) :
+- `logo` (a un logo ?)
+- `siteWeb` (a un site ?)
+- `publicite` (fait de la pub ?)
+- `upsell_logo`, `upsell_logo_at`, `upsell_site`, `upsell_site_at` (réponses upsell)
 
-- **En-tête contrasté** : titre du service plus gros, icône, badge "Nouveau" si publié < 48 h.
-- **Délai / urgence** : afficher "Publié il y a X h" (calculé depuis `published_at`) en français + un badge `il reste N places sur 5` avec barre de progression colorée (vert > orange > rouge selon places restantes).
-- **Hiérarchie d'info** claire avec icônes Lucide : 📍 ville, 🏢 forme juridique, 💰 budget, 👤 audience (particulier/entreprise), délai.
-- **Aperçu du besoin** : `summary` mis en avant dans un bloc cité avec bordure latérale primaire (au lieu d'un petit texte gris).
-- **Bouton "Débloquer"** plus visible : taille `lg`, full-width, accent primaire avec icône cadenas, micro-texte sous le bouton : "Coordonnées complètes : nom, email, téléphone, message".
-- **Hover** : légère élévation (shadow) pour signaler la cliquabilité.
-- Pas d'animation lourde, juste transitions Tailwind.
+Aujourd'hui la RPC `unlock_lead` renvoie `to_jsonb(prospects.*)` entier — donc le `raw_payload` complet (incluant logo/site/publicité) part vers le client partenaire, même si l'UI n'affiche pas ces champs. Risque de fuite via DevTools.
+
+**Correction** : dans `src/lib/marketplace.functions.ts` :
+- **`unlockLead.handler`** : avant de renvoyer `result.prospect`, garder uniquement la liste blanche suivante (les seuls champs autorisés côté partenaire débloqué) :
+  - `full_name`, `email`, `phone`, `company_name`
+  - `message`, `service`, `city`, `legal_form`, `budget`, `audience`
+  - `delai` (extrait du `raw_payload`)
+  - Plus aucun autre champ, et **jamais** `raw_payload` brut.
+- **`myUnlockedLeads.handler`** : appliquer le même filtre sur les prospects renvoyés. Mettre à jour le type `UnlockedItem` côté UI en conséquence.
+
+## 3. Capacité d'un lead : 5 places au lieu de 6
+
+- **Migration DB** : `CREATE OR REPLACE FUNCTION public.publish_prospect_as_lead(...)` avec `_max_unlocks integer DEFAULT 5` (et le clamp `LEAST(_max_unlocks, 20)` inchangé). Ne pas toucher aux publications déjà existantes — seules les nouvelles publications utiliseront 5.
+- **`src/lib/marketplace.functions.ts`** : `publishProspect` → `max_unlocks: z.number().int().min(1).max(20).default(5)`.
+- **`src/routes/_authenticated.admin.tsx`** : remplacer `max_unlocks: 6` par `max_unlocks: 5` dans l'appel `publishFn`.
+
+Les leads déjà publiés à 6 places resteront à 6 (aucun rétro-actif). Si vous souhaitez aussi les ramener à 5, dites-le et j'ajoute un `UPDATE lead_publications SET max_unlocks = 5 WHERE max_unlocks = 6 AND unlock_count <= 5;` à la migration.
 
 ## Détails techniques
 
-- Migration SQL : `CREATE OR REPLACE FUNCTION public.unlock_lead` avec uniquement le `INSERT INTO credit_transactions ... 'unlock_spend' ...`.
-- Helper local `timeAgoFr(published_at)` pour le délai.
-- Icônes : `MapPin`, `Building2`, `Wallet`, `Users`, `Lock`, `Sparkles` depuis `lucide-react` (déjà disponible).
-- Tokens couleur via les classes sémantiques existantes (`primary`, `muted`, `emerald` reste pour l'état "débloqué").
-
-Aucun changement de logique métier, de RLS, ni de schéma au-delà du `CREATE OR REPLACE` de la RPC.
+- Aucune nouvelle colonne ; on lit `raw_payload->>delai` côté serveur uniquement.
+- Aucune modification des policies RLS — tout reste centralisé dans les server functions admin-side (`supabaseAdmin`).
+- L'admin (`_authenticated.admin.tsx`) voit déjà tous les champs `raw_payload` via `PROSPECT_FIELD_LABELS`, donc rien à changer côté admin pour la visibilité interne.
