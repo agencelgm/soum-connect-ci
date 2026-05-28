@@ -55,8 +55,11 @@ export const Route = createFileRoute("/api/public/lead-upsell")({
               const row = rows[0];
               const field = parsed.data.offer === "logo" ? "upsell_logo" : "upsell_site";
               const ts = parsed.data.offer === "logo" ? "upsell_logo_at" : "upsell_site_at";
-              const merged = {
-                ...((row.raw_payload as Record<string, unknown>) ?? {}),
+              const base = (row.raw_payload && typeof row.raw_payload === "object" && !Array.isArray(row.raw_payload))
+                ? (row.raw_payload as Record<string, string | number | boolean | null>)
+                : {};
+              const merged: Record<string, string | number | boolean | null> = {
+                ...base,
                 [field]: parsed.data.interested ? "oui" : "non",
                 [ts]: payload.received_at,
               };
