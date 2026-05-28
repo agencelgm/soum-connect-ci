@@ -5,6 +5,7 @@ import { listMarketplace, unlockLead, myUnlockedLeads } from "@/lib/marketplace.
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useState } from "react";
+import { useAuth } from "@/lib/auth-context";
 
 export const Route = createFileRoute("/_authenticated/marketplace")({
   head: () => ({ meta: [{ title: "Marketplace de leads" }, { name: "robots", content: "noindex,nofollow" }] }),
@@ -12,10 +13,21 @@ export const Route = createFileRoute("/_authenticated/marketplace")({
 });
 
 function MarketplacePage() {
+  const { user } = useAuth();
   const fetchList = useServerFn(listMarketplace);
   const fetchMine = useServerFn(myUnlockedLeads);
-  const { data, isLoading } = useQuery({ queryKey: ["marketplace"], queryFn: () => fetchList() });
-  const { data: mine } = useQuery({ queryKey: ["my-unlocks"], queryFn: () => fetchMine() });
+  const { data, isLoading } = useQuery({
+    queryKey: ["marketplace"],
+    queryFn: () => fetchList(),
+    enabled: !!user,
+    retry: false,
+  });
+  const { data: mine } = useQuery({
+    queryKey: ["my-unlocks"],
+    queryFn: () => fetchMine(),
+    enabled: !!user,
+    retry: false,
+  });
   const [tab, setTab] = useState<"available" | "mine">("available");
 
   if (isLoading) return <p className="text-muted-foreground">Chargement…</p>;
