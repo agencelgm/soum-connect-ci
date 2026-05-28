@@ -31,7 +31,7 @@ function ChariowButton({ productId, ctaText }: { productId: string; ctaText: str
 
   return (
     <div
-      id="chariow-widget"
+      id={`chariow-widget-${productId}`}
       className="chariow-widget"
       data-product-id={productId}
       data-store-domain="academielgm.com"
