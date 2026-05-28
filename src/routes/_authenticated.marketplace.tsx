@@ -140,7 +140,13 @@ type Lead = {
 function LeadCard({ lead, alreadyUnlocked, credits }: { lead: Lead; alreadyUnlocked: boolean; credits: number }) {
   const qc = useQueryClient();
   const unlock = useServerFn(unlockLead);
-  const [revealed, setRevealed] = useState<Record<string, string | number | boolean | null> | null>(null);
+  const [revealed, setRevealed] = useState<{
+    full_name?: string | null;
+    company_name?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    message?: string | null;
+  } | null>(null);
   const mut = useMutation({
     mutationFn: async () => {
       const { data: authData, error } = await supabase.auth.getUser();
