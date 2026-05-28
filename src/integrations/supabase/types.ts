@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      chariow_payment_intents: {
+        Row: {
+          chariow_payment_id: string | null
+          consumed_at: string | null
+          created_at: string
+          id: string
+          partner_id: string
+          product_id: string
+          profile_id: string
+        }
+        Insert: {
+          chariow_payment_id?: string | null
+          consumed_at?: string | null
+          created_at?: string
+          id?: string
+          partner_id: string
+          product_id: string
+          profile_id: string
+        }
+        Update: {
+          chariow_payment_id?: string | null
+          consumed_at?: string | null
+          created_at?: string
+          id?: string
+          partner_id?: string
+          product_id?: string
+          profile_id?: string
+        }
+        Relationships: []
+      }
       chariow_payments: {
         Row: {
           amount_label: string | null

@@ -1,43 +1,54 @@
-## Diagnostic
+## Problème
 
-Le webhook Chariow est bien arrivé pour la licence `PYDL-YK6O-9HFT-D8L2` (pack 10 crédits), mais :
-- L'achat a été fait avec `kkaderkonan@gmail.com`
-- Le compte connecté est `test1@gmail.com`
-- Le webhook cherche un partenaire par email exact → aucun match → ligne enregistrée en `status: unmatched` avec 0 crédits.
+Le webhook Chariow ne crédite pas automatiquement parce que :
+1. **`data-metadata-partner-id` n'est pas transmis** par le widget Chariow → `product.metadata: null` dans le payload reçu.
+2. **L'email du paiement** (kkaderkonan@gmail.com) **ne correspond pas** à l'email du compte partenaire connecté → fallback email échoue.
+3. Aucun mécanisme fiable ne lie un paiement Chariow à un partenaire connecté.
 
-C'est le comportement attendu du code actuel, mais c'est trop fragile : un client qui achète avec un email perso différent de son email partenaire ne sera jamais crédité automatiquement.
+## Solution — 3 niveaux de matching
 
-## Corrections à apporter
+### Niveau 1 — Table d'intentions de paiement (le vrai fix)
 
-### 1. Régulariser le paiement test (one-shot)
-- Attribuer 10 crédits à `test1@gmail.com` (partner `78661ae8…`) : `credits_balance` 18 → 28.
-- Insérer une ligne `credit_transactions` (tx_type `chariow_purchase`, ref = id du paiement, note licence).
-- Mettre à jour `chariow_payments` (id `26db14b0…`) : `status='credited'`, `partner_id`, `credits_granted=10`.
+Avant d'ouvrir le widget Chariow, on enregistre une "intention" côté serveur, indexée par `(product_id, partner_id, created_at)`. Le webhook matche le paiement le plus récent pour ce `product_id` dans une fenêtre courte (ex. 30 min) si aucun autre indice ne fonctionne.
 
-### 2. Passer le `partner_id` dans le widget Chariow
-Sur `/recharger`, ajouter au div `#chariow-widget` les attributs `data-metadata-*` (ou `data-customer-reference`, selon ce que Chariow renvoie dans le payload) avec l'ID du partenaire connecté. Objectif : que Chariow réémette cette valeur dans le webhook.
+**Migration** : nouvelle table `chariow_payment_intents`
+- `id`, `partner_id` (FK partners), `product_id`, `created_at`, `consumed_at`, `chariow_payment_id` (nullable)
+- RLS : partner peut INSERT pour son propre partner_id, lecture admin uniquement
+- Index sur `(product_id, created_at DESC) WHERE consumed_at IS NULL`
 
-### 3. Élargir le matching côté webhook (`src/routes/api/public/chariow-webhook.ts`)
-Ordre de résolution du partenaire :
-1. `partner_id` extrait de `payload.metadata.partner_id` / `payload.custom_fields.partner_id` / `payload.reference` → match direct par `partners.id`.
-2. Fallback : match par email (comportement actuel).
-3. Sinon : `status='unmatched'` (comportement actuel) — pour réclamation manuelle.
+**Server fn** `createChariowIntent(productId)` (auth requis) appelée au clic sur le bouton Chariow, juste avant d'ouvrir le widget.
 
-### 4. UI de réclamation manuelle sur `/recharger`
-- Petit bloc « J'ai déjà payé, je n'ai pas reçu mes crédits » avec un champ `license_code`.
-- Nouveau server fn `claimChariowPayment` protégé par `requireSupabaseAuth` :
-  - Cherche dans `chariow_payments` la ligne `license_code = ?` ET `status IN ('unmatched','pending')`.
-  - Si trouvée : crédite le partenaire connecté, écrit `credit_transactions`, met le paiement à `status='credited'` avec son `partner_id`.
-  - Idempotent : si déjà `credited`, renvoie une erreur claire.
-- Migration : ajouter une policy `INSERT` minimale sur `partners`/`chariow_payments` n'est pas requise (on passe par `supabaseAdmin` dans le server fn).
+### Niveau 2 — Matching dans le webhook
+
+Ordre de résolution du `partner_id` :
+1. `metadata.partner_id` (au cas où Chariow finit par le transmettre)
+2. **Email exact** sur `partners.email`
+3. **Email exact** sur `profiles.email` → remonter au `partners.profile_id`
+4. **Intention non consommée** la plus récente (<30 min) pour ce `product_id` → marquer `consumed_at`
+5. Sinon `status = unmatched` (UI de réclamation existante)
+
+### Niveau 3 — UX recharger
+
+- Afficher clairement : "Payez avec **votre email de compte : `<email>`** pour un crédit automatique"
+- Bouton "Copier mon email" à côté du widget
+- Garder le formulaire "J'ai payé mais pas reçu" avec le `license_code`
+
+## Fichiers à modifier
+
+- **Migration SQL** : créer `chariow_payment_intents` + GRANTs + RLS + index
+- **`src/lib/chariow.functions.ts`** : nouvelle server fn `createChariowIntent`
+- **`src/routes/api/public/chariow-webhook.ts`** : ajouter niveaux 3 (profiles) et 4 (intent), consommer l'intent
+- **`src/routes/_authenticated.recharger.tsx`** :
+  - Appeler `createChariowIntent` au clic via un wrapper autour du bouton Chariow
+  - Afficher l'email du compte avec bouton copier
+  - Garder l'attribut `data-metadata-partner-id` (au cas où, sans dépendre de lui)
 
 ## Notes techniques
 
-- Le webhook reste idempotent grâce à la contrainte unique sur `license_code`.
-- La réclamation manuelle court-circuite l'email mismatch ; elle valide juste que le code existe et n'a pas déjà été crédité.
-- Aucune modification de schéma DB nécessaire (les colonnes `partner_id`, `status`, `credits_granted` existent déjà sur `chariow_payments`).
-- Aucune nouvelle dépendance.
+- Le widget Chariow n'expose visiblement pas de mécanisme fiable de metadata custom → l'intent table est plus robuste qu'un attribut HTML qu'on ne maîtrise pas.
+- Idempotence : le webhook reste sécurisé par `chariow_payments.license_code UNIQUE`.
+- Le paiement actuel non matché (`9a08baa4...`, kkaderkonan@gmail.com) sera traité manuellement après confirmation de l'utilisateur (créer un partner pour kkaderkonan ou créditer un partner existant).
 
-## Question ouverte (peut être tranchée pendant l'implémentation)
+## Question avant build
 
-Le nom exact de l'attribut `data-*` exposé par le widget Chariow pour la metadata n'est pas dans le code. Je tenterai `data-metadata-partner-id` + `data-customer-reference`, et j'inspecterai le payload reçu lors d'un test pour confirmer le bon champ avant de finaliser l'extraction côté webhook.
+Pour le paiement test actuel non matché (10 crédits, kkaderkonan@gmail.com) : à qui les attribuer ? Au même compte test que la dernière fois (test1@gmail.com / partner `78661ae8…`), ou bien créer un partner pour kkaderkonan ?
