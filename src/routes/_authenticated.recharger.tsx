@@ -6,6 +6,7 @@ import { getMyPartner } from "@/lib/partners.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { CREDIT_PACKS } from "@/lib/credit-packs";
+import { cn } from "@/lib/utils";
 import { ArrowLeft, Check, Coins, ShieldCheck, Zap } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/recharger")({
