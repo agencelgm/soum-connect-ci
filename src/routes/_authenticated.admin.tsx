@@ -118,7 +118,7 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
   return (
     <Tabs defaultValue="pending_review">
       <TabsList>
-        <TabsTrigger value="pending_review">En attente ({buckets.pending_review.length})</TabsTrigger>
+        <TabsTrigger value="pending_review">En attente ({buckets.pending_review.length}) <PendingBadge count={buckets.pending_review.length} /></TabsTrigger>
         <TabsTrigger value="approved">Actifs ({buckets.approved.length})</TabsTrigger>
         <TabsTrigger value="paused">En pause ({buckets.paused.length})</TabsTrigger>
         <TabsTrigger value="rejected">Rejetés ({buckets.rejected.length})</TabsTrigger>
