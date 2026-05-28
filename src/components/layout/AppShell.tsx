@@ -61,7 +61,7 @@ export function AppShell({ email, creditsBalance, isStaff, onSignOut, children }
       <aside className="hidden lg:flex w-64 shrink-0 flex-col border-r bg-card">
         <div className="px-5 py-5 border-b">
           <Link to="/marketplace" className="flex items-center gap-2">
-            <img src={logo} alt="SoumissionComptable.com" className="h-20 w-auto" />
+            <img src={logo} alt="SoumissionComptable.com" className="h-[120px] w-auto" />
           </Link>
         </div>
 
@@ -135,7 +135,7 @@ export function AppShell({ email, creditsBalance, isStaff, onSignOut, children }
         {/* Top bar mobile */}
         <header className="lg:hidden sticky top-0 z-30 flex items-center justify-between border-b bg-card px-4 h-14">
           <Link to="/marketplace" className="flex items-center gap-2">
-            <img src={logo} alt="" className="h-16 w-auto" />
+            <img src={logo} alt="" className="h-24 w-auto" />
           </Link>
           <div className="flex items-center gap-2">
             {creditsBalance !== null && (
