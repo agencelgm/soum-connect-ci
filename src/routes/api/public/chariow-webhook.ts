@@ -126,7 +126,8 @@ export const Route = createFileRoute("/api/public/chariow-webhook")({
             credits_granted: 0,
             amount_label: pack?.price ?? null,
             status: "pending",
-            raw_payload: payload as unknown as Record<string, unknown>,
+            // jsonb column — cast via JSON round-trip to satisfy the generated Json type.
+            raw_payload: JSON.parse(JSON.stringify(payload)),
           })
           .select("id")
           .single();

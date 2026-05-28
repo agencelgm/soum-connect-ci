@@ -52,6 +52,7 @@ import { Route as ApiPublicTestPartnerWebhookRouteImport } from './routes/api/pu
 import { Route as ApiPublicLeadUpsellRouteImport } from './routes/api/public/lead-upsell'
 import { Route as ApiPublicLeadRouteImport } from './routes/api/public/lead'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
+import { Route as ApiPublicChariowWebhookRouteImport } from './routes/api/public/chariow-webhook'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -279,6 +280,11 @@ const ApiPublicContactRoute = ApiPublicContactRouteImport.update({
   path: '/api/public/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicChariowWebhookRoute = ApiPublicChariowWebhookRouteImport.update({
+  id: '/api/public/chariow-webhook',
+  path: '/api/public/chariow-webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -319,6 +325,7 @@ export interface FileRoutesByFullPath {
   '/en/website-offer': typeof EnWebsiteOfferRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/en/': typeof EnIndexRoute
+  '/api/public/chariow-webhook': typeof ApiPublicChariowWebhookRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
   '/api/public/lead-upsell': typeof ApiPublicLeadUpsellRoute
@@ -363,6 +370,7 @@ export interface FileRoutesByTo {
   '/en/website-offer': typeof EnWebsiteOfferRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/en': typeof EnIndexRoute
+  '/api/public/chariow-webhook': typeof ApiPublicChariowWebhookRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
   '/api/public/lead-upsell': typeof ApiPublicLeadUpsellRoute
@@ -409,6 +417,7 @@ export interface FileRoutesById {
   '/en/website-offer': typeof EnWebsiteOfferRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/en/': typeof EnIndexRoute
+  '/api/public/chariow-webhook': typeof ApiPublicChariowWebhookRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
   '/api/public/lead-upsell': typeof ApiPublicLeadUpsellRoute
@@ -455,6 +464,7 @@ export interface FileRouteTypes {
     | '/en/website-offer'
     | '/guides/$slug'
     | '/en/'
+    | '/api/public/chariow-webhook'
     | '/api/public/contact'
     | '/api/public/lead'
     | '/api/public/lead-upsell'
@@ -499,6 +509,7 @@ export interface FileRouteTypes {
     | '/en/website-offer'
     | '/guides/$slug'
     | '/en'
+    | '/api/public/chariow-webhook'
     | '/api/public/contact'
     | '/api/public/lead'
     | '/api/public/lead-upsell'
@@ -544,6 +555,7 @@ export interface FileRouteTypes {
     | '/en/website-offer'
     | '/guides/$slug'
     | '/en/'
+    | '/api/public/chariow-webhook'
     | '/api/public/contact'
     | '/api/public/lead'
     | '/api/public/lead-upsell'
@@ -585,6 +597,7 @@ export interface RootRouteChildren {
   EnThankYouRoute: typeof EnThankYouRoute
   EnWebsiteOfferRoute: typeof EnWebsiteOfferRoute
   EnIndexRoute: typeof EnIndexRoute
+  ApiPublicChariowWebhookRoute: typeof ApiPublicChariowWebhookRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
   ApiPublicLeadRoute: typeof ApiPublicLeadRoute
   ApiPublicLeadUpsellRoute: typeof ApiPublicLeadUpsellRoute
@@ -894,6 +907,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/chariow-webhook': {
+      id: '/api/public/chariow-webhook'
+      path: '/api/public/chariow-webhook'
+      fullPath: '/api/public/chariow-webhook'
+      preLoaderRoute: typeof ApiPublicChariowWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -962,6 +982,7 @@ const rootRouteChildren: RootRouteChildren = {
   EnThankYouRoute: EnThankYouRoute,
   EnWebsiteOfferRoute: EnWebsiteOfferRoute,
   EnIndexRoute: EnIndexRoute,
+  ApiPublicChariowWebhookRoute: ApiPublicChariowWebhookRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
   ApiPublicLeadRoute: ApiPublicLeadRoute,
   ApiPublicLeadUpsellRoute: ApiPublicLeadUpsellRoute,
