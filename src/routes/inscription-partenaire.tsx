@@ -67,7 +67,7 @@ function InscriptionPage() {
         email: form.email,
         password: form.password,
         options: {
-          emailRedirectTo: window.location.origin + "/espace-partenaire",
+          emailRedirectTo: window.location.origin + "/marketplace",
           data: { full_name: `${form.contact_first_name} ${form.contact_last_name}` },
         },
       });
@@ -100,7 +100,7 @@ function InscriptionPage() {
       });
 
       toast.success("Compte créé. Notre équipe vous contacte sous 24-48h.");
-      navigate({ to: "/espace-partenaire", replace: true });
+      navigate({ to: "/marketplace", replace: true });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Erreur inconnue");
     } finally {

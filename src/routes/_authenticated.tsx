@@ -56,7 +56,7 @@ function AuthLayout() {
                 <Link to="/admin">Admin</Link>
               </Button>
               <Button asChild variant="ghost" size="sm">
-                <Link to="/espace-partenaire">Mon espace</Link>
+                <Link to="/marketplace">Marketplace</Link>
               </Button>
             </>
           )}
