@@ -35,7 +35,7 @@ export const listMarketplace = createServerFn({ method: "GET" })
 
     const { data: pubs, error } = await supabaseAdmin
       .from("lead_publications")
-      .select("id, service, city, audience, legal_form, budget, summary, unlock_count, max_unlocks, is_active, published_at")
+      .select("id, prospect_id, service, city, audience, legal_form, budget, summary, unlock_count, max_unlocks, is_active, published_at")
       .eq("is_active", true)
       .order("published_at", { ascending: false })
       .limit(100);
@@ -47,9 +47,31 @@ export const listMarketplace = createServerFn({ method: "GET" })
       .eq("partner_id", partner.id);
     const unlocked_ids = (unlocks ?? []).map((u) => u.publication_id);
 
+    // Enrichir avec le délai souhaité (depuis prospects.raw_payload), non-PII.
+    const prospectIds = Array.from(new Set((pubs ?? []).map((p) => p.prospect_id)));
+    const delaiByProspect = new Map<string, string | null>();
+    if (prospectIds.length > 0) {
+      const { data: prospects } = await supabaseAdmin
+        .from("prospects")
+        .select("id, raw_payload")
+        .in("id", prospectIds);
+      for (const p of prospects ?? []) {
+        const rp = (p.raw_payload && typeof p.raw_payload === "object" && !Array.isArray(p.raw_payload))
+          ? (p.raw_payload as Record<string, unknown>)
+          : {};
+        const d = rp.delai;
+        delaiByProspect.set(p.id, typeof d === "string" && d.trim() !== "" ? d : null);
+      }
+    }
+
+    const leads = (pubs ?? []).map((p) => {
+      const { prospect_id, ...rest } = p;
+      return { ...rest, delai: delaiByProspect.get(prospect_id) ?? null };
+    });
+
     return {
       partner: { id: partner.id, status: partner.status, credits_balance: partner.credits_balance, cabinet_name: partner.cabinet_name },
-      leads: pubs ?? [],
+      leads,
       unlocked_ids,
     };
   });
@@ -80,9 +102,36 @@ export const unlockLead = createServerFn({ method: "POST" })
         await emitPartnerEvent(partner, balance === 0 ? "zero_credits" : "low_credits");
       }
     }
-    const r = result as { already_unlocked: boolean; credits_balance: number; prospect: Record<string, string | number | boolean | null> };
-    return r;
+    const r = result as { already_unlocked: boolean; credits_balance: number; prospect: Record<string, unknown> };
+    return {
+      already_unlocked: r.already_unlocked,
+      credits_balance: r.credits_balance,
+      prospect: sanitizeProspectForPartner(r.prospect),
+    };
   });
+
+// Liste blanche : seuls ces champs sont exposés au partenaire après déblocage.
+// Les réponses internes (logo, siteWeb, publicité, upsell_*) restent côté admin uniquement.
+function sanitizeProspectForPartner(p: Record<string, unknown> | null | undefined) {
+  if (!p) return null;
+  const rp = (p.raw_payload && typeof p.raw_payload === "object" && !Array.isArray(p.raw_payload))
+    ? (p.raw_payload as Record<string, unknown>)
+    : {};
+  const delai = typeof rp.delai === "string" && rp.delai.trim() !== "" ? (rp.delai as string) : null;
+  return {
+    full_name: (p.full_name as string | null) ?? null,
+    email: (p.email as string | null) ?? null,
+    phone: (p.phone as string | null) ?? null,
+    company_name: (p.company_name as string | null) ?? null,
+    message: (p.message as string | null) ?? null,
+    service: (p.service as string | null) ?? null,
+    city: (p.city as string | null) ?? null,
+    legal_form: (p.legal_form as string | null) ?? null,
+    budget: (p.budget as string | null) ?? null,
+    audience: (p.audience as string | null) ?? null,
+    delai,
+  };
+}
 
 // ----- Mes leads débloqués -----
 export const myUnlockedLeads = createServerFn({ method: "GET" })
@@ -105,7 +154,9 @@ export const myUnlockedLeads = createServerFn({ method: "GET" })
       .from("prospects")
       .select("*")
       .in("id", prospectIds);
-    const byId = new Map((prospects ?? []).map((p) => [p.id, p]));
+    const byId = new Map(
+      (prospects ?? []).map((p) => [p.id, sanitizeProspectForPartner(p as unknown as Record<string, unknown>)]),
+    );
     return {
       items: items.map((i) => {
         const pub = i.lead_publications as { prospect_id: string; service: string | null; city: string | null };
@@ -128,7 +179,7 @@ export const publishProspect = createServerFn({ method: "POST" })
     z.object({
       prospect_id: z.string().uuid(),
       summary: z.string().trim().min(10).max(2000).optional(),
-      max_unlocks: z.number().int().min(1).max(20).default(6),
+      max_unlocks: z.number().int().min(1).max(20).default(5),
     }).parse(input),
   )
   .handler(async ({ data, context }) => {
