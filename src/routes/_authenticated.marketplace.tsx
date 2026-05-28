@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/marketplace")({
   head: () => ({ meta: [{ title: "Marketplace de leads" }, { name: "robots", content: "noindex,nofollow" }] }),
@@ -18,13 +19,21 @@ function MarketplacePage() {
   const fetchMine = useServerFn(myUnlockedLeads);
   const { data, isLoading } = useQuery({
     queryKey: ["marketplace"],
-    queryFn: () => fetchList(),
+    queryFn: async () => {
+      const { data: authData, error } = await supabase.auth.getUser();
+      if (error || !authData.user) return null;
+      return fetchList();
+    },
     enabled: !!user,
     retry: false,
   });
   const { data: mine } = useQuery({
     queryKey: ["my-unlocks"],
-    queryFn: () => fetchMine(),
+    queryFn: async () => {
+      const { data: authData, error } = await supabase.auth.getUser();
+      if (error || !authData.user) return { items: [] };
+      return fetchMine();
+    },
     enabled: !!user,
     retry: false,
   });
@@ -126,7 +135,11 @@ function LeadCard({ lead, alreadyUnlocked, credits }: { lead: Lead; alreadyUnloc
   const unlock = useServerFn(unlockLead);
   const [revealed, setRevealed] = useState<Record<string, string | number | boolean | null> | null>(null);
   const mut = useMutation({
-    mutationFn: () => unlock({ data: { publication_id: lead.id } }),
+    mutationFn: async () => {
+      const { data: authData, error } = await supabase.auth.getUser();
+      if (error || !authData.user) throw new Error("Veuillez vous reconnecter.");
+      return unlock({ data: { publication_id: lead.id } });
+    },
     onSuccess: (res) => {
       setRevealed(res.prospect);
       toast.success(res.already_unlocked ? "Lead déjà débloqué" : "Lead débloqué — 1 crédit utilisé");
