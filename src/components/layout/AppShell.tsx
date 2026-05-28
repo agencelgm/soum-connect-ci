@@ -61,7 +61,7 @@ export function AppShell({ email, creditsBalance, isStaff, onSignOut, children }
       <aside className="hidden lg:flex w-64 shrink-0 flex-col border-r bg-card">
         <div className="px-5 py-5 border-b">
           <Link to="/marketplace" className="flex items-center gap-2">
-            <img src={logo} alt="SoumissionComptable.com" className="h-10 w-auto" />
+            <img src={logo} alt="SoumissionComptable.com" className="h-20 w-auto" />
           </Link>
         </div>
 
