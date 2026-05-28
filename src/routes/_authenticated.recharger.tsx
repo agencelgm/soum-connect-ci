@@ -1,10 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect } from "react";
 import { getMyPartner } from "@/lib/partners.functions";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_authenticated/recharger")({
   head: () => ({ meta: [{ title: "Recharger mes crédits" }, { name: "robots", content: "noindex,nofollow" }] }),
@@ -106,25 +105,6 @@ function RechargerPage() {
             />
           </div>
         ))}
-      </div>
-
-      <div className="rounded-lg border border-amber-200 bg-amber-50 p-5 text-sm space-y-2">
-        <p className="font-semibold">Paiement en cours d'intégration</p>
-        <p>
-          Le paiement en ligne via Chariow sera disponible très prochainement. En attendant,
-          contactez-nous pour recharger manuellement votre compte — vos crédits sont crédités
-          sous quelques heures ouvrables.
-        </p>
-        <div className="flex flex-wrap gap-3 pt-2">
-          <Button asChild>
-            <a href="mailto:contact@soumissioncomptable.com?subject=Recharge%20cr%C3%A9dits%20partenaire">
-              Recharger par email
-            </a>
-          </Button>
-          <Button asChild variant="outline">
-            <Link to="/marketplace">Retour à la marketplace</Link>
-          </Button>
-        </div>
       </div>
     </div>
   );
