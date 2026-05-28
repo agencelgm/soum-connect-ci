@@ -76,7 +76,22 @@ export const listMyChariowPurchases = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const partnerId = await resolvePartnerForUser(context.userId);
-    if (!partnerId) return { purchases: [] as Array<Record<string, unknown>> };
+    if (!partnerId) {
+      return {
+        purchases: [] as Array<{
+          id: string;
+          received_at: string;
+          processed_at: string | null;
+          status: string;
+          amount_label: string | null;
+          credits_granted: number;
+          email: string;
+          license_code: string;
+          buyer_name: string;
+          buyer_is_member: boolean;
+        }>,
+      };
+    }
 
     const { data, error } = await supabaseAdmin
       .from("chariow_payments")
@@ -118,7 +133,21 @@ export const listMyUnlocks = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const partnerId = await resolvePartnerForUser(context.userId);
-    if (!partnerId) return { unlocks: [] as Array<Record<string, unknown>> };
+    if (!partnerId) {
+      return {
+        unlocks: [] as Array<{
+          id: string;
+          created_at: string;
+          credits_spent: number;
+          balance_after: number;
+          user_id: string | null;
+          user_name: string;
+          user_is_owner: boolean;
+          service: string | null;
+          city: string | null;
+        }>,
+      };
+    }
 
     const { data, error } = await supabaseAdmin
       .from("credit_transactions")
@@ -166,7 +195,24 @@ export const listMyActivity = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const partnerId = await resolvePartnerForUser(context.userId);
-    if (!partnerId) return { activity: [] as Array<Record<string, unknown>>, members: [] as MemberLite[] };
+    if (!partnerId) {
+      return {
+        activity: [] as Array<{
+          id: string;
+          created_at: string;
+          tx_type: string;
+          amount: number;
+          balance_after: number;
+          note: string | null;
+          user_id: string | null;
+          user_name: string;
+          user_is_owner: boolean;
+          service: string | null;
+          city: string | null;
+        }>,
+        members: [] as MemberLite[],
+      };
+    }
 
     const { data, error } = await supabaseAdmin
       .from("credit_transactions")
