@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { Eye, EyeOff, Check, X } from "lucide-react";
 
 export const Route = createFileRoute("/inscription-partenaire")({
   head: () => ({
@@ -19,10 +20,21 @@ export const Route = createFileRoute("/inscription-partenaire")({
   component: InscriptionPage,
 });
 
+function passwordChecks(pw: string): { label: string; ok: boolean }[] {
+  return [
+    { label: "Au moins 8 caractères", ok: pw.length >= 8 },
+    { label: "Une lettre majuscule (A-Z)", ok: /[A-Z]/.test(pw) },
+    { label: "Une lettre minuscule (a-z)", ok: /[a-z]/.test(pw) },
+    { label: "Un chiffre (0-9)", ok: /[0-9]/.test(pw) },
+    { label: "Un caractère spécial (!@#$…)", ok: /[^A-Za-z0-9]/.test(pw) },
+  ];
+}
+
 function InscriptionPage() {
   const navigate = useNavigate();
   const signup = useServerFn(signupPartner);
   const [submitting, setSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({
     cabinet_name: "",
     contact_first_name: "",
@@ -43,6 +55,11 @@ function InscriptionPage() {
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
+    const checks = passwordChecks(form.password);
+    if (!checks.every((c) => c.ok)) {
+      toast.error("Le mot de passe ne respecte pas tous les critères.");
+      return;
+    }
     setSubmitting(true);
     try {
       // 1) Create auth user
@@ -124,8 +141,37 @@ function InscriptionPage() {
           </div>
         </div>
         <div>
-          <Label>Mot de passe * (8 caractères minimum)</Label>
-          <Input type="password" required minLength={8} value={form.password} onChange={(e) => up("password", e.target.value)} />
+          <Label>Mot de passe *</Label>
+          <div className="relative">
+            <Input
+              type={showPassword ? "text" : "password"}
+              required
+              minLength={8}
+              value={form.password}
+              onChange={(e) => up("password", e.target.value)}
+              className="pr-10"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((s) => !s)}
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+              tabIndex={-1}
+            >
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
+          <ul className="mt-2 space-y-1 text-xs">
+            {passwordChecks(form.password).map((c) => (
+              <li
+                key={c.label}
+                className={c.ok ? "text-green-600 flex items-center gap-1.5" : "text-muted-foreground flex items-center gap-1.5"}
+              >
+                {c.ok ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
+                {c.label}
+              </li>
+            ))}
+          </ul>
         </div>
         <div>
           <Label>Ville *</Label>
