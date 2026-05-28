@@ -1,0 +1,1 @@
+DELETE FROM public.chariow_payments WHERE license_code IN ('TEST-DRYRUN-NOOP-001','TEST-DRYRUN-PROD-001');
