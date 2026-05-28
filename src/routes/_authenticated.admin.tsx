@@ -31,6 +31,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({ meta: [{ title: "Admin" }, { name: "robots", content: "noindex,nofollow" }] }),
@@ -39,7 +40,15 @@ export const Route = createFileRoute("/_authenticated/admin")({
 
 function AdminPage() {
   const meFn = useServerFn(getMyPartner);
-  const { data: me } = useQuery({ queryKey: ["my-partner"], queryFn: () => meFn() });
+  const { data: me } = useQuery({
+    queryKey: ["my-partner"],
+    queryFn: async () => {
+      const { data } = await supabase.auth.getSession();
+      if (!data.session) return null;
+      return meFn();
+    },
+    retry: false,
+  });
   const roles = me?.roles ?? [];
   const isStaff = roles.includes("admin") || roles.includes("agent");
 
