@@ -128,6 +128,8 @@ function RootComponent() {
     pathname.startsWith("/marketplace/") ||
     pathname === "/recharger" ||
     pathname.startsWith("/recharger/") ||
+    pathname === "/historique" ||
+    pathname.startsWith("/historique/") ||
     pathname === "/admin" ||
     pathname.startsWith("/admin/") ||
     pathname === "/espace-partenaire" ||
