@@ -3,9 +3,11 @@ import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useServerFn } from "@tanstack/react-start";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getMyPartner } from "@/lib/partners.functions";
 import { useEffect } from "react";
+import { isUnauthorizedError, signOutAndClear } from "@/lib/auth-actions";
+import { UnauthorizedScreen } from "@/components/auth/UnauthorizedScreen";
 
 export const Route = createFileRoute("/_authenticated")({
   component: AuthLayout,
@@ -14,8 +16,9 @@ export const Route = createFileRoute("/_authenticated")({
 function AuthLayout() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const qc = useQueryClient();
   const meFn = useServerFn(getMyPartner);
-  const { data: me } = useQuery({
+  const { data: me, error: meError } = useQuery({
     queryKey: ["my-partner"],
     queryFn: async () => {
       const { data } = await supabase.auth.getSession();
@@ -44,11 +47,11 @@ function AuthLayout() {
   }
 
   async function signOut() {
-    await supabase.auth.signOut();
-    navigate({ to: "/connexion", replace: true });
+    await signOutAndClear(qc, (to) => navigate({ to, replace: true }));
   }
 
   const isStaff = (me?.roles ?? []).some((r) => r === "admin" || r === "agent");
+  const unauthorized = isUnauthorizedError(meError);
 
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6 py-8 overflow-x-hidden">
@@ -68,7 +71,7 @@ function AuthLayout() {
           <Button variant="outline" size="sm" onClick={signOut}>Déconnexion</Button>
         </div>
       </div>
-      <Outlet />
+      {unauthorized ? <UnauthorizedScreen /> : <Outlet />}
     </div>
   );
 }
