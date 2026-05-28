@@ -43,6 +43,39 @@ const PartnerInfoSchema = z.object({
   zones: z.array(z.string().min(1).max(100)).max(40).default([]),
 });
 
+// Helpers: vérifier que le user a accès (owner ou membre) à ce partner
+async function resolvePartnerForUser(userId: string): Promise<string | null> {
+  const { data: owned } = await supabaseAdmin
+    .from("partners")
+    .select("id")
+    .eq("profile_id", userId)
+    .is("deleted_at", null)
+    .maybeSingle();
+  if (owned) return owned.id;
+  const { data: mem } = await supabaseAdmin
+    .from("partner_members")
+    .select("partner_id")
+    .eq("user_id", userId)
+    .maybeSingle();
+  return mem?.partner_id ?? null;
+}
+
+async function assertOwnerOrAdmin(userId: string, partnerId: string) {
+  const { data: owner } = await supabaseAdmin
+    .from("partners")
+    .select("profile_id")
+    .eq("id", partnerId)
+    .maybeSingle();
+  if (owner?.profile_id === userId) return;
+  const { data: roles } = await supabaseAdmin
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId);
+  const rs = (roles ?? []).map((r) => r.role);
+  if (rs.includes("admin") || rs.includes("agent")) return;
+  throw new Error("Seul le propriétaire peut effectuer cette action.");
+}
+
 // ---------------------- Self-service signup ----------------------
 
 export const signupPartner = createServerFn({ method: "POST" })
