@@ -588,6 +588,10 @@ const PROSPECT_FIELD_LABELS: Record<string, string> = {
   audience: "Audience",
   source: "Source",
   consent: "Consentement RGPD",
+  upsell_logo: "Offre logo — intéressé ?",
+  upsell_logo_at: "Offre logo — répondu le",
+  upsell_site: "Offre site internet — intéressé ?",
+  upsell_site_at: "Offre site internet — répondu le",
 };
 
 const PROSPECT_TECHNICAL_KEYS = new Set([
