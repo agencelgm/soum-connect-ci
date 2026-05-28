@@ -242,6 +242,7 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
   const { data, isLoading } = useQuery({ queryKey: ["prospects"], queryFn: () => listFn() });
   const [busyId, setBusyId] = useState<string | null>(null);
   const [filter, setFilter] = useState<"all" | "pending_qualification" | "qualified" | "rejected">("all");
+  const [detailsProspect, setDetailsProspect] = useState<any>(null);
 
   async function run(id: string, fn: () => Promise<unknown>) {
     setBusyId(id);
@@ -258,6 +259,7 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
   }
   if (isLoading) return <p>Chargement…</p>;
   const all = data?.prospects ?? [];
+  const pendingCount = all.filter((p: any) => p.status === "pending_qualification").length;
   const prospects = filter === "all" ? all : all.filter((p: any) => p.status === filter);
   return (
     <div className="space-y-2">
@@ -267,6 +269,7 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
           {(["all", "pending_qualification", "qualified", "rejected"] as const).map((k) => (
             <Button key={k} size="sm" variant={filter === k ? "default" : "outline"} onClick={() => setFilter(k)}>
               {k === "all" ? "Tous" : k === "pending_qualification" ? "En attente" : k === "qualified" ? "Qualifiés" : "Rejetés"}
+              {k === "pending_qualification" && <PendingBadge count={pendingCount} />}
             </Button>
           ))}
         </div>
@@ -275,7 +278,9 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
         <div key={p.id} className={`rounded border p-3 bg-card text-sm ${p.status === "rejected" ? "opacity-60" : ""}`}>
           <div className="flex justify-between flex-wrap gap-2">
             <div>
-              <strong>{p.full_name || "—"}</strong> · {p.email || "—"} · {p.phone || "—"}
+              <button type="button" onClick={() => setDetailsProspect(p)} className="text-left hover:underline">
+                <strong>{p.full_name || "—"}</strong> · {p.email || "—"} · {p.phone || "—"}
+              </button>
               <span className="ml-2 inline-block rounded bg-muted px-2 py-0.5 text-xs">{p.audience}</span>
               <span className="ml-1 inline-block rounded bg-muted px-2 py-0.5 text-xs">{p.status}</span>
             </div>
@@ -292,6 +297,7 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
             <p className="mt-1 text-xs text-destructive">Motif rejet : {p.qualification_notes}</p>
           )}
           <div className="mt-2 flex justify-end gap-2 flex-wrap">
+            <Button size="sm" variant="ghost" onClick={() => setDetailsProspect(p)}>Voir détails</Button>
             {p.status !== "rejected" && p.status !== "qualified" && (
               <>
                 <Button size="sm" variant="outline" disabled={busyId === p.id} onClick={() => onPublish(p.id)}>
@@ -317,6 +323,7 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
           </div>
         </div>
       ))}
+      <ProspectDetailsDialog prospect={detailsProspect} onClose={() => setDetailsProspect(null)} />
     </div>
   );
 }
