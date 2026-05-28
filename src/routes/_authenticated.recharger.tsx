@@ -1,13 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getMyPartner } from "@/lib/partners.functions";
+import { claimChariowPayment } from "@/lib/chariow.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { CREDIT_PACKS } from "@/lib/credit-packs";
 import { cn } from "@/lib/utils";
-import { ArrowLeft, Check, Coins, ShieldCheck, Zap } from "lucide-react";
+import { toast } from "sonner";
+import { ArrowLeft, Check, Coins, HelpCircle, ShieldCheck, Zap } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/recharger")({
   head: () => ({ meta: [{ title: "Recharger mes crédits" }, { name: "robots", content: "noindex,nofollow" }] }),
@@ -20,7 +23,15 @@ declare global {
   }
 }
 
-function ChariowButton({ productId, ctaText }: { productId: string; ctaText: string }) {
+function ChariowButton({
+  productId,
+  ctaText,
+  partnerId,
+}: {
+  productId: string;
+  ctaText: string;
+  partnerId?: string;
+}) {
   return (
     <div
       id="chariow-widget"
@@ -34,6 +45,8 @@ function ChariowButton({ productId, ctaText }: { productId: string; ctaText: str
       data-primary-color="#ffcc00"
       data-background-color="#FFFFFF"
       data-custom-cta-text={ctaText}
+      data-metadata-partner-id={partnerId ?? ""}
+      data-customer-reference={partnerId ?? ""}
     />
   );
 }
@@ -85,7 +98,23 @@ function RechargerPage() {
     retry: false,
   });
   const partner = data?.partner;
-  useChariowLoader([CREDIT_PACKS.length]);
+  useChariowLoader([CREDIT_PACKS.length, partner?.id ?? ""]);
+
+  const queryClient = useQueryClient();
+  const claimFn = useServerFn(claimChariowPayment);
+  const [licenseCode, setLicenseCode] = useState("");
+  const claim = useMutation({
+    mutationFn: (code: string) => claimFn({ data: { licenseCode: code } }),
+    onSuccess: (res) => {
+      toast.success(`${res.credits_added} crédits ajoutés. Nouveau solde : ${res.new_balance}.`);
+      setLicenseCode("");
+      queryClient.invalidateQueries({ queryKey: ["my-partner"] });
+    },
+    onError: (err: unknown) => {
+      const msg = err instanceof Error ? err.message : "Impossible de réclamer ce paiement.";
+      toast.error(msg);
+    },
+  });
 
   return (
     <div className="min-h-full flex flex-col justify-center -my-6 lg:-my-8 py-10 lg:py-14 bg-gradient-to-b from-background via-background to-muted/40">
@@ -166,11 +195,48 @@ function RechargerPage() {
                   <ChariowButton
                     productId={pack.productId}
                     ctaText={`Recharger ${pack.credits} crédits`}
+                    partnerId={partner?.id}
                   />
                 </div>
               </div>
             );
           })}
+        </div>
+
+        <div className="mt-10 max-w-2xl mx-auto rounded-2xl border border-border/60 bg-card/60 p-6">
+          <div className="flex items-start gap-3">
+            <HelpCircle className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+            <div className="flex-1">
+              <h2 className="text-base font-semibold">J'ai payé mais je n'ai pas reçu mes crédits</h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                Si vous avez payé avec un email différent de celui de votre compte, collez ici le code
+                de licence reçu par email de Chariow pour rattacher le paiement à ce compte.
+              </p>
+              <form
+                className="mt-4 flex flex-col sm:flex-row gap-2"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const code = licenseCode.trim();
+                  if (code.length < 4) {
+                    toast.error("Code invalide.");
+                    return;
+                  }
+                  claim.mutate(code);
+                }}
+              >
+                <Input
+                  value={licenseCode}
+                  onChange={(e) => setLicenseCode(e.target.value)}
+                  placeholder="Ex. PYDL-YK6O-9HFT-D8L2"
+                  className="font-mono uppercase"
+                  disabled={claim.isPending}
+                />
+                <Button type="submit" disabled={claim.isPending}>
+                  {claim.isPending ? "Vérification…" : "Réclamer mes crédits"}
+                </Button>
+              </form>
+            </div>
+          </div>
         </div>
 
         <p className="text-center text-xs text-muted-foreground mt-10 flex items-center justify-center gap-1.5">
