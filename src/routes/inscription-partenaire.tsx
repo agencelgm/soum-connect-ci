@@ -20,6 +20,16 @@ export const Route = createFileRoute("/inscription-partenaire")({
   component: InscriptionPage,
 });
 
+function passwordChecks(pw: string): { label: string; ok: boolean }[] {
+  return [
+    { label: "Au moins 8 caractères", ok: pw.length >= 8 },
+    { label: "Une lettre majuscule (A-Z)", ok: /[A-Z]/.test(pw) },
+    { label: "Une lettre minuscule (a-z)", ok: /[a-z]/.test(pw) },
+    { label: "Un chiffre (0-9)", ok: /[0-9]/.test(pw) },
+    { label: "Un caractère spécial (!@#$…)", ok: /[^A-Za-z0-9]/.test(pw) },
+  ];
+}
+
 function InscriptionPage() {
   const navigate = useNavigate();
   const signup = useServerFn(signupPartner);
