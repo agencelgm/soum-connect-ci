@@ -1,20 +1,28 @@
-## Changements
+## Problème 1 — Erreur "invalid input value for enum credit_tx_type"
 
-### 1. Bonus d'inscription : 30 crédits au lieu de 10
-Dans `src/lib/partners.functions.ts` :
-- Ligne 176 (approbation d'un partenaire) : `grantCredits(partner, 10, ...)` → `30`. Mettre à jour le label `"Bonus d'approbation"` (montant inchangé sinon).
-- Ligne 328 (création manuelle par un admin) : `grantCredits(partner, 10, ...)` → `30` pour rester cohérent.
-- Mettre à jour le texte du bouton dans `src/routes/_authenticated.admin.tsx` : `"Approuver (+10 crédits)"` → `"Approuver (+30 crédits)"`.
-- Vérifier qu'aucun autre endroit de l'UI ne mentionne encore "10 crédits" comme bonus d'inscription (page d'inscription partenaire, emails de confirmation, etc.) et corriger si trouvé.
+La fonction RPC `unlock_lead` insère `'lead_unlock'` dans `credit_transactions.tx_type`, mais l'enum `credit_tx_type` n'a pas cette valeur. Valeurs existantes : `signup_bonus`, `manual_creation_bonus`, `admin_grant`, `admin_revoke`, `unlock_spend`, `recharge`.
 
-### 2. Tarification : 1 crédit = 1 000 FCFA
-Dans `src/routes/_authenticated.recharger.tsx`, remplacer les 3 packs par des prix strictement proportionnels :
-- 10 crédits → **10 000 FCFA**
-- 25 crédits → **25 000 FCFA**
-- 60 crédits → **60 000 FCFA**
+**Correction** : migration qui remplace `CREATE OR REPLACE FUNCTION public.unlock_lead(...)` en utilisant `'unlock_spend'` à la place de `'lead_unlock'` (le reste de la fonction reste identique).
 
-Aucune réduction sur les gros packs (sinon ce n'est plus 1 crédit = 1 000 FCFA). Si tu veux conserver un effet "pack populaire", garder uniquement le marquage visuel sans modifier le prix.
+## Problème 2 — Carte lead peu attractive
 
-## Hors périmètre
-- Pas de migration base de données (le solde est calculé via `grantCredits`, pas via un défaut SQL).
-- Aucun changement sur le mécanisme de paiement ou la marketplace.
+Refonte du composant `LeadCard` dans `src/routes/_authenticated.marketplace.tsx` pour donner envie de débloquer. Aucune modif des données serveur ; uniquement présentation.
+
+Améliorations visuelles :
+
+- **En-tête contrasté** : titre du service plus gros, icône, badge "Nouveau" si publié < 48 h.
+- **Délai / urgence** : afficher "Publié il y a X h" (calculé depuis `published_at`) en français + un badge `il reste N places sur 5` avec barre de progression colorée (vert > orange > rouge selon places restantes).
+- **Hiérarchie d'info** claire avec icônes Lucide : 📍 ville, 🏢 forme juridique, 💰 budget, 👤 audience (particulier/entreprise), délai.
+- **Aperçu du besoin** : `summary` mis en avant dans un bloc cité avec bordure latérale primaire (au lieu d'un petit texte gris).
+- **Bouton "Débloquer"** plus visible : taille `lg`, full-width, accent primaire avec icône cadenas, micro-texte sous le bouton : "Coordonnées complètes : nom, email, téléphone, message".
+- **Hover** : légère élévation (shadow) pour signaler la cliquabilité.
+- Pas d'animation lourde, juste transitions Tailwind.
+
+## Détails techniques
+
+- Migration SQL : `CREATE OR REPLACE FUNCTION public.unlock_lead` avec uniquement le `INSERT INTO credit_transactions ... 'unlock_spend' ...`.
+- Helper local `timeAgoFr(published_at)` pour le délai.
+- Icônes : `MapPin`, `Building2`, `Wallet`, `Users`, `Lock`, `Sparkles` depuis `lucide-react` (déjà disponible).
+- Tokens couleur via les classes sémantiques existantes (`primary`, `muted`, `emerald` reste pour l'état "débloqué").
+
+Aucun changement de logique métier, de RLS, ni de schéma au-delà du `CREATE OR REPLACE` de la RPC.
