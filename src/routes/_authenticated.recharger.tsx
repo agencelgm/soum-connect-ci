@@ -3,14 +3,14 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { getMyPartner } from "@/lib/partners.functions";
-import { claimChariowPayment } from "@/lib/chariow.functions";
+import { claimChariowPayment, createChariowIntent } from "@/lib/chariow.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CREDIT_PACKS } from "@/lib/credit-packs";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import { ArrowLeft, Check, Coins, HelpCircle, ShieldCheck, Zap } from "lucide-react";
+import { ArrowLeft, Check, Coins, Copy, HelpCircle, Mail, ShieldCheck, Zap } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/recharger")({
   head: () => ({ meta: [{ title: "Recharger mes crédits" }, { name: "robots", content: "noindex,nofollow" }] }),
@@ -27,27 +27,34 @@ function ChariowButton({
   productId,
   ctaText,
   partnerId,
+  onIntent,
 }: {
   productId: string;
   ctaText: string;
   partnerId?: string;
+  onIntent?: (productId: string) => void;
 }) {
   return (
     <div
-      id="chariow-widget"
-      data-product-id={productId}
-      data-store-domain="academielgm.com"
-      data-style="tap"
-      data-border-style="rounded"
-      data-cta-width="xs"
-      data-cta-animation="pulse_glow"
-      data-locale="fr"
-      data-primary-color="#ffcc00"
-      data-background-color="#FFFFFF"
-      data-custom-cta-text={ctaText}
-      data-metadata-partner-id={partnerId ?? ""}
-      data-customer-reference={partnerId ?? ""}
-    />
+      onClickCapture={() => onIntent?.(productId)}
+      onPointerDownCapture={() => onIntent?.(productId)}
+    >
+      <div
+        id="chariow-widget"
+        data-product-id={productId}
+        data-store-domain="academielgm.com"
+        data-style="tap"
+        data-border-style="rounded"
+        data-cta-width="xs"
+        data-cta-animation="pulse_glow"
+        data-locale="fr"
+        data-primary-color="#ffcc00"
+        data-background-color="#FFFFFF"
+        data-custom-cta-text={ctaText}
+        data-metadata-partner-id={partnerId ?? ""}
+        data-customer-reference={partnerId ?? ""}
+      />
+    </div>
   );
 }
 
@@ -102,7 +109,17 @@ function RechargerPage() {
 
   const queryClient = useQueryClient();
   const claimFn = useServerFn(claimChariowPayment);
+  const intentFn = useServerFn(createChariowIntent);
   const [licenseCode, setLicenseCode] = useState("");
+
+  const handleIntent = (productId: string) => {
+    // Best-effort : on enregistre l'intention pour que le webhook puisse
+    // rattacher le paiement même si Chariow ne renvoie ni metadata ni email correspondant.
+    intentFn({ data: { productId } }).catch((e) => {
+      console.warn("[chariow] intent registration failed", e);
+    });
+  };
+
   const claim = useMutation({
     mutationFn: (code: string) => claimFn({ data: { licenseCode: code } }),
     onSuccess: (res) => {
@@ -115,6 +132,8 @@ function RechargerPage() {
       toast.error(msg);
     },
   });
+
+  const accountEmail = partner?.email ?? data?.profile?.email ?? "";
 
   return (
     <div className="min-h-full flex flex-col justify-center -my-6 lg:-my-8 py-10 lg:py-14 bg-gradient-to-b from-background via-background to-muted/40">
@@ -142,6 +161,27 @@ function RechargerPage() {
           <p className="mt-3 text-base md:text-lg text-muted-foreground">
             Choisissez un pack et débloquez instantanément des leads qualifiés de cabinets comptables en Côte d'Ivoire.
           </p>
+          {accountEmail && (
+            <div className="mt-5 inline-flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/5 px-3 py-2 text-sm">
+              <Mail className="h-4 w-4 text-primary shrink-0" />
+              <span className="text-muted-foreground">Payez avec votre email :</span>
+              <span className="font-medium font-mono text-foreground">{accountEmail}</span>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-7 px-2"
+                onClick={() => {
+                  navigator.clipboard.writeText(accountEmail).then(
+                    () => toast.success("Email copié."),
+                    () => toast.error("Impossible de copier."),
+                  );
+                }}
+              >
+                <Copy className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+          )}
         </div>
 
         <div className="grid gap-6 md:grid-cols-3 items-stretch">
@@ -196,6 +236,7 @@ function RechargerPage() {
                     productId={pack.productId}
                     ctaText={`Recharger ${pack.credits} crédits`}
                     partnerId={partner?.id}
+                    onIntent={handleIntent}
                   />
                 </div>
               </div>

@@ -182,6 +182,49 @@ export const Route = createFileRoute("/api/public/chariow-webhook")({
             .maybeSingle();
           partner = data ?? null;
         }
+        // 3) Fallback : email correspond à un profile -> partner.profile_id
+        if (!partner) {
+          const { data: profile } = await supabaseAdmin
+            .from("profiles")
+            .select("id")
+            .ilike("email", normalizedEmail)
+            .maybeSingle();
+          if (profile) {
+            const { data } = await supabaseAdmin
+              .from("partners")
+              .select("id, credits_balance, email")
+              .eq("profile_id", profile.id)
+              .is("deleted_at", null)
+              .maybeSingle();
+            partner = data ?? null;
+          }
+        }
+        // 4) Fallback : intention de paiement non consommée pour ce produit (<30 min)
+        let consumedIntentId: string | null = null;
+        if (!partner) {
+          const thirtyMinAgo = new Date(Date.now() - 30 * 60 * 1000).toISOString();
+          const { data: intent } = await supabaseAdmin
+            .from("chariow_payment_intents")
+            .select("id, partner_id")
+            .eq("product_id", productId)
+            .is("consumed_at", null)
+            .gte("created_at", thirtyMinAgo)
+            .order("created_at", { ascending: false })
+            .limit(1)
+            .maybeSingle();
+          if (intent) {
+            const { data } = await supabaseAdmin
+              .from("partners")
+              .select("id, credits_balance, email")
+              .eq("id", intent.partner_id)
+              .is("deleted_at", null)
+              .maybeSingle();
+            if (data) {
+              partner = data;
+              consumedIntentId = intent.id;
+            }
+          }
+        }
 
         if (!partner) {
           await supabaseAdmin
@@ -224,6 +267,13 @@ export const Route = createFileRoute("/api/public/chariow-webhook")({
             processed_at: new Date().toISOString(),
           })
           .eq("id", payment.id);
+
+        if (consumedIntentId) {
+          await supabaseAdmin
+            .from("chariow_payment_intents")
+            .update({ consumed_at: new Date().toISOString(), chariow_payment_id: payment.id })
+            .eq("id", consumedIntentId);
+        }
 
         return Response.json({
           ok: true,

@@ -18,6 +18,38 @@ const ClaimSchema = z.object({
     .regex(/^[A-Za-z0-9-]+$/, "Code invalide"),
 });
 
+const IntentSchema = z.object({
+  productId: z.string().trim().min(1).max(64).regex(/^[A-Za-z0-9_-]+$/),
+});
+
+// Enregistre une intention de paiement Chariow avant l'ouverture du widget.
+// Sert de fallback de matching côté webhook si Chariow ne renvoie ni metadata
+// ni email correspondant à un partenaire.
+export const createChariowIntent = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) => IntentSchema.parse(input))
+  .handler(async ({ data, context }) => {
+    const { userId } = context;
+    const { data: partner, error: partnerErr } = await supabaseAdmin
+      .from("partners")
+      .select("id")
+      .eq("profile_id", userId)
+      .is("deleted_at", null)
+      .maybeSingle();
+    if (partnerErr) throw new Error(partnerErr.message);
+    if (!partner) throw new Error("Aucun compte partenaire trouvé.");
+
+    const { error: insErr } = await supabaseAdmin
+      .from("chariow_payment_intents")
+      .insert({
+        partner_id: partner.id,
+        profile_id: userId,
+        product_id: data.productId,
+      });
+    if (insErr) throw new Error(insErr.message);
+    return { ok: true };
+  });
+
 export const claimChariowPayment = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => ClaimSchema.parse(input))
