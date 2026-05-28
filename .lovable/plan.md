@@ -1,28 +1,32 @@
-## Problème
+## Objectif
 
-Sur mobile (390px), la page `/admin` provoque un défilement horizontal de toute la page (barre de scroll en bas visible sur la capture). Les causes :
+1. Quand un membre de l'équipe (admin/agent) se connecte, attirer immédiatement l'attention sur les prospects et partenaires **en attente** via un badge rouge bien visible.
+2. Pouvoir cliquer sur n'importe quel prospect (ou partenaire) pour voir **toutes** les informations renseignées (y compris les réponses du genre "Avez-vous un logo ?", "Voulez-vous un site internet ?", etc. qui sont actuellement stockées dans `raw_payload` mais jamais affichées).
 
-1. La `TabsList` contient 4 onglets ("Partenaires", "Prospects", "+ Créer un partenaire", "Équipe") qui dépassent la largeur de l'écran.
-2. Certains panneaux (tableaux de partenaires/prospects, cartes avec emails longs, IDs, etc.) contiennent du contenu large qui pousse la mise en page au-delà du viewport.
-3. Le layout `_authenticated.tsx` utilise `max-w-6xl px-6` sans garde-fou contre l'overflow.
+## Ce qui sera modifié
 
-Résultat : tout le `<body>` devient scrollable horizontalement au lieu que seul l'élément trop large scrolle à l'intérieur de son conteneur.
+Un seul fichier : `src/routes/_authenticated.admin.tsx`.
 
-## Correction (UI/CSS uniquement, aucune logique modifiée)
+### 1. Badges rouges sur les onglets
 
-1. **`src/routes/_authenticated.tsx`** : ajouter `overflow-x-hidden` sur le conteneur racine et réduire le padding mobile (`px-4 sm:px-6`) pour éviter que le header (email + boutons) ne déborde.
+- Sur l'onglet principal **Prospects**, ajouter un pastille rouge `(N)` indiquant le nombre de prospects au statut `pending_qualification`. Visible dès l'arrivée sur `/admin`.
+- Sur l'onglet principal **Partenaires**, même pastille rouge pour les partenaires au statut `pending_review`.
+- À l'intérieur des sous-onglets (Partenaires → "En attente", Prospects → "En attente"), la pastille rouge est répétée sur le sous-onglet correspondant pour bien marquer là où il faut cliquer.
+- Style : petite puce ronde rouge (`bg-destructive text-destructive-foreground`) avec le compteur en blanc. Masquée si le compteur = 0.
 
-2. **`src/routes/_authenticated.admin.tsx`** :
-   - Envelopper la `TabsList` dans un wrapper `overflow-x-auto` avec `-mx-4 px-4` pour permettre le scroll horizontal des onglets uniquement, sans casser la page.
-   - Ajouter `flex-nowrap` et `w-max` sur la `TabsList` pour qu'elle conserve ses onglets sur une seule ligne scrollable.
-   - Ajouter `min-w-0` sur les conteneurs de panneaux pour empêcher le contenu enfant (emails, tableaux) de forcer un élargissement.
-   - Sur les cartes/lignes de partenaires et prospects qui affichent des emails ou IDs longs : ajouter `break-words` / `truncate` selon le cas, et `overflow-x-auto` sur les éventuels tableaux.
+Pour pouvoir afficher le compteur global Partenaires sur le `Tabs` racine, on remonte d'un cran les requêtes `listPartners` et `listProspects` au niveau de `AdminPage` (ou on lit simplement le compteur via `useQuery` en double — TanStack Query dédupliquera la requête grâce à la même `queryKey`, donc pas d'appel réseau supplémentaire).
 
-3. **Vérification globale** : ajouter `overflow-x-hidden` sur le `<main>` dans `src/routes/__root.tsx` comme filet de sécurité pour éviter toute régression future (mobile uniquement n'est pas nécessaire — c'est sans effet sur desktop).
+### 2. Vue détail prospect / partenaire
 
-## Vérification
+- Chaque carte prospect et chaque carte partenaire devient cliquable (ou avec un bouton "Voir détails").
+- Au clic, ouverture d'un `Dialog` (shadcn) plein écran sur mobile, large sur desktop, affichant :
+  - **Prospect** : toutes les colonnes structurées (nom, email, téléphone, audience, statut, service, ville, budget, forme juridique, message, date, source, page_url, referrer, user_agent, etc.) **plus** un rendu lisible de toutes les clés présentes dans `raw_payload` (logo, siteWeb, bureau, publicite, delai, nbAssocies, entreprise, description, statut, localisation, …). Les clés techniques (`leadId`, `tag`, `received_at`, `user_agent`, `language`) sont regroupées dans une section "Métadonnées" repliée par défaut.
+  - **Partenaire** : toutes les colonnes (cabinet, contact, email, téléphone, ville, site web, Facebook, services, zones, statut, crédits, dates approve/pause/reject, motifs, etc.).
+- Les actions existantes (Approuver / Rejeter / Publier / Supprimer / +Crédits) sont également disponibles directement depuis le dialog pour ne pas devoir le fermer.
+- Le rendu de `raw_payload` est générique : on traduit les clés techniques en libellés français quand on les connaît (mapping `logo` → "A déjà un logo ?", `siteWeb` → "A déjà un site internet ?", `bureau` → "A un bureau physique ?", `publicite` → "Fait de la publicité ?", `delai` → "Délai souhaité", `nbAssocies` → "Nombre d'associés", `entreprise` → "Nom envisagé", `description` → "Description du projet", `localisation` → "Localisation précise", `statut` → "Situation actuelle"), avec fallback brut pour les clés inconnues. Cela garantit qu'aucune info renseignée par le prospect n'est perdue, même si on ajoute de nouveaux champs au formulaire plus tard.
 
-- Recharger `/admin` à 390px : plus de barre de scroll horizontale en bas de page.
-- Les onglets restent atteignables via un scroll horizontal local à la barre d'onglets.
-- Le contenu de chaque onglet s'enroule proprement, les tableaux deviennent scrollables individuellement si nécessaire.
-- Aucun changement sur desktop.
+## Hors périmètre
+
+- Aucune migration base de données (toutes les données sont déjà stockées dans `prospects.raw_payload`, simplement non affichées).
+- Aucune modification des server functions (le `select("*")` actuel renvoie déjà `raw_payload`).
+- Pas de notification email/push : seule la signalisation visuelle dans l'admin est demandée.

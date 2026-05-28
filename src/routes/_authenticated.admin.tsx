@@ -30,6 +30,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -56,14 +57,25 @@ function AdminPage() {
     return <p className="text-muted-foreground">Accès réservé à l'équipe.</p>;
   }
 
+  return <AdminPageInner roles={roles} />;
+}
+
+function AdminPageInner({ roles }: { roles: string[] }) {
+  const listPartnersFn = useServerFn(listPartners);
+  const listProspectsFn = useServerFn(listProspects);
+  const { data: partnersData } = useQuery({ queryKey: ["partners"], queryFn: () => listPartnersFn() });
+  const { data: prospectsData } = useQuery({ queryKey: ["prospects"], queryFn: () => listProspectsFn() });
+  const pendingPartners = (partnersData?.partners ?? []).filter((p: any) => p.status === "pending_review").length;
+  const pendingProspects = (prospectsData?.prospects ?? []).filter((p: any) => p.status === "pending_qualification").length;
+
   return (
     <div className="min-w-0">
       <h1 className="text-3xl font-bold mb-6">Tableau de bord</h1>
       <Tabs defaultValue="partners">
         <div className="-mx-4 sm:mx-0 overflow-x-auto px-4 sm:px-0">
           <TabsList className="w-max flex-nowrap">
-            <TabsTrigger value="partners">Partenaires</TabsTrigger>
-            <TabsTrigger value="prospects">Prospects</TabsTrigger>
+            <TabsTrigger value="partners">Partenaires <PendingBadge count={pendingPartners} /></TabsTrigger>
+            <TabsTrigger value="prospects">Prospects <PendingBadge count={pendingProspects} /></TabsTrigger>
             <TabsTrigger value="create">+ Créer un partenaire</TabsTrigger>
             {roles.includes("admin") && <TabsTrigger value="team">Équipe</TabsTrigger>}
           </TabsList>
@@ -76,6 +88,15 @@ function AdminPage() {
         )}
       </Tabs>
     </div>
+  );
+}
+
+function PendingBadge({ count }: { count: number }) {
+  if (!count) return null;
+  return (
+    <span className="ml-1.5 inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full bg-destructive text-destructive-foreground text-xs font-semibold animate-pulse">
+      {count}
+    </span>
   );
 }
 
@@ -97,7 +118,7 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
   return (
     <Tabs defaultValue="pending_review">
       <TabsList>
-        <TabsTrigger value="pending_review">En attente ({buckets.pending_review.length})</TabsTrigger>
+        <TabsTrigger value="pending_review">En attente ({buckets.pending_review.length}) <PendingBadge count={buckets.pending_review.length} /></TabsTrigger>
         <TabsTrigger value="approved">Actifs ({buckets.approved.length})</TabsTrigger>
         <TabsTrigger value="paused">En pause ({buckets.paused.length})</TabsTrigger>
         <TabsTrigger value="rejected">Rejetés ({buckets.rejected.length})</TabsTrigger>
@@ -122,6 +143,7 @@ function PartnerCard({ partner, isAdmin, onChange }: { partner: any; isAdmin: bo
   const deleteFn = useServerFn(deletePartner);
   const grantFn = useServerFn(adminGrantCredits);
   const [busy, setBusy] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
 
   async function run(fn: () => Promise<unknown>) {
     setBusy(true);
@@ -134,7 +156,9 @@ function PartnerCard({ partner, isAdmin, onChange }: { partner: any; isAdmin: bo
     <div className="rounded-lg border p-4 bg-card">
       <div className="flex justify-between flex-wrap gap-2">
         <div>
-          <h3 className="font-semibold">{partner.cabinet_name}</h3>
+          <button type="button" onClick={() => setShowDetails(true)} className="font-semibold text-left hover:underline">
+            {partner.cabinet_name}
+          </button>
           <p className="text-sm text-muted-foreground">
             {partner.contact_first_name} {partner.contact_last_name} · {partner.email} · {partner.phone}
           </p>
@@ -146,6 +170,7 @@ function PartnerCard({ partner, isAdmin, onChange }: { partner: any; isAdmin: bo
           )}
         </div>
         <div className="flex flex-wrap gap-2 items-start">
+          <Button size="sm" variant="ghost" onClick={() => setShowDetails(true)}>Voir détails</Button>
           {partner.status === "pending_review" && (
             <>
               <Button size="sm" disabled={busy} onClick={() => run(() => approveFn({ data: { partner_id: partner.id } }))}>
@@ -174,6 +199,7 @@ function PartnerCard({ partner, isAdmin, onChange }: { partner: any; isAdmin: bo
           )}
         </div>
       </div>
+      <PartnerDetailsDialog open={showDetails} onClose={() => setShowDetails(false)} partner={partner} />
     </div>
   );
 }
@@ -216,6 +242,7 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
   const { data, isLoading } = useQuery({ queryKey: ["prospects"], queryFn: () => listFn() });
   const [busyId, setBusyId] = useState<string | null>(null);
   const [filter, setFilter] = useState<"all" | "pending_qualification" | "qualified" | "rejected">("all");
+  const [detailsProspect, setDetailsProspect] = useState<any>(null);
 
   async function run(id: string, fn: () => Promise<unknown>) {
     setBusyId(id);
@@ -232,6 +259,7 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
   }
   if (isLoading) return <p>Chargement…</p>;
   const all = data?.prospects ?? [];
+  const pendingCount = all.filter((p: any) => p.status === "pending_qualification").length;
   const prospects = filter === "all" ? all : all.filter((p: any) => p.status === filter);
   return (
     <div className="space-y-2">
@@ -241,6 +269,7 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
           {(["all", "pending_qualification", "qualified", "rejected"] as const).map((k) => (
             <Button key={k} size="sm" variant={filter === k ? "default" : "outline"} onClick={() => setFilter(k)}>
               {k === "all" ? "Tous" : k === "pending_qualification" ? "En attente" : k === "qualified" ? "Qualifiés" : "Rejetés"}
+              {k === "pending_qualification" && <PendingBadge count={pendingCount} />}
             </Button>
           ))}
         </div>
@@ -249,7 +278,9 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
         <div key={p.id} className={`rounded border p-3 bg-card text-sm ${p.status === "rejected" ? "opacity-60" : ""}`}>
           <div className="flex justify-between flex-wrap gap-2">
             <div>
-              <strong>{p.full_name || "—"}</strong> · {p.email || "—"} · {p.phone || "—"}
+              <button type="button" onClick={() => setDetailsProspect(p)} className="text-left hover:underline">
+                <strong>{p.full_name || "—"}</strong> · {p.email || "—"} · {p.phone || "—"}
+              </button>
               <span className="ml-2 inline-block rounded bg-muted px-2 py-0.5 text-xs">{p.audience}</span>
               <span className="ml-1 inline-block rounded bg-muted px-2 py-0.5 text-xs">{p.status}</span>
             </div>
@@ -266,6 +297,7 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
             <p className="mt-1 text-xs text-destructive">Motif rejet : {p.qualification_notes}</p>
           )}
           <div className="mt-2 flex justify-end gap-2 flex-wrap">
+            <Button size="sm" variant="ghost" onClick={() => setDetailsProspect(p)}>Voir détails</Button>
             {p.status !== "rejected" && p.status !== "qualified" && (
               <>
                 <Button size="sm" variant="outline" disabled={busyId === p.id} onClick={() => onPublish(p.id)}>
@@ -291,6 +323,7 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
           </div>
         </div>
       ))}
+      <ProspectDetailsDialog prospect={detailsProspect} onClose={() => setDetailsProspect(null)} />
     </div>
   );
 }
@@ -511,5 +544,159 @@ function TeamPanel() {
         })}
       </div>
     </div>
+  );
+}
+
+// ============= Détails Prospect / Partenaire =============
+
+const PROSPECT_FIELD_LABELS: Record<string, string> = {
+  logo: "A déjà un logo ?",
+  siteWeb: "A déjà un site internet ?",
+  bureau: "A un bureau physique ?",
+  publicite: "Fait de la publicité ?",
+  delai: "Délai souhaité",
+  nbAssocies: "Nombre d'associés",
+  entreprise: "Nom envisagé pour l'entreprise",
+  description: "Description du projet",
+  localisation: "Localisation précise",
+  statut: "Situation actuelle",
+  nom: "Nom",
+  mobile: "Téléphone",
+  email: "Email",
+  service: "Service demandé",
+  budget: "Budget",
+  audience: "Audience",
+  source: "Source",
+  consent: "Consentement RGPD",
+};
+
+const PROSPECT_TECHNICAL_KEYS = new Set([
+  "leadId", "tag", "received_at", "submitted_at", "user_agent", "language",
+  "page_url", "referrer",
+]);
+
+function formatValue(v: unknown): string {
+  if (v === null || v === undefined || v === "") return "—";
+  if (typeof v === "boolean") return v ? "Oui" : "Non";
+  if (typeof v === "object") return JSON.stringify(v, null, 2);
+  return String(v);
+}
+
+function DetailRow({ label, value }: { label: string; value: unknown }) {
+  return (
+    <div className="grid grid-cols-[160px_1fr] gap-3 py-1.5 border-b border-border/50 last:border-0">
+      <span className="text-xs text-muted-foreground">{label}</span>
+      <span className="text-sm break-words whitespace-pre-wrap">{formatValue(value)}</span>
+    </div>
+  );
+}
+
+function ProspectDetailsDialog({ prospect, onClose }: { prospect: any; onClose: () => void }) {
+  if (!prospect) return null;
+  const raw = (prospect.raw_payload ?? {}) as Record<string, unknown>;
+  const businessKeys = Object.keys(raw).filter((k) => !PROSPECT_TECHNICAL_KEYS.has(k));
+  const techKeys = Object.keys(raw).filter((k) => PROSPECT_TECHNICAL_KEYS.has(k));
+
+  return (
+    <Dialog open={!!prospect} onOpenChange={(o) => { if (!o) onClose(); }}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>{prospect.full_name || prospect.email || "Prospect"}</DialogTitle>
+        </DialogHeader>
+
+        <section className="space-y-1">
+          <h4 className="font-semibold text-sm mb-2">Informations principales</h4>
+          <DetailRow label="Nom complet" value={prospect.full_name} />
+          <DetailRow label="Email" value={prospect.email} />
+          <DetailRow label="Téléphone" value={prospect.phone} />
+          <DetailRow label="Entreprise" value={prospect.company_name} />
+          <DetailRow label="Audience" value={prospect.audience} />
+          <DetailRow label="Statut" value={prospect.status} />
+          <DetailRow label="Service demandé" value={prospect.service} />
+          <DetailRow label="Ville" value={prospect.city} />
+          <DetailRow label="Budget" value={prospect.budget} />
+          <DetailRow label="Forme juridique" value={prospect.legal_form} />
+          <DetailRow label="Situation" value={prospect.statut} />
+          <DetailRow label="Message" value={prospect.message} />
+          <DetailRow label="Type de formulaire" value={prospect.form_type} />
+          <DetailRow label="Reçu le" value={new Date(prospect.created_at).toLocaleString("fr-FR")} />
+          {prospect.qualification_notes && (
+            <DetailRow label="Notes qualification" value={prospect.qualification_notes} />
+          )}
+        </section>
+
+        {businessKeys.length > 0 && (
+          <section className="space-y-1 mt-4">
+            <h4 className="font-semibold text-sm mb-2">Réponses détaillées du formulaire</h4>
+            {businessKeys.map((k) => (
+              <DetailRow key={k} label={PROSPECT_FIELD_LABELS[k] ?? k} value={raw[k]} />
+            ))}
+          </section>
+        )}
+
+        {techKeys.length > 0 && (
+          <details className="mt-4">
+            <summary className="cursor-pointer text-xs text-muted-foreground hover:text-foreground">
+              Métadonnées techniques ({techKeys.length})
+            </summary>
+            <div className="mt-2">
+              {techKeys.map((k) => (
+                <DetailRow key={k} label={k} value={raw[k]} />
+              ))}
+            </div>
+          </details>
+        )}
+
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>Fermer</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function PartnerDetailsDialog({ open, onClose, partner }: { open: boolean; onClose: () => void; partner: any }) {
+  return (
+    <Dialog open={open} onOpenChange={(o) => { if (!o) onClose(); }}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>{partner.cabinet_name}</DialogTitle>
+        </DialogHeader>
+
+        <section className="space-y-1">
+          <h4 className="font-semibold text-sm mb-2">Cabinet</h4>
+          <DetailRow label="Nom du cabinet" value={partner.cabinet_name} />
+          <DetailRow label="Statut" value={partner.status} />
+          <DetailRow label="Crédits" value={partner.credits_balance} />
+          <DetailRow label="Ville" value={partner.city} />
+          <DetailRow label="Site web" value={partner.website} />
+          <DetailRow label="Facebook" value={partner.facebook_url} />
+          <DetailRow label="Services" value={partner.services?.join(", ")} />
+          <DetailRow label="Zones d'intervention" value={partner.zones?.join(", ")} />
+        </section>
+
+        <section className="space-y-1 mt-4">
+          <h4 className="font-semibold text-sm mb-2">Contact</h4>
+          <DetailRow label="Prénom" value={partner.contact_first_name} />
+          <DetailRow label="Nom" value={partner.contact_last_name} />
+          <DetailRow label="Email" value={partner.email} />
+          <DetailRow label="Téléphone" value={partner.phone} />
+        </section>
+
+        <section className="space-y-1 mt-4">
+          <h4 className="font-semibold text-sm mb-2">Historique</h4>
+          <DetailRow label="Inscrit le" value={new Date(partner.created_at).toLocaleString("fr-FR")} />
+          {partner.approved_at && <DetailRow label="Approuvé le" value={new Date(partner.approved_at).toLocaleString("fr-FR")} />}
+          {partner.paused_at && <DetailRow label="Mis en pause le" value={new Date(partner.paused_at).toLocaleString("fr-FR")} />}
+          {partner.pause_reason && <DetailRow label="Motif pause" value={partner.pause_reason} />}
+          {partner.rejected_at && <DetailRow label="Rejeté le" value={new Date(partner.rejected_at).toLocaleString("fr-FR")} />}
+          {partner.rejection_reason && <DetailRow label="Motif rejet" value={partner.rejection_reason} />}
+        </section>
+
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>Fermer</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
