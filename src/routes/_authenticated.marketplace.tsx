@@ -9,7 +9,7 @@ import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 import { isUnauthorizedError } from "@/lib/auth-actions";
 import { UnauthorizedScreen } from "@/components/auth/UnauthorizedScreen";
-import { MapPin, Building2, Wallet, Users, Lock, Sparkles, Clock, Unlock } from "lucide-react";
+import { MapPin, Building2, Wallet, Users, Lock, Sparkles, Clock, Unlock, CalendarClock } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/marketplace")({
   head: () => ({ meta: [{ title: "Marketplace de leads" }, { name: "robots", content: "noindex,nofollow" }] }),
@@ -134,6 +134,7 @@ type Lead = {
   unlock_count: number;
   max_unlocks: number;
   published_at: string;
+  delai: string | null;
 };
 
 function LeadCard({ lead, alreadyUnlocked, credits }: { lead: Lead; alreadyUnlocked: boolean; credits: number }) {
@@ -211,6 +212,12 @@ function LeadCard({ lead, alreadyUnlocked, credits }: { lead: Lead; alreadyUnloc
           <Wallet className="h-4 w-4 text-muted-foreground shrink-0" />
           <span className="truncate font-medium">{lead.budget || "Budget non précisé"}</span>
         </div>
+        {lead.delai && (
+          <div className="flex items-center gap-2 text-foreground/80 col-span-2">
+            <CalendarClock className="h-4 w-4 text-muted-foreground shrink-0" />
+            <span className="truncate"><span className="text-muted-foreground">Démarrage :</span> {lead.delai}</span>
+          </div>
+        )}
       </div>
 
       {lead.summary && (
