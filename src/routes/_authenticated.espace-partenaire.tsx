@@ -6,6 +6,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useState } from "react";
+import { useAuth } from "@/lib/auth-context";
+import { isUnauthorizedError } from "@/lib/auth-actions";
+import { UnauthorizedScreen } from "@/components/auth/UnauthorizedScreen";
 
 export const Route = createFileRoute("/_authenticated/espace-partenaire")({
   head: () => ({ meta: [{ title: "Espace partenaire" }, { name: "robots", content: "noindex,nofollow" }] }),
@@ -13,17 +16,20 @@ export const Route = createFileRoute("/_authenticated/espace-partenaire")({
 });
 
 function EspacePartenaire() {
+  const { user } = useAuth();
   const fetchMe = useServerFn(getMyPartner);
-  const { data, isLoading, refetch } = useQuery({
+  const { data, isLoading, refetch, error } = useQuery({
     queryKey: ["my-partner"],
     queryFn: async () => {
       const { data } = await supabase.auth.getSession();
       if (!data.session) return null;
       return fetchMe();
     },
+    enabled: !!user,
     retry: false,
   });
 
+  if (isUnauthorizedError(error)) return <UnauthorizedScreen />;
   if (isLoading) return <p className="text-muted-foreground">Chargement…</p>;
 
   const partner = data?.partner;

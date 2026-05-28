@@ -33,6 +33,9 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth-context";
+import { isUnauthorizedError } from "@/lib/auth-actions";
+import { UnauthorizedScreen } from "@/components/auth/UnauthorizedScreen";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({ meta: [{ title: "Admin" }, { name: "robots", content: "noindex,nofollow" }] }),
@@ -40,19 +43,22 @@ export const Route = createFileRoute("/_authenticated/admin")({
 });
 
 function AdminPage() {
+  const { user } = useAuth();
   const meFn = useServerFn(getMyPartner);
-  const { data: me } = useQuery({
+  const { data: me, error: meError } = useQuery({
     queryKey: ["my-partner"],
     queryFn: async () => {
       const { data } = await supabase.auth.getSession();
       if (!data.session) return null;
       return meFn();
     },
+    enabled: !!user,
     retry: false,
   });
   const roles = me?.roles ?? [];
   const isStaff = roles.includes("admin") || roles.includes("agent");
 
+  if (isUnauthorizedError(meError)) return <UnauthorizedScreen />;
   if (!isStaff) {
     return <p className="text-muted-foreground">Accès réservé à l'équipe.</p>;
   }
@@ -61,10 +67,24 @@ function AdminPage() {
 }
 
 function AdminPageInner({ roles }: { roles: string[] }) {
+  const { user } = useAuth();
   const listPartnersFn = useServerFn(listPartners);
   const listProspectsFn = useServerFn(listProspects);
-  const { data: partnersData } = useQuery({ queryKey: ["partners"], queryFn: () => listPartnersFn() });
-  const { data: prospectsData } = useQuery({ queryKey: ["prospects"], queryFn: () => listProspectsFn() });
+  const { data: partnersData, error: partnersError } = useQuery({
+    queryKey: ["partners"],
+    queryFn: () => listPartnersFn(),
+    enabled: !!user,
+    retry: false,
+  });
+  const { data: prospectsData, error: prospectsError } = useQuery({
+    queryKey: ["prospects"],
+    queryFn: () => listProspectsFn(),
+    enabled: !!user,
+    retry: false,
+  });
+  if (isUnauthorizedError(partnersError) || isUnauthorizedError(prospectsError)) {
+    return <UnauthorizedScreen />;
+  }
   const pendingPartners = (partnersData?.partners ?? []).filter((p: any) => p.status === "pending_review").length;
   const pendingProspects = (prospectsData?.prospects ?? []).filter((p: any) => p.status === "pending_qualification").length;
 
