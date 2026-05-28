@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useForm, type FieldErrors, type UseFormRegister } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -82,20 +82,157 @@ const DELAIS_EN = [
   "Within 3 to 6 months",
   "I'm exploring",
 ];
-const BUDGETS_FR = [
-  "Moins de 50 000 FCFA / mois",
-  "50 000 — 150 000 FCFA / mois",
-  "150 000 — 500 000 FCFA / mois",
-  "Plus de 500 000 FCFA / mois",
-  "Je ne sais pas encore",
-];
-const BUDGETS_EN = [
-  "Less than 50,000 FCFA / month",
-  "50,000 — 150,000 FCFA / month",
-  "150,000 — 500,000 FCFA / month",
-  "More than 500,000 FCFA / month",
-  "I'm not sure yet",
-];
+// Tranches budgétaires adaptées au service choisi.
+// Basé sur nos guides tarifaires :
+// - création : 120k minimum (CEPICI + honoraires de base)
+// - comptabilité : 50k/mois minimum (forfait micro/TPE)
+// - domiciliation : 30k/mois minimum (adresse simple)
+// - audit / conseil : projets ponctuels, fourchettes plus larges
+type BudgetConfig = { kind: "monthly" | "project" | "generic"; options: string[] };
+
+function getBudgetConfig(service: string, language: "fr" | "en"): BudgetConfig {
+  const s = service.toLowerCase();
+  const isFr = language === "fr";
+  const dontKnow = isFr ? "Je ne sais pas encore" : "I'm not sure yet";
+
+  // Création d'entreprise — projet ponctuel, min 120 000 FCFA
+  if (s.includes("création") || s.includes("registration")) {
+    return {
+      kind: "project",
+      options: isFr
+        ? [
+            "120 000 — 250 000 FCFA",
+            "250 000 — 500 000 FCFA",
+            "500 000 — 1 000 000 FCFA",
+            "Plus de 1 000 000 FCFA",
+            dontKnow,
+          ]
+        : [
+            "120,000 — 250,000 FCFA",
+            "250,000 — 500,000 FCFA",
+            "500,000 — 1,000,000 FCFA",
+            "More than 1,000,000 FCFA",
+            dontKnow,
+          ],
+    };
+  }
+
+  // Domiciliation — récurrent, min 30 000 FCFA/mois
+  if (s.includes("domiciliation")) {
+    return {
+      kind: "monthly",
+      options: isFr
+        ? [
+            "30 000 — 50 000 FCFA / mois",
+            "50 000 — 100 000 FCFA / mois",
+            "100 000 — 200 000 FCFA / mois",
+            "Plus de 200 000 FCFA / mois",
+            dontKnow,
+          ]
+        : [
+            "30,000 — 50,000 FCFA / month",
+            "50,000 — 100,000 FCFA / month",
+            "100,000 — 200,000 FCFA / month",
+            "More than 200,000 FCFA / month",
+            dontKnow,
+          ],
+    };
+  }
+
+  // Audit comptable — projet ponctuel, min 200 000 FCFA
+  if (s.includes("audit")) {
+    return {
+      kind: "project",
+      options: isFr
+        ? [
+            "200 000 — 500 000 FCFA",
+            "500 000 — 1 000 000 FCFA",
+            "1 000 000 — 3 000 000 FCFA",
+            "Plus de 3 000 000 FCFA",
+            dontKnow,
+          ]
+        : [
+            "200,000 — 500,000 FCFA",
+            "500,000 — 1,000,000 FCFA",
+            "1,000,000 — 3,000,000 FCFA",
+            "More than 3,000,000 FCFA",
+            dontKnow,
+          ],
+    };
+  }
+
+  // Conseil juridique — projet ponctuel, min 50 000 FCFA
+  if (s.includes("conseil") || s.includes("legal") || s.includes("juridique")) {
+    return {
+      kind: "project",
+      options: isFr
+        ? [
+            "50 000 — 150 000 FCFA",
+            "150 000 — 500 000 FCFA",
+            "500 000 — 1 500 000 FCFA",
+            "Plus de 1 500 000 FCFA",
+            dontKnow,
+          ]
+        : [
+            "50,000 — 150,000 FCFA",
+            "150,000 — 500,000 FCFA",
+            "500,000 — 1,500,000 FCFA",
+            "More than 1,500,000 FCFA",
+            dontKnow,
+          ],
+    };
+  }
+
+  // Comptabilité générale & Déclaration fiscale — récurrent, min 50 000 FCFA/mois
+  if (
+    s.includes("comptabilité") ||
+    s.includes("accounting") ||
+    s.includes("bookkeeping") ||
+    s.includes("déclaration") ||
+    s.includes("fiscale") ||
+    s.includes("tax filing") ||
+    s.includes("impôts")
+  ) {
+    return {
+      kind: "monthly",
+      options: isFr
+        ? [
+            "50 000 — 100 000 FCFA / mois",
+            "100 000 — 250 000 FCFA / mois",
+            "250 000 — 500 000 FCFA / mois",
+            "Plus de 500 000 FCFA / mois",
+            dontKnow,
+          ]
+        : [
+            "50,000 — 100,000 FCFA / month",
+            "100,000 — 250,000 FCFA / month",
+            "250,000 — 500,000 FCFA / month",
+            "More than 500,000 FCFA / month",
+            dontKnow,
+          ],
+    };
+  }
+
+  // Plusieurs services / fallback générique
+  return {
+    kind: "generic",
+    options: isFr
+      ? [
+            "Moins de 150 000 FCFA",
+            "150 000 — 500 000 FCFA",
+            "500 000 — 1 500 000 FCFA",
+            "Plus de 1 500 000 FCFA",
+            dontKnow,
+        ]
+      : [
+            "Less than 150,000 FCFA",
+            "150,000 — 500,000 FCFA",
+            "500,000 — 1,500,000 FCFA",
+            "More than 1,500,000 FCFA",
+            dontKnow,
+        ],
+  };
+}
 
 const COPY = {
   fr: {
@@ -118,7 +255,9 @@ const COPY = {
     no: "Non",
     lLoc: "Où êtes-vous situé ?",
     lDelai: "Dans quel délai souhaitez-vous démarrer ?",
-    lBudget: "Quel est votre budget mensuel estimé ?",
+    lBudgetMonthly: "Quel est votre budget mensuel estimé ?",
+    lBudgetProject: "Quel budget global avez-vous pour ce projet ?",
+    lBudgetGeneric: "Quel est votre budget estimé ?",
     lNom: "Votre nom complet",
     lWhats: "Numéro de téléphone",
     whatsPh: "+225 XX XX XX XX",
@@ -170,7 +309,9 @@ const COPY = {
     no: "No",
     lLoc: "Where are you based?",
     lDelai: "When do you want to start?",
-    lBudget: "What's your estimated monthly budget?",
+    lBudgetMonthly: "What's your estimated monthly budget?",
+    lBudgetProject: "What's your overall budget for this project?",
+    lBudgetGeneric: "What's your estimated budget?",
     lNom: "Your full name",
     lWhats: "Phone number",
     whatsPh: "+225 XX XX XX XX",
@@ -263,7 +404,6 @@ export function MultiStepLeadForm({
   const STATUTS = language === "en" ? STATUTS_EN : STATUTS_FR;
   const LOCALISATIONS = language === "en" ? LOCALISATIONS_EN : LOCALISATIONS_FR;
   const DELAIS = language === "en" ? DELAIS_EN : DELAIS_FR;
-  const BUDGETS = language === "en" ? BUDGETS_EN : BUDGETS_FR;
   const navigate = useNavigate();
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
 
@@ -292,6 +432,25 @@ export function MultiStepLeadForm({
 
   const { register, handleSubmit, trigger, formState, setValue, watch } = form;
   const errors: FieldErrors<FormValues> = formState.errors;
+
+  const watchedService = watch("service");
+  const watchedBudget = watch("budget");
+  const budgetCfg = getBudgetConfig(watchedService ?? "", language);
+  const budgetLabel =
+    budgetCfg.kind === "monthly"
+      ? c.lBudgetMonthly
+      : budgetCfg.kind === "project"
+        ? c.lBudgetProject
+        : c.lBudgetGeneric;
+
+  // Si l'utilisateur change de service, on réinitialise le budget si l'ancienne
+  // valeur n'est plus proposée par les nouvelles tranches.
+  useEffect(() => {
+    if (watchedBudget && !budgetCfg.options.includes(watchedBudget)) {
+      setValue("budget", "", { shouldValidate: false });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watchedService]);
 
   const next = async () => {
     const ok = await trigger(STEP_FIELDS[step]);
@@ -525,10 +684,10 @@ export function MultiStepLeadForm({
               </select>
             </Field>
 
-            <Field id="budget" label={c.lBudget} required error={errors.budget?.message}>
+            <Field id="budget" label={budgetLabel} required error={errors.budget?.message}>
               <select id="budget" {...register("budget")} className={selectClass}>
                 <option value="">{c.choose}</option>
-                {BUDGETS.map((s) => (
+                {budgetCfg.options.map((s) => (
                   <option key={s} value={s}>{s}</option>
                 ))}
               </select>
