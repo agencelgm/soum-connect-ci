@@ -133,12 +133,32 @@ export const getMyPartner = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { userId } = context;
-    const { data, error } = await supabaseAdmin
+    // 1) Cabinet possédé directement
+    let { data, error } = await supabaseAdmin
       .from("partners")
       .select("*")
       .eq("profile_id", userId)
+      .is("deleted_at", null)
       .maybeSingle();
     if (error) throw new Error(error.message);
+    let isOwner = !!data;
+    // 2) Sinon, cabinet auquel ce user est rattaché comme membre
+    if (!data) {
+      const { data: mem } = await supabaseAdmin
+        .from("partner_members")
+        .select("partner_id")
+        .eq("user_id", userId)
+        .maybeSingle();
+      if (mem?.partner_id) {
+        const { data: p } = await supabaseAdmin
+          .from("partners")
+          .select("*")
+          .eq("id", mem.partner_id)
+          .is("deleted_at", null)
+          .maybeSingle();
+        data = p ?? null;
+      }
+    }
     const { data: roles } = await supabaseAdmin
       .from("user_roles")
       .select("role")
@@ -153,7 +173,160 @@ export const getMyPartner = createServerFn({ method: "GET" })
       roles: (roles ?? []).map((r) => r.role) as string[],
       mustChangePassword: !!profile?.must_change_password,
       profile: profile ?? null,
+      isOwner,
     };
+  });
+
+// ---------------------- Update partner info (owner or member) ----------------------
+
+const UpdatePartnerInfoSchema = z.object({
+  cabinet_name: z.string().trim().min(2).max(200),
+  contact_first_name: z.string().trim().min(1).max(100),
+  contact_last_name: z.string().trim().min(1).max(100),
+  phone: z.string().trim().min(6).max(40),
+  city: z.string().trim().min(2).max(100),
+  website: z.string().trim().max(255).optional().or(z.literal("")),
+  facebook_url: z.string().trim().max(255).optional().or(z.literal("")),
+});
+
+export const updateMyPartnerInfo = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) => UpdatePartnerInfoSchema.parse(input))
+  .handler(async ({ data, context }) => {
+    const partnerId = await resolvePartnerForUser(context.userId);
+    if (!partnerId) throw new Error("Aucun cabinet associé.");
+    const { error } = await supabaseAdmin
+      .from("partners")
+      .update({
+        cabinet_name: data.cabinet_name,
+        contact_first_name: data.contact_first_name,
+        contact_last_name: data.contact_last_name,
+        phone: data.phone,
+        city: data.city,
+        website: data.website || null,
+        facebook_url: data.facebook_url || null,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", partnerId);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+// ---------------------- Team members ----------------------
+
+export const listPartnerMembers = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const partnerId = await resolvePartnerForUser(context.userId);
+    if (!partnerId) return { members: [] as any[], partnerId: null };
+    const { data, error } = await supabaseAdmin
+      .from("partner_members")
+      .select("id, email, first_name, last_name, created_at, user_id")
+      .eq("partner_id", partnerId)
+      .order("created_at", { ascending: true });
+    if (error) throw new Error(error.message);
+    return { members: data ?? [], partnerId };
+  });
+
+const AddMemberSchema = z.object({
+  first_name: z.string().trim().min(1).max(100),
+  last_name: z.string().trim().min(1).max(100),
+  email: z.string().trim().email().max(255),
+  password: z.string().min(8).max(72),
+});
+
+export const addPartnerMember = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) => AddMemberSchema.parse(input))
+  .handler(async ({ data, context }) => {
+    const partnerId = await resolvePartnerForUser(context.userId);
+    if (!partnerId) throw new Error("Aucun cabinet associé.");
+    await assertOwnerOrAdmin(context.userId, partnerId);
+
+    const email = data.email.toLowerCase().trim();
+
+    // Trouver un user existant avec cet email
+    let userId: string | null = null;
+    const { data: existingProfile } = await supabaseAdmin
+      .from("profiles")
+      .select("id")
+      .eq("email", email)
+      .maybeSingle();
+    if (existingProfile) {
+      userId = existingProfile.id;
+    } else {
+      const { data: created, error: authErr } = await supabaseAdmin.auth.admin.createUser({
+        email,
+        password: data.password,
+        email_confirm: true,
+        user_metadata: { full_name: `${data.first_name} ${data.last_name}` },
+      });
+      if (authErr || !created.user) throw new Error(authErr?.message ?? "Création du compte échouée");
+      userId = created.user.id;
+      await supabaseAdmin.from("profiles").upsert({
+        id: userId,
+        email,
+        full_name: `${data.first_name} ${data.last_name}`,
+      });
+    }
+
+    // Vérifier qu'il n'est pas déjà membre ou owner d'un autre cabinet
+    const { data: alreadyMember } = await supabaseAdmin
+      .from("partner_members")
+      .select("partner_id")
+      .eq("user_id", userId!)
+      .maybeSingle();
+    if (alreadyMember && alreadyMember.partner_id !== partnerId) {
+      throw new Error("Cet utilisateur est déjà membre d'un autre cabinet.");
+    }
+    const { data: ownsOther } = await supabaseAdmin
+      .from("partners")
+      .select("id")
+      .eq("profile_id", userId!)
+      .is("deleted_at", null)
+      .maybeSingle();
+    if (ownsOther) {
+      throw new Error("Cet utilisateur est déjà propriétaire d'un cabinet.");
+    }
+
+    const { error: insErr } = await supabaseAdmin
+      .from("partner_members")
+      .insert({
+        partner_id: partnerId,
+        user_id: userId!,
+        email,
+        first_name: data.first_name,
+        last_name: data.last_name,
+        invited_by: context.userId,
+      });
+    if (insErr) {
+      if (insErr.code === "23505") throw new Error("Ce membre est déjà ajouté.");
+      throw new Error(insErr.message);
+    }
+
+    // S'assurer que le rôle "partner" est attribué (best effort)
+    await supabaseAdmin
+      .from("user_roles")
+      .insert({ user_id: userId!, role: "partner" })
+      .select();
+
+    return { ok: true };
+  });
+
+export const removePartnerMember = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) => z.object({ member_id: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    const partnerId = await resolvePartnerForUser(context.userId);
+    if (!partnerId) throw new Error("Aucun cabinet associé.");
+    await assertOwnerOrAdmin(context.userId, partnerId);
+    const { error } = await supabaseAdmin
+      .from("partner_members")
+      .delete()
+      .eq("id", data.member_id)
+      .eq("partner_id", partnerId);
+    if (error) throw new Error(error.message);
+    return { ok: true };
   });
 
 // ---------------------- Mark password as changed ----------------------
