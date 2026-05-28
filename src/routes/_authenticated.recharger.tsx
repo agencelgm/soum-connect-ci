@@ -13,27 +13,16 @@ export const Route = createFileRoute("/_authenticated/recharger")({
   component: RechargerPage,
 });
 
-function ChariowButton({ productId, ctaText }: { productId: string; ctaText: string }) {
-  useEffect(() => {
-    if (!document.querySelector('link[href="https://js.chariowcdn.com/v1/widget.min.css"]')) {
-      const link = document.createElement("link");
-      link.rel = "stylesheet";
-      link.href = "https://js.chariowcdn.com/v1/widget.min.css";
-      document.head.appendChild(link);
-    }
-    // Remove any existing script so the widget re-scans newly mounted nodes on SPA navigation
-    const existing = document.querySelector('script[src="https://js.chariowcdn.com/v1/widget.min.js"]');
-    if (existing) existing.remove();
-    const script = document.createElement("script");
-    script.src = "https://js.chariowcdn.com/v1/widget.min.js";
-    script.async = true;
-    document.head.appendChild(script);
-  }, [productId]);
+declare global {
+  interface Window {
+    Chariow?: { initializeWidget?: () => void };
+  }
+}
 
+function ChariowButton({ productId, ctaText }: { productId: string; ctaText: string }) {
   return (
     <div
-      id={`chariow-widget-${productId}`}
-      className="chariow-widget"
+      id="chariow-widget"
       data-product-id={productId}
       data-store-domain="academielgm.com"
       data-style="tap"
@@ -48,6 +37,41 @@ function ChariowButton({ productId, ctaText }: { productId: string; ctaText: str
   );
 }
 
+function useChariowLoader(deps: unknown[]) {
+  useEffect(() => {
+    if (!document.querySelector('link[href="https://js.chariowcdn.com/v1/widget.min.css"]')) {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "https://js.chariowcdn.com/v1/widget.min.css";
+      document.head.appendChild(link);
+    }
+
+    const init = () => {
+      try {
+        window.Chariow?.initializeWidget?.();
+      } catch (e) {
+        console.error("Chariow init failed", e);
+      }
+    };
+
+    const existing = document.querySelector<HTMLScriptElement>(
+      'script[src="https://js.chariowcdn.com/v1/widget.min.js"]',
+    );
+    if (existing && window.Chariow?.initializeWidget) {
+      // Script already loaded — re-scan the newly mounted widgets
+      init();
+    } else {
+      if (existing) existing.remove();
+      const script = document.createElement("script");
+      script.src = "https://js.chariowcdn.com/v1/widget.min.js";
+      script.async = true;
+      script.onload = init;
+      document.head.appendChild(script);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, deps);
+}
+
 function RechargerPage() {
   const meFn = useServerFn(getMyPartner);
   const { data } = useQuery({
@@ -60,6 +84,7 @@ function RechargerPage() {
     retry: false,
   });
   const partner = data?.partner;
+  useChariowLoader([CREDIT_PACKS.length]);
 
   return (
     <div className="space-y-8">
