@@ -39,6 +39,16 @@ function extractFields(payload: ChariowPayload) {
   const customer = (payload.customer ?? data.customer ?? order?.customer) as Record<string, unknown> | undefined;
   const license = (payload.license ?? data.license) as Record<string, unknown> | undefined;
   const product = (payload.product ?? data.product ?? order?.product) as Record<string, unknown> | undefined;
+  const metadata =
+    (payload.metadata ??
+      (data as Record<string, unknown>).metadata ??
+      (order as Record<string, unknown> | undefined)?.metadata ??
+      (license as Record<string, unknown> | undefined)?.metadata ??
+      (product as Record<string, unknown> | undefined)?.metadata) as Record<string, unknown> | undefined;
+  const customFields =
+    (payload.custom_fields ??
+      (data as Record<string, unknown>).custom_fields ??
+      (order as Record<string, unknown> | undefined)?.custom_fields) as Record<string, unknown> | undefined;
 
   const email =
     pickString(customer, ["email", "customer_email", "buyer_email"]) ??
@@ -58,7 +68,14 @@ function extractFields(payload: ChariowPayload) {
     pickString(data, ["license_code", "license_key", "code"]) ??
     pickString(root, ["license_code", "license_key", "code"]);
 
-  return { email, productId, licenseCode };
+  const partnerId =
+    pickString(metadata, ["partner_id", "partnerId"]) ??
+    pickString(customFields, ["partner_id", "partnerId"]) ??
+    pickString(customer, ["reference", "customer_reference", "partner_id"]) ??
+    pickString(order, ["reference", "customer_reference", "partner_id"]) ??
+    pickString(root, ["reference", "customer_reference", "partner_id"]);
+
+  return { email, productId, licenseCode, partnerId };
 }
 
 export const Route = createFileRoute("/api/public/chariow-webhook")({
@@ -94,7 +111,7 @@ export const Route = createFileRoute("/api/public/chariow-webhook")({
           return new Response("Invalid JSON", { status: 400 });
         }
 
-        const { email, productId, licenseCode } = extractFields(payload);
+        const { email, productId, licenseCode, partnerId } = extractFields(payload);
 
         if (!email || !productId || !licenseCode) {
           console.error("[chariow-webhook] missing fields", { email, productId, licenseCode, payload });
@@ -145,12 +162,26 @@ export const Route = createFileRoute("/api/public/chariow-webhook")({
           return Response.json({ ok: false, error: "unknown_product_id" }, { status: 200 });
         }
 
-        const { data: partner } = await supabaseAdmin
-          .from("partners")
-          .select("id, credits_balance, email")
-          .ilike("email", normalizedEmail)
-          .is("deleted_at", null)
-          .maybeSingle();
+        // Match : 1) partner_id passé en metadata Chariow, 2) fallback email exact.
+        let partner: { id: string; credits_balance: number | null; email: string } | null = null;
+        if (partnerId) {
+          const { data } = await supabaseAdmin
+            .from("partners")
+            .select("id, credits_balance, email")
+            .eq("id", partnerId)
+            .is("deleted_at", null)
+            .maybeSingle();
+          partner = data ?? null;
+        }
+        if (!partner) {
+          const { data } = await supabaseAdmin
+            .from("partners")
+            .select("id, credits_balance, email")
+            .ilike("email", normalizedEmail)
+            .is("deleted_at", null)
+            .maybeSingle();
+          partner = data ?? null;
+        }
 
         if (!partner) {
           await supabaseAdmin
