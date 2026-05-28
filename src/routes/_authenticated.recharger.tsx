@@ -21,13 +21,14 @@ function ChariowButton({ productId, ctaText }: { productId: string; ctaText: str
       link.href = "https://js.chariowcdn.com/v1/widget.min.css";
       document.head.appendChild(link);
     }
-    if (!document.querySelector('script[src="https://js.chariowcdn.com/v1/widget.min.js"]')) {
-      const script = document.createElement("script");
-      script.src = "https://js.chariowcdn.com/v1/widget.min.js";
-      script.async = true;
-      document.head.appendChild(script);
-    }
-  }, []);
+    // Remove any existing script so the widget re-scans newly mounted nodes on SPA navigation
+    const existing = document.querySelector('script[src="https://js.chariowcdn.com/v1/widget.min.js"]');
+    if (existing) existing.remove();
+    const script = document.createElement("script");
+    script.src = "https://js.chariowcdn.com/v1/widget.min.js";
+    script.async = true;
+    document.head.appendChild(script);
+  }, [productId]);
 
   return (
     <div
