@@ -1,14 +1,24 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { getMyPartner, bootstrapAdmin } from "@/lib/partners.functions";
+import {
+  getMyPartner,
+  bootstrapAdmin,
+  updateMyPartnerInfo,
+  listPartnerMembers,
+  addPartnerMember,
+  removePartnerMember,
+} from "@/lib/partners.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { isUnauthorizedError } from "@/lib/auth-actions";
 import { UnauthorizedScreen } from "@/components/auth/UnauthorizedScreen";
+import { Trash2, UserPlus } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/espace-partenaire")({
   head: () => ({ meta: [{ title: "Espace partenaire" }, { name: "robots", content: "noindex,nofollow" }] }),
@@ -35,11 +45,12 @@ function EspacePartenaire() {
   const partner = data?.partner;
   const roles = data?.roles ?? [];
   const isStaff = roles.includes("admin") || roles.includes("agent");
+  const isOwner = !!data?.isOwner;
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
-        <h1 className="text-3xl font-bold">Espace partenaire</h1>
+        <h1 className="text-3xl font-bold">Mon compte</h1>
         {isStaff && (
           <Button asChild>
             <Link to="/admin">Tableau de bord admin</Link>
@@ -71,14 +82,208 @@ function EspacePartenaire() {
         </StatusCard>
       )}
       {partner && partner.status === "approved" && (
-        <StatusCard title={`Bienvenue, ${partner.cabinet_name}`} tone="success">
-          <p>Crédits disponibles : <strong>{partner.credits_balance}</strong></p>
-          <div className="mt-3">
-            <Button asChild>
-              <Link to="/marketplace">Accéder à la marketplace</Link>
-            </Button>
+        <>
+          <StatusCard title={`Bienvenue, ${partner.cabinet_name}`} tone="success">
+            <p>Crédits disponibles : <strong>{partner.credits_balance}</strong></p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <Button asChild>
+                <Link to="/marketplace">Accéder à la marketplace</Link>
+              </Button>
+              <Button asChild variant="outline">
+                <Link to="/recharger">Recharger mes crédits</Link>
+              </Button>
+            </div>
+          </StatusCard>
+
+          <PartnerInfoForm partner={partner} onSaved={refetch} />
+          <TeamMembersSection isOwner={isOwner} />
+        </>
+      )}
+    </div>
+  );
+}
+
+function PartnerInfoForm({ partner, onSaved }: { partner: any; onSaved: () => void }) {
+  const update = useServerFn(updateMyPartnerInfo);
+  const [busy, setBusy] = useState(false);
+  const [form, setForm] = useState({
+    cabinet_name: partner.cabinet_name ?? "",
+    contact_first_name: partner.contact_first_name ?? "",
+    contact_last_name: partner.contact_last_name ?? "",
+    phone: partner.phone ?? "",
+    city: partner.city ?? "",
+    website: partner.website ?? "",
+    facebook_url: partner.facebook_url ?? "",
+  });
+
+  useEffect(() => {
+    setForm({
+      cabinet_name: partner.cabinet_name ?? "",
+      contact_first_name: partner.contact_first_name ?? "",
+      contact_last_name: partner.contact_last_name ?? "",
+      phone: partner.phone ?? "",
+      city: partner.city ?? "",
+      website: partner.website ?? "",
+      facebook_url: partner.facebook_url ?? "",
+    });
+  }, [partner.id]);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true);
+    try {
+      await update({ data: form });
+      toast.success("Informations mises à jour.");
+      onSaved();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Erreur");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <form onSubmit={submit} className="rounded-lg border bg-card p-6 space-y-4">
+      <div>
+        <h2 className="text-xl font-semibold">Informations du cabinet</h2>
+        <p className="text-sm text-muted-foreground">
+          Vous et les membres de votre équipe pouvez modifier ces informations.
+        </p>
+      </div>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field label="Nom du cabinet" value={form.cabinet_name} onChange={(v) => setForm({ ...form, cabinet_name: v })} />
+        <Field label="Ville" value={form.city} onChange={(v) => setForm({ ...form, city: v })} />
+        <Field label="Prénom du contact" value={form.contact_first_name} onChange={(v) => setForm({ ...form, contact_first_name: v })} />
+        <Field label="Nom du contact" value={form.contact_last_name} onChange={(v) => setForm({ ...form, contact_last_name: v })} />
+        <Field label="Téléphone" value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} />
+        <Field label="Site web (optionnel)" value={form.website} onChange={(v) => setForm({ ...form, website: v })} />
+        <Field label="Page Facebook (optionnel)" value={form.facebook_url} onChange={(v) => setForm({ ...form, facebook_url: v })} />
+      </div>
+      <div className="text-xs text-muted-foreground">
+        Email du compte : <strong>{partner.email}</strong> (non modifiable ici)
+      </div>
+      <Button type="submit" disabled={busy}>
+        {busy ? "Enregistrement…" : "Enregistrer les modifications"}
+      </Button>
+    </form>
+  );
+}
+
+function Field({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+  return (
+    <div className="space-y-1.5">
+      <Label>{label}</Label>
+      <Input value={value} onChange={(e) => onChange(e.target.value)} />
+    </div>
+  );
+}
+
+function TeamMembersSection({ isOwner }: { isOwner: boolean }) {
+  const fetchMembers = useServerFn(listPartnerMembers);
+  const addMember = useServerFn(addPartnerMember);
+  const removeMember = useServerFn(removePartnerMember);
+  const { data, refetch } = useQuery({
+    queryKey: ["partner-members"],
+    queryFn: () => fetchMembers(),
+  });
+  const members = data?.members ?? [];
+
+  const [open, setOpen] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [form, setForm] = useState({ first_name: "", last_name: "", email: "", password: "" });
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true);
+    try {
+      await addMember({ data: form });
+      toast.success(`${form.first_name} a été ajouté à votre équipe.`);
+      setForm({ first_name: "", last_name: "", email: "", password: "" });
+      setOpen(false);
+      refetch();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Erreur");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function remove(id: string, name: string) {
+    if (!confirm(`Retirer ${name} de l'équipe ?`)) return;
+    try {
+      await removeMember({ data: { member_id: id } });
+      toast.success("Membre retiré.");
+      refetch();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Erreur");
+    }
+  }
+
+  return (
+    <div className="rounded-lg border bg-card p-6 space-y-4">
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <h2 className="text-xl font-semibold">Membres de l'équipe</h2>
+          <p className="text-sm text-muted-foreground">
+            Ajoutez vos collègues pour qu'ils puissent gérer le compte, débloquer des leads et recharger les crédits.
+          </p>
+        </div>
+        {isOwner && (
+          <Button onClick={() => setOpen((v) => !v)} variant={open ? "outline" : "default"}>
+            <UserPlus className="h-4 w-4 mr-2" />
+            {open ? "Annuler" : "Ajouter un membre"}
+          </Button>
+        )}
+      </div>
+
+      {isOwner && open && (
+        <form onSubmit={submit} className="grid gap-3 sm:grid-cols-2 rounded-md border bg-muted/30 p-4">
+          <Field label="Prénom" value={form.first_name} onChange={(v) => setForm({ ...form, first_name: v })} />
+          <Field label="Nom" value={form.last_name} onChange={(v) => setForm({ ...form, last_name: v })} />
+          <Field label="Email" value={form.email} onChange={(v) => setForm({ ...form, email: v })} />
+          <div className="space-y-1.5">
+            <Label>Mot de passe (min 8 caractères)</Label>
+            <Input
+              type="text"
+              value={form.password}
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
+              placeholder="À communiquer au membre"
+            />
           </div>
-        </StatusCard>
+          <div className="sm:col-span-2">
+            <Button type="submit" disabled={busy}>
+              {busy ? "Ajout…" : "Créer le compte du membre"}
+            </Button>
+            <p className="text-xs text-muted-foreground mt-2">
+              Communiquez l'email et le mot de passe au membre. Il pourra se connecter immédiatement.
+            </p>
+          </div>
+        </form>
+      )}
+
+      {members.length === 0 ? (
+        <p className="text-sm text-muted-foreground">Aucun membre ajouté.</p>
+      ) : (
+        <div className="divide-y border rounded-md">
+          {members.map((m: any) => (
+            <div key={m.id} className="flex items-center justify-between gap-3 p-3">
+              <div>
+                <div className="font-medium">{m.first_name} {m.last_name}</div>
+                <div className="text-xs text-muted-foreground">{m.email}</div>
+              </div>
+              {isOwner && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => remove(m.id, `${m.first_name} ${m.last_name}`)}
+                  className="text-destructive hover:text-destructive"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );

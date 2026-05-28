@@ -204,6 +204,42 @@ export type Database = {
           },
         ]
       }
+      partner_members: {
+        Row: {
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+          invited_by: string | null
+          last_name: string
+          partner_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          first_name: string
+          id?: string
+          invited_by?: string | null
+          last_name: string
+          partner_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          first_name?: string
+          id?: string
+          invited_by?: string | null
+          last_name?: string
+          partner_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       partners: {
         Row: {
           approved_at: string | null
@@ -435,6 +471,11 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_partner_team: {
+        Args: { _partner_id: string; _user_id: string }
+        Returns: boolean
+      }
+      partner_id_for_user: { Args: { _user_id: string }; Returns: string }
       publish_prospect_as_lead: {
         Args: { _max_unlocks?: number; _prospect_id: string; _summary?: string }
         Returns: string
