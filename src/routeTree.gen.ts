@@ -46,6 +46,7 @@ import { Route as EnAccountingFirmAbidjanRouteImport } from './routes/en/account
 import { Route as EnAboutRouteImport } from './routes/en/about'
 import { Route as AuthenticatedRechargerRouteImport } from './routes/_authenticated.recharger'
 import { Route as AuthenticatedMarketplaceRouteImport } from './routes/_authenticated.marketplace'
+import { Route as AuthenticatedHistoriqueRouteImport } from './routes/_authenticated.historique'
 import { Route as AuthenticatedEspacePartenaireRouteImport } from './routes/_authenticated.espace-partenaire'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated.admin'
 import { Route as ApiPublicTestPartnerWebhookRouteImport } from './routes/api/public/test-partner-webhook'
@@ -248,6 +249,11 @@ const AuthenticatedMarketplaceRoute =
     path: '/marketplace',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedHistoriqueRoute = AuthenticatedHistoriqueRouteImport.update({
+  id: '/historique',
+  path: '/historique',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedEspacePartenaireRoute =
   AuthenticatedEspacePartenaireRouteImport.update({
     id: '/espace-partenaire',
@@ -312,6 +318,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/espace-partenaire': typeof AuthenticatedEspacePartenaireRoute
+  '/historique': typeof AuthenticatedHistoriqueRoute
   '/marketplace': typeof AuthenticatedMarketplaceRoute
   '/recharger': typeof AuthenticatedRechargerRoute
   '/en/about': typeof EnAboutRoute
@@ -357,6 +364,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/espace-partenaire': typeof AuthenticatedEspacePartenaireRoute
+  '/historique': typeof AuthenticatedHistoriqueRoute
   '/marketplace': typeof AuthenticatedMarketplaceRoute
   '/recharger': typeof AuthenticatedRechargerRoute
   '/en/about': typeof EnAboutRoute
@@ -404,6 +412,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/espace-partenaire': typeof AuthenticatedEspacePartenaireRoute
+  '/_authenticated/historique': typeof AuthenticatedHistoriqueRoute
   '/_authenticated/marketplace': typeof AuthenticatedMarketplaceRoute
   '/_authenticated/recharger': typeof AuthenticatedRechargerRoute
   '/en/about': typeof EnAboutRoute
@@ -451,6 +460,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/admin'
     | '/espace-partenaire'
+    | '/historique'
     | '/marketplace'
     | '/recharger'
     | '/en/about'
@@ -496,6 +506,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/admin'
     | '/espace-partenaire'
+    | '/historique'
     | '/marketplace'
     | '/recharger'
     | '/en/about'
@@ -542,6 +553,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/_authenticated/admin'
     | '/_authenticated/espace-partenaire'
+    | '/_authenticated/historique'
     | '/_authenticated/marketplace'
     | '/_authenticated/recharger'
     | '/en/about'
@@ -865,6 +877,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMarketplaceRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/historique': {
+      id: '/_authenticated/historique'
+      path: '/historique'
+      fullPath: '/historique'
+      preLoaderRoute: typeof AuthenticatedHistoriqueRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/espace-partenaire': {
       id: '/_authenticated/espace-partenaire'
       path: '/espace-partenaire'
@@ -920,6 +939,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedEspacePartenaireRoute: typeof AuthenticatedEspacePartenaireRoute
+  AuthenticatedHistoriqueRoute: typeof AuthenticatedHistoriqueRoute
   AuthenticatedMarketplaceRoute: typeof AuthenticatedMarketplaceRoute
   AuthenticatedRechargerRoute: typeof AuthenticatedRechargerRoute
 }
@@ -927,6 +947,7 @@ interface AuthenticatedRouteChildren {
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedEspacePartenaireRoute: AuthenticatedEspacePartenaireRoute,
+  AuthenticatedHistoriqueRoute: AuthenticatedHistoriqueRoute,
   AuthenticatedMarketplaceRoute: AuthenticatedMarketplaceRoute,
   AuthenticatedRechargerRoute: AuthenticatedRechargerRoute,
 }

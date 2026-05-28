@@ -1,12 +1,23 @@
 import { useState } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { Briefcase, CreditCard, UserCircle2, ShieldCheck, ExternalLink, LogOut, Menu, X, Coins } from "lucide-react";
+import {
+  Briefcase,
+  CreditCard,
+  UserCircle2,
+  ShieldCheck,
+  ExternalLink,
+  LogOut,
+  Menu,
+  X,
+  Coins,
+  History,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import logo from "@/assets/brand/logo-soumissions-comptables.jpg";
 
 type NavItem = {
-  to: "/marketplace" | "/recharger" | "/espace-partenaire" | "/admin";
+  to: "/marketplace" | "/recharger" | "/historique" | "/espace-partenaire" | "/admin";
   label: string;
   icon: typeof Briefcase;
   staffOnly?: boolean;
@@ -15,6 +26,7 @@ type NavItem = {
 const NAV: NavItem[] = [
   { to: "/marketplace", label: "Marketplace", icon: Briefcase },
   { to: "/recharger", label: "Recharger crédits", icon: CreditCard },
+  { to: "/historique", label: "Historique", icon: History },
   { to: "/espace-partenaire", label: "Mon compte", icon: UserCircle2 },
   { to: "/admin", label: "Administration", icon: ShieldCheck, staffOnly: true },
 ];
@@ -33,6 +45,15 @@ export function AppShell({ email, creditsBalance, isStaff, onSignOut, children }
   const navigate = useNavigate();
 
   const items = NAV.filter((n) => !n.staffOnly || isStaff);
+
+  const initials = (email || "?")
+    .split("@")[0]
+    .split(/[._-]+/)
+    .map((s) => s[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
 
   return (
     <div className="min-h-screen flex bg-muted/30">
@@ -78,24 +99,34 @@ export function AppShell({ email, creditsBalance, isStaff, onSignOut, children }
           })}
         </nav>
 
-        <div className="border-t p-3 space-y-1">
-          <a
-            href="/"
-            className="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
-          >
-            <ExternalLink className="h-4 w-4" />
-            Retour au site
-          </a>
-          <div className="px-3 py-2 text-xs text-muted-foreground truncate" title={email}>
-            {email}
+        <div className="border-t p-3 space-y-2">
+          <Button asChild variant="outline" className="w-full justify-start gap-2 font-medium">
+            <a href="/">
+              <ExternalLink className="h-4 w-4" />
+              Retour au site
+            </a>
+          </Button>
+
+          <div className="flex items-center gap-3 rounded-lg border bg-muted/40 px-3 py-2.5">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-semibold">
+              {initials || "?"}
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="text-xs text-muted-foreground">Connecté en tant que</div>
+              <div className="text-sm font-medium text-foreground truncate" title={email}>
+                {email}
+              </div>
+            </div>
           </div>
-          <button
+
+          <Button
             onClick={onSignOut}
-            className="w-full flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-foreground hover:bg-destructive/10 hover:text-destructive"
+            variant="ghost"
+            className="w-full justify-start gap-2 font-medium text-destructive hover:text-destructive hover:bg-destructive/10"
           >
             <LogOut className="h-4 w-4" />
             Déconnexion
-          </button>
+          </Button>
         </div>
       </aside>
 
@@ -142,18 +173,35 @@ export function AppShell({ email, creditsBalance, isStaff, onSignOut, children }
                 </Link>
               );
             })}
-            <a href="/" className="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-muted">
-              <ExternalLink className="h-4 w-4" /> Retour au site
-            </a>
-            <button
-              onClick={() => {
-                setMobileOpen(false);
-                onSignOut();
-              }}
-              className="w-full flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-foreground hover:bg-destructive/10 hover:text-destructive"
-            >
-              <LogOut className="h-4 w-4" /> Déconnexion
-            </button>
+            <div className="pt-2 mt-2 border-t space-y-2">
+              <div className="flex items-center gap-3 rounded-lg border bg-muted/40 px-3 py-2">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-semibold">
+                  {initials || "?"}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-xs text-muted-foreground">Connecté en tant que</div>
+                  <div className="text-sm font-medium text-foreground truncate" title={email}>
+                    {email}
+                  </div>
+                </div>
+              </div>
+              <Button asChild variant="outline" className="w-full justify-start gap-2">
+                <a href="/" onClick={() => setMobileOpen(false)}>
+                  <ExternalLink className="h-4 w-4" />
+                  Retour au site
+                </a>
+              </Button>
+              <Button
+                onClick={() => {
+                  setMobileOpen(false);
+                  onSignOut();
+                }}
+                variant="ghost"
+                className="w-full justify-start gap-2 text-destructive hover:text-destructive hover:bg-destructive/10"
+              >
+                <LogOut className="h-4 w-4" /> Déconnexion
+              </Button>
+            </div>
           </div>
         )}
 
