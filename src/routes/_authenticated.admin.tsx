@@ -143,6 +143,7 @@ function PartnerCard({ partner, isAdmin, onChange }: { partner: any; isAdmin: bo
   const deleteFn = useServerFn(deletePartner);
   const grantFn = useServerFn(adminGrantCredits);
   const [busy, setBusy] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
 
   async function run(fn: () => Promise<unknown>) {
     setBusy(true);
@@ -155,7 +156,9 @@ function PartnerCard({ partner, isAdmin, onChange }: { partner: any; isAdmin: bo
     <div className="rounded-lg border p-4 bg-card">
       <div className="flex justify-between flex-wrap gap-2">
         <div>
-          <h3 className="font-semibold">{partner.cabinet_name}</h3>
+          <button type="button" onClick={() => setShowDetails(true)} className="font-semibold text-left hover:underline">
+            {partner.cabinet_name}
+          </button>
           <p className="text-sm text-muted-foreground">
             {partner.contact_first_name} {partner.contact_last_name} · {partner.email} · {partner.phone}
           </p>
@@ -167,6 +170,7 @@ function PartnerCard({ partner, isAdmin, onChange }: { partner: any; isAdmin: bo
           )}
         </div>
         <div className="flex flex-wrap gap-2 items-start">
+          <Button size="sm" variant="ghost" onClick={() => setShowDetails(true)}>Voir détails</Button>
           {partner.status === "pending_review" && (
             <>
               <Button size="sm" disabled={busy} onClick={() => run(() => approveFn({ data: { partner_id: partner.id } }))}>
@@ -195,6 +199,7 @@ function PartnerCard({ partner, isAdmin, onChange }: { partner: any; isAdmin: bo
           )}
         </div>
       </div>
+      <PartnerDetailsDialog open={showDetails} onClose={() => setShowDetails(false)} partner={partner} />
     </div>
   );
 }
