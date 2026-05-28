@@ -1,13 +1,13 @@
-import { createFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getMyPartner } from "@/lib/partners.functions";
 import { useEffect } from "react";
 import { isUnauthorizedError, signOutAndClear } from "@/lib/auth-actions";
 import { UnauthorizedScreen } from "@/components/auth/UnauthorizedScreen";
+import { AppShell } from "@/components/layout/AppShell";
 
 export const Route = createFileRoute("/_authenticated")({
   component: AuthLayout,
@@ -52,26 +52,18 @@ function AuthLayout() {
 
   const isStaff = (me?.roles ?? []).some((r) => r === "admin" || r === "agent");
   const unauthorized = isUnauthorizedError(meError);
+  const creditsBalance = me?.partner?.credits_balance ?? null;
 
   return (
-    <div className="mx-auto max-w-6xl px-4 sm:px-6 py-8 overflow-x-hidden">
-      <div className="flex flex-wrap justify-between items-center gap-2 mb-8 pb-4 border-b">
-        <div className="text-sm text-muted-foreground truncate max-w-full">{user.email}</div>
-        <div className="flex items-center gap-2 flex-wrap">
-          {isStaff && (
-            <>
-              <Button asChild variant="ghost" size="sm">
-                <Link to="/admin">Admin</Link>
-              </Button>
-              <Button asChild variant="ghost" size="sm">
-                <Link to="/marketplace">Marketplace</Link>
-              </Button>
-            </>
-          )}
-          <Button variant="outline" size="sm" onClick={signOut}>Déconnexion</Button>
-        </div>
+    <AppShell
+      email={user.email ?? ""}
+      creditsBalance={creditsBalance}
+      isStaff={isStaff}
+      onSignOut={signOut}
+    >
+      <div className="mx-auto max-w-6xl w-full">
+        {unauthorized ? <UnauthorizedScreen /> : <Outlet />}
       </div>
-      {unauthorized ? <UnauthorizedScreen /> : <Outlet />}
-    </div>
+    </AppShell>
   );
 }
