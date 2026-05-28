@@ -48,20 +48,22 @@ function AdminPage() {
   }
 
   return (
-    <div>
+    <div className="min-w-0">
       <h1 className="text-3xl font-bold mb-6">Tableau de bord</h1>
       <Tabs defaultValue="partners">
-        <TabsList>
-          <TabsTrigger value="partners">Partenaires</TabsTrigger>
-          <TabsTrigger value="prospects">Prospects</TabsTrigger>
-          <TabsTrigger value="create">+ Créer un partenaire</TabsTrigger>
-          {roles.includes("admin") && <TabsTrigger value="team">Équipe</TabsTrigger>}
-        </TabsList>
-        <TabsContent value="partners" className="mt-6"><PartnersPanel isAdmin={roles.includes("admin")} /></TabsContent>
-        <TabsContent value="prospects" className="mt-6"><ProspectsPanel isAdmin={roles.includes("admin")} /></TabsContent>
-        <TabsContent value="create" className="mt-6"><CreatePartnerPanel /></TabsContent>
+        <div className="-mx-4 sm:mx-0 overflow-x-auto px-4 sm:px-0">
+          <TabsList className="w-max flex-nowrap">
+            <TabsTrigger value="partners">Partenaires</TabsTrigger>
+            <TabsTrigger value="prospects">Prospects</TabsTrigger>
+            <TabsTrigger value="create">+ Créer un partenaire</TabsTrigger>
+            {roles.includes("admin") && <TabsTrigger value="team">Équipe</TabsTrigger>}
+          </TabsList>
+        </div>
+        <TabsContent value="partners" className="mt-6 min-w-0"><PartnersPanel isAdmin={roles.includes("admin")} /></TabsContent>
+        <TabsContent value="prospects" className="mt-6 min-w-0"><ProspectsPanel isAdmin={roles.includes("admin")} /></TabsContent>
+        <TabsContent value="create" className="mt-6 min-w-0"><CreatePartnerPanel /></TabsContent>
         {roles.includes("admin") && (
-          <TabsContent value="team" className="mt-6"><TeamPanel /></TabsContent>
+          <TabsContent value="team" className="mt-6 min-w-0"><TeamPanel /></TabsContent>
         )}
       </Tabs>
     </div>

@@ -135,7 +135,7 @@ function RootComponent() {
             Aller au contenu principal
           </a>
           <Header />
-          <main id="main" tabIndex={-1} className="flex-1 outline-none">
+          <main id="main" tabIndex={-1} className="flex-1 outline-none overflow-x-hidden">
             <Outlet />
           </main>
           <Footer />
