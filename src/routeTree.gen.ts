@@ -50,6 +50,7 @@ import { Route as AuthenticatedHistoriqueRouteImport } from './routes/_authentic
 import { Route as AuthenticatedEspacePartenaireRouteImport } from './routes/_authenticated.espace-partenaire'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated.admin'
 import { Route as ApiPublicTestPartnerWebhookRouteImport } from './routes/api/public/test-partner-webhook'
+import { Route as ApiPublicMetaCapiRouteImport } from './routes/api/public/meta-capi'
 import { Route as ApiPublicLeadUpsellRouteImport } from './routes/api/public/lead-upsell'
 import { Route as ApiPublicLeadRouteImport } from './routes/api/public/lead'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
@@ -271,6 +272,11 @@ const ApiPublicTestPartnerWebhookRoute =
     path: '/api/public/test-partner-webhook',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicMetaCapiRoute = ApiPublicMetaCapiRouteImport.update({
+  id: '/api/public/meta-capi',
+  path: '/api/public/meta-capi',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicLeadUpsellRoute = ApiPublicLeadUpsellRouteImport.update({
   id: '/api/public/lead-upsell',
   path: '/api/public/lead-upsell',
@@ -336,6 +342,7 @@ export interface FileRoutesByFullPath {
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
   '/api/public/lead-upsell': typeof ApiPublicLeadUpsellRoute
+  '/api/public/meta-capi': typeof ApiPublicMetaCapiRoute
   '/api/public/test-partner-webhook': typeof ApiPublicTestPartnerWebhookRoute
 }
 export interface FileRoutesByTo {
@@ -382,6 +389,7 @@ export interface FileRoutesByTo {
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
   '/api/public/lead-upsell': typeof ApiPublicLeadUpsellRoute
+  '/api/public/meta-capi': typeof ApiPublicMetaCapiRoute
   '/api/public/test-partner-webhook': typeof ApiPublicTestPartnerWebhookRoute
 }
 export interface FileRoutesById {
@@ -430,6 +438,7 @@ export interface FileRoutesById {
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
   '/api/public/lead-upsell': typeof ApiPublicLeadUpsellRoute
+  '/api/public/meta-capi': typeof ApiPublicMetaCapiRoute
   '/api/public/test-partner-webhook': typeof ApiPublicTestPartnerWebhookRoute
 }
 export interface FileRouteTypes {
@@ -478,6 +487,7 @@ export interface FileRouteTypes {
     | '/api/public/contact'
     | '/api/public/lead'
     | '/api/public/lead-upsell'
+    | '/api/public/meta-capi'
     | '/api/public/test-partner-webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -524,6 +534,7 @@ export interface FileRouteTypes {
     | '/api/public/contact'
     | '/api/public/lead'
     | '/api/public/lead-upsell'
+    | '/api/public/meta-capi'
     | '/api/public/test-partner-webhook'
   id:
     | '__root__'
@@ -571,6 +582,7 @@ export interface FileRouteTypes {
     | '/api/public/contact'
     | '/api/public/lead'
     | '/api/public/lead-upsell'
+    | '/api/public/meta-capi'
     | '/api/public/test-partner-webhook'
   fileRoutesById: FileRoutesById
 }
@@ -613,6 +625,7 @@ export interface RootRouteChildren {
   ApiPublicContactRoute: typeof ApiPublicContactRoute
   ApiPublicLeadRoute: typeof ApiPublicLeadRoute
   ApiPublicLeadUpsellRoute: typeof ApiPublicLeadUpsellRoute
+  ApiPublicMetaCapiRoute: typeof ApiPublicMetaCapiRoute
   ApiPublicTestPartnerWebhookRoute: typeof ApiPublicTestPartnerWebhookRoute
 }
 
@@ -905,6 +918,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicTestPartnerWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/meta-capi': {
+      id: '/api/public/meta-capi'
+      path: '/api/public/meta-capi'
+      fullPath: '/api/public/meta-capi'
+      preLoaderRoute: typeof ApiPublicMetaCapiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/lead-upsell': {
       id: '/api/public/lead-upsell'
       path: '/api/public/lead-upsell'
@@ -1007,6 +1027,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicContactRoute: ApiPublicContactRoute,
   ApiPublicLeadRoute: ApiPublicLeadRoute,
   ApiPublicLeadUpsellRoute: ApiPublicLeadUpsellRoute,
+  ApiPublicMetaCapiRoute: ApiPublicMetaCapiRoute,
   ApiPublicTestPartnerWebhookRoute: ApiPublicTestPartnerWebhookRoute,
 }
 export const routeTree = rootRouteImport
