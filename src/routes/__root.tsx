@@ -128,6 +128,21 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  // Meta Pixel : PageView à chaque navigation SPA (le 1er PageView est déjà
+  // déclenché par le snippet inline dans <head>).
+  const isFirstPv = useRef(true);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (isFirstPv.current) {
+      isFirstPv.current = false;
+      return;
+    }
+    if (typeof window.fbq === "function") {
+      window.fbq("track", "PageView");
+    }
+  }, [pathname]);
+
   // Routes immersives : pas de header/footer public, le shell auth prend tout.
   const immersiveAuth =
     pathname === "/marketplace" ||
