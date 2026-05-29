@@ -18,7 +18,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { isUnauthorizedError } from "@/lib/auth-actions";
 import { UnauthorizedScreen } from "@/components/auth/UnauthorizedScreen";
-import { Trash2, UserPlus } from "lucide-react";
+import { Trash2, UserPlus, ShieldCheck, KeyRound, LayoutDashboard } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/espace-partenaire")({
   head: () => ({ meta: [{ title: "Espace partenaire" }, { name: "robots", content: "noindex,nofollow" }] }),
@@ -45,18 +45,20 @@ function EspacePartenaire() {
   const partner = data?.partner;
   const roles = data?.roles ?? [];
   const isStaff = roles.includes("admin") || roles.includes("agent");
+  const isAdmin = roles.includes("admin");
   const isOwner = !!data?.isOwner;
+  const userEmail = user?.email ?? data?.profile?.email ?? "";
+  const fullName = data?.profile?.full_name ?? "";
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <h1 className="text-3xl font-bold">Mon compte</h1>
-        {isStaff && (
-          <Button asChild>
-            <Link to="/admin">Tableau de bord admin</Link>
-          </Button>
-        )}
       </div>
+
+      {isStaff && !partner && (
+        <StaffAccountCard fullName={fullName} email={userEmail} isAdmin={isAdmin} />
+      )}
 
       {!partner && !isStaff && (
         <BootstrapOrInscriptionCard onDone={refetch} />
@@ -99,6 +101,55 @@ function EspacePartenaire() {
           <TeamMembersSection isOwner={isOwner} />
         </>
       )}
+    </div>
+  );
+}
+
+function StaffAccountCard({ fullName, email, isAdmin }: { fullName: string; email: string; isAdmin: boolean }) {
+  const initials = (fullName || email || "?")
+    .split(/[\s._@-]+/)
+    .map((s) => s[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+  return (
+    <div className="rounded-lg border bg-card overflow-hidden">
+      <div className="bg-gradient-to-br from-primary/10 to-primary/5 px-6 py-5 flex items-center gap-4 border-b">
+        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground text-lg font-bold">
+          {initials}
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="font-semibold text-lg leading-tight truncate">{fullName || email}</div>
+          <div className="text-sm text-muted-foreground truncate">{email}</div>
+          <div className="mt-1 inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-2.5 py-0.5 text-xs font-semibold text-primary">
+            <ShieldCheck className="h-3 w-3" />
+            {isAdmin ? "Administrateur LGM" : "Agent LGM"}
+          </div>
+        </div>
+      </div>
+      <div className="p-6 space-y-4">
+        <div>
+          <h2 className="text-base font-semibold">Sécurité du compte</h2>
+          <p className="text-sm text-muted-foreground">
+            Changez régulièrement votre mot de passe pour protéger l'accès à la console opérateur.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Button asChild variant="outline">
+            <Link to="/changer-mot-de-passe">
+              <KeyRound className="h-4 w-4 mr-2" />
+              Changer mon mot de passe
+            </Link>
+          </Button>
+          <Button asChild>
+            <Link to="/admin">
+              <LayoutDashboard className="h-4 w-4 mr-2" />
+              Aller au tableau de bord
+            </Link>
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }

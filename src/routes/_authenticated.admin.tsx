@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
+import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
@@ -79,7 +79,6 @@ function AdminPage() {
 
 function AdminPageInner({ roles }: { roles: string[] }) {
   const { user } = useAuth();
-  const navigate = useNavigate();
   const search = useSearch({ from: "/_authenticated/admin" });
   const activeTab = search.tab ?? "partners";
   const listPartnersFn = useServerFn(listPartners);
@@ -113,32 +112,55 @@ function AdminPageInner({ roles }: { roles: string[] }) {
 
       <DashboardKpis />
 
-      <Tabs
-        value={activeTab}
-        onValueChange={(v) =>
-          navigate({
-            to: "/admin",
-            search: v === "partners" ? {} : { tab: v as any },
-            replace: true,
-          })
-        }
-        className="mt-8"
-      >
-        <div className="-mx-4 sm:mx-0 overflow-x-auto px-4 sm:px-0">
-          <TabsList className="w-max flex-nowrap">
-            <TabsTrigger value="partners">Partenaires <PendingBadge count={pendingPartners} /></TabsTrigger>
-            <TabsTrigger value="prospects">Prospects <PendingBadge count={pendingProspects} /></TabsTrigger>
-            <TabsTrigger value="create">+ Créer un partenaire</TabsTrigger>
-            {roles.includes("admin") && <TabsTrigger value="team">Équipe</TabsTrigger>}
-          </TabsList>
+      <div className="mt-8 min-w-0">
+        <SectionHeader tab={activeTab} pendingPartners={pendingPartners} pendingProspects={pendingProspects} />
+        <div className="mt-4">
+          {activeTab === "partners" && <PartnersPanel isAdmin={roles.includes("admin")} />}
+          {activeTab === "prospects" && <ProspectsPanel isAdmin={roles.includes("admin")} />}
+          {activeTab === "create" && <CreatePartnerPanel />}
+          {activeTab === "team" && roles.includes("admin") && <TeamPanel />}
         </div>
-        <TabsContent value="partners" className="mt-6 min-w-0"><PartnersPanel isAdmin={roles.includes("admin")} /></TabsContent>
-        <TabsContent value="prospects" className="mt-6 min-w-0"><ProspectsPanel isAdmin={roles.includes("admin")} /></TabsContent>
-        <TabsContent value="create" className="mt-6 min-w-0"><CreatePartnerPanel /></TabsContent>
-        {roles.includes("admin") && (
-          <TabsContent value="team" className="mt-6 min-w-0"><TeamPanel /></TabsContent>
-        )}
-      </Tabs>
+      </div>
+    </div>
+  );
+}
+
+function SectionHeader({
+  tab,
+  pendingPartners,
+  pendingProspects,
+}: {
+  tab: "partners" | "prospects" | "create" | "team";
+  pendingPartners: number;
+  pendingProspects: number;
+}) {
+  const map = {
+    partners: {
+      title: "Partenaires",
+      subtitle: pendingPartners
+        ? `${pendingPartners} cabinet${pendingPartners > 1 ? "s" : ""} en attente de validation`
+        : "Tous les cabinets sont à jour.",
+    },
+    prospects: {
+      title: "Prospects",
+      subtitle: pendingProspects
+        ? `${pendingProspects} prospect${pendingProspects > 1 ? "s" : ""} à qualifier`
+        : "Aucun prospect en attente.",
+    },
+    create: {
+      title: "Créer un partenaire",
+      subtitle: "Ajouter manuellement un cabinet à la plateforme.",
+    },
+    team: {
+      title: "Équipe LGM",
+      subtitle: "Gérer les administrateurs et agents.",
+    },
+  } as const;
+  const { title, subtitle } = map[tab];
+  return (
+    <div className="border-l-2 border-primary pl-3">
+      <h2 className="text-xl font-bold">{title}</h2>
+      <p className="text-sm text-muted-foreground">{subtitle}</p>
     </div>
   );
 }
