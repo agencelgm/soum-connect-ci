@@ -475,6 +475,25 @@ export function MultiStepLeadForm({
         const json = (await res.json()) as { leadId?: string };
         if (json?.leadId) sessionStorage.setItem("leadId", json.leadId);
       } catch {}
+      trackMetaConversion(
+        "Lead",
+        {
+          content_category: "quote_request",
+          content_name: values.service,
+          service: values.service,
+          city: values.localisation,
+          audience: audienceHint,
+          source,
+          value: 0,
+          currency: "XOF",
+        },
+        {
+          em: values.email,
+          ph: values.mobile,
+          fn: values.nom,
+          ct: values.localisation,
+        },
+      );
       trackEvent("soumission_envoyee", {
         service: values.service,
         localisation: values.localisation,
