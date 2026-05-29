@@ -643,3 +643,62 @@ export const getAdminDashboardStats = createServerFn({ method: "GET" })
       creditsThisMonth,
     };
   });
+
+// ---------------------- Admin: Chariow payments history ----------------------
+
+export const listChariowPayments = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertStaff(context.userId);
+
+    const { data: payments, error } = await supabaseAdmin
+      .from("chariow_payments")
+      .select("id, received_at, processed_at, email, partner_id, credits_granted, amount_label, product_id, status, error_message")
+      .order("received_at", { ascending: false })
+      .limit(200);
+    if (error) throw new Error(error.message);
+
+    const partnerIds = Array.from(
+      new Set((payments ?? []).map((p) => p.partner_id).filter((x): x is string => !!x)),
+    );
+    let partnerMap: Record<string, string> = {};
+    if (partnerIds.length > 0) {
+      const { data: parts } = await supabaseAdmin
+        .from("partners")
+        .select("id, cabinet_name")
+        .in("id", partnerIds);
+      partnerMap = Object.fromEntries((parts ?? []).map((p) => [p.id, p.cabinet_name]));
+    }
+
+    const rows = (payments ?? []).map((p) => ({
+      ...p,
+      cabinet_name: p.partner_id ? partnerMap[p.partner_id] ?? null : null,
+    }));
+
+    const startOfMonth = new Date();
+    startOfMonth.setUTCDate(1);
+    startOfMonth.setUTCHours(0, 0, 0, 0);
+    const monthIso = startOfMonth.toISOString();
+
+    const creditedRows = rows.filter((r) => r.status === "credited");
+    const monthRows = creditedRows.filter(
+      (r) => (r.processed_at ?? r.received_at) >= monthIso,
+    );
+    const totalCreditsAllTime = creditedRows.reduce(
+      (s, r) => s + (r.credits_granted ?? 0),
+      0,
+    );
+    const creditsThisMonth = monthRows.reduce(
+      (s, r) => s + (r.credits_granted ?? 0),
+      0,
+    );
+
+    return {
+      rows,
+      kpis: {
+        creditsThisMonth,
+        transactionsThisMonth: monthRows.length,
+        totalCreditsAllTime,
+      },
+    };
+  });
