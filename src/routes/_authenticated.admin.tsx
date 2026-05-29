@@ -14,6 +14,7 @@ import {
   adminGrantCredits,
   getMyPartner,
   getAdminDashboardStats,
+  listChariowPayments,
 } from "@/lib/partners.functions";
 import { publishProspect } from "@/lib/marketplace.functions";
 import { rejectProspect, reactivateProspect, deleteProspect } from "@/lib/prospects.functions";
@@ -37,14 +38,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { isUnauthorizedError } from "@/lib/auth-actions";
 import { UnauthorizedScreen } from "@/components/auth/UnauthorizedScreen";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({ meta: [{ title: "Admin" }, { name: "robots", content: "noindex,nofollow" }] }),
   validateSearch: (search: Record<string, unknown>) => ({
     tab:
       typeof search.tab === "string" &&
-      ["partners", "prospects", "create", "team"].includes(search.tab)
-        ? (search.tab as "partners" | "prospects" | "create" | "team")
+      ["partners", "prospects", "create", "team", "paiements"].includes(search.tab)
+        ? (search.tab as "partners" | "prospects" | "create" | "team" | "paiements")
         : undefined,
   }),
   component: AdminPage,
@@ -118,6 +120,7 @@ function AdminPageInner({ roles }: { roles: string[] }) {
           {activeTab === "partners" && <PartnersPanel isAdmin={roles.includes("admin")} />}
           {activeTab === "prospects" && <ProspectsPanel isAdmin={roles.includes("admin")} />}
           {activeTab === "create" && <CreatePartnerPanel />}
+          {activeTab === "paiements" && <PaymentsPanel />}
           {activeTab === "team" && roles.includes("admin") && <TeamPanel />}
         </div>
       </div>
@@ -130,7 +133,7 @@ function SectionHeader({
   pendingPartners,
   pendingProspects,
 }: {
-  tab: "partners" | "prospects" | "create" | "team";
+  tab: "partners" | "prospects" | "create" | "team" | "paiements";
   pendingPartners: number;
   pendingProspects: number;
 }) {
@@ -150,6 +153,10 @@ function SectionHeader({
     create: {
       title: "Créer un partenaire",
       subtitle: "Ajouter manuellement un cabinet à la plateforme.",
+    },
+    paiements: {
+      title: "Paiements crédits",
+      subtitle: "Historique des achats Chariow — qui, quand, combien.",
     },
     team: {
       title: "Équipe LGM",
@@ -764,6 +771,145 @@ function ProspectDetailsDialog({ prospect, onClose }: { prospect: any; onClose: 
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  );
+}
+
+// ---------------------- Payments panel ----------------------
+
+function PaymentsPanel() {
+  const listFn = useServerFn(listChariowPayments);
+  const { data, isLoading } = useQuery({
+    queryKey: ["chariow-payments"],
+    queryFn: () => listFn(),
+    retry: false,
+  });
+  const [filter, setFilter] = useState<"all" | "credited" | "error" | "pending">("all");
+
+  if (isLoading) return <p className="text-sm text-muted-foreground">Chargement…</p>;
+
+  const rows = data?.rows ?? [];
+  const kpis = data?.kpis;
+  const filtered = filter === "all" ? rows : rows.filter((r) => r.status === filter);
+
+  function exportCsv() {
+    const header = ["Date", "Email", "Cabinet", "Produit", "Crédits", "Montant", "Statut"];
+    const lines = filtered.map((r) => {
+      const date = new Date(r.processed_at ?? r.received_at).toISOString();
+      const cells = [date, r.email, r.cabinet_name ?? "", r.product_id, String(r.credits_granted), r.amount_label ?? "", r.status];
+      return cells.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",");
+    });
+    const blob = new Blob([[header.join(","), ...lines].join("\n")], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `paiements-credits-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  const statusBadge: Record<string, string> = {
+    credited: "bg-emerald-100 text-emerald-800 border-emerald-200",
+    pending: "bg-amber-100 text-amber-800 border-amber-200",
+    error: "bg-red-100 text-red-800 border-red-200",
+    unmatched: "bg-orange-100 text-orange-800 border-orange-200",
+  };
+  const statusLabel: Record<string, string> = {
+    credited: "Crédité",
+    pending: "En attente",
+    error: "Erreur",
+    unmatched: "Non rattaché",
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <KpiTile label="Crédits accordés (mois)" value={kpis?.creditsThisMonth ?? 0} accent="text-emerald-600" />
+        <KpiTile label="Transactions (mois)" value={kpis?.transactionsThisMonth ?? 0} accent="text-primary" />
+        <KpiTile label="Crédits accordés (total)" value={kpis?.totalCreditsAllTime ?? 0} accent="text-foreground" />
+      </div>
+
+      <div className="flex flex-wrap items-center gap-2">
+        {(["all", "credited", "pending", "error"] as const).map((k) => (
+          <Button
+            key={k}
+            size="sm"
+            variant={filter === k ? "default" : "outline"}
+            onClick={() => setFilter(k)}
+          >
+            {k === "all" ? "Tous" : statusLabel[k] ?? k}
+          </Button>
+        ))}
+        <div className="ml-auto">
+          <Button size="sm" variant="outline" onClick={exportCsv} disabled={filtered.length === 0}>
+            Exporter CSV
+          </Button>
+        </div>
+      </div>
+
+      <div className="overflow-x-auto rounded-md border bg-card">
+        <table className="w-full text-sm">
+          <thead className="bg-muted/40 text-xs uppercase tracking-wider text-muted-foreground">
+            <tr>
+              <th className="text-left px-3 py-2 font-semibold">Date</th>
+              <th className="text-left px-3 py-2 font-semibold">Email</th>
+              <th className="text-left px-3 py-2 font-semibold">Cabinet</th>
+              <th className="text-left px-3 py-2 font-semibold">Produit</th>
+              <th className="text-right px-3 py-2 font-semibold">Crédits</th>
+              <th className="text-left px-3 py-2 font-semibold">Montant</th>
+              <th className="text-left px-3 py-2 font-semibold">Statut</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.length === 0 && (
+              <tr>
+                <td colSpan={7} className="px-3 py-6 text-center text-muted-foreground">
+                  Aucun paiement à afficher.
+                </td>
+              </tr>
+            )}
+            {filtered.map((r) => {
+              const date = new Date(r.processed_at ?? r.received_at);
+              return (
+                <tr key={r.id} className="border-t align-top">
+                  <td className="px-3 py-2 whitespace-nowrap font-mono text-xs">
+                    {date.toLocaleString("fr-FR", { dateStyle: "short", timeStyle: "short" })}
+                  </td>
+                  <td className="px-3 py-2">{r.email}</td>
+                  <td className="px-3 py-2 text-muted-foreground">{r.cabinet_name ?? "—"}</td>
+                  <td className="px-3 py-2 font-mono text-xs text-muted-foreground">{r.product_id}</td>
+                  <td className="px-3 py-2 text-right font-mono tabular-nums font-semibold">
+                    {r.credits_granted}
+                  </td>
+                  <td className="px-3 py-2">{r.amount_label ?? "—"}</td>
+                  <td className="px-3 py-2">
+                    <span
+                      className={cn(
+                        "inline-block rounded-full border px-2 py-0.5 text-xs font-medium",
+                        statusBadge[r.status] ?? "bg-muted text-muted-foreground border-border",
+                      )}
+                    >
+                      {statusLabel[r.status] ?? r.status}
+                    </span>
+                    {r.status === "error" && r.error_message && (
+                      <div className="mt-1 text-xs text-red-600">{r.error_message}</div>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function KpiTile({ label, value, accent }: { label: string; value: number; accent: string }) {
+  return (
+    <div className="rounded-md border bg-card px-4 py-3">
+      <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">{label}</div>
+      <div className={`mt-1 font-mono text-2xl font-bold tabular-nums ${accent}`}>{value}</div>
+    </div>
   );
 }
 

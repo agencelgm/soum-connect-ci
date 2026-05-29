@@ -42,6 +42,7 @@ const NAV_STAFF: NavItem[] = [
   { to: "/admin", search: { tab: "prospects" }, label: "Prospects", icon: Inbox },
   { to: "/admin", search: { tab: "partners" }, label: "Partenaires", icon: Users },
   { to: "/admin", search: { tab: "create" }, label: "Créer un partenaire", icon: UserPlus },
+  { to: "/admin", search: { tab: "paiements" }, label: "Paiements crédits", icon: Coins },
   { to: "/admin", search: { tab: "team" }, label: "Équipe LGM", icon: Users2, adminOnly: true },
   { to: "/espace-partenaire", label: "Mon compte", icon: UserCircle2 },
 ];

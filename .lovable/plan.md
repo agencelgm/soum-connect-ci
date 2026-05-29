@@ -1,36 +1,45 @@
-## 1. Supprimer la barre d'onglets interne sur `/admin`
+## Objectif
 
-La sidebar pilote déjà la section affichée via `?tab=`. La `TabsList` en haut de la page fait doublon et brouille la hiérarchie.
+Donner au staff LGM une vue claire de tous les achats de crédits faits via Chariow : qui a acheté, quand, combien de crédits, et quel montant (label) — avec totaux et filtres simples.
 
-Changements dans `src/routes/_authenticated.admin.tsx` :
-- Retirer `<TabsList>` et le wrapper `<Tabs value=… onValueChange=…>`.
-- Remplacer par un rendu conditionnel direct selon `search.tab` :
-  - `partners` (défaut) → `<PartnersPanel />`
-  - `prospects` → `<ProspectsPanel />`
-  - `create` → `<CreatePartnerPanel />`
-  - `team` (admin uniquement) → `<TeamPanel />`
-- Ajouter un petit en-tête de section au-dessus du panel (titre + sous-titre) pour que l'utilisateur sache toujours où il est, vu qu'on perd les onglets visuels. Ex : « Partenaires — 1 cabinet actif, 0 en attente ».
-- Les compteurs `pendingPartners` / `pendingProspects` continuent d'alimenter les badges de la **sidebar** (à ajouter aussi côté `AppShell` pour garder le signal d'alerte visible).
+## Source de données
 
-Les sous-onglets internes au panel Partenaires (En attente / Actifs / En pause / Rejetés) **restent** — ils filtrent une seule liste, c'est leur rôle légitime.
+Tout est déjà capturé dans la table `chariow_payments` (alimentée par le webhook Chariow). Champs utilisés :
+- `received_at` / `processed_at` — date
+- `email` — acheteur
+- `partner_id` — cabinet rattaché (jointure vers `partners.cabinet_name`)
+- `credits_granted` — nombre de crédits livrés
+- `amount_label` — montant (ex. "25 000 FCFA pour 25 crédits")
+- `product_id` — identifiant produit Chariow
+- `status` — `processed` / `pending` / `error`
+- `error_message` — si échec
 
-## 2. Construire une vraie page « Mon compte » pour le staff
+Aucune migration nécessaire. Pas de changement de RLS (la policy admin existe déjà).
 
-Aujourd'hui `_authenticated.espace-partenaire.tsx` ne rend rien quand l'utilisateur est staff sans cabinet associé (le bloc `BootstrapOrInscriptionCard` est masqué par `!isStaff`, et tous les autres blocs dépendent d'un `partner`). D'où la page vide.
+## Changements
 
-Changements dans `src/routes/_authenticated.espace-partenaire.tsx` :
-- Si `isStaff && !partner` → afficher un nouveau bloc `StaffAccountCard` :
-  - Nom complet (depuis `profiles.full_name`) + email + badge rôle (Admin / Agent)
-  - Bouton « Changer mon mot de passe » → `/changer-mot-de-passe`
-  - Bouton « Déconnexion »
-  - Lien rapide vers `/admin`
-- Garder la logique partenaire intacte pour les cabinets.
-- Retirer le bouton « Tableau de bord admin » du header de la page (redondant avec la sidebar) ou le laisser uniquement quand on n'est PAS sur /admin — au choix, je propose de le retirer.
+### 1. `src/lib/partners.functions.ts` — nouvelle serverFn `listChariowPayments`
+- Protégée par `requireSupabaseAuth` + check `admin` ou `agent`
+- Retourne les 200 derniers paiements, joints à `partners(cabinet_name)`
+- Calcule en plus 3 KPI : total crédits accordés ce mois, total ce mois (count), total all-time crédits
 
-Pas de changement DB. La server fn `getMyPartner` renvoie déjà `roles` et le `user.email` est accessible via `useAuth()`. Pour le `full_name`, on l'ajoute au retour de `getMyPartner` (lecture du `profiles` du user courant — déjà chargé probablement, sinon une requête supplémentaire négligeable).
+### 2. `src/components/layout/AppShell.tsx`
+- Ajouter `"paiements"` à l'union du type `search.tab`
+- Ajouter entrée nav staff : `{ to: "/admin", search: { tab: "paiements" }, label: "Paiements crédits", icon: Coins }`
+
+### 3. `src/routes/_authenticated.admin.tsx`
+- Étendre `validateSearch` pour accepter `"paiements"`
+- Ajouter le rendu conditionnel d'un nouveau composant `PaymentsPanel` quand `tab === "paiements"`
+- `PaymentsPanel` affiche :
+  - **3 cartes KPI** en haut : Crédits accordés (mois), Nb transactions (mois), Crédits accordés (total)
+  - **Tableau** trié par date desc, colonnes : Date, Email, Cabinet, Produit, Crédits, Montant, Statut
+  - Badge couleur pour `status` (vert processed, orange pending, rouge error)
+  - Ligne `error_message` repliable si statut error
+  - Filtre simple par statut (boutons : Tous / Traités / En erreur)
+  - Bouton "Exporter CSV" (génère côté client à partir des données chargées)
 
 ## Hors scope
 
-- Pas de refonte visuelle du panel Partenaires.
-- Pas de page profil dédiée séparée pour le staff (on réutilise `/espace-partenaire`).
-- Pas de modification des permissions ou de la DB.
+- Pas d'édition/remboursement depuis l'UI (Chariow reste la source de vérité)
+- Pas de webhook ni de schéma DB modifiés
+- Pas de pagination serveur (200 dernières lignes suffisent pour l'usage actuel ; à itérer si besoin)
