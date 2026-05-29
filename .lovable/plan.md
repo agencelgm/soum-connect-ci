@@ -1,50 +1,75 @@
-## Vérifications avant ton prochain test
+## Objectif
 
-### 1. Erreur SSR à neutraliser
-Le serveur log répète :
+Séparer l'expérience du staff LGM de celle des cabinets partenaires. Le staff a sa propre sidebar, son propre tableau de bord immersif, et ne voit plus rien lié aux crédits.
+
+## 1. Sidebar conditionnelle (`AppShell.tsx`)
+
+Aujourd'hui `AppShell` affiche les mêmes 5 entrées pour tout le monde. On passe à deux jeux de navigation selon `isStaff` :
+
+**Sidebar Partenaire (inchangée)** — Marketplace, Recharger crédits, Historique, Mon compte. Bloc solde + bouton Recharger conservés.
+
+**Sidebar Staff (nouvelle)** :
+- Tableau de bord → `/admin`
+- Prospects → `/admin?tab=prospects`
+- Partenaires → `/admin?tab=partners`
+- Créer un partenaire → `/admin?tab=create`
+- Équipe LGM → `/admin?tab=team` (admin uniquement)
+- Mon compte → `/espace-partenaire`
+
+Le bloc « Solde / Recharger » est **masqué** côté staff. À la place, un petit encart « Mode opérateur » avec le rôle (Admin / Agent) et un indicateur de prospects en attente (badge count récupéré comme aujourd'hui dans `_authenticated.admin.tsx`).
+
+Le clic sur le logo en haut de la sidebar pointe vers `/` (homepage publique) pour le staff, et reste sur `/marketplace` pour les partenaires.
+
+## 2. Page `/admin` — vrai dashboard immersif
+
+Refonte de `_authenticated.admin.tsx` : on garde toute la logique métier (queries, panels Partners/Prospects/Create/Team), mais on change le layout d'entrée.
+
+**Header de stats** (4 cartes KPI en grille) :
+- Prospects en attente de qualification
+- Publications actives sur la marketplace
+- Partenaires actifs / en attente de validation
+- Recharges crédits du mois (somme `chariow_payments.credits_granted` status=`credited`)
+
+**Sous le header** : on lit `?tab=` dans l'URL pour piloter les `Tabs` existants (au lieu du `defaultValue` actuel). Les onglets restent — Partenaires / Prospects / Créer / Équipe — mais ils sont aussi pilotables depuis la sidebar.
+
+Conservation totale des panels existants : `PartnersPanel`, `ProspectsPanel`, `CreatePartnerPanel`, `TeamPanel`. Aucune logique serveur n'est modifiée.
+
+**Style** : même thème (tokens existants de `styles.css`), mais layout dense type back-office — bordures fines, cartes compactes, typographie monospace pour les chiffres KPI, séparateurs marqués. Distinct visuellement du portail partenaire (qui est plus aéré et chaleureux) sans changer de palette.
+
+## 3. Redirections
+
+- `/marketplace`, `/recharger`, `/historique` : ajout d'un `beforeLoad` qui, si l'utilisateur est staff, redirige vers `/admin`. Évite qu'un admin tombe par hasard sur une page sans valeur pour lui.
+- `/admin` : si l'utilisateur n'est pas staff, redirige vers `/marketplace` (au lieu d'afficher « Accès réservé »).
+- Login (`connexion.tsx`) : déjà OK, staff → `/admin`.
+
+## 4. KPI — nouvelle server fn
+
+Une seule nouvelle server fn `getAdminDashboardStats` dans `src/lib/partners.functions.ts`, protégée par `requireSupabaseAuth` + check de rôle staff, qui renvoie les 4 compteurs (counts simples, pas de jointures lourdes).
+
+## Détails techniques
+
+```text
+src/components/layout/AppShell.tsx
+  ├── NAV_PARTNER = [marketplace, recharger, historique, espace-partenaire]
+  ├── NAV_STAFF   = [admin, admin?tab=prospects, admin?tab=partners, admin?tab=create, admin?tab=team(admin), espace-partenaire]
+  └── Bloc solde : render uniquement si !isStaff
+
+src/routes/_authenticated.admin.tsx
+  ├── + useSearch() pour lire ?tab=
+  ├── + <DashboardKpis /> au-dessus des Tabs
+  └── <Tabs value={tabFromSearch} onValueChange={navigate} ...>
+
+src/routes/_authenticated.marketplace.tsx / recharger / historique
+  └── + beforeLoad: redirect staff → /admin
+
+src/lib/partners.functions.ts
+  └── + getAdminDashboardStats (counts: prospects pending, publications active,
+        partners pending/approved, credits du mois)
 ```
-TypeError: Cannot use 'in' operator to search for 'Symbol(TSS_SERVER_FUNCTION_FACTORY)' in undefined
-  at partners.functions.ts:82 (.middleware([requireSupabaseAuth]))
-```
-→ Pendant le SSR de `/_authenticated`, `requireSupabaseAuth` est `undefined`. Le client bascule en rendu client donc l'utilisateur ne voit rien, mais ça pollue les logs et peut faire échouer un loader protégé.
 
-**Action** : redémarrer le dev server pour purger le cache HMR du plugin TanStack server-fn. Si l'erreur revient après redémarrage → vraie cause (probablement une dépendance circulaire entre `partners.functions.ts` ↔ `partners.server.ts` ↔ un module qui re-import `requireSupabaseAuth`), à corriger en inlinant l'import ou en cassant le cycle.
+## Hors scope
 
-### 2. Webhook Chariow — vérifier le code
-Relire `src/routes/api/public/chariow-webhook.ts` :
-- ✅ Idempotence par `license_code` (unique)
-- ✅ Ordre de matching : `metadata.partner_id` → email partners → email profiles → intent <30 min → unmatched
-- ✅ Consommation de l'intent (`consumed_at` + `chariow_payment_id`)
-
-### 3. Server fn `createChariowIntent` — vérifier
-- ✅ Auth requise (`requireSupabaseAuth`)
-- ✅ Validation Zod du `productId`
-- ✅ INSERT dans `chariow_payment_intents`
-
-### 4. Page Recharger — vérifier
-- ✅ `onClickCapture` + `onPointerDownCapture` autour du widget Chariow déclenchent `createChariowIntent` avant l'ouverture
-- ✅ Affichage de l'email du compte avec bouton "copier"
-- ✅ Bloc "J'ai payé mais je n'ai pas reçu mes crédits" toujours présent comme filet de sécurité
-
-### 5. Test end-to-end (toi)
-Une fois le dev server redémarré et l'erreur SSR partie :
-1. Ouvrir `/recharger` en étant connecté avec ton compte
-2. Vérifier dans la console réseau qu'un POST vers `/_serverFn/createChariowIntent_*` part **avant** que le widget Chariow ne s'ouvre
-3. Faire le paiement Chariow (avec n'importe quel email)
-4. Vérifier en BDD :
-   - `chariow_payment_intents` : ton intent doit avoir `consumed_at` rempli
-   - `chariow_payments` : `status='credited'`, `partner_id` rempli
-   - `partners.credits_balance` : incrémenté
-   - `credit_transactions` : nouvelle ligne `chariow_purchase`
-
-### 6. Notes
-- Le widget Chariow est rendu par un script externe : si Chariow met du temps à s'ouvrir, l'intent partira quand même au tout premier clic.
-- Fenêtre de 30 min entre intent et webhook : largement suffisant pour un paiement.
-- Si plusieurs partenaires tentent d'acheter le même pack dans la même fenêtre, le plus récent gagne (rare en pratique).
-
-## Plan d'exécution
-
-1. Redémarrer le dev server
-2. Confirmer dans les logs que l'erreur TSS n'apparaît plus
-3. Si elle revient : ouvrir `partners.functions.ts` + `partners.server.ts` + `ghl-partners.server.ts` et casser le cycle d'imports
-4. Te donner le feu vert pour ton test
+- Pas de refonte des panels internes (`PartnersPanel`, etc.).
+- Pas de modification des permissions DB / RLS.
+- Pas de changement de palette ou de typographie globale.
+- Pas de nouvelle page route (tout passe par `/admin` + query param `tab`).
