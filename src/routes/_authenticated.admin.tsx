@@ -119,6 +119,7 @@ function AdminPageInner({ roles }: { roles: string[] }) {
           {activeTab === "partners" && <PartnersPanel isAdmin={roles.includes("admin")} />}
           {activeTab === "prospects" && <ProspectsPanel isAdmin={roles.includes("admin")} />}
           {activeTab === "create" && <CreatePartnerPanel />}
+          {activeTab === "paiements" && <PaymentsPanel />}
           {activeTab === "team" && roles.includes("admin") && <TeamPanel />}
         </div>
       </div>
@@ -131,7 +132,7 @@ function SectionHeader({
   pendingPartners,
   pendingProspects,
 }: {
-  tab: "partners" | "prospects" | "create" | "team";
+  tab: "partners" | "prospects" | "create" | "team" | "paiements";
   pendingPartners: number;
   pendingProspects: number;
 }) {
@@ -151,6 +152,10 @@ function SectionHeader({
     create: {
       title: "Créer un partenaire",
       subtitle: "Ajouter manuellement un cabinet à la plateforme.",
+    },
+    paiements: {
+      title: "Paiements crédits",
+      subtitle: "Historique des achats Chariow — qui, quand, combien.",
     },
     team: {
       title: "Équipe LGM",
