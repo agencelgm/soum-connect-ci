@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
+import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
@@ -79,7 +79,6 @@ function AdminPage() {
 
 function AdminPageInner({ roles }: { roles: string[] }) {
   const { user } = useAuth();
-  const navigate = useNavigate();
   const search = useSearch({ from: "/_authenticated/admin" });
   const activeTab = search.tab ?? "partners";
   const listPartnersFn = useServerFn(listPartners);
