@@ -29,6 +29,7 @@ import { Coins, Unlock, Users, Receipt, AlertCircle, History } from "lucide-reac
 import { ReceiptPdfButton } from "@/components/historique/ReceiptPdfButton";
 
 export const Route = createFileRoute("/_authenticated/historique")({
+  head: () => ({ meta: [{ title: "Historique" }, { name: "robots", content: "noindex,nofollow" }] }),
   component: HistoriquePage,
 });
 
