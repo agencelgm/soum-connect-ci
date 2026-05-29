@@ -1,45 +1,67 @@
-## Objectif
+## Meta Pixel + Conversions API
 
-Donner au staff LGM une vue claire de tous les achats de crédits faits via Chariow : qui a acheté, quand, combien de crédits, et quel montant (label) — avec totaux et filtres simples.
+**Pixel ID** `695405827723663` traité comme constante publique (visible côté client de toute façon) — pas de build secret nécessaire.
+**Token CAPI** déjà stocké côté serveur (`META_CAPI_ACCESS_TOKEN`).
 
-## Source de données
+### Événements
+- Formulaire devis (`MultiStepLeadForm`) → `Lead`
+- Inscription cabinet partenaire → `CompleteRegistration`
+- SAV / `ContactForm` → **non tracké**
+- PageView : auto côté browser uniquement
 
-Tout est déjà capturé dans la table `chariow_payments` (alimentée par le webhook Chariow). Champs utilisés :
-- `received_at` / `processed_at` — date
-- `email` — acheteur
-- `partner_id` — cabinet rattaché (jointure vers `partners.cabinet_name`)
-- `credits_granted` — nombre de crédits livrés
-- `amount_label` — montant (ex. "25 000 FCFA pour 25 crédits")
-- `product_id` — identifiant produit Chariow
-- `status` — `processed` / `pending` / `error`
-- `error_message` — si échec
+### Fichiers
 
-Aucune migration nécessaire. Pas de changement de RLS (la policy admin existe déjà).
+1. **`src/lib/meta-pixel.ts`** (nouveau)
+   - Constante `META_PIXEL_ID = "695405827723663"`
+   - `trackMetaConversion(eventName, params, userData)` :
+     - génère `event_id` (crypto.randomUUID)
+     - appelle `fbq('track', name, params, {eventID})` côté navigateur
+     - `fetch('/api/public/meta-capi', ...)` en fire-and-forget avec mêmes données + event_id + event_source_url + user_agent
+   - Garde SSR-safe (no-op si `window` absent)
 
-## Changements
+2. **`src/routes/__root.tsx`**
+   - Ajouter le snippet Pixel (init + PageView initial) dans `scripts`
+   - Hook `useEffect` dans `RootComponent` qui écoute `useRouterState(pathname)` et déclenche `fbq('track', 'PageView')` à chaque navigation SPA
+   - `<noscript>` fallback non nécessaire (TanStack SSR, mais bon à ajouter pour la complétude)
 
-### 1. `src/lib/partners.functions.ts` — nouvelle serverFn `listChariowPayments`
-- Protégée par `requireSupabaseAuth` + check `admin` ou `agent`
-- Retourne les 200 derniers paiements, joints à `partners(cabinet_name)`
-- Calcule en plus 3 KPI : total crédits accordés ce mois, total ce mois (count), total all-time crédits
+3. **`src/routes/api/public/meta-capi.ts`** (nouveau)
+   - POST handler avec validation Zod stricte (whitelist `Lead`, `CompleteRegistration`)
+   - Hash SHA-256 des PII côté serveur (em, ph, fn, ln, ct) — bien plus sécurisé
+   - POST vers `https://graph.facebook.com/v21.0/695405827723663/events?access_token=...`
+   - Lit le token depuis `process.env.META_CAPI_ACCESS_TOKEN` dans le handler (jamais module-scope)
+   - Rate-limit basique IP (en mémoire, 30 req/min)
+   - Aucune erreur ne remonte au client (log uniquement, ne casse jamais l'UX)
 
-### 2. `src/components/layout/AppShell.tsx`
-- Ajouter `"paiements"` à l'union du type `search.tab`
-- Ajouter entrée nav staff : `{ to: "/admin", search: { tab: "paiements" }, label: "Paiements crédits", icon: Coins }`
+4. **`src/components/lead/MultiStepLeadForm.tsx`**
+   - Après `res.ok` (avant `trackEvent`), appeler :
+     ```ts
+     trackMetaConversion("Lead", {
+       content_category: "quote_request",
+       content_name: values.service,
+       service: values.service,
+       city: values.localisation,
+       audience: audienceHint,
+       source,
+       value: 0, currency: "XOF",
+     }, { em: values.email, ph: values.mobile, fn: values.nom, ct: values.localisation });
+     ```
 
-### 3. `src/routes/_authenticated.admin.tsx`
-- Étendre `validateSearch` pour accepter `"paiements"`
-- Ajouter le rendu conditionnel d'un nouveau composant `PaymentsPanel` quand `tab === "paiements"`
-- `PaymentsPanel` affiche :
-  - **3 cartes KPI** en haut : Crédits accordés (mois), Nb transactions (mois), Crédits accordés (total)
-  - **Tableau** trié par date desc, colonnes : Date, Email, Cabinet, Produit, Crédits, Montant, Statut
-  - Badge couleur pour `status` (vert processed, orange pending, rouge error)
-  - Ligne `error_message` repliable si statut error
-  - Filtre simple par statut (boutons : Tous / Traités / En erreur)
-  - Bouton "Exporter CSV" (génère côté client à partir des données chargées)
+5. **`src/routes/inscription-partenaire.tsx`**
+   - Après `toast.success`, avant `navigate`, appeler :
+     ```ts
+     trackMetaConversion("CompleteRegistration", {
+       content_category: "partner_signup",
+       content_name: form.cabinet_name,
+       city: form.city,
+     }, { em: form.email, ph: form.phone, fn: form.contact_first_name, ln: form.contact_last_name, ct: form.city });
+     ```
 
-## Hors scope
+### Hors scope
+- Bannière de consentement RGPD (à traiter séparément si besoin)
+- Test Events Manager : tu pourras coller un `META_TEST_EVENT_CODE` plus tard si tu veux valider
 
-- Pas d'édition/remboursement depuis l'UI (Chariow reste la source de vérité)
-- Pas de webhook ni de schéma DB modifiés
-- Pas de pagination serveur (200 dernières lignes suffisent pour l'usage actuel ; à itérer si besoin)
+### Validation après build
+1. Charger n'importe quelle page → Pixel Helper (extension Chrome) doit montrer PageView
+2. Soumettre un devis test → 1 événement `Lead` (Pixel + CAPI dédupliqué via `event_id`)
+3. Créer un compte partenaire test → 1 événement `CompleteRegistration`
+4. Vérifier dans Events Manager → Diagnostics que l'EMQ ≥ 6/10
