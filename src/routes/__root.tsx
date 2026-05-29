@@ -7,7 +7,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthProvider } from "@/lib/auth-context";
 
