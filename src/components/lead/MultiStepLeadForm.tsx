@@ -13,6 +13,7 @@ import { trackEvent } from "@/lib/analytics";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { getTrackingFields } from "@/lib/lead-tracking";
+import { trackMetaConversion } from "@/lib/meta-pixel";
 
 const SERVICES_FR = [
   "🏢 Création d'entreprise (SARL, SA, EI via CEPICI)",
@@ -475,6 +476,25 @@ export function MultiStepLeadForm({
         const json = (await res.json()) as { leadId?: string };
         if (json?.leadId) sessionStorage.setItem("leadId", json.leadId);
       } catch {}
+      trackMetaConversion(
+        "Lead",
+        {
+          content_category: "quote_request",
+          content_name: values.service,
+          service: values.service,
+          city: values.localisation,
+          audience: audienceHint,
+          source,
+          value: 0,
+          currency: "XOF",
+        },
+        {
+          em: values.email,
+          ph: values.mobile,
+          fn: values.nom,
+          ct: values.localisation,
+        },
+      );
       trackEvent("soumission_envoyee", {
         service: values.service,
         localisation: values.localisation,

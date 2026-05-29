@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Eye, EyeOff, Check, X } from "lucide-react";
+import { trackMetaConversion } from "@/lib/meta-pixel";
 
 export const Route = createFileRoute("/inscription-partenaire")({
   head: () => ({
@@ -100,6 +101,21 @@ function InscriptionPage() {
       });
 
       toast.success("Compte créé. Notre équipe vous contacte sous 24-48h.");
+      trackMetaConversion(
+        "CompleteRegistration",
+        {
+          content_category: "partner_signup",
+          content_name: form.cabinet_name,
+          city: form.city,
+        },
+        {
+          em: form.email,
+          ph: form.phone,
+          fn: form.contact_first_name,
+          ln: form.contact_last_name,
+          ct: form.city,
+        },
+      );
       navigate({ to: "/marketplace", replace: true });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Erreur inconnue");

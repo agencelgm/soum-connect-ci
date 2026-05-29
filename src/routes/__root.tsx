@@ -7,7 +7,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthProvider } from "@/lib/auth-context";
 
@@ -19,6 +19,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { getLangFromPath } from "@/lib/route-map";
 import { MobileCtaBar } from "@/components/layout/MobileCtaBar";
 import { NotFoundPage } from "@/components/pages/NotFoundPage";
+import { META_PIXEL_ID } from "@/lib/meta-pixel";
 
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
@@ -83,6 +84,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       });
     }
 
+    // Meta Pixel (PageView initial uniquement, le SPA gère les suivants via useEffect)
+    scripts.push({
+      children: `!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${META_PIXEL_ID}');fbq('track','PageView');`,
+    });
+
     return {
       meta,
       links: [
@@ -122,6 +128,21 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  // Meta Pixel : PageView à chaque navigation SPA (le 1er PageView est déjà
+  // déclenché par le snippet inline dans <head>).
+  const isFirstPv = useRef(true);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (isFirstPv.current) {
+      isFirstPv.current = false;
+      return;
+    }
+    if (typeof window.fbq === "function") {
+      window.fbq("track", "PageView");
+    }
+  }, [pathname]);
+
   // Routes immersives : pas de header/footer public, le shell auth prend tout.
   const immersiveAuth =
     pathname === "/marketplace" ||
