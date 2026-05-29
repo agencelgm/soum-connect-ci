@@ -11,6 +11,11 @@ import {
   X,
   Coins,
   History,
+  LayoutDashboard,
+  Users,
+  Inbox,
+  UserPlus,
+  Users2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -18,33 +23,58 @@ import logo from "@/assets/brand/logo-soumissions-comptables.jpg";
 
 type NavItem = {
   to: "/marketplace" | "/recharger" | "/historique" | "/espace-partenaire" | "/admin";
+  search?: Record<string, string>;
   label: string;
   icon: typeof Briefcase;
-  staffOnly?: boolean;
+  adminOnly?: boolean;
+  exact?: boolean;
 };
 
-const NAV: NavItem[] = [
+const NAV_PARTNER: NavItem[] = [
   { to: "/marketplace", label: "Marketplace", icon: Briefcase },
   { to: "/recharger", label: "Recharger crédits", icon: CreditCard },
   { to: "/historique", label: "Historique", icon: History },
   { to: "/espace-partenaire", label: "Mon compte", icon: UserCircle2 },
-  { to: "/admin", label: "Administration", icon: ShieldCheck, staffOnly: true },
+];
+
+const NAV_STAFF: NavItem[] = [
+  { to: "/admin", label: "Tableau de bord", icon: LayoutDashboard, exact: true },
+  { to: "/admin", search: { tab: "prospects" }, label: "Prospects", icon: Inbox },
+  { to: "/admin", search: { tab: "partners" }, label: "Partenaires", icon: Users },
+  { to: "/admin", search: { tab: "create" }, label: "Créer un partenaire", icon: UserPlus },
+  { to: "/admin", search: { tab: "team" }, label: "Équipe LGM", icon: Users2, adminOnly: true },
+  { to: "/espace-partenaire", label: "Mon compte", icon: UserCircle2 },
 ];
 
 type Props = {
   email: string;
   creditsBalance: number | null;
   isStaff: boolean;
+  isAdmin?: boolean;
   onSignOut: () => void;
   children: React.ReactNode;
 };
 
-export function AppShell({ email, creditsBalance, isStaff, onSignOut, children }: Props) {
+export function AppShell({ email, creditsBalance, isStaff, isAdmin = false, onSignOut, children }: Props) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const search = useRouterState({ select: (s) => s.location.search as Record<string, unknown> });
   const navigate = useNavigate();
 
-  const items = NAV.filter((n) => !n.staffOnly || isStaff);
+  const items = (isStaff ? NAV_STAFF : NAV_PARTNER).filter(
+    (n) => !n.adminOnly || isAdmin,
+  );
+
+  const isItemActive = (item: NavItem) => {
+    if (item.to === "/admin") {
+      if (pathname !== "/admin" && !pathname.startsWith("/admin/")) return false;
+      const currentTab = typeof search?.tab === "string" ? search.tab : undefined;
+      const itemTab = item.search?.tab;
+      if (item.exact) return !currentTab;
+      return currentTab === itemTab;
+    }
+    return pathname === item.to || pathname.startsWith(item.to + "/");
+  };
 
   const initials = (email || "?")
     .split("@")[0]
@@ -55,17 +85,19 @@ export function AppShell({ email, creditsBalance, isStaff, onSignOut, children }
     .join("")
     .toUpperCase();
 
+  const homeHref = isStaff ? "/" : "/marketplace";
+
   return (
     <div className="min-h-screen flex bg-muted/30">
       {/* Sidebar desktop */}
       <aside className="hidden lg:flex w-64 shrink-0 flex-col border-r bg-card">
         <div className="px-5 py-5 border-b">
-          <Link to="/marketplace" className="flex items-center gap-2">
+          <a href={homeHref} className="flex items-center gap-2">
             <img src={logo} alt="SoumissionComptable.com" className="h-[120px] w-auto" />
-          </Link>
+          </a>
         </div>
 
-        {creditsBalance !== null && (
+        {!isStaff && creditsBalance !== null && (
           <div className="mx-4 mt-4 rounded-lg border bg-gradient-to-br from-primary/10 to-primary/5 p-4">
             <div className="flex items-center gap-2 text-xs uppercase text-muted-foreground font-semibold">
               <Coins className="h-3.5 w-3.5" /> Solde
@@ -77,14 +109,24 @@ export function AppShell({ email, creditsBalance, isStaff, onSignOut, children }
           </div>
         )}
 
+        {isStaff && (
+          <div className="mx-4 mt-4 rounded-lg border border-dashed bg-muted/40 p-3">
+            <div className="flex items-center gap-2 text-xs uppercase text-muted-foreground font-semibold">
+              <ShieldCheck className="h-3.5 w-3.5" /> Mode opérateur
+            </div>
+            <div className="text-sm font-semibold mt-1">{isAdmin ? "Administrateur" : "Agent"} LGM</div>
+          </div>
+        )}
+
         <nav className="flex-1 px-3 py-4 space-y-1">
           {items.map((item) => {
-            const active = pathname === item.to || pathname.startsWith(item.to + "/");
+            const active = isItemActive(item);
             const Icon = item.icon;
             return (
               <Link
-                key={item.to}
+                key={item.label}
                 to={item.to}
+                search={item.search as any}
                 className={cn(
                   "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
                   active
@@ -157,11 +199,12 @@ export function AppShell({ email, creditsBalance, isStaff, onSignOut, children }
           <div className="lg:hidden border-b bg-card px-4 py-3 space-y-1">
             {items.map((item) => {
               const Icon = item.icon;
-              const active = pathname === item.to;
+              const active = isItemActive(item);
               return (
                 <Link
-                  key={item.to}
+                  key={item.label}
                   to={item.to}
+                  search={item.search as any}
                   onClick={() => setMobileOpen(false)}
                   className={cn(
                     "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium",
