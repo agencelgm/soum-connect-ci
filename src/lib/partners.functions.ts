@@ -591,3 +591,55 @@ export const listProspects = createServerFn({ method: "GET" })
     if (error) throw new Error(error.message);
     return { prospects: data ?? [] };
   });
+
+// ---------------------- Admin: dashboard stats ----------------------
+
+export const getAdminDashboardStats = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertStaff(context.userId);
+
+    const startOfMonth = new Date();
+    startOfMonth.setUTCDate(1);
+    startOfMonth.setUTCHours(0, 0, 0, 0);
+
+    const [pendingProspectsRes, activePubsRes, pendingPartnersRes, approvedPartnersRes, creditsMonthRes] =
+      await Promise.all([
+        supabaseAdmin
+          .from("prospects")
+          .select("id", { count: "exact", head: true })
+          .eq("status", "pending_qualification"),
+        supabaseAdmin
+          .from("lead_publications")
+          .select("id", { count: "exact", head: true })
+          .eq("is_active", true),
+        supabaseAdmin
+          .from("partners")
+          .select("id", { count: "exact", head: true })
+          .eq("status", "pending_review")
+          .is("deleted_at", null),
+        supabaseAdmin
+          .from("partners")
+          .select("id", { count: "exact", head: true })
+          .eq("status", "approved")
+          .is("deleted_at", null),
+        supabaseAdmin
+          .from("chariow_payments")
+          .select("credits_granted")
+          .eq("status", "credited")
+          .gte("processed_at", startOfMonth.toISOString()),
+      ]);
+
+    const creditsThisMonth = (creditsMonthRes.data ?? []).reduce(
+      (sum, r: any) => sum + (r.credits_granted ?? 0),
+      0,
+    );
+
+    return {
+      pendingProspects: pendingProspectsRes.count ?? 0,
+      activePublications: activePubsRes.count ?? 0,
+      pendingPartners: pendingPartnersRes.count ?? 0,
+      approvedPartners: approvedPartnersRes.count ?? 0,
+      creditsThisMonth,
+    };
+  });
