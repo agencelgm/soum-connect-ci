@@ -13,6 +13,7 @@ import { trackEvent } from "@/lib/analytics";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { getTrackingFields } from "@/lib/lead-tracking";
+import { trackMetaConversion } from "@/lib/meta-pixel";
 
 const SERVICES_FR = [
   "🏢 Création d'entreprise (SARL, SA, EI via CEPICI)",
