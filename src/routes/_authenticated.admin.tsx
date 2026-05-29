@@ -14,6 +14,7 @@ import {
   adminGrantCredits,
   getMyPartner,
   getAdminDashboardStats,
+  listChariowPayments,
 } from "@/lib/partners.functions";
 import { publishProspect } from "@/lib/marketplace.functions";
 import { rejectProspect, reactivateProspect, deleteProspect } from "@/lib/prospects.functions";
@@ -43,8 +44,8 @@ export const Route = createFileRoute("/_authenticated/admin")({
   validateSearch: (search: Record<string, unknown>) => ({
     tab:
       typeof search.tab === "string" &&
-      ["partners", "prospects", "create", "team"].includes(search.tab)
-        ? (search.tab as "partners" | "prospects" | "create" | "team")
+      ["partners", "prospects", "create", "team", "paiements"].includes(search.tab)
+        ? (search.tab as "partners" | "prospects" | "create" | "team" | "paiements")
         : undefined,
   }),
   component: AdminPage,
