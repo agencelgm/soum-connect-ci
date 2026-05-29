@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
@@ -13,6 +13,7 @@ import {
   createPartnerManually,
   adminGrantCredits,
   getMyPartner,
+  getAdminDashboardStats,
 } from "@/lib/partners.functions";
 import { publishProspect } from "@/lib/marketplace.functions";
 import { rejectProspect, reactivateProspect, deleteProspect } from "@/lib/prospects.functions";
@@ -39,6 +40,13 @@ import { UnauthorizedScreen } from "@/components/auth/UnauthorizedScreen";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({ meta: [{ title: "Admin" }, { name: "robots", content: "noindex,nofollow" }] }),
+  validateSearch: (search: Record<string, unknown>) => ({
+    tab:
+      typeof search.tab === "string" &&
+      ["partners", "prospects", "create", "team"].includes(search.tab)
+        ? (search.tab as "partners" | "prospects" | "create" | "team")
+        : undefined,
+  }),
   component: AdminPage,
 });
 
@@ -60,7 +68,10 @@ function AdminPage() {
 
   if (isUnauthorizedError(meError)) return <UnauthorizedScreen />;
   if (!isStaff) {
-    return <p className="text-muted-foreground">Accès réservé à l'équipe.</p>;
+    if (typeof window !== "undefined") {
+      window.location.replace("/marketplace");
+    }
+    return null;
   }
 
   return <AdminPageInner roles={roles} />;
@@ -68,6 +79,9 @@ function AdminPage() {
 
 function AdminPageInner({ roles }: { roles: string[] }) {
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const search = useSearch({ from: "/_authenticated/admin" });
+  const activeTab = search.tab ?? "partners";
   const listPartnersFn = useServerFn(listPartners);
   const listProspectsFn = useServerFn(listProspects);
   const { data: partnersData, error: partnersError } = useQuery({
@@ -90,8 +104,26 @@ function AdminPageInner({ roles }: { roles: string[] }) {
 
   return (
     <div className="min-w-0">
-      <h1 className="text-3xl font-bold mb-6">Tableau de bord</h1>
-      <Tabs defaultValue="partners">
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold tracking-tight">Tableau de bord</h1>
+        <p className="text-sm text-muted-foreground mt-1">
+          Console opérateur — vue d'ensemble de l'activité plateforme.
+        </p>
+      </div>
+
+      <DashboardKpis />
+
+      <Tabs
+        value={activeTab}
+        onValueChange={(v) =>
+          navigate({
+            to: "/admin",
+            search: v === "partners" ? {} : { tab: v as any },
+            replace: true,
+          })
+        }
+        className="mt-8"
+      >
         <div className="-mx-4 sm:mx-0 overflow-x-auto px-4 sm:px-0">
           <TabsList className="w-max flex-nowrap">
             <TabsTrigger value="partners">Partenaires <PendingBadge count={pendingPartners} /></TabsTrigger>
@@ -107,6 +139,40 @@ function AdminPageInner({ roles }: { roles: string[] }) {
           <TabsContent value="team" className="mt-6 min-w-0"><TeamPanel /></TabsContent>
         )}
       </Tabs>
+    </div>
+  );
+}
+
+function DashboardKpis() {
+  const statsFn = useServerFn(getAdminDashboardStats);
+  const { data } = useQuery({
+    queryKey: ["admin-stats"],
+    queryFn: () => statsFn(),
+    retry: false,
+  });
+
+  const items = [
+    { label: "Prospects à qualifier", value: data?.pendingProspects, accent: "text-amber-600" },
+    { label: "Publications actives", value: data?.activePublications, accent: "text-emerald-600" },
+    { label: "Cabinets actifs", value: data?.approvedPartners, hint: data?.pendingPartners ? `${data.pendingPartners} en attente` : undefined, accent: "text-primary" },
+    { label: "Crédits vendus ce mois", value: data?.creditsThisMonth, accent: "text-foreground" },
+  ];
+
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      {items.map((it) => (
+        <div key={it.label} className="rounded-md border bg-card px-4 py-3">
+          <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">
+            {it.label}
+          </div>
+          <div className={`mt-1 font-mono text-2xl font-bold tabular-nums ${it.accent}`}>
+            {it.value ?? "—"}
+          </div>
+          {it.hint && (
+            <div className="text-[11px] text-muted-foreground mt-0.5">{it.hint}</div>
+          )}
+        </div>
+      ))}
     </div>
   );
 }
