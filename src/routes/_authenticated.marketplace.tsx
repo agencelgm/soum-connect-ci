@@ -9,10 +9,22 @@ import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 import { isUnauthorizedError } from "@/lib/auth-actions";
 import { UnauthorizedScreen } from "@/components/auth/UnauthorizedScreen";
-import { MapPin, Building2, Wallet, Users, Lock, Sparkles, Clock, Unlock, CalendarClock } from "lucide-react";
+import {
+  MapPin,
+  Building2,
+  Wallet,
+  Users,
+  Lock,
+  Sparkles,
+  Clock,
+  Unlock,
+  CalendarClock,
+} from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/marketplace")({
-  head: () => ({ meta: [{ title: "Marketplace de leads" }, { name: "robots", content: "noindex,nofollow" }] }),
+  head: () => ({
+    meta: [{ title: "Marketplace de leads" }, { name: "robots", content: "noindex,nofollow" }],
+  }),
   component: MarketplacePage,
 });
 
@@ -51,7 +63,9 @@ function MarketplacePage() {
     return (
       <div className="rounded-lg border bg-card p-6">
         <p>Aucun compte partenaire approuvé.</p>
-        <Button asChild className="mt-3"><Link to="/marketplace">Retour</Link></Button>
+        <Button asChild className="mt-3">
+          <Link to="/marketplace">Retour</Link>
+        </Button>
       </div>
     );
   }
@@ -59,7 +73,9 @@ function MarketplacePage() {
     return (
       <div className="rounded-lg border border-amber-200 bg-amber-50 p-6">
         <p>Votre compte n'est pas encore activé. Vous ne pouvez pas accéder à la marketplace.</p>
-        <Button asChild variant="outline" className="mt-3"><Link to="/marketplace">Retour</Link></Button>
+        <Button asChild variant="outline" className="mt-3">
+          <Link to="/marketplace">Retour</Link>
+        </Button>
       </div>
     );
   }
@@ -86,17 +102,23 @@ function MarketplacePage() {
         <button
           className={`px-4 py-2 text-sm font-medium border-b-2 ${tab === "available" ? "border-primary text-primary" : "border-transparent text-muted-foreground"}`}
           onClick={() => setTab("available")}
-        >Leads disponibles ({data.leads.length})</button>
+        >
+          Leads disponibles ({data.leads.length})
+        </button>
         <button
           className={`px-4 py-2 text-sm font-medium border-b-2 ${tab === "mine" ? "border-primary text-primary" : "border-transparent text-muted-foreground"}`}
           onClick={() => setTab("mine")}
-        >Mes leads débloqués ({mine?.items.length ?? 0})</button>
+        >
+          Mes leads débloqués ({mine?.items.length ?? 0})
+        </button>
       </div>
 
       {tab === "available" && (
         <div className="grid gap-4 md:grid-cols-2">
           {data.leads.length === 0 && (
-            <p className="text-muted-foreground col-span-2">Aucun lead disponible pour le moment.</p>
+            <p className="text-muted-foreground col-span-2">
+              Aucun lead disponible pour le moment.
+            </p>
           )}
           {data.leads.map((lead) => (
             <LeadCard
@@ -137,7 +159,15 @@ type Lead = {
   delai: string | null;
 };
 
-function LeadCard({ lead, alreadyUnlocked, credits }: { lead: Lead; alreadyUnlocked: boolean; credits: number }) {
+function LeadCard({
+  lead,
+  alreadyUnlocked,
+  credits,
+}: {
+  lead: Lead;
+  alreadyUnlocked: boolean;
+  credits: number;
+}) {
   const qc = useQueryClient();
   const unlock = useServerFn(unlockLead);
   const [revealed, setRevealed] = useState<{
@@ -155,7 +185,9 @@ function LeadCard({ lead, alreadyUnlocked, credits }: { lead: Lead; alreadyUnloc
     },
     onSuccess: (res) => {
       setRevealed(res.prospect);
-      toast.success(res.already_unlocked ? "Lead déjà débloqué" : "Lead débloqué — 1 crédit utilisé");
+      toast.success(
+        res.already_unlocked ? "Lead déjà débloqué" : "Lead débloqué — 1 crédit utilisé",
+      );
       qc.invalidateQueries({ queryKey: ["marketplace"] });
       qc.invalidateQueries({ queryKey: ["my-unlocks"] });
     },
@@ -163,17 +195,28 @@ function LeadCard({ lead, alreadyUnlocked, credits }: { lead: Lead; alreadyUnloc
   });
 
   const remaining = lead.max_unlocks - lead.unlock_count;
-  const ageHours = Math.max(0, Math.floor((Date.now() - new Date(lead.published_at).getTime()) / 36e5));
+  const ageHours = Math.max(
+    0,
+    Math.floor((Date.now() - new Date(lead.published_at).getTime()) / 36e5),
+  );
   const isFresh = ageHours < 48;
-  const timeAgo = ageHours < 1
-    ? "à l'instant"
-    : ageHours < 24
-      ? `il y a ${ageHours} h`
-      : `il y a ${Math.floor(ageHours / 24)} j`;
+  const timeAgo =
+    ageHours < 1
+      ? "à l'instant"
+      : ageHours < 24
+        ? `il y a ${ageHours} h`
+        : `il y a ${Math.floor(ageHours / 24)} j`;
   const fillRatio = lead.unlock_count / lead.max_unlocks;
-  const urgencyColor = remaining <= 1 ? "bg-red-500" : remaining <= 3 ? "bg-orange-500" : "bg-emerald-500";
-  const urgencyText = remaining <= 1 ? "text-red-600" : remaining <= 3 ? "text-orange-600" : "text-emerald-700";
-  const audienceLabel = lead.audience === "particulier" ? "Particulier" : lead.audience === "entreprise" ? "Entreprise" : "À qualifier";
+  const urgencyColor =
+    remaining <= 1 ? "bg-red-500" : remaining <= 3 ? "bg-orange-500" : "bg-emerald-500";
+  const urgencyText =
+    remaining <= 1 ? "text-red-600" : remaining <= 3 ? "text-orange-600" : "text-emerald-700";
+  const audienceLabel =
+    lead.audience === "creation"
+      ? "Creation"
+      : lead.audience === "gestion"
+        ? "Gestion"
+        : "A qualifier";
 
   return (
     <div className="group rounded-xl border bg-card p-5 space-y-4 transition-all hover:shadow-lg hover:border-primary/40">
@@ -189,14 +232,21 @@ function LeadCard({ lead, alreadyUnlocked, credits }: { lead: Lead; alreadyUnloc
               <Clock className="h-3 w-3" /> Publié {timeAgo}
             </span>
           </div>
-          <h3 className="text-lg font-bold leading-tight">{lead.service || "Prestation à définir"}</h3>
+          <h3 className="text-lg font-bold leading-tight">
+            {lead.service || "Prestation à définir"}
+          </h3>
         </div>
         <div className="flex flex-col items-end gap-1 shrink-0">
-          <span className={`text-xs font-semibold rounded-full bg-muted px-2.5 py-1 whitespace-nowrap ${urgencyText}`}>
+          <span
+            className={`text-xs font-semibold rounded-full bg-muted px-2.5 py-1 whitespace-nowrap ${urgencyText}`}
+          >
             {remaining} place{remaining > 1 ? "s" : ""} sur {lead.max_unlocks}
           </span>
           <div className="h-1.5 w-24 rounded-full bg-muted overflow-hidden">
-            <div className={`h-full ${urgencyColor} transition-all`} style={{ width: `${Math.min(100, fillRatio * 100)}%` }} />
+            <div
+              className={`h-full ${urgencyColor} transition-all`}
+              style={{ width: `${Math.min(100, fillRatio * 100)}%` }}
+            />
           </div>
         </div>
       </div>
@@ -221,27 +271,60 @@ function LeadCard({ lead, alreadyUnlocked, credits }: { lead: Lead; alreadyUnloc
         {lead.delai && (
           <div className="flex items-center gap-2 text-foreground/80 col-span-2">
             <CalendarClock className="h-4 w-4 text-muted-foreground shrink-0" />
-            <span className="truncate"><span className="text-muted-foreground">Démarrage :</span> {lead.delai}</span>
+            <span className="truncate">
+              <span className="text-muted-foreground">Démarrage :</span> {lead.delai}
+            </span>
           </div>
         )}
       </div>
 
       {lead.summary && (
-        <blockquote className="border-l-4 border-primary/60 bg-muted/40 px-3 py-2 text-sm italic text-foreground/80 rounded-r">
-          « {lead.summary} »
-        </blockquote>
+        <div className="rounded-md border border-primary/15 bg-primary/5 px-3 py-2 text-sm">
+          <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-primary">
+            Note LGM
+          </p>
+          <p className="leading-relaxed text-foreground/80">{lead.summary}</p>
+        </div>
       )}
 
       {revealed ? (
         <div className="rounded-md border border-emerald-200 bg-emerald-50 p-3 text-sm space-y-1">
-          {revealed.full_name && <p><strong>Nom :</strong> {String(revealed.full_name)}</p>}
-          {revealed.company_name && <p><strong>Entreprise :</strong> {String(revealed.company_name)}</p>}
-          {revealed.email && <p><strong>Email :</strong> <a className="text-primary underline" href={`mailto:${revealed.email}`}>{String(revealed.email)}</a></p>}
-          {revealed.phone && <p><strong>Téléphone :</strong> <a className="text-primary underline" href={`tel:${revealed.phone}`}>{String(revealed.phone)}</a></p>}
+          {revealed.full_name && (
+            <p>
+              <strong>Nom :</strong> {String(revealed.full_name)}
+            </p>
+          )}
+          {revealed.company_name && (
+            <p>
+              <strong>Entreprise :</strong> {String(revealed.company_name)}
+            </p>
+          )}
+          {revealed.email && (
+            <p>
+              <strong>Email :</strong>{" "}
+              <a className="text-primary underline" href={`mailto:${revealed.email}`}>
+                {String(revealed.email)}
+              </a>
+            </p>
+          )}
+          {revealed.phone && (
+            <p>
+              <strong>Téléphone :</strong>{" "}
+              <a className="text-primary underline" href={`tel:${revealed.phone}`}>
+                {String(revealed.phone)}
+              </a>
+            </p>
+          )}
           {revealed.message && <p className="pt-2 italic">"{String(revealed.message)}"</p>}
         </div>
       ) : alreadyUnlocked ? (
-        <Button variant="outline" size="lg" className="w-full" onClick={() => mut.mutate()} disabled={mut.isPending}>
+        <Button
+          variant="outline"
+          size="lg"
+          className="w-full"
+          onClick={() => mut.mutate()}
+          disabled={mut.isPending}
+        >
           <Unlock className="h-4 w-4 mr-2" />
           {mut.isPending ? "…" : "Afficher les coordonnées"}
         </Button>
@@ -254,7 +337,12 @@ function LeadCard({ lead, alreadyUnlocked, credits }: { lead: Lead; alreadyUnloc
         </div>
       ) : (
         <div className="space-y-1.5 pt-1">
-          <Button onClick={() => mut.mutate()} disabled={mut.isPending} size="lg" className="w-full font-semibold shadow-sm">
+          <Button
+            onClick={() => mut.mutate()}
+            disabled={mut.isPending}
+            size="lg"
+            className="w-full font-semibold shadow-sm"
+          >
             <Lock className="h-4 w-4 mr-2" />
             {mut.isPending ? "Déblocage…" : "Débloquer ce lead (1 crédit)"}
           </Button>
@@ -273,6 +361,7 @@ type UnlockedItem = {
   publication_id: string;
   service: string | null;
   city: string | null;
+  summary: string | null;
   prospect: {
     full_name?: string | null;
     company_name?: string | null;
@@ -287,16 +376,41 @@ function UnlockedRow({ item }: { item: UnlockedItem }) {
     <div className="rounded-lg border bg-card p-4 text-sm">
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
-          <p className="font-semibold">{item.service || "Lead"} — {item.city || "—"}</p>
-          <p className="text-xs text-muted-foreground">Débloqué le {new Date(item.unlocked_at).toLocaleString("fr-FR")}</p>
+          <p className="font-semibold">
+            {item.service || "Lead"} — {item.city || "—"}
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Débloqué le {new Date(item.unlocked_at).toLocaleString("fr-FR")}
+          </p>
         </div>
         <div className="text-right">
-          {item.prospect?.email && <a href={`mailto:${item.prospect.email}`} className="text-primary underline block">{item.prospect.email}</a>}
-          {item.prospect?.phone && <a href={`tel:${item.prospect.phone}`} className="text-primary underline block">{item.prospect.phone}</a>}
+          {item.prospect?.email && (
+            <a href={`mailto:${item.prospect.email}`} className="text-primary underline block">
+              {item.prospect.email}
+            </a>
+          )}
+          {item.prospect?.phone && (
+            <a href={`tel:${item.prospect.phone}`} className="text-primary underline block">
+              {item.prospect.phone}
+            </a>
+          )}
         </div>
       </div>
-      {item.prospect?.full_name && <p className="mt-2"><strong>{item.prospect.full_name}</strong>{item.prospect.company_name ? ` · ${item.prospect.company_name}` : ""}</p>}
-      {item.prospect?.message && <p className="mt-1 italic text-muted-foreground">"{item.prospect.message}"</p>}
+      {item.summary && (
+        <div className="mt-3 rounded-md border border-primary/15 bg-primary/5 px-3 py-2">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-primary">Note LGM</p>
+          <p className="mt-1 text-foreground/80">{item.summary}</p>
+        </div>
+      )}
+      {item.prospect?.full_name && (
+        <p className="mt-2">
+          <strong>{item.prospect.full_name}</strong>
+          {item.prospect.company_name ? ` · ${item.prospect.company_name}` : ""}
+        </p>
+      )}
+      {item.prospect?.message && (
+        <p className="mt-1 italic text-muted-foreground">"{item.prospect.message}"</p>
+      )}
     </div>
   );
 }

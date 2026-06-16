@@ -1,7 +1,7 @@
 import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   listPartners,
   listProspects,
@@ -17,7 +17,12 @@ import {
   listChariowPayments,
 } from "@/lib/partners.functions";
 import { publishProspect } from "@/lib/marketplace.functions";
-import { rejectProspect, reactivateProspect, deleteProspect } from "@/lib/prospects.functions";
+import {
+  deleteProspect,
+  reactivateProspect,
+  rejectProspect,
+  updateProspect,
+} from "@/lib/prospects.functions";
 import {
   listTeam,
   addTeamMember,
@@ -32,7 +37,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
@@ -100,8 +111,12 @@ function AdminPageInner({ roles }: { roles: string[] }) {
   if (isUnauthorizedError(partnersError) || isUnauthorizedError(prospectsError)) {
     return <UnauthorizedScreen />;
   }
-  const pendingPartners = (partnersData?.partners ?? []).filter((p: any) => p.status === "pending_review").length;
-  const pendingProspects = (prospectsData?.prospects ?? []).filter((p: any) => p.status === "pending_qualification").length;
+  const pendingPartners = (partnersData?.partners ?? []).filter(
+    (p: any) => p.status === "pending_review",
+  ).length;
+  const pendingProspects = (prospectsData?.prospects ?? []).filter(
+    (p: any) => p.status === "pending_qualification",
+  ).length;
 
   return (
     <div className="min-w-0">
@@ -115,10 +130,16 @@ function AdminPageInner({ roles }: { roles: string[] }) {
       <DashboardKpis />
 
       <div className="mt-8 min-w-0">
-        <SectionHeader tab={activeTab} pendingPartners={pendingPartners} pendingProspects={pendingProspects} />
+        <SectionHeader
+          tab={activeTab}
+          pendingPartners={pendingPartners}
+          pendingProspects={pendingProspects}
+        />
         <div className="mt-4">
           {activeTab === "partners" && <PartnersPanel isAdmin={roles.includes("admin")} />}
-          {activeTab === "prospects" && <ProspectsPanel isAdmin={roles.includes("admin")} />}
+          {activeTab === "prospects" && (
+            <ProspectQualificationPanel isAdmin={roles.includes("admin")} />
+          )}
           {activeTab === "create" && <CreatePartnerPanel />}
           {activeTab === "paiements" && <PaymentsPanel />}
           {activeTab === "team" && roles.includes("admin") && <TeamPanel />}
@@ -183,7 +204,12 @@ function DashboardKpis() {
   const items = [
     { label: "Prospects à qualifier", value: data?.pendingProspects, accent: "text-amber-600" },
     { label: "Publications actives", value: data?.activePublications, accent: "text-emerald-600" },
-    { label: "Cabinets actifs", value: data?.approvedPartners, hint: data?.pendingPartners ? `${data.pendingPartners} en attente` : undefined, accent: "text-primary" },
+    {
+      label: "Cabinets actifs",
+      value: data?.approvedPartners,
+      hint: data?.pendingPartners ? `${data.pendingPartners} en attente` : undefined,
+      accent: "text-primary",
+    },
     { label: "Crédits vendus ce mois", value: data?.creditsThisMonth, accent: "text-foreground" },
   ];
 
@@ -197,9 +223,7 @@ function DashboardKpis() {
           <div className={`mt-1 font-mono text-2xl font-bold tabular-nums ${it.accent}`}>
             {it.value ?? "—"}
           </div>
-          {it.hint && (
-            <div className="text-[11px] text-muted-foreground mt-0.5">{it.hint}</div>
-          )}
+          {it.hint && <div className="text-[11px] text-muted-foreground mt-0.5">{it.hint}</div>}
         </div>
       ))}
     </div>
@@ -233,16 +257,26 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
   return (
     <Tabs defaultValue="pending_review">
       <TabsList>
-        <TabsTrigger value="pending_review">En attente ({buckets.pending_review.length}) <PendingBadge count={buckets.pending_review.length} /></TabsTrigger>
+        <TabsTrigger value="pending_review">
+          En attente ({buckets.pending_review.length}){" "}
+          <PendingBadge count={buckets.pending_review.length} />
+        </TabsTrigger>
         <TabsTrigger value="approved">Actifs ({buckets.approved.length})</TabsTrigger>
         <TabsTrigger value="paused">En pause ({buckets.paused.length})</TabsTrigger>
         <TabsTrigger value="rejected">Rejetés ({buckets.rejected.length})</TabsTrigger>
       </TabsList>
       {(["pending_review", "approved", "paused", "rejected"] as const).map((k) => (
         <TabsContent key={k} value={k} className="mt-4 space-y-3">
-          {buckets[k].length === 0 && <p className="text-sm text-muted-foreground">Aucun cabinet.</p>}
+          {buckets[k].length === 0 && (
+            <p className="text-sm text-muted-foreground">Aucun cabinet.</p>
+          )}
           {buckets[k].map((p) => (
-            <PartnerCard key={p.id} partner={p} isAdmin={isAdmin} onChange={() => qc.invalidateQueries({ queryKey: ["partners"] })} />
+            <PartnerCard
+              key={p.id}
+              partner={p}
+              isAdmin={isAdmin}
+              onChange={() => qc.invalidateQueries({ queryKey: ["partners"] })}
+            />
           ))}
         </TabsContent>
       ))}
@@ -250,7 +284,15 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
   );
 }
 
-function PartnerCard({ partner, isAdmin, onChange }: { partner: any; isAdmin: boolean; onChange: () => void }) {
+function PartnerCard({
+  partner,
+  isAdmin,
+  onChange,
+}: {
+  partner: any;
+  isAdmin: boolean;
+  onChange: () => void;
+}) {
   const approveFn = useServerFn(approvePartner);
   const rejectFn = useServerFn(rejectPartner);
   const pauseFn = useServerFn(pausePartner);
@@ -262,20 +304,31 @@ function PartnerCard({ partner, isAdmin, onChange }: { partner: any; isAdmin: bo
 
   async function run(fn: () => Promise<unknown>) {
     setBusy(true);
-    try { await fn(); toast.success("Action effectuée"); onChange(); }
-    catch (e) { toast.error(e instanceof Error ? e.message : "Erreur"); }
-    finally { setBusy(false); }
+    try {
+      await fn();
+      toast.success("Action effectuée");
+      onChange();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Erreur");
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
     <div className="rounded-lg border p-4 bg-card">
       <div className="flex justify-between flex-wrap gap-2">
         <div>
-          <button type="button" onClick={() => setShowDetails(true)} className="font-semibold text-left hover:underline">
+          <button
+            type="button"
+            onClick={() => setShowDetails(true)}
+            className="font-semibold text-left hover:underline"
+          >
             {partner.cabinet_name}
           </button>
           <p className="text-sm text-muted-foreground">
-            {partner.contact_first_name} {partner.contact_last_name} · {partner.email} · {partner.phone}
+            {partner.contact_first_name} {partner.contact_last_name} · {partner.email} ·{" "}
+            {partner.phone}
           </p>
           <p className="text-xs text-muted-foreground mt-1">
             {partner.city} · Crédits : <strong>{partner.credits_balance}</strong>
@@ -285,64 +338,163 @@ function PartnerCard({ partner, isAdmin, onChange }: { partner: any; isAdmin: bo
           )}
         </div>
         <div className="flex flex-wrap gap-2 items-start">
-          <Button size="sm" variant="ghost" onClick={() => setShowDetails(true)}>Voir détails</Button>
+          <Button size="sm" variant="ghost" onClick={() => setShowDetails(true)}>
+            Voir détails
+          </Button>
           {partner.status === "pending_review" && (
             <>
-              <Button size="sm" disabled={busy} onClick={() => run(() => approveFn({ data: { partner_id: partner.id } }))}>
+              <Button
+                size="sm"
+                disabled={busy}
+                onClick={() => run(() => approveFn({ data: { partner_id: partner.id } }))}
+              >
                 Approuver (+30 crédits)
               </Button>
-              <RejectButton disabled={busy} onConfirm={(reason) => run(() => rejectFn({ data: { partner_id: partner.id, reason } }))} />
+              <RejectButton
+                disabled={busy}
+                onConfirm={(reason) =>
+                  run(() => rejectFn({ data: { partner_id: partner.id, reason } }))
+                }
+              />
             </>
           )}
           {partner.status === "approved" && (
-            <RejectButton label="Mettre en pause" disabled={busy} onConfirm={(reason) => run(() => pauseFn({ data: { partner_id: partner.id, reason } }))} />
+            <RejectButton
+              label="Mettre en pause"
+              disabled={busy}
+              onConfirm={(reason) =>
+                run(() => pauseFn({ data: { partner_id: partner.id, reason } }))
+              }
+            />
           )}
           {partner.status === "paused" && (
-            <Button size="sm" disabled={busy} onClick={() => run(() => reactivateFn({ data: { partner_id: partner.id } }))}>
+            <Button
+              size="sm"
+              disabled={busy}
+              onClick={() => run(() => reactivateFn({ data: { partner_id: partner.id } }))}
+            >
               Réactiver
             </Button>
           )}
           {isAdmin && partner.status === "approved" && (
-            <GrantButton disabled={busy} onConfirm={(amount, note) => run(() => grantFn({ data: { partner_id: partner.id, amount, note } }))} />
+            <GrantButton
+              disabled={busy}
+              onConfirm={(amount, note) =>
+                run(() => grantFn({ data: { partner_id: partner.id, amount, note } }))
+              }
+            />
           )}
           {isAdmin && (
-            <Button size="sm" variant="destructive" disabled={busy} onClick={() => {
-              if (confirm("Supprimer ce partenaire ?")) run(() => deleteFn({ data: { partner_id: partner.id } }));
-            }}>
+            <Button
+              size="sm"
+              variant="destructive"
+              disabled={busy}
+              onClick={() => {
+                if (confirm("Supprimer ce partenaire ?"))
+                  run(() => deleteFn({ data: { partner_id: partner.id } }));
+              }}
+            >
               Supprimer
             </Button>
           )}
         </div>
       </div>
-      <PartnerDetailsDialog open={showDetails} onClose={() => setShowDetails(false)} partner={partner} />
+      <PartnerDetailsDialog
+        open={showDetails}
+        onClose={() => setShowDetails(false)}
+        partner={partner}
+      />
     </div>
   );
 }
 
-function RejectButton({ label = "Rejeter", disabled, onConfirm }: { label?: string; disabled?: boolean; onConfirm: (reason: string) => void }) {
+function RejectButton({
+  label = "Rejeter",
+  disabled,
+  onConfirm,
+}: {
+  label?: string;
+  disabled?: boolean;
+  onConfirm: (reason: string) => void;
+}) {
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState("");
-  if (!open) return <Button size="sm" variant="outline" disabled={disabled} onClick={() => setOpen(true)}>{label}</Button>;
+  if (!open)
+    return (
+      <Button size="sm" variant="outline" disabled={disabled} onClick={() => setOpen(true)}>
+        {label}
+      </Button>
+    );
   return (
     <div className="flex gap-1 items-center">
-      <Input className="h-8 w-44" value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Motif" />
-      <Button size="sm" disabled={disabled || reason.length < 2} onClick={() => { onConfirm(reason); setOpen(false); setReason(""); }}>OK</Button>
-      <Button size="sm" variant="ghost" onClick={() => setOpen(false)}>×</Button>
+      <Input
+        className="h-8 w-44"
+        value={reason}
+        onChange={(e) => setReason(e.target.value)}
+        placeholder="Motif"
+      />
+      <Button
+        size="sm"
+        disabled={disabled || reason.length < 2}
+        onClick={() => {
+          onConfirm(reason);
+          setOpen(false);
+          setReason("");
+        }}
+      >
+        OK
+      </Button>
+      <Button size="sm" variant="ghost" onClick={() => setOpen(false)}>
+        ×
+      </Button>
     </div>
   );
 }
 
-function GrantButton({ disabled, onConfirm }: { disabled?: boolean; onConfirm: (amount: number, note?: string) => void }) {
+function GrantButton({
+  disabled,
+  onConfirm,
+}: {
+  disabled?: boolean;
+  onConfirm: (amount: number, note?: string) => void;
+}) {
   const [open, setOpen] = useState(false);
   const [amount, setAmount] = useState(10);
   const [note, setNote] = useState("");
-  if (!open) return <Button size="sm" variant="secondary" disabled={disabled} onClick={() => setOpen(true)}>+ Crédits</Button>;
+  if (!open)
+    return (
+      <Button size="sm" variant="secondary" disabled={disabled} onClick={() => setOpen(true)}>
+        + Crédits
+      </Button>
+    );
   return (
     <div className="flex gap-1 items-center">
-      <Input className="h-8 w-20" type="number" min={1} value={amount} onChange={(e) => setAmount(Number(e.target.value))} />
-      <Input className="h-8 w-32" value={note} onChange={(e) => setNote(e.target.value)} placeholder="Note" />
-      <Button size="sm" disabled={disabled || amount < 1} onClick={() => { onConfirm(amount, note || undefined); setOpen(false); }}>OK</Button>
-      <Button size="sm" variant="ghost" onClick={() => setOpen(false)}>×</Button>
+      <Input
+        className="h-8 w-20"
+        type="number"
+        min={1}
+        value={amount}
+        onChange={(e) => setAmount(Number(e.target.value))}
+      />
+      <Input
+        className="h-8 w-32"
+        value={note}
+        onChange={(e) => setNote(e.target.value)}
+        placeholder="Note"
+      />
+      <Button
+        size="sm"
+        disabled={disabled || amount < 1}
+        onClick={() => {
+          onConfirm(amount, note || undefined);
+          setOpen(false);
+        }}
+      >
+        OK
+      </Button>
+      <Button size="sm" variant="ghost" onClick={() => setOpen(false)}>
+        ×
+      </Button>
     </div>
   );
 }
@@ -356,19 +508,26 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
   const deleteFn = useServerFn(deleteProspect);
   const { data, isLoading } = useQuery({ queryKey: ["prospects"], queryFn: () => listFn() });
   const [busyId, setBusyId] = useState<string | null>(null);
-  const [filter, setFilter] = useState<"all" | "pending_qualification" | "qualified" | "rejected">("all");
+  const [filter, setFilter] = useState<"all" | "pending_qualification" | "qualified" | "rejected">(
+    "all",
+  );
   const [detailsProspect, setDetailsProspect] = useState<any>(null);
 
   async function run(id: string, fn: () => Promise<unknown>) {
     setBusyId(id);
-    try { await fn(); qc.invalidateQueries({ queryKey: ["prospects"] }); }
-    catch (e) { toast.error(e instanceof Error ? e.message : "Erreur"); }
-    finally { setBusyId(null); }
+    try {
+      await fn();
+      qc.invalidateQueries({ queryKey: ["prospects"] });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Erreur");
+    } finally {
+      setBusyId(null);
+    }
   }
 
   async function onPublish(prospect_id: string) {
     await run(prospect_id, async () => {
-      await publishFn({ data: { prospect_id, max_unlocks: 5 } });
+      await publishFn({ data: { prospect_id, max_unlocks: 6 } });
       toast.success("Lead publié dans la marketplace.");
     });
   }
@@ -379,27 +538,53 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
   return (
     <div className="space-y-2">
       <div className="flex justify-between items-center flex-wrap gap-2">
-        <p className="text-sm text-muted-foreground">{prospects.length} prospect(s) affichés (sur {all.length})</p>
+        <p className="text-sm text-muted-foreground">
+          {prospects.length} prospect(s) affichés (sur {all.length})
+        </p>
         <div className="flex gap-1 text-xs">
           {(["all", "pending_qualification", "qualified", "rejected"] as const).map((k) => (
-            <Button key={k} size="sm" variant={filter === k ? "default" : "outline"} onClick={() => setFilter(k)}>
-              {k === "all" ? "Tous" : k === "pending_qualification" ? "En attente" : k === "qualified" ? "Qualifiés" : "Rejetés"}
+            <Button
+              key={k}
+              size="sm"
+              variant={filter === k ? "default" : "outline"}
+              onClick={() => setFilter(k)}
+            >
+              {k === "all"
+                ? "Tous"
+                : k === "pending_qualification"
+                  ? "En attente"
+                  : k === "qualified"
+                    ? "Qualifiés"
+                    : "Rejetés"}
               {k === "pending_qualification" && <PendingBadge count={pendingCount} />}
             </Button>
           ))}
         </div>
       </div>
       {prospects.map((p: any) => (
-        <div key={p.id} className={`rounded border p-3 bg-card text-sm ${p.status === "rejected" ? "opacity-60" : ""}`}>
+        <div
+          key={p.id}
+          className={`rounded border p-3 bg-card text-sm ${p.status === "rejected" ? "opacity-60" : ""}`}
+        >
           <div className="flex justify-between flex-wrap gap-2">
             <div>
-              <button type="button" onClick={() => setDetailsProspect(p)} className="text-left hover:underline">
+              <button
+                type="button"
+                onClick={() => setDetailsProspect(p)}
+                className="text-left hover:underline"
+              >
                 <strong>{p.full_name || "—"}</strong> · {p.email || "—"} · {p.phone || "—"}
               </button>
-              <span className="ml-2 inline-block rounded bg-muted px-2 py-0.5 text-xs">{p.audience}</span>
-              <span className="ml-1 inline-block rounded bg-muted px-2 py-0.5 text-xs">{p.status}</span>
+              <span className="ml-2 inline-block rounded bg-muted px-2 py-0.5 text-xs">
+                {p.audience}
+              </span>
+              <span className="ml-1 inline-block rounded bg-muted px-2 py-0.5 text-xs">
+                {p.status}
+              </span>
             </div>
-            <span className="text-xs text-muted-foreground">{new Date(p.created_at).toLocaleString("fr-FR")}</span>
+            <span className="text-xs text-muted-foreground">
+              {new Date(p.created_at).toLocaleString("fr-FR")}
+            </span>
           </div>
           <div className="text-xs text-muted-foreground mt-1">
             {p.service && <>Service : {p.service} · </>}
@@ -412,32 +597,625 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
             <p className="mt-1 text-xs text-destructive">Motif rejet : {p.qualification_notes}</p>
           )}
           <div className="mt-2 flex justify-end gap-2 flex-wrap">
-            <Button size="sm" variant="ghost" onClick={() => setDetailsProspect(p)}>Voir détails</Button>
+            <Button size="sm" variant="ghost" onClick={() => setDetailsProspect(p)}>
+              Voir détails
+            </Button>
             {p.status !== "rejected" && p.status !== "qualified" && (
               <>
-                <Button size="sm" variant="outline" disabled={busyId === p.id} onClick={() => onPublish(p.id)}>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={busyId === p.id}
+                  onClick={() => onPublish(p.id)}
+                >
                   {busyId === p.id ? "…" : "Publier comme lead (6 places)"}
                 </Button>
-                <RejectButton label="Rejeter" disabled={busyId === p.id} onConfirm={(reason) =>
-                  run(p.id, async () => { await rejectFn({ data: { prospect_id: p.id, reason } }); toast.success("Prospect rejeté"); })
-                } />
+                <RejectButton
+                  label="Rejeter"
+                  disabled={busyId === p.id}
+                  onConfirm={(reason) =>
+                    run(p.id, async () => {
+                      await rejectFn({ data: { prospect_id: p.id, reason } });
+                      toast.success("Prospect rejeté");
+                    })
+                  }
+                />
               </>
             )}
             {p.status === "rejected" && (
-              <Button size="sm" variant="outline" disabled={busyId === p.id} onClick={() =>
-                run(p.id, async () => { await reactivateFn({ data: { prospect_id: p.id } }); toast.success("Prospect réactivé"); })
-              }>Réactiver</Button>
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={busyId === p.id}
+                onClick={() =>
+                  run(p.id, async () => {
+                    await reactivateFn({ data: { prospect_id: p.id } });
+                    toast.success("Prospect réactivé");
+                  })
+                }
+              >
+                Réactiver
+              </Button>
             )}
             {isAdmin && (
-              <Button size="sm" variant="destructive" disabled={busyId === p.id} onClick={() => {
-                if (confirm("Supprimer définitivement ce prospect ?")) {
-                  run(p.id, async () => { await deleteFn({ data: { prospect_id: p.id } }); toast.success("Prospect supprimé"); });
-                }
-              }}>Supprimer</Button>
+              <Button
+                size="sm"
+                variant="destructive"
+                disabled={busyId === p.id}
+                onClick={() => {
+                  if (confirm("Supprimer définitivement ce prospect ?")) {
+                    run(p.id, async () => {
+                      await deleteFn({ data: { prospect_id: p.id } });
+                      toast.success("Prospect supprimé");
+                    });
+                  }
+                }}
+              >
+                Supprimer
+              </Button>
             )}
           </div>
         </div>
       ))}
+      <ProspectDetailsDialog prospect={detailsProspect} onClose={() => setDetailsProspect(null)} />
+    </div>
+  );
+}
+
+type ProspectFilter = "pending_qualification" | "published" | "rejected";
+
+type ProspectFormState = {
+  full_name: string;
+  email: string;
+  phone: string;
+  company_name: string;
+  statut: string;
+  audience: "creation" | "gestion" | "unknown";
+  status: "pending_qualification" | "qualified" | "rejected" | "published";
+  service: string;
+  city: string;
+  budget: string;
+  legal_form: string;
+  message: string;
+  external_notes: string;
+  internal_notes: string;
+};
+
+const emptyProspectForm: ProspectFormState = {
+  full_name: "",
+  email: "",
+  phone: "",
+  company_name: "",
+  statut: "",
+  audience: "unknown",
+  status: "pending_qualification",
+  service: "",
+  city: "",
+  budget: "",
+  legal_form: "",
+  message: "",
+  external_notes: "",
+  internal_notes: "",
+};
+
+function isPublishedProspect(status?: string | null) {
+  return status === "qualified" || status === "published";
+}
+
+function getProspectForm(prospect: any): ProspectFormState {
+  return {
+    full_name: prospect?.full_name ?? "",
+    email: prospect?.email ?? "",
+    phone: prospect?.phone ?? "",
+    company_name: prospect?.company_name ?? "",
+    statut: prospect?.statut ?? "",
+    audience: prospect?.audience ?? "unknown",
+    status: prospect?.status ?? "pending_qualification",
+    service: prospect?.service ?? "",
+    city: prospect?.city ?? "",
+    budget: prospect?.budget ?? "",
+    legal_form: prospect?.legal_form ?? "",
+    message: prospect?.message ?? "",
+    external_notes: prospect?.external_notes ?? "",
+    internal_notes: prospect?.internal_notes ?? "",
+  };
+}
+
+function nullableFormValue(value: string) {
+  const trimmed = value.trim();
+  return trimmed.length ? trimmed : null;
+}
+
+function normalizeProspectForm(form: ProspectFormState) {
+  return {
+    full_name: nullableFormValue(form.full_name),
+    email: nullableFormValue(form.email),
+    phone: nullableFormValue(form.phone),
+    company_name: nullableFormValue(form.company_name),
+    statut: nullableFormValue(form.statut),
+    audience: form.audience,
+    status: form.status,
+    service: nullableFormValue(form.service),
+    city: nullableFormValue(form.city),
+    budget: nullableFormValue(form.budget),
+    legal_form: nullableFormValue(form.legal_form),
+    message: nullableFormValue(form.message),
+    external_notes: nullableFormValue(form.external_notes),
+    internal_notes: nullableFormValue(form.internal_notes),
+  };
+}
+
+function ProspectFilterButton({
+  active,
+  count,
+  label,
+  onClick,
+}: {
+  active: boolean;
+  count: number;
+  label: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`rounded-md border px-3 py-2 text-left transition-colors ${
+        active
+          ? "border-primary bg-primary text-primary-foreground"
+          : "border-border bg-background hover:bg-muted"
+      }`}
+    >
+      <span className="block text-sm font-semibold">{label}</span>
+      <span
+        className={`text-xs ${active ? "text-primary-foreground/75" : "text-muted-foreground"}`}
+      >
+        {count} prospect{count > 1 ? "s" : ""}
+      </span>
+    </button>
+  );
+}
+
+function ProspectStatusBadge({ status }: { status?: string | null }) {
+  const label =
+    status === "pending_qualification"
+      ? "A qualifier"
+      : isPublishedProspect(status)
+        ? "Publie"
+        : status === "rejected"
+          ? "Rejete"
+          : status || "Nouveau";
+  const tone =
+    status === "rejected"
+      ? "bg-destructive/10 text-destructive"
+      : isPublishedProspect(status)
+        ? "bg-emerald-100 text-emerald-700"
+        : "bg-amber-100 text-amber-800";
+  return <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${tone}`}>{label}</span>;
+}
+
+function FormSection({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="space-y-3">
+      <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+        {title}
+      </h3>
+      <div className="grid gap-3 sm:grid-cols-2">{children}</div>
+    </section>
+  );
+}
+
+function ProspectInputField({
+  label,
+  value,
+  onChange,
+  type = "text",
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  type?: string;
+}) {
+  return (
+    <label className="space-y-1.5 text-sm">
+      <span className="font-medium">{label}</span>
+      <Input type={type} value={value} onChange={(event) => onChange(event.target.value)} />
+    </label>
+  );
+}
+
+function ProspectTextareaField({
+  label,
+  hint,
+  value,
+  onChange,
+  rows = 4,
+  className = "",
+}: {
+  label: string;
+  hint?: string;
+  value: string;
+  onChange: (value: string) => void;
+  rows?: number;
+  className?: string;
+}) {
+  return (
+    <label className={`space-y-1.5 text-sm ${className}`}>
+      <span className="font-medium">{label}</span>
+      {hint && <span className="block text-xs text-muted-foreground">{hint}</span>}
+      <Textarea value={value} onChange={(event) => onChange(event.target.value)} rows={rows} />
+    </label>
+  );
+}
+
+function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
+  const listFn = useServerFn(listProspects);
+  const updateFn = useServerFn(updateProspect);
+  const publishFn = useServerFn(publishProspect);
+  const rejectFn = useServerFn(rejectProspect);
+  const reactivateFn = useServerFn(reactivateProspect);
+  const deleteFn = useServerFn(deleteProspect);
+  const qc = useQueryClient();
+  const { data, isLoading } = useQuery({ queryKey: ["prospects"], queryFn: () => listFn() });
+  const [filter, setFilter] = useState<ProspectFilter>("pending_qualification");
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [form, setForm] = useState<ProspectFormState>(emptyProspectForm);
+  const [busy, setBusy] = useState<string | null>(null);
+  const [detailsProspect, setDetailsProspect] = useState<any>(null);
+
+  const all = data?.prospects ?? [];
+  const prospects = all.filter((prospect: any) => {
+    if (filter === "published") return isPublishedProspect(prospect.status);
+    return prospect.status === filter;
+  });
+  const selected =
+    prospects.find((prospect: any) => prospect.id === selectedId) ?? prospects[0] ?? null;
+
+  useEffect(() => {
+    if (!prospects.length) {
+      setSelectedId(null);
+      return;
+    }
+    if (!selectedId || !prospects.some((prospect: any) => prospect.id === selectedId)) {
+      setSelectedId(prospects[0].id);
+    }
+  }, [prospects, selectedId]);
+
+  useEffect(() => {
+    setForm(selected ? getProspectForm(selected) : emptyProspectForm);
+  }, [selected]);
+
+  function updateField<K extends keyof ProspectFormState>(key: K, value: ProspectFormState[K]) {
+    setForm((current) => ({ ...current, [key]: value }));
+  }
+
+  async function refreshProspects() {
+    await qc.invalidateQueries({ queryKey: ["prospects"] });
+  }
+
+  async function run(action: string, fn: () => Promise<unknown>) {
+    setBusy(action);
+    try {
+      await fn();
+      await refreshProspects();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Erreur");
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  async function saveSelected() {
+    if (!selected) return;
+    await run(`save:${selected.id}`, async () => {
+      await updateFn({ data: { prospect_id: selected.id, ...normalizeProspectForm(form) } });
+      toast.success("Prospect enregistre.");
+    });
+  }
+
+  async function publishSelected() {
+    if (!selected) return;
+    await run(`publish:${selected.id}`, async () => {
+      await updateFn({ data: { prospect_id: selected.id, ...normalizeProspectForm(form) } });
+      await publishFn({ data: { prospect_id: selected.id, max_unlocks: 6 } });
+      toast.success("Lead publie dans la marketplace.");
+    });
+  }
+
+  const counts = {
+    pending_qualification: all.filter(
+      (prospect: any) => prospect.status === "pending_qualification",
+    ).length,
+    published: all.filter((prospect: any) => isPublishedProspect(prospect.status)).length,
+    rejected: all.filter((prospect: any) => prospect.status === "rejected").length,
+  };
+  const isSelectedBusy = selected ? busy?.endsWith(selected.id) : false;
+
+  if (isLoading) return <p>Chargement...</p>;
+
+  return (
+    <div className="grid gap-4 xl:grid-cols-[360px_1fr]">
+      <aside className="rounded-lg border bg-card">
+        <div className="border-b p-4">
+          <div className="grid grid-cols-3 gap-2">
+            <ProspectFilterButton
+              active={filter === "pending_qualification"}
+              count={counts.pending_qualification}
+              label="A qualifier"
+              onClick={() => setFilter("pending_qualification")}
+            />
+            <ProspectFilterButton
+              active={filter === "published"}
+              count={counts.published}
+              label="Publies"
+              onClick={() => setFilter("published")}
+            />
+            <ProspectFilterButton
+              active={filter === "rejected"}
+              count={counts.rejected}
+              label="Rejetes"
+              onClick={() => setFilter("rejected")}
+            />
+          </div>
+        </div>
+        <div className="max-h-[720px] overflow-y-auto p-2">
+          {prospects.length === 0 ? (
+            <p className="p-4 text-sm text-muted-foreground">Aucun prospect dans cette file.</p>
+          ) : (
+            prospects.map((prospect: any) => (
+              <button
+                key={prospect.id}
+                type="button"
+                onClick={() => setSelectedId(prospect.id)}
+                className={`w-full rounded-md border p-3 text-left transition-colors ${
+                  selected?.id === prospect.id
+                    ? "border-primary bg-primary/5"
+                    : "border-transparent hover:bg-muted"
+                }`}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="truncate font-semibold">
+                      {prospect.full_name || prospect.email || "Prospect sans nom"}
+                    </p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      {prospect.service || "Service a definir"}
+                    </p>
+                  </div>
+                  <ProspectStatusBadge status={prospect.status} />
+                </div>
+                <div className="mt-2 flex flex-wrap gap-1.5 text-xs text-muted-foreground">
+                  {prospect.city && (
+                    <span className="rounded bg-muted px-2 py-0.5">{prospect.city}</span>
+                  )}
+                  {prospect.budget && (
+                    <span className="rounded bg-muted px-2 py-0.5">{prospect.budget}</span>
+                  )}
+                  <span className="rounded bg-muted px-2 py-0.5">
+                    {new Date(prospect.created_at).toLocaleDateString("fr-FR")}
+                  </span>
+                </div>
+              </button>
+            ))
+          )}
+        </div>
+      </aside>
+
+      <section className="rounded-lg border bg-card">
+        {!selected ? (
+          <div className="p-8 text-center text-sm text-muted-foreground">
+            Selectionnez un prospect pour le qualifier.
+          </div>
+        ) : (
+          <>
+            <div className="flex flex-wrap items-start justify-between gap-3 border-b p-5">
+              <div>
+                <div className="flex items-center gap-2">
+                  <h2 className="text-xl font-semibold">{form.full_name || "Prospect sans nom"}</h2>
+                  <ProspectStatusBadge status={selected.status} />
+                </div>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Recu le {new Date(selected.created_at).toLocaleString("fr-FR")}
+                  {selected.edited_at
+                    ? `, modifie le ${new Date(selected.edited_at).toLocaleString("fr-FR")}`
+                    : ""}
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Button variant="outline" onClick={() => setDetailsProspect(selected)}>
+                  Voir details
+                </Button>
+                <Button variant="secondary" disabled={isSelectedBusy} onClick={saveSelected}>
+                  {busy?.startsWith("save:") ? "Enregistrement..." : "Enregistrer"}
+                </Button>
+                <Button
+                  disabled={isSelectedBusy || isPublishedProspect(selected.status)}
+                  onClick={publishSelected}
+                >
+                  {busy?.startsWith("publish:") ? "Publication..." : "Publier dans la marketplace"}
+                </Button>
+              </div>
+            </div>
+
+            <div className="grid gap-6 p-5 lg:grid-cols-[1fr_280px]">
+              <div className="space-y-6">
+                <FormSection title="Contact">
+                  <ProspectInputField
+                    label="Nom"
+                    value={form.full_name}
+                    onChange={(value) => updateField("full_name", value)}
+                  />
+                  <ProspectInputField
+                    label="Email"
+                    type="email"
+                    value={form.email}
+                    onChange={(value) => updateField("email", value)}
+                  />
+                  <ProspectInputField
+                    label="Telephone"
+                    value={form.phone}
+                    onChange={(value) => updateField("phone", value)}
+                  />
+                  <ProspectInputField
+                    label="Entreprise"
+                    value={form.company_name}
+                    onChange={(value) => updateField("company_name", value)}
+                  />
+                  <ProspectInputField
+                    label="Situation"
+                    value={form.statut}
+                    onChange={(value) => updateField("statut", value)}
+                  />
+                  <label className="space-y-1.5 text-sm">
+                    <span className="font-medium">Audience</span>
+                    <select
+                      className="h-10 w-full rounded-md border bg-background px-3 text-sm"
+                      value={form.audience}
+                      onChange={(event) =>
+                        updateField("audience", event.target.value as ProspectFormState["audience"])
+                      }
+                    >
+                      <option value="unknown">A qualifier</option>
+                      <option value="creation">Creation d'entreprise</option>
+                      <option value="gestion">Gestion comptable</option>
+                    </select>
+                  </label>
+                  <label className="space-y-1.5 text-sm">
+                    <span className="font-medium">Statut</span>
+                    <select
+                      className="h-10 w-full rounded-md border bg-background px-3 text-sm"
+                      value={form.status}
+                      onChange={(event) =>
+                        updateField("status", event.target.value as ProspectFormState["status"])
+                      }
+                    >
+                      <option value="pending_qualification">A qualifier</option>
+                      <option value="qualified">Qualifie</option>
+                      <option value="published">Publie</option>
+                      <option value="rejected">Rejete</option>
+                    </select>
+                  </label>
+                </FormSection>
+
+                <FormSection title="Demande">
+                  <ProspectInputField
+                    label="Service"
+                    value={form.service}
+                    onChange={(value) => updateField("service", value)}
+                  />
+                  <ProspectInputField
+                    label="Ville"
+                    value={form.city}
+                    onChange={(value) => updateField("city", value)}
+                  />
+                  <ProspectInputField
+                    label="Budget"
+                    value={form.budget}
+                    onChange={(value) => updateField("budget", value)}
+                  />
+                  <ProspectInputField
+                    label="Forme juridique"
+                    value={form.legal_form}
+                    onChange={(value) => updateField("legal_form", value)}
+                  />
+                  <ProspectTextareaField
+                    className="sm:col-span-2"
+                    label="Message du prospect"
+                    value={form.message}
+                    onChange={(value) => updateField("message", value)}
+                    rows={5}
+                  />
+                </FormSection>
+
+                <section className="space-y-3">
+                  <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                    Notes
+                  </h3>
+                  <div className="grid gap-3 md:grid-cols-2">
+                    <ProspectTextareaField
+                      label="Note LGM"
+                      hint="Visible par les partenaires"
+                      value={form.external_notes}
+                      onChange={(value) => updateField("external_notes", value)}
+                      rows={6}
+                    />
+                    <ProspectTextareaField
+                      label="Note interne"
+                      hint="Visible uniquement par l'equipe LGM"
+                      value={form.internal_notes}
+                      onChange={(value) => updateField("internal_notes", value)}
+                      rows={6}
+                    />
+                  </div>
+                </section>
+              </div>
+
+              <aside className="space-y-4">
+                <div className="rounded-md border bg-muted/30 p-4">
+                  <h3 className="font-semibold">Publication</h3>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    La note LGM sera reprise comme resume public du lead. La marketplace ouvre 6
+                    places.
+                  </p>
+                  <Button
+                    className="mt-3 w-full"
+                    disabled={isSelectedBusy || isPublishedProspect(selected.status)}
+                    onClick={publishSelected}
+                  >
+                    Publier dans la marketplace
+                  </Button>
+                </div>
+                <div className="rounded-md border bg-background p-4">
+                  <h3 className="font-semibold">Decision</h3>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {selected.status === "rejected" ? (
+                      <Button
+                        variant="outline"
+                        disabled={isSelectedBusy}
+                        onClick={() =>
+                          run(`reactivate:${selected.id}`, async () => {
+                            await reactivateFn({ data: { prospect_id: selected.id } });
+                            toast.success("Prospect reactive.");
+                          })
+                        }
+                      >
+                        Reactiver
+                      </Button>
+                    ) : (
+                      <RejectButton
+                        disabled={isSelectedBusy}
+                        onConfirm={(reason) =>
+                          run(`reject:${selected.id}`, async () => {
+                            await rejectFn({ data: { prospect_id: selected.id, reason } });
+                            toast.success("Prospect rejete.");
+                          })
+                        }
+                      />
+                    )}
+                    {isAdmin && (
+                      <Button
+                        variant="destructive"
+                        disabled={isSelectedBusy}
+                        onClick={() => {
+                          if (confirm("Supprimer definitivement ce prospect ?")) {
+                            run(`delete:${selected.id}`, async () => {
+                              await deleteFn({ data: { prospect_id: selected.id } });
+                              toast.success("Prospect supprime.");
+                            });
+                          }
+                        }}
+                      >
+                        Supprimer
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </aside>
+            </div>
+          </>
+        )}
+      </section>
+
       <ProspectDetailsDialog prospect={detailsProspect} onClose={() => setDetailsProspect(null)} />
     </div>
   );
@@ -448,11 +1226,21 @@ function CreatePartnerPanel() {
   const qc = useQueryClient();
   const [busy, setBusy] = useState(false);
   const [form, setForm] = useState({
-    cabinet_name: "", contact_first_name: "", contact_last_name: "",
-    email: "", phone: "", city: "", password: "",
-    website: "", facebook_url: "", services: "", zones: "",
+    cabinet_name: "",
+    contact_first_name: "",
+    contact_last_name: "",
+    email: "",
+    phone: "",
+    city: "",
+    password: "",
+    website: "",
+    facebook_url: "",
+    services: "",
+    zones: "",
   });
-  function up<K extends keyof typeof form>(k: K, v: string) { setForm((f) => ({ ...f, [k]: v })); }
+  function up<K extends keyof typeof form>(k: K, v: string) {
+    setForm((f) => ({ ...f, [k]: v }));
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -469,44 +1257,120 @@ function CreatePartnerPanel() {
           password: form.password,
           website: form.website,
           facebook_url: form.facebook_url,
-          services: form.services.split(",").map((s) => s.trim()).filter(Boolean),
-          zones: form.zones.split(",").map((s) => s.trim()).filter(Boolean),
+          services: form.services
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean),
+          zones: form.zones
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean),
         },
       });
       toast.success("Partenaire créé (30 crédits attribués)");
-      setForm({ cabinet_name: "", contact_first_name: "", contact_last_name: "", email: "", phone: "", city: "", password: "", website: "", facebook_url: "", services: "", zones: "" });
+      setForm({
+        cabinet_name: "",
+        contact_first_name: "",
+        contact_last_name: "",
+        email: "",
+        phone: "",
+        city: "",
+        password: "",
+        website: "",
+        facebook_url: "",
+        services: "",
+        zones: "",
+      });
       qc.invalidateQueries({ queryKey: ["partners"] });
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Erreur");
-    } finally { setBusy(false); }
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
     <form onSubmit={onSubmit} className="space-y-4 max-w-2xl">
       <p className="text-sm text-muted-foreground">
-        Création manuelle : le cabinet est immédiatement actif avec 30 crédits. Aucune validation requise.
+        Création manuelle : le cabinet est immédiatement actif avec 30 crédits. Aucune validation
+        requise.
       </p>
       <div>
         <Label>Nom du cabinet *</Label>
-        <Input required value={form.cabinet_name} onChange={(e) => up("cabinet_name", e.target.value)} />
+        <Input
+          required
+          value={form.cabinet_name}
+          onChange={(e) => up("cabinet_name", e.target.value)}
+        />
       </div>
       <div className="grid grid-cols-2 gap-4">
-        <div><Label>Prénom *</Label><Input required value={form.contact_first_name} onChange={(e) => up("contact_first_name", e.target.value)} /></div>
-        <div><Label>Nom *</Label><Input required value={form.contact_last_name} onChange={(e) => up("contact_last_name", e.target.value)} /></div>
+        <div>
+          <Label>Prénom *</Label>
+          <Input
+            required
+            value={form.contact_first_name}
+            onChange={(e) => up("contact_first_name", e.target.value)}
+          />
+        </div>
+        <div>
+          <Label>Nom *</Label>
+          <Input
+            required
+            value={form.contact_last_name}
+            onChange={(e) => up("contact_last_name", e.target.value)}
+          />
+        </div>
       </div>
       <div className="grid grid-cols-2 gap-4">
-        <div><Label>Email *</Label><Input type="email" required value={form.email} onChange={(e) => up("email", e.target.value)} /></div>
-        <div><Label>Téléphone *</Label><Input required value={form.phone} onChange={(e) => up("phone", e.target.value)} /></div>
+        <div>
+          <Label>Email *</Label>
+          <Input
+            type="email"
+            required
+            value={form.email}
+            onChange={(e) => up("email", e.target.value)}
+          />
+        </div>
+        <div>
+          <Label>Téléphone *</Label>
+          <Input required value={form.phone} onChange={(e) => up("phone", e.target.value)} />
+        </div>
       </div>
-      <div><Label>Mot de passe initial *</Label><Input type="password" required minLength={8} value={form.password} onChange={(e) => up("password", e.target.value)} /></div>
-      <div><Label>Ville *</Label><Input required value={form.city} onChange={(e) => up("city", e.target.value)} /></div>
+      <div>
+        <Label>Mot de passe initial *</Label>
+        <Input
+          type="password"
+          required
+          minLength={8}
+          value={form.password}
+          onChange={(e) => up("password", e.target.value)}
+        />
+      </div>
+      <div>
+        <Label>Ville *</Label>
+        <Input required value={form.city} onChange={(e) => up("city", e.target.value)} />
+      </div>
       <div className="grid grid-cols-2 gap-4">
-        <div><Label>Site web</Label><Input value={form.website} onChange={(e) => up("website", e.target.value)} /></div>
-        <div><Label>Facebook</Label><Input value={form.facebook_url} onChange={(e) => up("facebook_url", e.target.value)} /></div>
+        <div>
+          <Label>Site web</Label>
+          <Input value={form.website} onChange={(e) => up("website", e.target.value)} />
+        </div>
+        <div>
+          <Label>Facebook</Label>
+          <Input value={form.facebook_url} onChange={(e) => up("facebook_url", e.target.value)} />
+        </div>
       </div>
-      <div><Label>Services (virgules)</Label><Textarea value={form.services} onChange={(e) => up("services", e.target.value)} /></div>
-      <div><Label>Zones (virgules)</Label><Textarea value={form.zones} onChange={(e) => up("zones", e.target.value)} /></div>
-      <Button type="submit" disabled={busy}>{busy ? "…" : "Créer le partenaire"}</Button>
+      <div>
+        <Label>Services (virgules)</Label>
+        <Textarea value={form.services} onChange={(e) => up("services", e.target.value)} />
+      </div>
+      <div>
+        <Label>Zones (virgules)</Label>
+        <Textarea value={form.zones} onChange={(e) => up("zones", e.target.value)} />
+      </div>
+      <Button type="submit" disabled={busy}>
+        {busy ? "…" : "Créer le partenaire"}
+      </Button>
     </form>
   );
 }
@@ -524,15 +1388,27 @@ function TeamPanel() {
   const [busyId, setBusyId] = useState<string | null>(null);
   const [showAdd, setShowAdd] = useState(false);
   const [tempPwdDialog, setTempPwdDialog] = useState<{ email: string; pwd: string } | null>(null);
-  const [form, setForm] = useState({ email: "", first_name: "", last_name: "", role: "agent" as "admin" | "agent" });
+  const [form, setForm] = useState({
+    email: "",
+    first_name: "",
+    last_name: "",
+    role: "agent" as "admin" | "agent",
+  });
 
-  function up<K extends keyof typeof form>(k: K, v: string) { setForm((f) => ({ ...f, [k]: v as any })); }
+  function up<K extends keyof typeof form>(k: K, v: string) {
+    setForm((f) => ({ ...f, [k]: v as any }));
+  }
 
   async function run(id: string, fn: () => Promise<unknown>) {
     setBusyId(id);
-    try { await fn(); qc.invalidateQueries({ queryKey: ["team"] }); }
-    catch (e) { toast.error(e instanceof Error ? e.message : "Erreur"); }
-    finally { setBusyId(null); }
+    try {
+      await fn();
+      qc.invalidateQueries({ queryKey: ["team"] });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Erreur");
+    } finally {
+      setBusyId(null);
+    }
   }
 
   async function onAdd(e: React.FormEvent) {
@@ -546,7 +1422,9 @@ function TeamPanel() {
       qc.invalidateQueries({ queryKey: ["team"] });
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Erreur");
-    } finally { setBusyId(null); }
+    } finally {
+      setBusyId(null);
+    }
   }
 
   if (isLoading) return <p>Chargement…</p>;
@@ -558,11 +1436,26 @@ function TeamPanel() {
       {tempPwdDialog && (
         <div className="rounded-lg border-2 border-primary bg-primary/5 p-4 space-y-2">
           <p className="font-semibold">Mot de passe temporaire pour {tempPwdDialog.email}</p>
-          <p className="text-sm text-muted-foreground">Communique-le au membre. Il devra le changer à sa première connexion. Ce mot de passe ne sera plus affiché.</p>
+          <p className="text-sm text-muted-foreground">
+            Communique-le au membre. Il devra le changer à sa première connexion. Ce mot de passe ne
+            sera plus affiché.
+          </p>
           <div className="flex gap-2 items-center">
-            <code className="flex-1 rounded bg-background border px-3 py-2 font-mono text-sm">{tempPwdDialog.pwd}</code>
-            <Button size="sm" onClick={() => { navigator.clipboard.writeText(tempPwdDialog.pwd); toast.success("Copié"); }}>Copier</Button>
-            <Button size="sm" variant="ghost" onClick={() => setTempPwdDialog(null)}>Fermer</Button>
+            <code className="flex-1 rounded bg-background border px-3 py-2 font-mono text-sm">
+              {tempPwdDialog.pwd}
+            </code>
+            <Button
+              size="sm"
+              onClick={() => {
+                navigator.clipboard.writeText(tempPwdDialog.pwd);
+                toast.success("Copié");
+              }}
+            >
+              Copier
+            </Button>
+            <Button size="sm" variant="ghost" onClick={() => setTempPwdDialog(null)}>
+              Fermer
+            </Button>
           </div>
         </div>
       )}
@@ -577,15 +1470,51 @@ function TeamPanel() {
       {showAdd && (
         <form onSubmit={onAdd} className="rounded-lg border p-4 bg-card space-y-3">
           <div className="grid grid-cols-2 gap-3">
-            <div><Label>Prénom *</Label><Input required value={form.first_name} onChange={(e) => up("first_name", e.target.value)} /></div>
-            <div><Label>Nom *</Label><Input required value={form.last_name} onChange={(e) => up("last_name", e.target.value)} /></div>
+            <div>
+              <Label>Prénom *</Label>
+              <Input
+                required
+                value={form.first_name}
+                onChange={(e) => up("first_name", e.target.value)}
+              />
+            </div>
+            <div>
+              <Label>Nom *</Label>
+              <Input
+                required
+                value={form.last_name}
+                onChange={(e) => up("last_name", e.target.value)}
+              />
+            </div>
           </div>
-          <div><Label>Email *</Label><Input type="email" required value={form.email} onChange={(e) => up("email", e.target.value)} /></div>
+          <div>
+            <Label>Email *</Label>
+            <Input
+              type="email"
+              required
+              value={form.email}
+              onChange={(e) => up("email", e.target.value)}
+            />
+          </div>
           <div>
             <Label>Rôle *</Label>
             <div className="flex gap-2 mt-1">
-              <Button type="button" size="sm" variant={form.role === "agent" ? "default" : "outline"} onClick={() => up("role", "agent")}>Agent</Button>
-              <Button type="button" size="sm" variant={form.role === "admin" ? "default" : "outline"} onClick={() => up("role", "admin")}>Administrateur</Button>
+              <Button
+                type="button"
+                size="sm"
+                variant={form.role === "agent" ? "default" : "outline"}
+                onClick={() => up("role", "agent")}
+              >
+                Agent
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                variant={form.role === "admin" ? "default" : "outline"}
+                onClick={() => up("role", "admin")}
+              >
+                Administrateur
+              </Button>
             </div>
             <p className="text-xs text-muted-foreground mt-1">
               Un mot de passe temporaire sera généré et affiché une seule fois.
@@ -601,56 +1530,121 @@ function TeamPanel() {
         {members.map((m: any) => {
           const isMe = m.user_id === me;
           return (
-            <div key={m.user_id} className={`rounded-lg border p-4 bg-card ${m.suspended ? "opacity-60" : ""}`}>
+            <div
+              key={m.user_id}
+              className={`rounded-lg border p-4 bg-card ${m.suspended ? "opacity-60" : ""}`}
+            >
               <div className="flex justify-between flex-wrap gap-3">
                 <div>
                   <div className="flex items-center gap-2 flex-wrap">
                     <strong>{m.full_name || m.email}</strong>
-                    <span className={`inline-block rounded px-2 py-0.5 text-xs ${m.role === "admin" ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
+                    <span
+                      className={`inline-block rounded px-2 py-0.5 text-xs ${m.role === "admin" ? "bg-primary text-primary-foreground" : "bg-muted"}`}
+                    >
                       {m.role === "admin" ? "Administrateur" : "Agent"}
                     </span>
-                    {m.suspended && <span className="inline-block rounded bg-destructive text-destructive-foreground px-2 py-0.5 text-xs">Suspendu</span>}
-                    {m.must_change_password && <span className="inline-block rounded bg-amber-500/20 text-amber-700 dark:text-amber-300 px-2 py-0.5 text-xs">Doit changer mdp</span>}
-                    {isMe && <span className="inline-block rounded bg-muted px-2 py-0.5 text-xs">Vous</span>}
+                    {m.suspended && (
+                      <span className="inline-block rounded bg-destructive text-destructive-foreground px-2 py-0.5 text-xs">
+                        Suspendu
+                      </span>
+                    )}
+                    {m.must_change_password && (
+                      <span className="inline-block rounded bg-amber-500/20 text-amber-700 dark:text-amber-300 px-2 py-0.5 text-xs">
+                        Doit changer mdp
+                      </span>
+                    )}
+                    {isMe && (
+                      <span className="inline-block rounded bg-muted px-2 py-0.5 text-xs">
+                        Vous
+                      </span>
+                    )}
                   </div>
                   <p className="text-sm text-muted-foreground mt-1">{m.email}</p>
                 </div>
                 <div className="flex flex-wrap gap-2 items-start">
                   {!isMe && (
-                    <Button size="sm" variant="outline" disabled={busyId === m.user_id} onClick={() =>
-                      run(m.user_id, async () => {
-                        const newRole = m.role === "admin" ? "agent" : "admin";
-                        await updRoleFn({ data: { user_id: m.user_id, role: newRole } });
-                        toast.success("Rôle modifié");
-                      })
-                    }>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      disabled={busyId === m.user_id}
+                      onClick={() =>
+                        run(m.user_id, async () => {
+                          const newRole = m.role === "admin" ? "agent" : "admin";
+                          await updRoleFn({ data: { user_id: m.user_id, role: newRole } });
+                          toast.success("Rôle modifié");
+                        })
+                      }
+                    >
                       → {m.role === "admin" ? "Agent" : "Admin"}
                     </Button>
                   )}
-                  <Button size="sm" variant="outline" disabled={busyId === m.user_id} onClick={() => {
-                    if (!confirm(`Réinitialiser le mot de passe de ${m.email} ?`)) return;
-                    setBusyId(m.user_id);
-                    resetPwdFn({ data: { user_id: m.user_id } })
-                      .then((res) => { setTempPwdDialog({ email: m.email, pwd: res.temp_password }); })
-                      .catch((e) => toast.error(e instanceof Error ? e.message : "Erreur"))
-                      .finally(() => setBusyId(null));
-                  }}>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    disabled={busyId === m.user_id}
+                    onClick={() => {
+                      if (!confirm(`Réinitialiser le mot de passe de ${m.email} ?`)) return;
+                      setBusyId(m.user_id);
+                      resetPwdFn({ data: { user_id: m.user_id } })
+                        .then((res) => {
+                          setTempPwdDialog({ email: m.email, pwd: res.temp_password });
+                        })
+                        .catch((e) => toast.error(e instanceof Error ? e.message : "Erreur"))
+                        .finally(() => setBusyId(null));
+                    }}
+                  >
                     Reset mdp
                   </Button>
-                  {!isMe && (m.suspended ? (
-                    <Button size="sm" variant="outline" disabled={busyId === m.user_id} onClick={() =>
-                      run(m.user_id, async () => { await unsuspendFn({ data: { user_id: m.user_id } }); toast.success("Réactivé"); })
-                    }>Réactiver</Button>
-                  ) : (
-                    <Button size="sm" variant="outline" disabled={busyId === m.user_id} onClick={() =>
-                      run(m.user_id, async () => { await suspendFn({ data: { user_id: m.user_id } }); toast.success("Suspendu"); })
-                    }>Suspendre</Button>
-                  ))}
+                  {!isMe &&
+                    (m.suspended ? (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        disabled={busyId === m.user_id}
+                        onClick={() =>
+                          run(m.user_id, async () => {
+                            await unsuspendFn({ data: { user_id: m.user_id } });
+                            toast.success("Réactivé");
+                          })
+                        }
+                      >
+                        Réactiver
+                      </Button>
+                    ) : (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        disabled={busyId === m.user_id}
+                        onClick={() =>
+                          run(m.user_id, async () => {
+                            await suspendFn({ data: { user_id: m.user_id } });
+                            toast.success("Suspendu");
+                          })
+                        }
+                      >
+                        Suspendre
+                      </Button>
+                    ))}
                   {!isMe && (
-                    <Button size="sm" variant="destructive" disabled={busyId === m.user_id} onClick={() => {
-                      if (!confirm(`Supprimer définitivement ${m.email} ? Cette action est irréversible.`)) return;
-                      run(m.user_id, async () => { await deleteFn({ data: { user_id: m.user_id } }); toast.success("Membre supprimé"); });
-                    }}>Supprimer</Button>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      disabled={busyId === m.user_id}
+                      onClick={() => {
+                        if (
+                          !confirm(
+                            `Supprimer définitivement ${m.email} ? Cette action est irréversible.`,
+                          )
+                        )
+                          return;
+                        run(m.user_id, async () => {
+                          await deleteFn({ data: { user_id: m.user_id } });
+                          toast.success("Membre supprimé");
+                        });
+                      }}
+                    >
+                      Supprimer
+                    </Button>
                   )}
                 </div>
               </div>
@@ -680,6 +1674,8 @@ const PROSPECT_FIELD_LABELS: Record<string, string> = {
   email: "Email",
   service: "Service demandé",
   budget: "Budget",
+  legal_form: "Forme juridique",
+  formeJuridique: "Forme juridique",
   audience: "Audience",
   source: "Source",
   consent: "Consentement RGPD",
@@ -690,8 +1686,14 @@ const PROSPECT_FIELD_LABELS: Record<string, string> = {
 };
 
 const PROSPECT_TECHNICAL_KEYS = new Set([
-  "leadId", "tag", "received_at", "submitted_at", "user_agent", "language",
-  "page_url", "referrer",
+  "leadId",
+  "tag",
+  "received_at",
+  "submitted_at",
+  "user_agent",
+  "language",
+  "page_url",
+  "referrer",
 ]);
 
 function formatValue(v: unknown): string {
@@ -717,7 +1719,12 @@ function ProspectDetailsDialog({ prospect, onClose }: { prospect: any; onClose: 
   const techKeys = Object.keys(raw).filter((k) => PROSPECT_TECHNICAL_KEYS.has(k));
 
   return (
-    <Dialog open={!!prospect} onOpenChange={(o) => { if (!o) onClose(); }}>
+    <Dialog
+      open={!!prospect}
+      onOpenChange={(o) => {
+        if (!o) onClose();
+      }}
+    >
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{prospect.full_name || prospect.email || "Prospect"}</DialogTitle>
@@ -737,8 +1744,19 @@ function ProspectDetailsDialog({ prospect, onClose }: { prospect: any; onClose: 
           <DetailRow label="Forme juridique" value={prospect.legal_form} />
           <DetailRow label="Situation" value={prospect.statut} />
           <DetailRow label="Message" value={prospect.message} />
+          <DetailRow label="Note LGM partenaires" value={prospect.external_notes} />
+          <DetailRow label="Note interne LGM" value={prospect.internal_notes} />
           <DetailRow label="Type de formulaire" value={prospect.form_type} />
-          <DetailRow label="Reçu le" value={new Date(prospect.created_at).toLocaleString("fr-FR")} />
+          <DetailRow
+            label="Reçu le"
+            value={new Date(prospect.created_at).toLocaleString("fr-FR")}
+          />
+          {prospect.edited_at && (
+            <DetailRow
+              label="Modifie le"
+              value={new Date(prospect.edited_at).toLocaleString("fr-FR")}
+            />
+          )}
           {prospect.qualification_notes && (
             <DetailRow label="Notes qualification" value={prospect.qualification_notes} />
           )}
@@ -767,7 +1785,9 @@ function ProspectDetailsDialog({ prospect, onClose }: { prospect: any; onClose: 
         )}
 
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>Fermer</Button>
+          <Button variant="outline" onClick={onClose}>
+            Fermer
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -795,10 +1815,20 @@ function PaymentsPanel() {
     const header = ["Date", "Email", "Cabinet", "Produit", "Crédits", "Montant", "Statut"];
     const lines = filtered.map((r) => {
       const date = new Date(r.processed_at ?? r.received_at).toISOString();
-      const cells = [date, r.email, r.cabinet_name ?? "", r.product_id, String(r.credits_granted), r.amount_label ?? "", r.status];
+      const cells = [
+        date,
+        r.email,
+        r.cabinet_name ?? "",
+        r.product_id,
+        String(r.credits_granted),
+        r.amount_label ?? "",
+        r.status,
+      ];
       return cells.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",");
     });
-    const blob = new Blob([[header.join(","), ...lines].join("\n")], { type: "text/csv;charset=utf-8" });
+    const blob = new Blob([[header.join(","), ...lines].join("\n")], {
+      type: "text/csv;charset=utf-8",
+    });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -823,9 +1853,21 @@ function PaymentsPanel() {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <KpiTile label="Crédits accordés (mois)" value={kpis?.creditsThisMonth ?? 0} accent="text-emerald-600" />
-        <KpiTile label="Transactions (mois)" value={kpis?.transactionsThisMonth ?? 0} accent="text-primary" />
-        <KpiTile label="Crédits accordés (total)" value={kpis?.totalCreditsAllTime ?? 0} accent="text-foreground" />
+        <KpiTile
+          label="Crédits accordés (mois)"
+          value={kpis?.creditsThisMonth ?? 0}
+          accent="text-emerald-600"
+        />
+        <KpiTile
+          label="Transactions (mois)"
+          value={kpis?.transactionsThisMonth ?? 0}
+          accent="text-primary"
+        />
+        <KpiTile
+          label="Crédits accordés (total)"
+          value={kpis?.totalCreditsAllTime ?? 0}
+          accent="text-foreground"
+        />
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
@@ -836,7 +1878,7 @@ function PaymentsPanel() {
             variant={filter === k ? "default" : "outline"}
             onClick={() => setFilter(k)}
           >
-            {k === "all" ? "Tous" : statusLabel[k] ?? k}
+            {k === "all" ? "Tous" : (statusLabel[k] ?? k)}
           </Button>
         ))}
         <div className="ml-auto">
@@ -876,7 +1918,9 @@ function PaymentsPanel() {
                   </td>
                   <td className="px-3 py-2">{r.email}</td>
                   <td className="px-3 py-2 text-muted-foreground">{r.cabinet_name ?? "—"}</td>
-                  <td className="px-3 py-2 font-mono text-xs text-muted-foreground">{r.product_id}</td>
+                  <td className="px-3 py-2 font-mono text-xs text-muted-foreground">
+                    {r.product_id}
+                  </td>
                   <td className="px-3 py-2 text-right font-mono tabular-nums font-semibold">
                     {r.credits_granted}
                   </td>
@@ -907,15 +1951,30 @@ function PaymentsPanel() {
 function KpiTile({ label, value, accent }: { label: string; value: number; accent: string }) {
   return (
     <div className="rounded-md border bg-card px-4 py-3">
-      <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">{label}</div>
+      <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">
+        {label}
+      </div>
       <div className={`mt-1 font-mono text-2xl font-bold tabular-nums ${accent}`}>{value}</div>
     </div>
   );
 }
 
-function PartnerDetailsDialog({ open, onClose, partner }: { open: boolean; onClose: () => void; partner: any }) {
+function PartnerDetailsDialog({
+  open,
+  onClose,
+  partner,
+}: {
+  open: boolean;
+  onClose: () => void;
+  partner: any;
+}) {
   return (
-    <Dialog open={open} onOpenChange={(o) => { if (!o) onClose(); }}>
+    <Dialog
+      open={open}
+      onOpenChange={(o) => {
+        if (!o) onClose();
+      }}
+    >
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{partner.cabinet_name}</DialogTitle>
@@ -943,16 +2002,38 @@ function PartnerDetailsDialog({ open, onClose, partner }: { open: boolean; onClo
 
         <section className="space-y-1 mt-4">
           <h4 className="font-semibold text-sm mb-2">Historique</h4>
-          <DetailRow label="Inscrit le" value={new Date(partner.created_at).toLocaleString("fr-FR")} />
-          {partner.approved_at && <DetailRow label="Approuvé le" value={new Date(partner.approved_at).toLocaleString("fr-FR")} />}
-          {partner.paused_at && <DetailRow label="Mis en pause le" value={new Date(partner.paused_at).toLocaleString("fr-FR")} />}
+          <DetailRow
+            label="Inscrit le"
+            value={new Date(partner.created_at).toLocaleString("fr-FR")}
+          />
+          {partner.approved_at && (
+            <DetailRow
+              label="Approuvé le"
+              value={new Date(partner.approved_at).toLocaleString("fr-FR")}
+            />
+          )}
+          {partner.paused_at && (
+            <DetailRow
+              label="Mis en pause le"
+              value={new Date(partner.paused_at).toLocaleString("fr-FR")}
+            />
+          )}
           {partner.pause_reason && <DetailRow label="Motif pause" value={partner.pause_reason} />}
-          {partner.rejected_at && <DetailRow label="Rejeté le" value={new Date(partner.rejected_at).toLocaleString("fr-FR")} />}
-          {partner.rejection_reason && <DetailRow label="Motif rejet" value={partner.rejection_reason} />}
+          {partner.rejected_at && (
+            <DetailRow
+              label="Rejeté le"
+              value={new Date(partner.rejected_at).toLocaleString("fr-FR")}
+            />
+          )}
+          {partner.rejection_reason && (
+            <DetailRow label="Motif rejet" value={partner.rejection_reason} />
+          )}
         </section>
 
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>Fermer</Button>
+          <Button variant="outline" onClick={onClose}>
+            Fermer
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

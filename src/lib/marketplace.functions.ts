@@ -36,7 +36,9 @@ export const listMarketplace = createServerFn({ method: "GET" })
 
     const { data: pubs, error } = await supabaseAdmin
       .from("lead_publications")
-      .select("id, prospect_id, service, city, audience, legal_form, budget, summary, unlock_count, max_unlocks, is_active, published_at")
+      .select(
+        "id, prospect_id, service, city, audience, legal_form, budget, summary, unlock_count, max_unlocks, is_active, published_at",
+      )
       .eq("is_active", true)
       .order("published_at", { ascending: false })
       .limit(100);
@@ -57,9 +59,10 @@ export const listMarketplace = createServerFn({ method: "GET" })
         .select("id, raw_payload")
         .in("id", prospectIds);
       for (const p of prospects ?? []) {
-        const rp = (p.raw_payload && typeof p.raw_payload === "object" && !Array.isArray(p.raw_payload))
-          ? (p.raw_payload as Record<string, unknown>)
-          : {};
+        const rp =
+          p.raw_payload && typeof p.raw_payload === "object" && !Array.isArray(p.raw_payload)
+            ? (p.raw_payload as Record<string, unknown>)
+            : {};
         const d = rp.delai;
         delaiByProspect.set(p.id, typeof d === "string" && d.trim() !== "" ? d : null);
       }
@@ -71,7 +74,12 @@ export const listMarketplace = createServerFn({ method: "GET" })
     });
 
     return {
-      partner: { id: partner.id, status: partner.status, credits_balance: partner.credits_balance, cabinet_name: partner.cabinet_name },
+      partner: {
+        id: partner.id,
+        status: partner.status,
+        credits_balance: partner.credits_balance,
+        cabinet_name: partner.cabinet_name,
+      },
       leads,
       unlocked_ids,
     };
@@ -82,7 +90,9 @@ export const unlockLead = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => z.object({ publication_id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
-    const { data: result, error } = await context.supabase.rpc("unlock_lead", { _publication_id: data.publication_id });
+    const { data: result, error } = await context.supabase.rpc("unlock_lead", {
+      _publication_id: data.publication_id,
+    });
     if (error) {
       const map: Record<string, string> = {
         partner_not_found: "Aucun compte partenaire trouvé.",
@@ -103,7 +113,11 @@ export const unlockLead = createServerFn({ method: "POST" })
         await emitPartnerEvent(partner, balance === 0 ? "zero_credits" : "low_credits");
       }
     }
-    const r = result as { already_unlocked: boolean; credits_balance: number; prospect: Record<string, unknown> };
+    const r = result as {
+      already_unlocked: boolean;
+      credits_balance: number;
+      prospect: Record<string, unknown>;
+    };
     return {
       already_unlocked: r.already_unlocked,
       credits_balance: r.credits_balance,
@@ -115,10 +129,12 @@ export const unlockLead = createServerFn({ method: "POST" })
 // Les réponses internes (logo, siteWeb, publicité, upsell_*) restent côté admin uniquement.
 function sanitizeProspectForPartner(p: Record<string, unknown> | null | undefined) {
   if (!p) return null;
-  const rp = (p.raw_payload && typeof p.raw_payload === "object" && !Array.isArray(p.raw_payload))
-    ? (p.raw_payload as Record<string, unknown>)
-    : {};
-  const delai = typeof rp.delai === "string" && rp.delai.trim() !== "" ? (rp.delai as string) : null;
+  const rp =
+    p.raw_payload && typeof p.raw_payload === "object" && !Array.isArray(p.raw_payload)
+      ? (p.raw_payload as Record<string, unknown>)
+      : {};
+  const delai =
+    typeof rp.delai === "string" && rp.delai.trim() !== "" ? (rp.delai as string) : null;
   return {
     full_name: (p.full_name as string | null) ?? null,
     email: (p.email as string | null) ?? null,
@@ -130,6 +146,7 @@ function sanitizeProspectForPartner(p: Record<string, unknown> | null | undefine
     legal_form: (p.legal_form as string | null) ?? null,
     budget: (p.budget as string | null) ?? null,
     audience: (p.audience as string | null) ?? null,
+    external_notes: (p.external_notes as string | null) ?? null,
     delai,
   };
 }
@@ -142,7 +159,9 @@ export const myUnlockedLeads = createServerFn({ method: "GET" })
     if (!partner) return { items: [] };
     const { data, error } = await supabaseAdmin
       .from("lead_unlocks")
-      .select("id, unlocked_at, credits_spent, publication_id, lead_publications!inner(prospect_id, service, city)")
+      .select(
+        "id, unlocked_at, credits_spent, publication_id, lead_publications!inner(prospect_id, service, city, summary)",
+      )
       .eq("partner_id", partner.id)
       .order("unlocked_at", { ascending: false });
     if (error) throw new Error(error.message);
@@ -156,17 +175,26 @@ export const myUnlockedLeads = createServerFn({ method: "GET" })
       .select("*")
       .in("id", prospectIds);
     const byId = new Map(
-      (prospects ?? []).map((p) => [p.id, sanitizeProspectForPartner(p as unknown as Record<string, unknown>)]),
+      (prospects ?? []).map((p) => [
+        p.id,
+        sanitizeProspectForPartner(p as unknown as Record<string, unknown>),
+      ]),
     );
     return {
       items: items.map((i) => {
-        const pub = i.lead_publications as { prospect_id: string; service: string | null; city: string | null };
+        const pub = i.lead_publications as {
+          prospect_id: string;
+          service: string | null;
+          city: string | null;
+          summary: string | null;
+        };
         return {
           id: i.id,
           unlocked_at: i.unlocked_at,
           publication_id: i.publication_id,
           service: pub.service,
           city: pub.city,
+          summary: pub.summary,
           prospect: byId.get(pub.prospect_id) ?? null,
         };
       }),
@@ -177,17 +205,29 @@ export const myUnlockedLeads = createServerFn({ method: "GET" })
 export const publishProspect = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) =>
-    z.object({
-      prospect_id: z.string().uuid(),
-      summary: z.string().trim().min(10).max(2000).optional(),
-      max_unlocks: z.number().int().min(1).max(20).default(5),
-    }).parse(input),
+    z
+      .object({
+        prospect_id: z.string().uuid(),
+        summary: z.string().trim().min(10).max(2000).optional(),
+        max_unlocks: z.number().int().min(1).max(20).default(6),
+      })
+      .parse(input),
   )
   .handler(async ({ data, context }) => {
     await assertStaff(context.userId);
+    let summary = data.summary;
+    if (!summary) {
+      const { data: prospect, error: prospectError } = await supabaseAdmin
+        .from("prospects")
+        .select("external_notes")
+        .eq("id", data.prospect_id)
+        .maybeSingle();
+      if (prospectError) throw new Error(prospectError.message);
+      summary = prospect?.external_notes?.trim() || undefined;
+    }
     const { data: pubId, error } = await context.supabase.rpc("publish_prospect_as_lead", {
       _prospect_id: data.prospect_id,
-      _summary: data.summary ?? undefined,
+      _summary: summary,
       _max_unlocks: data.max_unlocks,
     });
     if (error) throw new Error(error.message);
