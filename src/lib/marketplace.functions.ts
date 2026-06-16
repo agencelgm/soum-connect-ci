@@ -3,6 +3,7 @@ import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { fetchPartner, emitPartnerEvent } from "./partners.server";
+import { notifyProspectApproved } from "./ghl-prospect-approved.server";
 
 async function getCallerPartner(userId: string) {
   const { data } = await supabaseAdmin
@@ -190,7 +191,10 @@ export const publishProspect = createServerFn({ method: "POST" })
       _max_unlocks: data.max_unlocks,
     });
     if (error) throw new Error(error.message);
-    return { publication_id: pubId as string };
+    const publicationId = pubId as string;
+    // Notifie GHL en arrière-plan (n'impacte pas la réponse à l'admin)
+    await notifyProspectApproved(data.prospect_id, publicationId);
+    return { publication_id: publicationId };
   });
 
 // ----- Staff : liste publications -----
