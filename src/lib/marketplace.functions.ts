@@ -3,7 +3,6 @@ import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { fetchPartner, emitPartnerEvent } from "./partners.server";
-import { notifyProspectApproved } from "./ghl-prospect-approved.server";
 
 async function getCallerPartner(userId: string) {
   const { data } = await supabaseAdmin
@@ -233,7 +232,13 @@ export const publishProspect = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     const publicationId = pubId as string;
     // Notifie GHL en arrière-plan (n'impacte pas la réponse à l'admin)
-    await notifyProspectApproved(data.prospect_id, publicationId);
+    // Import dynamique : le module charge supabaseAdmin (server-only).
+    try {
+      const { notifyProspectApproved } = await import("./ghl-prospect-approved.server");
+      await notifyProspectApproved(data.prospect_id, publicationId);
+    } catch (e) {
+      console.error("[publishProspect] notifyProspectApproved failed", e);
+    }
     return { publication_id: publicationId };
   });
 
