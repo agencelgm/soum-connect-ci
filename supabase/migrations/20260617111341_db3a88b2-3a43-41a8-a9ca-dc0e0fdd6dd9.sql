@@ -1,0 +1,1 @@
+ALTER TABLE public.prospects ADD COLUMN IF NOT EXISTS internal_notes text; ALTER TABLE public.prospects ADD COLUMN IF NOT EXISTS edited_by uuid;
