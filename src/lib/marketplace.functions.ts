@@ -3,7 +3,6 @@ import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { fetchPartner, emitPartnerEvent } from "./partners.server";
-import { notifyProspectApproved } from "./ghl-prospect-approved.server";
 
 async function getCallerPartner(userId: string) {
   const { data } = await supabaseAdmin
