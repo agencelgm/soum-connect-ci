@@ -1,7 +1,8 @@
 {
-  "client_id": "client_id_metadata_document:https://raw.githubusercontent.com/agencelgm/soum-connect-ci/main/.well-known/lovable-hermes-client-metadata.json",
-  "client_name": "Hermes Agent for Kader",
+  "client_id": "https://raw.githubusercontent.com/agencelgm/soum-connect-ci/main/.well-known/lovable-hermes-client-metadata.json",
+  "client_name": "Codex / Hermes for Kader",
   "redirect_uris": [
+    "http://127.0.0.1:41691/callback/xiWPVRCgA_cb",
     "http://127.0.0.1:47477/callback"
   ],
   "grant_types": [
