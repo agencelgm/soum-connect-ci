@@ -49,6 +49,8 @@ function InscriptionPage() {
     services: "",
     zones: "",
   });
+  const [wantsWebsite, setWantsWebsite] = useState<boolean | null>(null);
+  const [wantsLogo, setWantsLogo] = useState<boolean | null>(null);
 
   function up<K extends keyof typeof form>(k: K, v: string) {
     setForm((f) => ({ ...f, [k]: v }));
@@ -97,14 +99,16 @@ function InscriptionPage() {
           facebook_url: form.facebook_url,
           services: form.services.split(",").map((s) => s.trim()).filter(Boolean),
           zones: form.zones.split(",").map((s) => s.trim()).filter(Boolean),
+          wants_website: wantsWebsite,
+          wants_logo: wantsLogo,
         },
       });
 
-      toast.success("Compte créé. Notre équipe vous contacte sous 24-48h.");
+      toast.success("Compte créé et activé. Bienvenue !");
       trackMetaConversion(
         "CompleteRegistration",
         {
-          content_category: "partner_signup",
+          content_category: "inscription_terminee",
           content_name: form.cabinet_name,
           city: form.city,
         },
@@ -128,8 +132,8 @@ function InscriptionPage() {
     <section className="mx-auto max-w-2xl px-6 py-12">
       <h1 className="text-3xl font-bold mb-2">Devenir cabinet partenaire</h1>
       <p className="text-muted-foreground mb-8">
-        Recevez des demandes qualifiées d'entrepreneurs en Côte d'Ivoire. Inscription gratuite.
-        Notre équipe valide votre compte sous 24-48h ouvrables.
+        Recevez des demandes qualifiées d'entrepreneurs en Côte d'Ivoire. Inscription gratuite
+        et activation immédiate de votre compte.
       </p>
       <form onSubmit={onSubmit} className="space-y-4">
         <div>
@@ -211,6 +215,25 @@ function InscriptionPage() {
           <Label>Zones d'intervention (séparées par virgules)</Label>
           <Textarea value={form.zones} onChange={(e) => up("zones", e.target.value)} placeholder="Abidjan, Yamoussoukro, Bouaké" />
         </div>
+        <div className="rounded-lg border border-border bg-muted/30 p-4 space-y-4">
+          <p className="text-sm font-semibold">
+            Pour aller plus loin, on peut vous aider avec :
+          </p>
+          <UpsellQuestion
+            label="Voulez-vous un site internet pour votre cabinet ?"
+            hint="À partir de 165 000 FCFA"
+            value={wantsWebsite}
+            onChange={setWantsWebsite}
+            name="wants_website"
+          />
+          <UpsellQuestion
+            label="Voulez-vous un logo professionnel ?"
+            hint="À partir de 50 000 FCFA"
+            value={wantsLogo}
+            onChange={setWantsLogo}
+            name="wants_logo"
+          />
+        </div>
         <Button type="submit" disabled={submitting} className="w-full">
           {submitting ? "Création…" : "Créer mon compte cabinet"}
         </Button>
@@ -222,5 +245,55 @@ function InscriptionPage() {
         </Link>
       </p>
     </section>
+  );
+}
+
+function UpsellQuestion({
+  label,
+  hint,
+  value,
+  onChange,
+  name,
+}: {
+  label: string;
+  hint: string;
+  value: boolean | null;
+  onChange: (v: boolean) => void;
+  name: string;
+}) {
+  return (
+    <div>
+      <p className="text-sm font-medium">{label}</p>
+      <p className="text-xs text-muted-foreground mb-2">{hint}</p>
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={() => onChange(true)}
+          aria-pressed={value === true}
+          className={
+            "px-4 py-2 rounded-md border text-sm font-medium transition " +
+            (value === true
+              ? "bg-primary text-primary-foreground border-primary"
+              : "bg-background hover:bg-muted border-border")
+          }
+        >
+          Oui
+        </button>
+        <button
+          type="button"
+          onClick={() => onChange(false)}
+          aria-pressed={value === false}
+          className={
+            "px-4 py-2 rounded-md border text-sm font-medium transition " +
+            (value === false
+              ? "bg-primary text-primary-foreground border-primary"
+              : "bg-background hover:bg-muted border-border")
+          }
+        >
+          Non
+        </button>
+      </div>
+      <input type="hidden" name={name} value={value === null ? "" : value ? "1" : "0"} />
+    </div>
   );
 }
