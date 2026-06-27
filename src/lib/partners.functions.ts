@@ -39,10 +39,11 @@ const PartnerInfoSchema = z.object({
   city: z.string().trim().min(2).max(100),
   website: z.string().trim().max(255).optional().or(z.literal("")),
   facebook_url: z.string().trim().max(255).optional().or(z.literal("")),
-  services: z.array(z.string().min(1).max(100)).max(20).default([]),
-  zones: z.array(z.string().min(1).max(100)).max(40).default([]),
-  wants_website: z.boolean().nullable().optional(),
-  wants_logo: z.boolean().nullable().optional(),
+  services: z.array(z.string().min(1).max(100)).min(1).max(20),
+  zones: z.array(z.string().min(1).max(100)).min(1).max(40),
+  wants_website: z.boolean(),
+  wants_logo: z.boolean(),
+  contact_role: z.string().trim().min(1).max(100),
 });
 
 // Helpers: vérifier que le user a accès (owner ou membre) à ce partner
@@ -112,6 +113,7 @@ export const signupPartner = createServerFn({ method: "POST" })
         zones: data.zones,
         wants_website: data.wants_website ?? null,
         wants_logo: data.wants_logo ?? null,
+        contact_role: data.contact_role,
         status: "approved",
         approved_at: new Date().toISOString(),
         approved_by: userId,

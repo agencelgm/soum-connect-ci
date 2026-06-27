@@ -278,6 +278,7 @@ export type Database = {
           city: string
           contact_first_name: string
           contact_last_name: string
+          contact_role: string | null
           created_at: string
           credits_balance: number
           deleted_at: string | null
@@ -307,6 +308,7 @@ export type Database = {
           city: string
           contact_first_name: string
           contact_last_name: string
+          contact_role?: string | null
           created_at?: string
           credits_balance?: number
           deleted_at?: string | null
@@ -336,6 +338,7 @@ export type Database = {
           city?: string
           contact_first_name?: string
           contact_last_name?: string
+          contact_role?: string | null
           created_at?: string
           credits_balance?: number
           deleted_at?: string | null

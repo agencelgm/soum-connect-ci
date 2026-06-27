@@ -40,6 +40,7 @@ function InscriptionPage() {
     cabinet_name: "",
     contact_first_name: "",
     contact_last_name: "",
+    contact_role: "",
     email: "",
     phone: "",
     city: "",
@@ -61,6 +62,24 @@ function InscriptionPage() {
     const checks = passwordChecks(form.password);
     if (!checks.every((c) => c.ok)) {
       toast.error("Le mot de passe ne respecte pas tous les critères.");
+      return;
+    }
+    const servicesList = form.services.split(",").map((s) => s.trim()).filter(Boolean);
+    const zonesList = form.zones.split(",").map((s) => s.trim()).filter(Boolean);
+    if (servicesList.length === 0) {
+      toast.error("Indiquez au moins un service.");
+      return;
+    }
+    if (zonesList.length === 0) {
+      toast.error("Indiquez au moins une zone d'intervention.");
+      return;
+    }
+    if (wantsWebsite === null) {
+      toast.error("Indiquez si vous voulez un site internet.");
+      return;
+    }
+    if (wantsLogo === null) {
+      toast.error("Indiquez si vous voulez un logo.");
       return;
     }
     setSubmitting(true);
@@ -92,13 +111,14 @@ function InscriptionPage() {
           cabinet_name: form.cabinet_name,
           contact_first_name: form.contact_first_name,
           contact_last_name: form.contact_last_name,
+          contact_role: form.contact_role,
           email: form.email,
           phone: form.phone,
           city: form.city,
           website: form.website,
           facebook_url: form.facebook_url,
-          services: form.services.split(",").map((s) => s.trim()).filter(Boolean),
-          zones: form.zones.split(",").map((s) => s.trim()).filter(Boolean),
+          services: servicesList,
+          zones: zonesList,
           wants_website: wantsWebsite,
           wants_logo: wantsLogo,
         },
@@ -149,6 +169,15 @@ function InscriptionPage() {
             <Label>Nom contact *</Label>
             <Input required value={form.contact_last_name} onChange={(e) => up("contact_last_name", e.target.value)} />
           </div>
+        </div>
+        <div>
+          <Label>Votre rôle au sein de l'entreprise *</Label>
+          <Input
+            required
+            value={form.contact_role}
+            onChange={(e) => up("contact_role", e.target.value)}
+            placeholder="ex: Gérant, Associé, Expert-comptable…"
+          />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
@@ -208,26 +237,26 @@ function InscriptionPage() {
           </div>
         </div>
         <div>
-          <Label>Services (séparés par virgules)</Label>
-          <Textarea value={form.services} onChange={(e) => up("services", e.target.value)} placeholder="création d'entreprise, comptabilité, fiscalité" />
+          <Label>Services * (séparés par virgules)</Label>
+          <Textarea required value={form.services} onChange={(e) => up("services", e.target.value)} placeholder="création d'entreprise, comptabilité, fiscalité" />
         </div>
         <div>
-          <Label>Zones d'intervention (séparées par virgules)</Label>
-          <Textarea value={form.zones} onChange={(e) => up("zones", e.target.value)} placeholder="Abidjan, Yamoussoukro, Bouaké" />
+          <Label>Zones d'intervention * (séparées par virgules)</Label>
+          <Textarea required value={form.zones} onChange={(e) => up("zones", e.target.value)} placeholder="Abidjan, Yamoussoukro, Bouaké" />
         </div>
         <div className="rounded-lg border border-border bg-muted/30 p-4 space-y-4">
           <p className="text-sm font-semibold">
-            Pour aller plus loin, on peut vous aider avec :
+            Pour aller plus loin, on peut vous aider avec * :
           </p>
           <UpsellQuestion
-            label="Voulez-vous un site internet pour votre cabinet ?"
+            label="Voulez-vous un site internet pour votre cabinet ? *"
             hint="À partir de 165 000 FCFA"
             value={wantsWebsite}
             onChange={setWantsWebsite}
             name="wants_website"
           />
           <UpsellQuestion
-            label="Voulez-vous un logo professionnel ?"
+            label="Voulez-vous un logo professionnel ? *"
             hint="À partir de 50 000 FCFA"
             value={wantsLogo}
             onChange={setWantsLogo}
