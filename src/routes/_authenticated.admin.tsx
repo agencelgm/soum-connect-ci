@@ -1990,6 +1990,26 @@ function PartnerDetailsDialog({
           <DetailRow label="Facebook" value={partner.facebook_url} />
           <DetailRow label="Services" value={partner.services?.join(", ")} />
           <DetailRow label="Zones d'intervention" value={partner.zones?.join(", ")} />
+          <DetailRow
+            label="Intéressé par un site internet"
+            value={
+              partner.wants_website === true
+                ? "Oui"
+                : partner.wants_website === false
+                ? "Non"
+                : "—"
+            }
+          />
+          <DetailRow
+            label="Intéressé par un logo"
+            value={
+              partner.wants_logo === true
+                ? "Oui"
+                : partner.wants_logo === false
+                ? "Non"
+                : "—"
+            }
+          />
         </section>
 
         <section className="space-y-1 mt-4">
