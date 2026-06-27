@@ -295,6 +295,8 @@ export type Database = {
           services: string[]
           status: Database["public"]["Enums"]["partner_status"]
           updated_at: string
+          wants_logo: boolean | null
+          wants_website: boolean | null
           website: string | null
           zones: string[]
         }
@@ -322,6 +324,8 @@ export type Database = {
           services?: string[]
           status?: Database["public"]["Enums"]["partner_status"]
           updated_at?: string
+          wants_logo?: boolean | null
+          wants_website?: boolean | null
           website?: string | null
           zones?: string[]
         }
@@ -349,6 +353,8 @@ export type Database = {
           services?: string[]
           status?: Database["public"]["Enums"]["partner_status"]
           updated_at?: string
+          wants_logo?: boolean | null
+          wants_website?: boolean | null
           website?: string | null
           zones?: string[]
         }

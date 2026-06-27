@@ -41,6 +41,8 @@ const PartnerInfoSchema = z.object({
   facebook_url: z.string().trim().max(255).optional().or(z.literal("")),
   services: z.array(z.string().min(1).max(100)).max(20).default([]),
   zones: z.array(z.string().min(1).max(100)).max(40).default([]),
+  wants_website: z.boolean().nullable().optional(),
+  wants_logo: z.boolean().nullable().optional(),
 });
 
 // Helpers: vérifier que le user a accès (owner ou membre) à ce partner
@@ -108,7 +110,11 @@ export const signupPartner = createServerFn({ method: "POST" })
         facebook_url: data.facebook_url || null,
         services: data.services,
         zones: data.zones,
-        status: "pending_review",
+        wants_website: data.wants_website ?? null,
+        wants_logo: data.wants_logo ?? null,
+        status: "approved",
+        approved_at: new Date().toISOString(),
+        approved_by: userId,
         credits_balance: 0,
       })
       .select("id")
@@ -122,7 +128,16 @@ export const signupPartner = createServerFn({ method: "POST" })
       .select();
 
     const partner = await fetchPartner(inserted.id);
-    if (partner) await emitPartnerEvent(partner, "signup");
+    if (partner) {
+      // Bonus de bienvenue automatique (même montant que l'approbation manuelle)
+      try {
+        await grantCredits(partner, 30, "signup_bonus", userId, "Bonus d'inscription (auto-approbation)");
+      } catch (err) {
+        console.error("[signupPartner] grantCredits failed", err);
+      }
+      await emitPartnerEvent(partner, "signup");
+      await emitPartnerEvent(partner, "approved");
+    }
 
     return { id: inserted.id };
   });

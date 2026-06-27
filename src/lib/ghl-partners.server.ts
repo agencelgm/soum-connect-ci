@@ -28,6 +28,8 @@ export type PartnerEventPayload = {
   zones?: string[];
   rejection_reason?: string | null;
   pause_reason?: string | null;
+  wants_website?: boolean | null;
+  wants_logo?: boolean | null;
   page_url?: string | null;
   user_agent?: string | null;
 };
