@@ -528,7 +528,7 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
 
   async function onPublish(prospect_id: string) {
     await run(prospect_id, async () => {
-      await publishFn({ data: { prospect_id, max_unlocks: 6 } });
+      await publishFn({ data: { prospect_id, max_unlocks: 5 } });
       toast.success("Lead publié dans la marketplace.");
     });
   }
@@ -918,7 +918,7 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
     if (!selected) return;
     await run(`publish:${selected.id}`, async () => {
       await updateFn({ data: { prospect_id: selected.id, ...normalizeProspectForm(form) } });
-      await publishFn({ data: { prospect_id: selected.id, max_unlocks: 6 } });
+      await publishFn({ data: { prospect_id: selected.id, max_unlocks: 5 } });
       toast.success("Lead publie dans la marketplace.");
     });
   }
