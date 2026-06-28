@@ -4,7 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { listMarketplace, unlockLead, myUnlockedLeads } from "@/lib/marketplace.functions";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 import { isUnauthorizedError } from "@/lib/auth-actions";
