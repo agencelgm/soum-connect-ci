@@ -20,6 +20,7 @@ type PartnerRow = {
   pause_reason: string | null;
   wants_website: boolean | null;
   wants_logo: boolean | null;
+  tier: string | null;
 };
 
 export async function emitPartnerEvent(partner: PartnerRow, event_type: PartnerEventType, extra?: { page_url?: string | null; user_agent?: string | null }) {
@@ -42,6 +43,7 @@ export async function emitPartnerEvent(partner: PartnerRow, event_type: PartnerE
     pause_reason: partner.pause_reason,
     wants_website: partner.wants_website,
     wants_logo: partner.wants_logo,
+    tier: (partner as { tier?: string | null }).tier ?? "regular",
     page_url: extra?.page_url ?? null,
     user_agent: extra?.user_agent ?? null,
   });
@@ -50,7 +52,7 @@ export async function emitPartnerEvent(partner: PartnerRow, event_type: PartnerE
 export async function fetchPartner(id: string): Promise<PartnerRow | null> {
   const { data, error } = await supabaseAdmin
     .from("partners")
-    .select("id,profile_id,cabinet_name,contact_first_name,contact_last_name,email,phone,city,website,facebook_url,services,zones,status,credits_balance,rejection_reason,pause_reason,wants_website,wants_logo")
+    .select("id,profile_id,cabinet_name,contact_first_name,contact_last_name,email,phone,city,website,facebook_url,services,zones,status,credits_balance,rejection_reason,pause_reason,wants_website,wants_logo,tier")
     .eq("id", id)
     .maybeSingle();
   if (error) {
