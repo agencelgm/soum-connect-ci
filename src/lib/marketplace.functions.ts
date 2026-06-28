@@ -211,7 +211,7 @@ export const publishProspect = createServerFn({ method: "POST" })
       .object({
         prospect_id: z.string().uuid(),
         summary: z.string().trim().min(10).max(2000).optional(),
-        max_unlocks: z.number().int().min(1).max(20).default(6),
+        max_unlocks: z.number().int().min(1).max(10).default(5),
       })
       .parse(input),
   )
