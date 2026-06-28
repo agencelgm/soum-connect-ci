@@ -19,7 +19,15 @@ import {
   Clock,
   Unlock,
   CalendarClock,
+  Crown,
+  Star,
 } from "lucide-react";
+
+const WHATSAPP_PREMIUM_URL =
+  "https://wa.me/2250798172339?text=" +
+  encodeURIComponent(
+    "Bonjour, je fais partie de Soumission comptable. Je voudrais savoir comment devenir un client premium avec vous.",
+  );
 
 export const Route = createFileRoute("/_authenticated/marketplace")({
   head: () => ({
@@ -53,6 +61,7 @@ function MarketplacePage() {
     retry: false,
   });
   const [tab, setTab] = useState<"available" | "mine">("available");
+  const isPremium = data?.partner?.tier === "premium";
 
   if (isUnauthorizedError(error) || isUnauthorizedError(mineError)) {
     return <UnauthorizedScreen />;
@@ -98,6 +107,34 @@ function MarketplacePage() {
         </div>
       </div>
 
+      {isPremium ? (
+        <div className="rounded-xl border border-amber-300 bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-50 p-4 flex items-center gap-3">
+          <Crown className="h-6 w-6 text-amber-600 shrink-0" />
+          <div>
+            <p className="font-semibold text-amber-900">Vous êtes client Premium</p>
+            <p className="text-sm text-amber-800">
+              Vous bénéficiez d'une avance exclusive de 3 heures sur chaque nouveau prospect avant
+              qu'il ne soit ouvert aux autres cabinets.
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div className="rounded-xl border bg-muted/40 p-4 flex items-center gap-3">
+          <Star className="h-5 w-5 text-amber-500 shrink-0" />
+          <div className="flex-1">
+            <p className="font-semibold">Devenez client Premium</p>
+            <p className="text-sm text-muted-foreground">
+              Accédez aux nouveaux prospects 3 heures avant tout le monde.
+            </p>
+          </div>
+          <Button asChild size="sm" variant="outline">
+            <a href={WHATSAPP_PREMIUM_URL} target="_blank" rel="noopener noreferrer">
+              Nous contacter
+            </a>
+          </Button>
+        </div>
+      )}
+
       <div className="flex gap-2 border-b">
         <button
           className={`px-4 py-2 text-sm font-medium border-b-2 ${tab === "available" ? "border-primary text-primary" : "border-transparent text-muted-foreground"}`}
@@ -126,6 +163,7 @@ function MarketplacePage() {
               lead={lead}
               alreadyUnlocked={data.unlocked_ids.includes(lead.id)}
               credits={data.partner!.credits_balance}
+              isPremium={isPremium}
             />
           ))}
         </div>
