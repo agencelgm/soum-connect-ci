@@ -402,6 +402,31 @@ function LeadCard({
           <Unlock className="h-4 w-4 mr-2" />
           {mut.isPending ? "…" : "Afficher les coordonnées"}
         </Button>
+      ) : isFull ? (
+        <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm space-y-2 text-center">
+          <p className="font-semibold text-red-800">
+            {lead.max_unlocks} cabinets ont déjà contacté ce prospect.
+          </p>
+          <p className="text-xs text-red-700">
+            Pour ne plus rater d'opportunités, connectez-vous plus souvent et soyez parmi les
+            premiers à débloquer les nouveaux leads.
+          </p>
+        </div>
+      ) : inPremiumWindow && !isPremium ? (
+        <div className="space-y-2 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm">
+          <p className="font-semibold text-amber-900 text-center">
+            Réservé à nos clients Premium
+          </p>
+          <p className="text-xs text-amber-800 text-center">
+            Disponible pour tous dans {countdown}. Devenez Premium pour accéder aux prospects en
+            avant-première.
+          </p>
+          <Button asChild size="sm" variant="outline" className="w-full border-amber-400">
+            <a href={WHATSAPP_PREMIUM_URL} target="_blank" rel="noopener noreferrer">
+              Devenir Premium (WhatsApp)
+            </a>
+          </Button>
+        </div>
       ) : credits < 1 ? (
         <div className="space-y-1">
           <Button asChild variant="default" size="lg" className="w-full">
