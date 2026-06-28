@@ -195,16 +195,19 @@ type Lead = {
   max_unlocks: number;
   published_at: string;
   delai: string | null;
+  premium_until: string | null;
 };
 
 function LeadCard({
   lead,
   alreadyUnlocked,
   credits,
+  isPremium,
 }: {
   lead: Lead;
   alreadyUnlocked: boolean;
   credits: number;
+  isPremium: boolean;
 }) {
   const qc = useQueryClient();
   const unlock = useServerFn(unlockLead);
@@ -233,6 +236,20 @@ function LeadCard({
   });
 
   const remaining = lead.max_unlocks - lead.unlock_count;
+  const isFull = lead.unlock_count >= lead.max_unlocks;
+  const premiumUntilMs = lead.premium_until ? new Date(lead.premium_until).getTime() : 0;
+  const [now, setNow] = useState(() => Date.now());
+  const inPremiumWindow = premiumUntilMs > now;
+  useEffect(() => {
+    if (!inPremiumWindow) return;
+    const t = setInterval(() => setNow(Date.now()), 30_000);
+    return () => clearInterval(t);
+  }, [inPremiumWindow]);
+  const msLeft = Math.max(0, premiumUntilMs - now);
+  const hLeft = Math.floor(msLeft / 3_600_000);
+  const mLeft = Math.floor((msLeft % 3_600_000) / 60_000);
+  const countdown = hLeft > 0 ? `${hLeft}h ${mLeft.toString().padStart(2, "0")}min` : `${mLeft}min`;
+
   const ageHours = Math.max(
     0,
     Math.floor((Date.now() - new Date(lead.published_at).getTime()) / 36e5),
@@ -257,10 +274,29 @@ function LeadCard({
         : "A qualifier";
 
   return (
-    <div className="group rounded-xl border bg-card p-5 space-y-4 transition-all hover:shadow-lg hover:border-primary/40">
+    <div
+      className={`group rounded-xl border bg-card p-5 space-y-4 transition-all hover:shadow-lg hover:border-primary/40 ${
+        isFull && !alreadyUnlocked ? "opacity-70" : ""
+      } ${inPremiumWindow && isPremium ? "border-amber-300 ring-1 ring-amber-200" : ""}`}
+    >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 flex-wrap mb-1">
+            {inPremiumWindow && isPremium && (
+              <span className="inline-flex items-center gap-1 text-[11px] font-semibold rounded-full bg-amber-100 text-amber-800 px-2 py-0.5">
+                <Crown className="h-3 w-3" /> Avance Premium · {countdown}
+              </span>
+            )}
+            {inPremiumWindow && !isPremium && (
+              <span className="inline-flex items-center gap-1 text-[11px] font-semibold rounded-full bg-amber-100 text-amber-800 px-2 py-0.5">
+                <Crown className="h-3 w-3" /> Réservé Premium · {countdown}
+              </span>
+            )}
+            {isFull && (
+              <span className="inline-flex items-center gap-1 text-[11px] font-semibold rounded-full bg-red-100 text-red-700 px-2 py-0.5">
+                Complet · {lead.max_unlocks}/{lead.max_unlocks}
+              </span>
+            )}
             {isFresh && (
               <span className="inline-flex items-center gap-1 text-[11px] font-semibold rounded-full bg-primary/10 text-primary px-2 py-0.5">
                 <Sparkles className="h-3 w-3" /> Nouveau
