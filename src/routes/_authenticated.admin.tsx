@@ -300,6 +300,7 @@ function PartnerCard({
   const reactivateFn = useServerFn(reactivatePartner);
   const deleteFn = useServerFn(deletePartner);
   const grantFn = useServerFn(adminGrantCredits);
+  const tierFn = useServerFn(setPartnerTier);
   const [busy, setBusy] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
 
@@ -327,6 +328,11 @@ function PartnerCard({
           >
             {partner.cabinet_name}
           </button>
+          {partner.tier === "premium" && (
+            <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-amber-100 text-amber-800 text-[10px] font-semibold px-2 py-0.5 align-middle">
+              ★ Premium
+            </span>
+          )}
           <p className="text-sm text-muted-foreground">
             {partner.contact_first_name} {partner.contact_last_name} · {partner.email} ·{" "}
             {partner.phone}
@@ -384,6 +390,25 @@ function PartnerCard({
                 run(() => grantFn({ data: { partner_id: partner.id, amount, note } }))
               }
             />
+          )}
+          {isAdmin && (partner.status === "approved" || partner.status === "paused") && (
+            <Button
+              size="sm"
+              variant={partner.tier === "premium" ? "secondary" : "outline"}
+              disabled={busy}
+              onClick={() =>
+                run(() =>
+                  tierFn({
+                    data: {
+                      partner_id: partner.id,
+                      tier: partner.tier === "premium" ? "regular" : "premium",
+                    },
+                  }),
+                )
+              }
+            >
+              {partner.tier === "premium" ? "Retirer Premium" : "Passer Premium"}
+            </Button>
           )}
           {isAdmin && (
             <Button
