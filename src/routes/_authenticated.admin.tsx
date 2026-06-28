@@ -15,6 +15,7 @@ import {
   getMyPartner,
   getAdminDashboardStats,
   listChariowPayments,
+  setPartnerTier,
 } from "@/lib/partners.functions";
 import { publishProspect } from "@/lib/marketplace.functions";
 import {
