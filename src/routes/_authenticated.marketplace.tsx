@@ -4,7 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { listMarketplace, unlockLead, myUnlockedLeads } from "@/lib/marketplace.functions";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 import { isUnauthorizedError } from "@/lib/auth-actions";
@@ -19,7 +19,15 @@ import {
   Clock,
   Unlock,
   CalendarClock,
+  Crown,
+  Star,
 } from "lucide-react";
+
+const WHATSAPP_PREMIUM_URL =
+  "https://wa.me/2250798172339?text=" +
+  encodeURIComponent(
+    "Bonjour, je fais partie de Soumission comptable. Je voudrais savoir comment devenir un client premium avec vous.",
+  );
 
 export const Route = createFileRoute("/_authenticated/marketplace")({
   head: () => ({
@@ -53,6 +61,7 @@ function MarketplacePage() {
     retry: false,
   });
   const [tab, setTab] = useState<"available" | "mine">("available");
+  const isPremium = data?.partner?.tier === "premium";
 
   if (isUnauthorizedError(error) || isUnauthorizedError(mineError)) {
     return <UnauthorizedScreen />;
@@ -98,6 +107,34 @@ function MarketplacePage() {
         </div>
       </div>
 
+      {isPremium ? (
+        <div className="rounded-xl border border-amber-300 bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-50 p-4 flex items-center gap-3">
+          <Crown className="h-6 w-6 text-amber-600 shrink-0" />
+          <div>
+            <p className="font-semibold text-amber-900">Vous êtes client Premium</p>
+            <p className="text-sm text-amber-800">
+              Vous bénéficiez d'une avance exclusive de 3 heures sur chaque nouveau prospect avant
+              qu'il ne soit ouvert aux autres cabinets.
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div className="rounded-xl border bg-muted/40 p-4 flex items-center gap-3">
+          <Star className="h-5 w-5 text-amber-500 shrink-0" />
+          <div className="flex-1">
+            <p className="font-semibold">Devenez client Premium</p>
+            <p className="text-sm text-muted-foreground">
+              Accédez aux nouveaux prospects 3 heures avant tout le monde.
+            </p>
+          </div>
+          <Button asChild size="sm" variant="outline">
+            <a href={WHATSAPP_PREMIUM_URL} target="_blank" rel="noopener noreferrer">
+              Nous contacter
+            </a>
+          </Button>
+        </div>
+      )}
+
       <div className="flex gap-2 border-b">
         <button
           className={`px-4 py-2 text-sm font-medium border-b-2 ${tab === "available" ? "border-primary text-primary" : "border-transparent text-muted-foreground"}`}
@@ -126,6 +163,7 @@ function MarketplacePage() {
               lead={lead}
               alreadyUnlocked={data.unlocked_ids.includes(lead.id)}
               credits={data.partner!.credits_balance}
+              isPremium={isPremium}
             />
           ))}
         </div>
@@ -157,16 +195,19 @@ type Lead = {
   max_unlocks: number;
   published_at: string;
   delai: string | null;
+  premium_until: string | null;
 };
 
 function LeadCard({
   lead,
   alreadyUnlocked,
   credits,
+  isPremium,
 }: {
   lead: Lead;
   alreadyUnlocked: boolean;
   credits: number;
+  isPremium: boolean;
 }) {
   const qc = useQueryClient();
   const unlock = useServerFn(unlockLead);
@@ -195,6 +236,20 @@ function LeadCard({
   });
 
   const remaining = lead.max_unlocks - lead.unlock_count;
+  const isFull = lead.unlock_count >= lead.max_unlocks;
+  const premiumUntilMs = lead.premium_until ? new Date(lead.premium_until).getTime() : 0;
+  const [now, setNow] = useState(() => Date.now());
+  const inPremiumWindow = premiumUntilMs > now;
+  useEffect(() => {
+    if (!inPremiumWindow) return;
+    const t = setInterval(() => setNow(Date.now()), 30_000);
+    return () => clearInterval(t);
+  }, [inPremiumWindow]);
+  const msLeft = Math.max(0, premiumUntilMs - now);
+  const hLeft = Math.floor(msLeft / 3_600_000);
+  const mLeft = Math.floor((msLeft % 3_600_000) / 60_000);
+  const countdown = hLeft > 0 ? `${hLeft}h ${mLeft.toString().padStart(2, "0")}min` : `${mLeft}min`;
+
   const ageHours = Math.max(
     0,
     Math.floor((Date.now() - new Date(lead.published_at).getTime()) / 36e5),
@@ -219,10 +274,29 @@ function LeadCard({
         : "A qualifier";
 
   return (
-    <div className="group rounded-xl border bg-card p-5 space-y-4 transition-all hover:shadow-lg hover:border-primary/40">
+    <div
+      className={`group rounded-xl border bg-card p-5 space-y-4 transition-all hover:shadow-lg hover:border-primary/40 ${
+        isFull && !alreadyUnlocked ? "opacity-70" : ""
+      } ${inPremiumWindow && isPremium ? "border-amber-300 ring-1 ring-amber-200" : ""}`}
+    >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 flex-wrap mb-1">
+            {inPremiumWindow && isPremium && (
+              <span className="inline-flex items-center gap-1 text-[11px] font-semibold rounded-full bg-amber-100 text-amber-800 px-2 py-0.5">
+                <Crown className="h-3 w-3" /> Avance Premium · {countdown}
+              </span>
+            )}
+            {inPremiumWindow && !isPremium && (
+              <span className="inline-flex items-center gap-1 text-[11px] font-semibold rounded-full bg-amber-100 text-amber-800 px-2 py-0.5">
+                <Crown className="h-3 w-3" /> Réservé Premium · {countdown}
+              </span>
+            )}
+            {isFull && (
+              <span className="inline-flex items-center gap-1 text-[11px] font-semibold rounded-full bg-red-100 text-red-700 px-2 py-0.5">
+                Complet · {lead.max_unlocks}/{lead.max_unlocks}
+              </span>
+            )}
             {isFresh && (
               <span className="inline-flex items-center gap-1 text-[11px] font-semibold rounded-full bg-primary/10 text-primary px-2 py-0.5">
                 <Sparkles className="h-3 w-3" /> Nouveau
@@ -328,6 +402,31 @@ function LeadCard({
           <Unlock className="h-4 w-4 mr-2" />
           {mut.isPending ? "…" : "Afficher les coordonnées"}
         </Button>
+      ) : isFull ? (
+        <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm space-y-2 text-center">
+          <p className="font-semibold text-red-800">
+            {lead.max_unlocks} cabinets ont déjà contacté ce prospect.
+          </p>
+          <p className="text-xs text-red-700">
+            Pour ne plus rater d'opportunités, connectez-vous plus souvent et soyez parmi les
+            premiers à débloquer les nouveaux leads.
+          </p>
+        </div>
+      ) : inPremiumWindow && !isPremium ? (
+        <div className="space-y-2 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm">
+          <p className="font-semibold text-amber-900 text-center">
+            Réservé à nos clients Premium
+          </p>
+          <p className="text-xs text-amber-800 text-center">
+            Disponible pour tous dans {countdown}. Devenez Premium pour accéder aux prospects en
+            avant-première.
+          </p>
+          <Button asChild size="sm" variant="outline" className="w-full border-amber-400">
+            <a href={WHATSAPP_PREMIUM_URL} target="_blank" rel="noopener noreferrer">
+              Devenir Premium (WhatsApp)
+            </a>
+          </Button>
+        </div>
       ) : credits < 1 ? (
         <div className="space-y-1">
           <Button asChild variant="default" size="lg" className="w-full">

@@ -143,6 +143,7 @@ export type Database = {
           is_active: boolean
           legal_form: string | null
           max_unlocks: number
+          premium_until: string | null
           prospect_id: string
           published_at: string
           published_by: string
@@ -160,6 +161,7 @@ export type Database = {
           is_active?: boolean
           legal_form?: string | null
           max_unlocks?: number
+          premium_until?: string | null
           prospect_id: string
           published_at?: string
           published_by: string
@@ -177,6 +179,7 @@ export type Database = {
           is_active?: boolean
           legal_form?: string | null
           max_unlocks?: number
+          premium_until?: string | null
           prospect_id?: string
           published_at?: string
           published_by?: string
@@ -295,6 +298,7 @@ export type Database = {
           rejection_reason: string | null
           services: string[]
           status: Database["public"]["Enums"]["partner_status"]
+          tier: string
           updated_at: string
           wants_logo: boolean | null
           wants_website: boolean | null
@@ -325,6 +329,7 @@ export type Database = {
           rejection_reason?: string | null
           services?: string[]
           status?: Database["public"]["Enums"]["partner_status"]
+          tier?: string
           updated_at?: string
           wants_logo?: boolean | null
           wants_website?: boolean | null
@@ -355,6 +360,7 @@ export type Database = {
           rejection_reason?: string | null
           services?: string[]
           status?: Database["public"]["Enums"]["partner_status"]
+          tier?: string
           updated_at?: string
           wants_logo?: boolean | null
           wants_website?: boolean | null

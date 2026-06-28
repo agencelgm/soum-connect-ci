@@ -30,6 +30,7 @@ export type PartnerEventPayload = {
   pause_reason?: string | null;
   wants_website?: boolean | null;
   wants_logo?: boolean | null;
+  tier?: string | null;
   page_url?: string | null;
   user_agent?: string | null;
 };

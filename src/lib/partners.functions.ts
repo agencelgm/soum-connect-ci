@@ -492,6 +492,28 @@ export const deletePartner = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+// ---------------------- Set partner tier (premium / regular) ----------------------
+
+export const setPartnerTier = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) =>
+    z
+      .object({
+        partner_id: z.string().uuid(),
+        tier: z.enum(["premium", "regular"]),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    await assertStaff(context.userId);
+    const { error } = await supabaseAdmin
+      .from("partners")
+      .update({ tier: data.tier, updated_at: new Date().toISOString() })
+      .eq("id", data.partner_id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
 // ---------------------- Manual creation (admin/agent) ----------------------
 
 const ManualCreateSchema = PartnerInfoSchema.extend({

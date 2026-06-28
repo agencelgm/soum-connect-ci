@@ -15,6 +15,7 @@ import {
   getMyPartner,
   getAdminDashboardStats,
   listChariowPayments,
+  setPartnerTier,
 } from "@/lib/partners.functions";
 import { publishProspect } from "@/lib/marketplace.functions";
 import {
@@ -299,6 +300,7 @@ function PartnerCard({
   const reactivateFn = useServerFn(reactivatePartner);
   const deleteFn = useServerFn(deletePartner);
   const grantFn = useServerFn(adminGrantCredits);
+  const tierFn = useServerFn(setPartnerTier);
   const [busy, setBusy] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
 
@@ -326,6 +328,11 @@ function PartnerCard({
           >
             {partner.cabinet_name}
           </button>
+          {partner.tier === "premium" && (
+            <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-amber-100 text-amber-800 text-[10px] font-semibold px-2 py-0.5 align-middle">
+              ★ Premium
+            </span>
+          )}
           <p className="text-sm text-muted-foreground">
             {partner.contact_first_name} {partner.contact_last_name} · {partner.email} ·{" "}
             {partner.phone}
@@ -383,6 +390,25 @@ function PartnerCard({
                 run(() => grantFn({ data: { partner_id: partner.id, amount, note } }))
               }
             />
+          )}
+          {isAdmin && (partner.status === "approved" || partner.status === "paused") && (
+            <Button
+              size="sm"
+              variant={partner.tier === "premium" ? "secondary" : "outline"}
+              disabled={busy}
+              onClick={() =>
+                run(() =>
+                  tierFn({
+                    data: {
+                      partner_id: partner.id,
+                      tier: partner.tier === "premium" ? "regular" : "premium",
+                    },
+                  }),
+                )
+              }
+            >
+              {partner.tier === "premium" ? "Retirer Premium" : "Passer Premium"}
+            </Button>
           )}
           {isAdmin && (
             <Button
@@ -527,7 +553,7 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
 
   async function onPublish(prospect_id: string) {
     await run(prospect_id, async () => {
-      await publishFn({ data: { prospect_id, max_unlocks: 6 } });
+      await publishFn({ data: { prospect_id, max_unlocks: 5 } });
       toast.success("Lead publié dans la marketplace.");
     });
   }
@@ -917,7 +943,7 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
     if (!selected) return;
     await run(`publish:${selected.id}`, async () => {
       await updateFn({ data: { prospect_id: selected.id, ...normalizeProspectForm(form) } });
-      await publishFn({ data: { prospect_id: selected.id, max_unlocks: 6 } });
+      await publishFn({ data: { prospect_id: selected.id, max_unlocks: 5 } });
       toast.success("Lead publie dans la marketplace.");
     });
   }
@@ -1984,6 +2010,7 @@ function PartnerDetailsDialog({
           <h4 className="font-semibold text-sm mb-2">Cabinet</h4>
           <DetailRow label="Nom du cabinet" value={partner.cabinet_name} />
           <DetailRow label="Statut" value={partner.status} />
+          <DetailRow label="Tier" value={partner.tier === "premium" ? "★ Premium" : "Régulier"} />
           <DetailRow label="Crédits" value={partner.credits_balance} />
           <DetailRow label="Ville" value={partner.city} />
           <DetailRow label="Site web" value={partner.website} />
