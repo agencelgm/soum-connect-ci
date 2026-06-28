@@ -36,9 +36,8 @@ export const listMarketplace = createServerFn({ method: "GET" })
     const { data: pubs, error } = await supabaseAdmin
       .from("lead_publications")
       .select(
-        "id, prospect_id, service, city, audience, legal_form, budget, summary, unlock_count, max_unlocks, is_active, published_at",
+        "id, prospect_id, service, city, audience, legal_form, budget, summary, unlock_count, max_unlocks, is_active, published_at, premium_until",
       )
-      .eq("is_active", true)
       .order("published_at", { ascending: false })
       .limit(100);
     if (error) throw new Error(error.message);
@@ -78,6 +77,7 @@ export const listMarketplace = createServerFn({ method: "GET" })
         status: partner.status,
         credits_balance: partner.credits_balance,
         cabinet_name: partner.cabinet_name,
+        tier: (partner as { tier?: string }).tier ?? "regular",
       },
       leads,
       unlocked_ids,
@@ -100,6 +100,8 @@ export const unlockLead = createServerFn({ method: "POST" })
         publication_not_found: "Lead introuvable.",
         publication_inactive: "Ce lead n'est plus disponible.",
         publication_full: "Ce lead a atteint le nombre maximum de déblocages.",
+        premium_window_active:
+          "Ce prospect est actuellement réservé à nos clients Premium. Patientez ou contactez-nous pour devenir Premium.",
       };
       throw new Error(map[error.message] ?? error.message);
     }
