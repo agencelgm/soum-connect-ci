@@ -38,7 +38,7 @@ export const listMarketplace = createServerFn({ method: "GET" })
       .select(
         "id, prospect_id, service, city, audience, legal_form, budget, summary, unlock_count, max_unlocks, is_active, published_at, premium_until",
       )
-      .or("is_active.eq.true,unlock_count.gte.max_unlocks")
+      .eq("is_active", true)
       .order("published_at", { ascending: false })
       .limit(100);
     if (error) throw new Error(error.message);
