@@ -9,6 +9,7 @@ import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 import { isUnauthorizedError } from "@/lib/auth-actions";
 import { UnauthorizedScreen } from "@/components/auth/UnauthorizedScreen";
+import { cn } from "@/lib/utils";
 import {
   MapPin,
   Building2,
@@ -61,6 +62,7 @@ function MarketplacePage() {
     retry: false,
   });
   const [tab, setTab] = useState<"available" | "mine">("available");
+  const [filter, setFilter] = useState<"all" | "available" | "full">("available");
   const isPremium = data?.partner?.tier === "premium";
 
   if (isUnauthorizedError(error) || isUnauthorizedError(mineError)) {
@@ -88,6 +90,15 @@ function MarketplacePage() {
       </div>
     );
   }
+
+  const availableLeads = data.leads.filter((l) => l.unlock_count < l.max_unlocks);
+  const fullLeads = data.leads.filter((l) => l.unlock_count >= l.max_unlocks);
+  const visibleLeads =
+    filter === "available"
+      ? availableLeads
+      : filter === "full"
+        ? fullLeads
+        : [...availableLeads, ...fullLeads];
 
   return (
     <div className="space-y-6">
@@ -151,21 +162,48 @@ function MarketplacePage() {
       </div>
 
       {tab === "available" && (
-        <div className="grid gap-4 md:grid-cols-2">
-          {data.leads.length === 0 && (
-            <p className="text-muted-foreground col-span-2">
-              Aucun lead disponible pour le moment.
-            </p>
-          )}
-          {data.leads.map((lead) => (
-            <LeadCard
-              key={lead.id}
-              lead={lead}
-              alreadyUnlocked={data.unlocked_ids.includes(lead.id)}
-              credits={data.partner!.credits_balance}
-              isPremium={isPremium}
-            />
-          ))}
+        <div className="space-y-4">
+          <div className="flex gap-2 flex-wrap">
+            {(
+              [
+                ["all", "Tous", data.leads.length],
+                ["available", "Disponibles", availableLeads.length],
+                ["full", "Complets", fullLeads.length],
+              ] as const
+            ).map(([key, label, count]) => (
+              <button
+                key={key}
+                onClick={() => setFilter(key)}
+                className={cn(
+                  "rounded-full border px-4 py-1.5 text-sm font-medium transition-colors",
+                  filter === key
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-background text-muted-foreground border-border hover:border-primary/50",
+                )}
+              >
+                {label} <span className="ml-1 opacity-70">{count}</span>
+              </button>
+            ))}
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            {visibleLeads.length === 0 && (
+              <p className="text-muted-foreground col-span-2">
+                {filter === "full"
+                  ? "Aucun lead complet pour le moment."
+                  : "Aucun lead disponible pour le moment."}
+              </p>
+            )}
+            {visibleLeads.map((lead) => (
+              <LeadCard
+                key={lead.id}
+                lead={lead}
+                alreadyUnlocked={data.unlocked_ids.includes(lead.id)}
+                credits={data.partner!.credits_balance}
+                isPremium={isPremium}
+              />
+            ))}
+          </div>
         </div>
       )}
 
@@ -275,9 +313,13 @@ function LeadCard({
 
   return (
     <div
-      className={`group rounded-xl border bg-card p-5 space-y-4 transition-all hover:shadow-lg hover:border-primary/40 ${
-        isFull && !alreadyUnlocked ? "opacity-70" : ""
-      } ${inPremiumWindow && isPremium ? "border-amber-300 ring-1 ring-amber-200" : ""}`}
+      className={cn(
+        "rounded-xl border p-5 space-y-4",
+        isFull && !alreadyUnlocked
+          ? "bg-muted/40 opacity-60 grayscale-[30%]"
+          : "group bg-card transition-all hover:shadow-lg hover:border-primary/40",
+        inPremiumWindow && isPremium && "border-amber-300 ring-1 ring-amber-200",
+      )}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
@@ -293,8 +335,8 @@ function LeadCard({
               </span>
             )}
             {isFull && (
-              <span className="inline-flex items-center gap-1 text-[11px] font-semibold rounded-full bg-red-100 text-red-700 px-2 py-0.5">
-                Complet · {lead.max_unlocks}/{lead.max_unlocks}
+              <span className="inline-flex items-center gap-1 text-xs font-bold rounded-full bg-red-100 text-red-700 px-2.5 py-1 border border-red-200">
+                <Lock className="h-3 w-3" /> Complet · {lead.max_unlocks}/{lead.max_unlocks}
               </span>
             )}
             {isFresh && (
