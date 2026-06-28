@@ -2010,6 +2010,7 @@ function PartnerDetailsDialog({
           <h4 className="font-semibold text-sm mb-2">Cabinet</h4>
           <DetailRow label="Nom du cabinet" value={partner.cabinet_name} />
           <DetailRow label="Statut" value={partner.status} />
+          <DetailRow label="Tier" value={partner.tier === "premium" ? "★ Premium" : "Régulier"} />
           <DetailRow label="Crédits" value={partner.credits_balance} />
           <DetailRow label="Ville" value={partner.city} />
           <DetailRow label="Site web" value={partner.website} />
