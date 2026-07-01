@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 
-const FORM_VERSION = "v3-2026-07-01";
+const FORM_VERSION = "v4-2026-07-01";
 import {
   listPartners,
   listProspects,
@@ -1267,23 +1267,19 @@ function CreatePartnerPanel() {
     services: "",
     zones: "",
   });
-  const [wantsWebsite, setWantsWebsite] = useState<boolean | null>(null);
-  const [wantsLogo, setWantsLogo] = useState<boolean | null>(null);
-  const [attemptedSubmit, setAttemptedSubmit] = useState(false);
+  const [wantsWebsite, setWantsWebsite] = useState(false);
+  const [wantsLogo, setWantsLogo] = useState(false);
   function up<K extends keyof typeof form>(k: K, v: string) {
     setForm((f) => ({ ...f, [k]: v }));
   }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setAttemptedSubmit(true);
     const servicesList = form.services.split(",").map((s) => s.trim()).filter(Boolean);
     const zonesList = form.zones.split(",").map((s) => s.trim()).filter(Boolean);
     if (servicesList.length === 0) return toast.error("Indiquez au moins un service.");
     if (zonesList.length === 0) return toast.error("Indiquez au moins une zone.");
     if (!form.contact_role.trim()) return toast.error("Indiquez le rôle du contact.");
-    if (wantsWebsite === null) return toast.error("Indiquez si le cabinet veut un site internet.");
-    if (wantsLogo === null) return toast.error("Indiquez si le cabinet veut un logo.");
     setBusy(true);
     try {
       await createFn({
@@ -1319,8 +1315,8 @@ function CreatePartnerPanel() {
         services: "",
         zones: "",
       });
-      setWantsWebsite(null);
-      setWantsLogo(null);
+      setWantsWebsite(false);
+      setWantsLogo(false);
       qc.invalidateQueries({ queryKey: ["partners"] });
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Erreur");
@@ -1359,21 +1355,14 @@ function CreatePartnerPanel() {
         </p>
       </div>
 
-      <div
-        className={cn(
-          "rounded-md border-2 bg-card p-5 space-y-5 shadow-sm transition-colors",
-          attemptedSubmit && (wantsWebsite === null || wantsLogo === null)
-            ? "border-destructive bg-destructive/5 ring-2 ring-destructive"
-            : "border-primary bg-primary/5",
-        )}
-      >
+      <div className="rounded-md border-2 border-primary bg-primary/5 p-5 space-y-5 shadow-sm transition-colors">
         <div className="flex flex-col gap-1 border-b border-primary/20 pb-4">
           <p className="text-sm font-bold uppercase tracking-wider text-primary">
             Champs obligatoires avant création
           </p>
           <p className="text-sm text-muted-foreground">
             Ces informations sont obligatoires : rôle, site internet, logo, services et zones
-            d’intervention.
+            d’intervention. Site internet et logo sont sur Non par défaut.
           </p>
         </div>
 
@@ -1424,12 +1413,6 @@ function CreatePartnerPanel() {
             />
           </div>
         </div>
-
-        {attemptedSubmit && (wantsWebsite === null || wantsLogo === null) && (
-          <p className="rounded-md border border-destructive bg-destructive/10 px-3 py-2 text-sm font-medium text-destructive">
-            Répondez Oui ou Non aux questions Site internet et Logo pour continuer.
-          </p>
-        )}
       </div>
       <div>
         <Label>Nom du cabinet *</Label>
