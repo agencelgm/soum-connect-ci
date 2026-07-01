@@ -1255,6 +1255,7 @@ function CreatePartnerPanel() {
     cabinet_name: "",
     contact_first_name: "",
     contact_last_name: "",
+    contact_role: "",
     email: "",
     phone: "",
     city: "",
@@ -1264,12 +1265,21 @@ function CreatePartnerPanel() {
     services: "",
     zones: "",
   });
+  const [wantsWebsite, setWantsWebsite] = useState<boolean | null>(null);
+  const [wantsLogo, setWantsLogo] = useState<boolean | null>(null);
   function up<K extends keyof typeof form>(k: K, v: string) {
     setForm((f) => ({ ...f, [k]: v }));
   }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
+    const servicesList = form.services.split(",").map((s) => s.trim()).filter(Boolean);
+    const zonesList = form.zones.split(",").map((s) => s.trim()).filter(Boolean);
+    if (servicesList.length === 0) return toast.error("Indiquez au moins un service.");
+    if (zonesList.length === 0) return toast.error("Indiquez au moins une zone.");
+    if (!form.contact_role.trim()) return toast.error("Indiquez le rôle du contact.");
+    if (wantsWebsite === null) return toast.error("Indiquez si le cabinet veut un site internet.");
+    if (wantsLogo === null) return toast.error("Indiquez si le cabinet veut un logo.");
     setBusy(true);
     try {
       await createFn({
@@ -1277,20 +1287,17 @@ function CreatePartnerPanel() {
           cabinet_name: form.cabinet_name,
           contact_first_name: form.contact_first_name,
           contact_last_name: form.contact_last_name,
+          contact_role: form.contact_role,
           email: form.email,
           phone: form.phone,
           city: form.city,
           password: form.password,
           website: form.website,
           facebook_url: form.facebook_url,
-          services: form.services
-            .split(",")
-            .map((s) => s.trim())
-            .filter(Boolean),
-          zones: form.zones
-            .split(",")
-            .map((s) => s.trim())
-            .filter(Boolean),
+          services: servicesList,
+          zones: zonesList,
+          wants_website: wantsWebsite,
+          wants_logo: wantsLogo,
         },
       });
       toast.success("Partenaire créé (30 crédits attribués)");
@@ -1298,6 +1305,7 @@ function CreatePartnerPanel() {
         cabinet_name: "",
         contact_first_name: "",
         contact_last_name: "",
+        contact_role: "",
         email: "",
         phone: "",
         city: "",
@@ -1307,6 +1315,8 @@ function CreatePartnerPanel() {
         services: "",
         zones: "",
       });
+      setWantsWebsite(null);
+      setWantsLogo(null);
       qc.invalidateQueries({ queryKey: ["partners"] });
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Erreur");
@@ -1376,6 +1386,15 @@ function CreatePartnerPanel() {
         <Label>Ville *</Label>
         <Input required value={form.city} onChange={(e) => up("city", e.target.value)} />
       </div>
+      <div>
+        <Label>Rôle du contact *</Label>
+        <Input
+          required
+          placeholder="ex: Gérant, Associé, Expert-comptable…"
+          value={form.contact_role}
+          onChange={(e) => up("contact_role", e.target.value)}
+        />
+      </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
           <Label>Site web</Label>
@@ -1394,10 +1413,61 @@ function CreatePartnerPanel() {
         <Label>Zones (virgules)</Label>
         <Textarea value={form.zones} onChange={(e) => up("zones", e.target.value)} />
       </div>
+      <div className="rounded-lg border border-border bg-muted/30 p-4 space-y-3">
+        <p className="text-sm font-semibold">Offres complémentaires *</p>
+        <YesNoRow
+          label="Veut un site internet ?"
+          value={wantsWebsite}
+          onChange={setWantsWebsite}
+        />
+        <YesNoRow label="Veut un logo ?" value={wantsLogo} onChange={setWantsLogo} />
+      </div>
       <Button type="submit" disabled={busy}>
         {busy ? "…" : "Créer le partenaire"}
       </Button>
     </form>
+  );
+}
+
+function YesNoRow({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: boolean | null;
+  onChange: (v: boolean) => void;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-4">
+      <span className="text-sm">{label}</span>
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={() => onChange(true)}
+          className={
+            "px-3 py-1.5 rounded-md border text-sm " +
+            (value === true
+              ? "bg-primary text-primary-foreground border-primary"
+              : "bg-background hover:bg-muted border-border")
+          }
+        >
+          Oui
+        </button>
+        <button
+          type="button"
+          onClick={() => onChange(false)}
+          className={
+            "px-3 py-1.5 rounded-md border text-sm " +
+            (value === false
+              ? "bg-primary text-primary-foreground border-primary"
+              : "bg-background hover:bg-muted border-border")
+          }
+        >
+          Non
+        </button>
+      </div>
+    </div>
   );
 }
 
