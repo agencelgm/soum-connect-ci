@@ -1331,6 +1331,23 @@ function CreatePartnerPanel() {
 
   return (
     <form onSubmit={onSubmit} className="space-y-6 max-w-4xl">
+      <div className="flex items-center justify-between rounded-md border border-dashed border-primary/40 bg-background/50 px-3 py-2 text-xs">
+        <span className="font-mono text-muted-foreground">
+          Formulaire <span className="font-bold text-primary">{FORM_VERSION}</span>
+        </span>
+        <button
+          type="button"
+          onClick={() => {
+            const url = new URL(window.location.href);
+            url.searchParams.set("v", String(Date.now()));
+            window.location.replace(url.toString());
+          }}
+          className="rounded border border-primary/40 bg-primary/10 px-2 py-1 font-medium text-primary hover:bg-primary/20"
+        >
+          🔄 Recharger le formulaire
+        </button>
+      </div>
+
       <div className="rounded-md border-2 border-primary bg-primary/10 p-5 shadow-sm">
         <p className="text-xs font-bold uppercase tracking-wider text-primary">
           Formulaire manuel visible
