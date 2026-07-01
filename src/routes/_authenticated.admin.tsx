@@ -1267,12 +1267,14 @@ function CreatePartnerPanel() {
   });
   const [wantsWebsite, setWantsWebsite] = useState<boolean | null>(null);
   const [wantsLogo, setWantsLogo] = useState<boolean | null>(null);
+  const [attemptedSubmit, setAttemptedSubmit] = useState(false);
   function up<K extends keyof typeof form>(k: K, v: string) {
     setForm((f) => ({ ...f, [k]: v }));
   }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setAttemptedSubmit(true);
     const servicesList = form.services.split(",").map((s) => s.trim()).filter(Boolean);
     const zonesList = form.zones.split(",").map((s) => s.trim()).filter(Boolean);
     if (servicesList.length === 0) return toast.error("Indiquez au moins un service.");
@@ -1395,18 +1397,30 @@ function CreatePartnerPanel() {
         <Label>Ville *</Label>
         <Input required value={form.city} onChange={(e) => up("city", e.target.value)} />
       </div>
-      <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 space-y-3">
+      <div
+        className={cn(
+          "rounded-lg border p-4 space-y-3 transition-colors",
+          attemptedSubmit && (wantsWebsite === null || wantsLogo === null)
+            ? "border-destructive bg-destructive/5 ring-1 ring-destructive"
+            : "border-primary/30 bg-primary/5",
+        )}
+      >
         <p className="text-sm font-semibold">Questions obligatoires — offres complémentaires</p>
         <YesNoRow
-          label="Site internet souhaité ? À partir de 165 000 FCFA"
+          label="Site internet souhaité ? * À partir de 165 000 FCFA"
           value={wantsWebsite}
           onChange={setWantsWebsite}
         />
         <YesNoRow
-          label="Logo professionnel souhaité ? À partir de 50 000 FCFA"
+          label="Logo professionnel souhaité ? * À partir de 50 000 FCFA"
           value={wantsLogo}
           onChange={setWantsLogo}
         />
+        {attemptedSubmit && (wantsWebsite === null || wantsLogo === null) && (
+          <p className="text-xs font-medium text-destructive">
+            Répondez Oui ou Non aux deux questions pour continuer.
+          </p>
+        )}
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
