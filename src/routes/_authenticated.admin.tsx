@@ -141,7 +141,7 @@ function AdminPageInner({ roles }: { roles: string[] }) {
           {activeTab === "prospects" && (
             <ProspectQualificationPanel isAdmin={roles.includes("admin")} />
           )}
-          {activeTab === "create" && <CreatePartnerPanel />}
+          {activeTab === "create" && <CreatePartnerPanel key={FORM_VERSION} />}
           {activeTab === "paiements" && <PaymentsPanel />}
           {activeTab === "team" && roles.includes("admin") && <TeamPanel />}
         </div>
