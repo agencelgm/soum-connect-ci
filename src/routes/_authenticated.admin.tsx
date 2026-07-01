@@ -1180,7 +1180,7 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
                 <div className="rounded-md border bg-muted/30 p-4">
                   <h3 className="font-semibold">Publication</h3>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    La note LGM sera reprise comme resume public du lead. La marketplace ouvre 6
+                    La note LGM sera reprise comme resume public du lead. La marketplace ouvre 5
                     places.
                   </p>
                   <Button
@@ -1357,6 +1357,15 @@ function CreatePartnerPanel() {
           />
         </div>
       </div>
+      <div>
+        <Label>Rôle du contact *</Label>
+        <Input
+          required
+          placeholder="ex: Gérant, Associé, Expert-comptable…"
+          value={form.contact_role}
+          onChange={(e) => up("contact_role", e.target.value)}
+        />
+      </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
           <Label>Email *</Label>
@@ -1386,13 +1395,17 @@ function CreatePartnerPanel() {
         <Label>Ville *</Label>
         <Input required value={form.city} onChange={(e) => up("city", e.target.value)} />
       </div>
-      <div>
-        <Label>Rôle du contact *</Label>
-        <Input
-          required
-          placeholder="ex: Gérant, Associé, Expert-comptable…"
-          value={form.contact_role}
-          onChange={(e) => up("contact_role", e.target.value)}
+      <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 space-y-3">
+        <p className="text-sm font-semibold">Questions obligatoires — offres complémentaires</p>
+        <YesNoRow
+          label="Site internet souhaité ? À partir de 165 000 FCFA"
+          value={wantsWebsite}
+          onChange={setWantsWebsite}
+        />
+        <YesNoRow
+          label="Logo professionnel souhaité ? À partir de 50 000 FCFA"
+          value={wantsLogo}
+          onChange={setWantsLogo}
         />
       </div>
       <div className="grid grid-cols-2 gap-4">
@@ -1406,21 +1419,12 @@ function CreatePartnerPanel() {
         </div>
       </div>
       <div>
-        <Label>Services (virgules)</Label>
-        <Textarea value={form.services} onChange={(e) => up("services", e.target.value)} />
+        <Label>Services * (virgules)</Label>
+        <Textarea required value={form.services} onChange={(e) => up("services", e.target.value)} />
       </div>
       <div>
-        <Label>Zones (virgules)</Label>
-        <Textarea value={form.zones} onChange={(e) => up("zones", e.target.value)} />
-      </div>
-      <div className="rounded-lg border border-border bg-muted/30 p-4 space-y-3">
-        <p className="text-sm font-semibold">Offres complémentaires *</p>
-        <YesNoRow
-          label="Veut un site internet ?"
-          value={wantsWebsite}
-          onChange={setWantsWebsite}
-        />
-        <YesNoRow label="Veut un logo ?" value={wantsLogo} onChange={setWantsLogo} />
+        <Label>Zones * (virgules)</Label>
+        <Textarea required value={form.zones} onChange={(e) => up("zones", e.target.value)} />
       </div>
       <Button type="submit" disabled={busy}>
         {busy ? "…" : "Créer le partenaire"}
