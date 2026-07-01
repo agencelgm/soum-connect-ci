@@ -1,22 +1,27 @@
-Je vois pourquoi vous dites que ce n’est toujours pas visible : le code contient les nouveaux champs, mais votre capture montre encore l’ancien bloc directement avec “Nom du cabinet”, donc le preview affiché ne rend pas la bonne version du formulaire.
+## Objectif
+Forcer le rechargement du formulaire "Nouveau partenaire" côté admin pour que les derniers champs obligatoires (rôle, site internet, logo, services, zones) apparaissent immédiatement, sans dépendre du cache navigateur ou du bundle en cache.
 
-Plan proposé :
+## Changements
 
-1. Remplacer le formulaire “Créer un partenaire” par une version restructurée où les champs obligatoires apparaissent tout en haut, impossible à manquer :
-   - Rôle au sein de l’entreprise
-   - Site internet souhaité ? Oui / Non, avec “À partir de 165 000 FCFA”
-   - Logo professionnel souhaité ? Oui / Non, avec “À partir de 50 000 FCFA”
-   - Services obligatoires
-   - Zones d’intervention obligatoires
+1. **`src/routes/_authenticated.admin.tsx`**
+   - Ajouter en haut du fichier une constante `FORM_VERSION = "v3-2026-07-01"` importée/utilisée comme `key` sur le composant `CreatePartnerPanel` pour forcer React à démonter/remonter le formulaire.
+   - Ajouter un petit badge visible "Formulaire v3" en haut du panneau — sert de témoin visuel : si le badge n'apparaît pas, le user sait que c'est un cache navigateur, pas un problème de code.
+   - Ajouter un bouton "🔄 Recharger le formulaire" qui appelle `window.location.reload()` avec `?v=${Date.now()}` en query string pour casser tout cache HTTP/SW.
 
-2. Ajouter un titre très visible dans le formulaire :
-   - “Champs obligatoires avant création”
-   - avec un encadré coloré et une bordure forte.
+2. **`src/routes/__root.tsx`**
+   - Ajouter dans le `<head>` les meta cache-control pour les routes admin :
+     ```
+     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+     <meta http-equiv="Pragma" content="no-cache" />
+     <meta http-equiv="Expires" content="0" />
+     ```
+   - Portée : global (impact minime, admin uniquement rechargé fréquemment).
 
-3. Renommer clairement les anciens champs pour éviter la confusion :
-   - “Site web existant” restera optionnel
-   - les questions “Site internet souhaité” et “Logo souhaité” seront séparées et placées en haut.
+3. **Vérification via Playwright**
+   - Après build, lancer un script qui ouvre `/admin`, va sur l'onglet "Nouveau partenaire", et screenshot le formulaire pour confirmer que les champs Rôle / Site internet / Logo / Services / Zones sont visibles.
 
-4. Ajouter une vérification visuelle côté formulaire : si on clique sur “Créer le partenaire” sans répondre à Site/Logo, l’encadré obligatoire devient rouge et affiche le message d’erreur.
-
-5. Après modification, je vérifierai dans le preview que le texte exact “Rôle au sein de l’entreprise”, “Site internet souhaité”, “Logo professionnel souhaité”, “Services obligatoires” et “Zones d’intervention obligatoires” est bien présent sur la page /admin?tab=create.
+## Instructions pour vous
+Après déploiement de ces changements :
+- Faites **Ctrl+Shift+R** (Windows) ou **Cmd+Shift+R** (Mac) sur la page admin.
+- Si le badge "Formulaire v3" apparaît en haut → tout est bon.
+- Sinon, cliquez le bouton "🔄 Recharger le formulaire".
