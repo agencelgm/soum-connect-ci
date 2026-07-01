@@ -1328,60 +1328,89 @@ function CreatePartnerPanel() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-5 max-w-3xl">
-      <div className="rounded-md border border-primary/40 bg-primary/5 p-4">
-        <h3 className="text-lg font-bold">Nouveau partenaire — ajout manuel</h3>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Le cabinet est immédiatement actif avec 30 crédits. Les champs marqués d’un * sont
-          obligatoires.
+    <form onSubmit={onSubmit} className="space-y-6 max-w-4xl">
+      <div className="rounded-md border-2 border-primary bg-primary/10 p-5 shadow-sm">
+        <p className="text-xs font-bold uppercase tracking-wider text-primary">
+          Formulaire manuel visible
+        </p>
+        <h3 className="mt-1 text-2xl font-bold">Nouveau partenaire — ajout manuel</h3>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Le cabinet est immédiatement actif avec 30 crédits. Remplissez d’abord le bloc obligatoire
+          ci-dessous avant les informations classiques du cabinet.
         </p>
       </div>
 
-      <div className="rounded-md border-2 border-primary bg-card p-4 space-y-4 shadow-sm">
-        <div>
-          <p className="text-sm font-bold uppercase tracking-wide text-primary">
-            Champs obligatoires à vérifier
+      <div
+        className={cn(
+          "rounded-md border-2 bg-card p-5 space-y-5 shadow-sm transition-colors",
+          attemptedSubmit && (wantsWebsite === null || wantsLogo === null)
+            ? "border-destructive bg-destructive/5 ring-2 ring-destructive"
+            : "border-primary bg-primary/5",
+        )}
+      >
+        <div className="flex flex-col gap-1 border-b border-primary/20 pb-4">
+          <p className="text-sm font-bold uppercase tracking-wider text-primary">
+            Champs obligatoires avant création
           </p>
           <p className="text-sm text-muted-foreground">
-            Rôle, services, zones d’intervention, site internet souhaité et logo souhaité.
+            Ces informations sont obligatoires : rôle, site internet, logo, services et zones
+            d’intervention.
           </p>
         </div>
 
-        <div>
-          <Label>Rôle au sein de l’entreprise *</Label>
-          <Input
-            required
-            placeholder="ex: Gérant, Associé, Expert-comptable…"
-            value={form.contact_role}
-            onChange={(e) => up("contact_role", e.target.value)}
-          />
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="md:col-span-2">
+            <Label>Rôle au sein de l’entreprise *</Label>
+            <Input
+              required
+              placeholder="ex: Gérant, Associé, Expert-comptable…"
+              value={form.contact_role}
+              onChange={(e) => up("contact_role", e.target.value)}
+            />
+          </div>
+
+          <div className="rounded-md border border-primary/30 bg-background p-4">
+            <YesNoRow
+              label="Site internet souhaité ? * À partir de 165 000 FCFA"
+              value={wantsWebsite}
+              onChange={setWantsWebsite}
+            />
+          </div>
+
+          <div className="rounded-md border border-primary/30 bg-background p-4">
+            <YesNoRow
+              label="Logo professionnel souhaité ? * À partir de 50 000 FCFA"
+              value={wantsLogo}
+              onChange={setWantsLogo}
+            />
+          </div>
+
+          <div>
+            <Label>Services obligatoires * (séparés par des virgules)</Label>
+            <Textarea
+              required
+              placeholder="ex: comptabilité, fiscalité, création d’entreprise"
+              value={form.services}
+              onChange={(e) => up("services", e.target.value)}
+            />
+          </div>
+
+          <div>
+            <Label>Zones d’intervention obligatoires * (séparées par des virgules)</Label>
+            <Textarea
+              required
+              placeholder="ex: Abidjan, San-Pédro, Yamoussoukro"
+              value={form.zones}
+              onChange={(e) => up("zones", e.target.value)}
+            />
+          </div>
         </div>
 
-        <div
-          className={cn(
-            "rounded-md border p-4 space-y-3 transition-colors",
-            attemptedSubmit && (wantsWebsite === null || wantsLogo === null)
-              ? "border-destructive bg-destructive/5 ring-1 ring-destructive"
-              : "border-primary/30 bg-primary/5",
-          )}
-        >
-          <p className="text-sm font-semibold">Questions obligatoires — offres complémentaires</p>
-          <YesNoRow
-            label="Site internet souhaité ? * À partir de 165 000 FCFA"
-            value={wantsWebsite}
-            onChange={setWantsWebsite}
-          />
-          <YesNoRow
-            label="Logo professionnel souhaité ? * À partir de 50 000 FCFA"
-            value={wantsLogo}
-            onChange={setWantsLogo}
-          />
-          {attemptedSubmit && (wantsWebsite === null || wantsLogo === null) && (
-            <p className="text-xs font-medium text-destructive">
-              Répondez Oui ou Non aux deux questions pour continuer.
-            </p>
-          )}
-        </div>
+        {attemptedSubmit && (wantsWebsite === null || wantsLogo === null) && (
+          <p className="rounded-md border border-destructive bg-destructive/10 px-3 py-2 text-sm font-medium text-destructive">
+            Répondez Oui ou Non aux questions Site internet et Logo pour continuer.
+          </p>
+        )}
       </div>
       <div>
         <Label>Nom du cabinet *</Label>
@@ -1447,14 +1476,6 @@ function CreatePartnerPanel() {
           <Label>Facebook</Label>
           <Input value={form.facebook_url} onChange={(e) => up("facebook_url", e.target.value)} />
         </div>
-      </div>
-      <div>
-        <Label>Services obligatoires * (séparés par des virgules)</Label>
-        <Textarea required value={form.services} onChange={(e) => up("services", e.target.value)} />
-      </div>
-      <div>
-        <Label>Zones d’intervention obligatoires * (séparées par des virgules)</Label>
-        <Textarea required value={form.zones} onChange={(e) => up("zones", e.target.value)} />
       </div>
       <Button type="submit" disabled={busy}>
         {busy ? "…" : "Créer le partenaire"}
