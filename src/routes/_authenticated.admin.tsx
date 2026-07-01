@@ -173,8 +173,8 @@ function SectionHeader({
         : "Aucun prospect en attente.",
     },
     create: {
-      title: "Créer un partenaire",
-      subtitle: "Ajouter manuellement un cabinet à la plateforme.",
+      title: "Nouveau partenaire",
+      subtitle: "Ajouter manuellement un cabinet avec tous les champs obligatoires visibles.",
     },
     paiements: {
       title: "Paiements crédits",
@@ -1328,11 +1328,61 @@ function CreatePartnerPanel() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4 max-w-2xl">
-      <p className="text-sm text-muted-foreground">
-        Création manuelle : le cabinet est immédiatement actif avec 30 crédits. Aucune validation
-        requise.
-      </p>
+    <form onSubmit={onSubmit} className="space-y-5 max-w-3xl">
+      <div className="rounded-md border border-primary/40 bg-primary/5 p-4">
+        <h3 className="text-lg font-bold">Nouveau partenaire — ajout manuel</h3>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Le cabinet est immédiatement actif avec 30 crédits. Les champs marqués d’un * sont
+          obligatoires.
+        </p>
+      </div>
+
+      <div className="rounded-md border-2 border-primary bg-card p-4 space-y-4 shadow-sm">
+        <div>
+          <p className="text-sm font-bold uppercase tracking-wide text-primary">
+            Champs obligatoires à vérifier
+          </p>
+          <p className="text-sm text-muted-foreground">
+            Rôle, services, zones d’intervention, site internet souhaité et logo souhaité.
+          </p>
+        </div>
+
+        <div>
+          <Label>Rôle au sein de l’entreprise *</Label>
+          <Input
+            required
+            placeholder="ex: Gérant, Associé, Expert-comptable…"
+            value={form.contact_role}
+            onChange={(e) => up("contact_role", e.target.value)}
+          />
+        </div>
+
+        <div
+          className={cn(
+            "rounded-md border p-4 space-y-3 transition-colors",
+            attemptedSubmit && (wantsWebsite === null || wantsLogo === null)
+              ? "border-destructive bg-destructive/5 ring-1 ring-destructive"
+              : "border-primary/30 bg-primary/5",
+          )}
+        >
+          <p className="text-sm font-semibold">Questions obligatoires — offres complémentaires</p>
+          <YesNoRow
+            label="Site internet souhaité ? * À partir de 165 000 FCFA"
+            value={wantsWebsite}
+            onChange={setWantsWebsite}
+          />
+          <YesNoRow
+            label="Logo professionnel souhaité ? * À partir de 50 000 FCFA"
+            value={wantsLogo}
+            onChange={setWantsLogo}
+          />
+          {attemptedSubmit && (wantsWebsite === null || wantsLogo === null) && (
+            <p className="text-xs font-medium text-destructive">
+              Répondez Oui ou Non aux deux questions pour continuer.
+            </p>
+          )}
+        </div>
+      </div>
       <div>
         <Label>Nom du cabinet *</Label>
         <Input
@@ -1358,15 +1408,6 @@ function CreatePartnerPanel() {
             onChange={(e) => up("contact_last_name", e.target.value)}
           />
         </div>
-      </div>
-      <div>
-        <Label>Rôle du contact *</Label>
-        <Input
-          required
-          placeholder="ex: Gérant, Associé, Expert-comptable…"
-          value={form.contact_role}
-          onChange={(e) => up("contact_role", e.target.value)}
-        />
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
@@ -1397,34 +1438,9 @@ function CreatePartnerPanel() {
         <Label>Ville *</Label>
         <Input required value={form.city} onChange={(e) => up("city", e.target.value)} />
       </div>
-      <div
-        className={cn(
-          "rounded-lg border p-4 space-y-3 transition-colors",
-          attemptedSubmit && (wantsWebsite === null || wantsLogo === null)
-            ? "border-destructive bg-destructive/5 ring-1 ring-destructive"
-            : "border-primary/30 bg-primary/5",
-        )}
-      >
-        <p className="text-sm font-semibold">Questions obligatoires — offres complémentaires</p>
-        <YesNoRow
-          label="Site internet souhaité ? * À partir de 165 000 FCFA"
-          value={wantsWebsite}
-          onChange={setWantsWebsite}
-        />
-        <YesNoRow
-          label="Logo professionnel souhaité ? * À partir de 50 000 FCFA"
-          value={wantsLogo}
-          onChange={setWantsLogo}
-        />
-        {attemptedSubmit && (wantsWebsite === null || wantsLogo === null) && (
-          <p className="text-xs font-medium text-destructive">
-            Répondez Oui ou Non aux deux questions pour continuer.
-          </p>
-        )}
-      </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <Label>Site web</Label>
+          <Label>Site web existant</Label>
           <Input value={form.website} onChange={(e) => up("website", e.target.value)} />
         </div>
         <div>
@@ -1433,11 +1449,11 @@ function CreatePartnerPanel() {
         </div>
       </div>
       <div>
-        <Label>Services * (virgules)</Label>
+        <Label>Services obligatoires * (séparés par des virgules)</Label>
         <Textarea required value={form.services} onChange={(e) => up("services", e.target.value)} />
       </div>
       <div>
-        <Label>Zones * (virgules)</Label>
+        <Label>Zones d’intervention obligatoires * (séparées par des virgules)</Label>
         <Textarea required value={form.zones} onChange={(e) => up("zones", e.target.value)} />
       </div>
       <Button type="submit" disabled={busy}>
