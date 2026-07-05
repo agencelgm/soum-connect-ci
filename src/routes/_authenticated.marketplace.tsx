@@ -235,11 +235,15 @@ function LeadCard({
   alreadyUnlocked,
   credits,
   isPremium,
+  partnerApproved,
+  partnerPending,
 }: {
   lead: Lead;
   alreadyUnlocked: boolean;
   credits: number;
   isPremium: boolean;
+  partnerApproved: boolean;
+  partnerPending: boolean;
 }) {
   const qc = useQueryClient();
   const unlock = useServerFn(unlockLead);
