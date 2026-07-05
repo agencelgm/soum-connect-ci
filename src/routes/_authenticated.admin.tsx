@@ -425,6 +425,12 @@ function PartnerCard({
               ★ Premium
             </span>
           )}
+          {partner.status === "pending_review" && (
+            <TutorialBadge
+              watchedAt={partner.tutorial_watched_at}
+              maxProgress={partner.tutorial_max_progress}
+            />
+          )}
           <p className="text-sm text-muted-foreground">
             {partner.contact_first_name} {partner.contact_last_name} · {partner.email} ·{" "}
             {partner.phone}
@@ -446,7 +452,17 @@ function PartnerCard({
               <Button
                 size="sm"
                 disabled={busy}
-                onClick={() => run(() => approveFn({ data: { partner_id: partner.id } }))}
+                onClick={() => {
+                  if (!partner.tutorial_watched_at) {
+                    const pct = Math.round((partner.tutorial_max_progress ?? 0) * 100);
+                    const ok = window.confirm(
+                      `Ce cabinet n'a pas terminé la vidéo tutorielle (progression : ${pct} %).\n\n` +
+                        `Voulez-vous vraiment l'approuver quand même ?`,
+                    );
+                    if (!ok) return;
+                  }
+                  run(() => approveFn({ data: { partner_id: partner.id } }));
+                }}
               >
                 Approuver (+30 crédits)
               </Button>
