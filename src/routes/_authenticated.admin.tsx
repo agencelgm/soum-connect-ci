@@ -331,9 +331,16 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
   const qc = useQueryClient();
   const { data, isLoading } = useQuery({ queryKey: ["partners"], queryFn: () => listFn() });
   const partners = data?.partners ?? [];
+  const [tutorialFilter, setTutorialFilter] = useState<"all" | "watched" | "not_watched">("all");
 
   const buckets = {
-    pending_review: partners.filter((p) => p.status === "pending_review"),
+    pending_review: partners
+      .filter((p) => p.status === "pending_review")
+      .filter((p) => {
+        if (tutorialFilter === "watched") return !!p.tutorial_watched_at;
+        if (tutorialFilter === "not_watched") return !p.tutorial_watched_at;
+        return true;
+      }),
     approved: partners
       .filter((p) => p.status === "approved")
       .slice()
@@ -360,6 +367,30 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
       </TabsList>
       {(["pending_review", "approved", "paused", "rejected"] as const).map((k) => (
         <TabsContent key={k} value={k} className="mt-4 space-y-3">
+          {k === "pending_review" && (
+            <div className="flex flex-wrap gap-2">
+              {(
+                [
+                  ["all", "Tous"],
+                  ["watched", "Vidéo vue"],
+                  ["not_watched", "Vidéo non vue"],
+                ] as const
+              ).map(([key, label]) => (
+                <button
+                  key={key}
+                  onClick={() => setTutorialFilter(key)}
+                  className={cn(
+                    "rounded-full border px-3 py-1 text-xs font-medium transition-colors",
+                    tutorialFilter === key
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-background text-muted-foreground border-border hover:border-primary/50",
+                  )}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          )}
           {buckets[k].length === 0 && (
             <p className="text-sm text-muted-foreground">Aucun cabinet.</p>
           )}
