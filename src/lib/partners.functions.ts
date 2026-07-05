@@ -152,6 +152,14 @@ export const getMyPartner = createServerFn({ method: "GET" })
       .maybeSingle();
     if (error) throw new Error(error.message);
     let isOwner = !!data;
+    // Bump last_login_at pour le propriétaire (fire-and-forget)
+    if (data) {
+      void supabaseAdmin
+        .from("partners")
+        .update({ last_login_at: new Date().toISOString() })
+        .eq("id", data.id)
+        .then(() => {});
+    }
     // 2) Sinon, cabinet auquel ce user est rattaché comme membre
     if (!data) {
       const { data: mem } = await supabaseAdmin
