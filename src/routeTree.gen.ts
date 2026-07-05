@@ -44,6 +44,7 @@ import { Route as EnContactUsRouteImport } from './routes/en/contact-us'
 import { Route as EnCompanyRegistrationIvoryCoastRouteImport } from './routes/en/company-registration-ivory-coast'
 import { Route as EnAccountingFirmAbidjanRouteImport } from './routes/en/accounting-firm-abidjan'
 import { Route as EnAboutRouteImport } from './routes/en/about'
+import { Route as AuthenticatedTutorielPartenaireRouteImport } from './routes/_authenticated.tutoriel-partenaire'
 import { Route as AuthenticatedRechargerRouteImport } from './routes/_authenticated.recharger'
 import { Route as AuthenticatedMarketplaceRouteImport } from './routes/_authenticated.marketplace'
 import { Route as AuthenticatedHistoriqueRouteImport } from './routes/_authenticated.historique'
@@ -239,6 +240,12 @@ const EnAboutRoute = EnAboutRouteImport.update({
   path: '/en/about',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedTutorielPartenaireRoute =
+  AuthenticatedTutorielPartenaireRouteImport.update({
+    id: '/tutoriel-partenaire',
+    path: '/tutoriel-partenaire',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedRechargerRoute = AuthenticatedRechargerRouteImport.update({
   id: '/recharger',
   path: '/recharger',
@@ -327,6 +334,7 @@ export interface FileRoutesByFullPath {
   '/historique': typeof AuthenticatedHistoriqueRoute
   '/marketplace': typeof AuthenticatedMarketplaceRoute
   '/recharger': typeof AuthenticatedRechargerRoute
+  '/tutoriel-partenaire': typeof AuthenticatedTutorielPartenaireRoute
   '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
@@ -374,6 +382,7 @@ export interface FileRoutesByTo {
   '/historique': typeof AuthenticatedHistoriqueRoute
   '/marketplace': typeof AuthenticatedMarketplaceRoute
   '/recharger': typeof AuthenticatedRechargerRoute
+  '/tutoriel-partenaire': typeof AuthenticatedTutorielPartenaireRoute
   '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
@@ -423,6 +432,7 @@ export interface FileRoutesById {
   '/_authenticated/historique': typeof AuthenticatedHistoriqueRoute
   '/_authenticated/marketplace': typeof AuthenticatedMarketplaceRoute
   '/_authenticated/recharger': typeof AuthenticatedRechargerRoute
+  '/_authenticated/tutoriel-partenaire': typeof AuthenticatedTutorielPartenaireRoute
   '/en/about': typeof EnAboutRoute
   '/en/accounting-firm-abidjan': typeof EnAccountingFirmAbidjanRoute
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
@@ -472,6 +482,7 @@ export interface FileRouteTypes {
     | '/historique'
     | '/marketplace'
     | '/recharger'
+    | '/tutoriel-partenaire'
     | '/en/about'
     | '/en/accounting-firm-abidjan'
     | '/en/company-registration-ivory-coast'
@@ -519,6 +530,7 @@ export interface FileRouteTypes {
     | '/historique'
     | '/marketplace'
     | '/recharger'
+    | '/tutoriel-partenaire'
     | '/en/about'
     | '/en/accounting-firm-abidjan'
     | '/en/company-registration-ivory-coast'
@@ -567,6 +579,7 @@ export interface FileRouteTypes {
     | '/_authenticated/historique'
     | '/_authenticated/marketplace'
     | '/_authenticated/recharger'
+    | '/_authenticated/tutoriel-partenaire'
     | '/en/about'
     | '/en/accounting-firm-abidjan'
     | '/en/company-registration-ivory-coast'
@@ -876,6 +889,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EnAboutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/tutoriel-partenaire': {
+      id: '/_authenticated/tutoriel-partenaire'
+      path: '/tutoriel-partenaire'
+      fullPath: '/tutoriel-partenaire'
+      preLoaderRoute: typeof AuthenticatedTutorielPartenaireRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/recharger': {
       id: '/_authenticated/recharger'
       path: '/recharger'
@@ -962,6 +982,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedHistoriqueRoute: typeof AuthenticatedHistoriqueRoute
   AuthenticatedMarketplaceRoute: typeof AuthenticatedMarketplaceRoute
   AuthenticatedRechargerRoute: typeof AuthenticatedRechargerRoute
+  AuthenticatedTutorielPartenaireRoute: typeof AuthenticatedTutorielPartenaireRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -970,6 +991,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedHistoriqueRoute: AuthenticatedHistoriqueRoute,
   AuthenticatedMarketplaceRoute: AuthenticatedMarketplaceRoute,
   AuthenticatedRechargerRoute: AuthenticatedRechargerRoute,
+  AuthenticatedTutorielPartenaireRoute: AuthenticatedTutorielPartenaireRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(

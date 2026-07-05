@@ -140,7 +140,7 @@ function InscriptionPage() {
           ct: form.city,
         },
       );
-      navigate({ to: "/espace-partenaire", replace: true });
+      navigate({ to: "/tutoriel-partenaire", replace: true });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Erreur inconnue");
     } finally {
@@ -162,6 +162,10 @@ function InscriptionPage() {
           RCCM, DFE ou attestation fiscale, pièce d'identité du gérant, et tout justificatif
           d'activité (agrément expert-comptable, site, portfolio). Vous pourrez les envoyer par
           WhatsApp dès la création de votre compte.
+        </p>
+        <p className="mt-2">
+          <strong>Vidéo tutorielle obligatoire :</strong> à la fin de l'inscription, vous devrez
+          visionner une courte vidéo présentant la plateforme avant d'accéder à votre espace.
         </p>
       </div>
       <form onSubmit={onSubmit} className="space-y-4">

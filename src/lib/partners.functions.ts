@@ -195,6 +195,52 @@ export const getMyPartner = createServerFn({ method: "GET" })
     };
   });
 
+// ---------------------- Tutorial video progress ----------------------
+
+const TutorialProgressSchema = z.object({
+  progress: z.number().min(0).max(1),
+  completed: z.boolean().optional(),
+});
+
+export const markTutorialProgress = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) => TutorialProgressSchema.parse(input))
+  .handler(async ({ data, context }) => {
+    const partnerId = await resolvePartnerForUser(context.userId);
+    if (!partnerId) throw new Error("Aucun cabinet associé.");
+
+    const { data: current, error: readErr } = await supabaseAdmin
+      .from("partners")
+      .select("tutorial_watched_at, tutorial_max_progress")
+      .eq("id", partnerId)
+      .maybeSingle();
+    if (readErr) throw new Error(readErr.message);
+
+    const currentMax = current?.tutorial_max_progress ?? 0;
+    const newMax = Math.max(currentMax, data.progress);
+    const shouldComplete =
+      !current?.tutorial_watched_at && data.completed === true && data.progress >= 0.95;
+
+    const patch: {
+      tutorial_max_progress: number;
+      tutorial_watched_at?: string;
+    } = { tutorial_max_progress: newMax };
+    if (shouldComplete) patch.tutorial_watched_at = new Date().toISOString();
+
+    const { error } = await supabaseAdmin
+      .from("partners")
+      .update(patch)
+      .eq("id", partnerId);
+    if (error) throw new Error(error.message);
+
+    return {
+      ok: true,
+      watched_at:
+        (shouldComplete ? patch.tutorial_watched_at : current?.tutorial_watched_at) ?? null,
+      max_progress: newMax,
+    };
+  });
+
 // ---------------------- Update partner info (owner or member) ----------------------
 
 const UpdatePartnerInfoSchema = z.object({

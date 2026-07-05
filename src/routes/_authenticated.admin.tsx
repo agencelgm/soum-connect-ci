@@ -248,6 +248,39 @@ function byLastLoginAsc(a: any, b: any): number {
   return ax - bx;
 }
 
+function TutorialBadge({
+  watchedAt,
+  maxProgress,
+}: {
+  watchedAt: string | null;
+  maxProgress: number | null;
+}) {
+  if (watchedAt) {
+    const d = new Date(watchedAt).toLocaleDateString("fr-FR");
+    return (
+      <span
+        className="ml-2 inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-semibold px-2 py-0.5 align-middle"
+        title={`Vidéo vue le ${d}`}
+      >
+        ✅ Vidéo vue
+      </span>
+    );
+  }
+  const p = Math.round((maxProgress ?? 0) * 100);
+  if (p > 0) {
+    return (
+      <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-amber-100 text-amber-800 text-[10px] font-semibold px-2 py-0.5 align-middle">
+        ⏳ Vidéo commencée ({p} %)
+      </span>
+    );
+  }
+  return (
+    <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-red-100 text-red-800 text-[10px] font-semibold px-2 py-0.5 align-middle">
+      ⛔ Vidéo non vue
+    </span>
+  );
+}
+
 function LastLoginBadge({
   lastLoginAt,
   status,
@@ -298,9 +331,16 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
   const qc = useQueryClient();
   const { data, isLoading } = useQuery({ queryKey: ["partners"], queryFn: () => listFn() });
   const partners = data?.partners ?? [];
+  const [tutorialFilter, setTutorialFilter] = useState<"all" | "watched" | "not_watched">("all");
 
   const buckets = {
-    pending_review: partners.filter((p) => p.status === "pending_review"),
+    pending_review: partners
+      .filter((p) => p.status === "pending_review")
+      .filter((p) => {
+        if (tutorialFilter === "watched") return !!p.tutorial_watched_at;
+        if (tutorialFilter === "not_watched") return !p.tutorial_watched_at;
+        return true;
+      }),
     approved: partners
       .filter((p) => p.status === "approved")
       .slice()
@@ -327,6 +367,30 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
       </TabsList>
       {(["pending_review", "approved", "paused", "rejected"] as const).map((k) => (
         <TabsContent key={k} value={k} className="mt-4 space-y-3">
+          {k === "pending_review" && (
+            <div className="flex flex-wrap gap-2">
+              {(
+                [
+                  ["all", "Tous"],
+                  ["watched", "Vidéo vue"],
+                  ["not_watched", "Vidéo non vue"],
+                ] as const
+              ).map(([key, label]) => (
+                <button
+                  key={key}
+                  onClick={() => setTutorialFilter(key)}
+                  className={cn(
+                    "rounded-full border px-3 py-1 text-xs font-medium transition-colors",
+                    tutorialFilter === key
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-background text-muted-foreground border-border hover:border-primary/50",
+                  )}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          )}
           {buckets[k].length === 0 && (
             <p className="text-sm text-muted-foreground">Aucun cabinet.</p>
           )}
@@ -392,6 +456,12 @@ function PartnerCard({
               ★ Premium
             </span>
           )}
+          {partner.status === "pending_review" && (
+            <TutorialBadge
+              watchedAt={partner.tutorial_watched_at}
+              maxProgress={partner.tutorial_max_progress}
+            />
+          )}
           <p className="text-sm text-muted-foreground">
             {partner.contact_first_name} {partner.contact_last_name} · {partner.email} ·{" "}
             {partner.phone}
@@ -413,7 +483,17 @@ function PartnerCard({
               <Button
                 size="sm"
                 disabled={busy}
-                onClick={() => run(() => approveFn({ data: { partner_id: partner.id } }))}
+                onClick={() => {
+                  if (!partner.tutorial_watched_at) {
+                    const pct = Math.round((partner.tutorial_max_progress ?? 0) * 100);
+                    const ok = window.confirm(
+                      `Ce cabinet n'a pas terminé la vidéo tutorielle (progression : ${pct} %).\n\n` +
+                        `Voulez-vous vraiment l'approuver quand même ?`,
+                    );
+                    if (!ok) return;
+                  }
+                  run(() => approveFn({ data: { partner_id: partner.id } }));
+                }}
               >
                 Approuver (+30 crédits)
               </Button>
