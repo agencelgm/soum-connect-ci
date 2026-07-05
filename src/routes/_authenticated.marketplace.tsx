@@ -82,6 +82,7 @@ function MarketplacePage() {
   }
   const partnerApproved = data.partner.status === "approved";
   const partnerPending = data.partner.status === "pending_review";
+  const partnerPaused = data.partner.status === "paused";
 
   const availableLeads = data.leads.filter((l) => l.unlock_count < l.max_unlocks);
   const fullLeads = data.leads.filter((l) => l.unlock_count >= l.max_unlocks);
@@ -195,6 +196,7 @@ function MarketplacePage() {
                 isPremium={isPremium}
                 partnerApproved={partnerApproved}
                 partnerPending={partnerPending}
+                partnerPaused={partnerPaused}
               />
             ))}
           </div>
