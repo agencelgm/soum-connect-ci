@@ -295,8 +295,14 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
 
   const buckets = {
     pending_review: partners.filter((p) => p.status === "pending_review"),
-    approved: partners.filter((p) => p.status === "approved"),
-    paused: partners.filter((p) => p.status === "paused"),
+    approved: partners
+      .filter((p) => p.status === "approved")
+      .slice()
+      .sort(byLastLoginAsc),
+    paused: partners
+      .filter((p) => p.status === "paused")
+      .slice()
+      .sort(byLastLoginAsc),
     rejected: partners.filter((p) => p.status === "rejected"),
   };
 
