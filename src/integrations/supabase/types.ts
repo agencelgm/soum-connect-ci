@@ -300,6 +300,8 @@ export type Database = {
           services: string[]
           status: Database["public"]["Enums"]["partner_status"]
           tier: string
+          tutorial_max_progress: number
+          tutorial_watched_at: string | null
           updated_at: string
           wants_logo: boolean | null
           wants_website: boolean | null
@@ -332,6 +334,8 @@ export type Database = {
           services?: string[]
           status?: Database["public"]["Enums"]["partner_status"]
           tier?: string
+          tutorial_max_progress?: number
+          tutorial_watched_at?: string | null
           updated_at?: string
           wants_logo?: boolean | null
           wants_website?: boolean | null
@@ -364,6 +368,8 @@ export type Database = {
           services?: string[]
           status?: Database["public"]["Enums"]["partner_status"]
           tier?: string
+          tutorial_max_progress?: number
+          tutorial_watched_at?: string | null
           updated_at?: string
           wants_logo?: boolean | null
           wants_website?: boolean | null
