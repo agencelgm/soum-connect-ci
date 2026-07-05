@@ -234,6 +234,23 @@ function DashboardKpis() {
 }
 
 function PendingBadge({ count }: { count: number }) {
+  // Tri : jamais connectés en premier, puis plus anciens en tête.
+  // (fonction utilitaire pour l'onglet Partenaires)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  return count ? (
+    <span className="ml-1.5 inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full bg-destructive text-destructive-foreground text-xs font-semibold animate-pulse">
+      {count}
+    </span>
+  ) : null;
+}
+
+function byLastLoginAsc(a: any, b: any): number {
+  const ax = a.last_login_at ? new Date(a.last_login_at).getTime() : 0;
+  const bx = b.last_login_at ? new Date(b.last_login_at).getTime() : 0;
+  return ax - bx;
+}
+
+function _PendingBadgeLegacy({ count }: { count: number }) {
   if (!count) return null;
   return (
     <span className="ml-1.5 inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full bg-destructive text-destructive-foreground text-xs font-semibold animate-pulse">
