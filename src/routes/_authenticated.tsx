@@ -9,6 +9,7 @@ import { isUnauthorizedError, signOutAndClear } from "@/lib/auth-actions";
 import { UnauthorizedScreen } from "@/components/auth/UnauthorizedScreen";
 import { AppShell } from "@/components/layout/AppShell";
 import { PendingApprovalBanner } from "@/components/partner/PendingApprovalBanner";
+import { PausedBanner } from "@/components/partner/PausedBanner";
 
 export const Route = createFileRoute("/_authenticated")({
   head: () => ({ meta: [{ name: "robots", content: "noindex,nofollow" }] }),
@@ -73,6 +74,7 @@ function AuthLayout() {
   const unauthorized = isUnauthorizedError(meError);
   const creditsBalance = me?.partner?.credits_balance ?? null;
   const isPending = !isStaff && me?.partner?.status === "pending_review";
+  const isPaused = !isStaff && me?.partner?.status === "paused";
 
   return (
     <AppShell
@@ -88,6 +90,12 @@ function AuthLayout() {
         ) : (
           <>
             {isPending && <PendingApprovalBanner cabinetName={me?.partner?.cabinet_name} />}
+            {isPaused && (
+              <PausedBanner
+                cabinetName={me?.partner?.cabinet_name}
+                pauseReason={me?.partner?.pause_reason}
+              />
+            )}
             <Outlet />
           </>
         )}

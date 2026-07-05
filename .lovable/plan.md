@@ -1,80 +1,79 @@
 ## Objectif
-
-Remettre les inscriptions partenaires en mode **validation manuelle** : après inscription, le cabinet peut se connecter et naviguer dans son espace, **mais ne peut pas débloquer de leads** tant que l'équipe LGM ne l'a pas approuvé. Un lien WhatsApp permet d'accélérer la validation en envoyant les documents (RCCM, etc.).
-
----
-
-## 1. Backend — inscription en attente
-
-`**src/lib/partners.functions.ts` → `signupPartner**`
-
-- Remplacer `status: "approved"` par `status: "pending_review"`.
-- Supprimer `approved_at` / `approved_by`.
-- Supprimer le bonus automatique de 30 crédits (`grantCredits(..., "signup_bonus", ...)`). Les crédits ne seront octroyés qu'à l'approbation manuelle (déjà en place dans `approvePartner`).
-- Garder l'attribution du rôle `partner`.
-- Garder `emitPartnerEvent(partner, "signup")` (notif équipe), mais **ne plus** émettre `"approved"`.
-
-Aucune migration de schéma : la colonne `status` accepte déjà `pending_review` (utilisée par `approvePartner` / dashboard admin).
+Suivre la dernière connexion de chaque cabinet partenaire, mettre automatiquement en pause ceux inactifs depuis 14 jours, et exposer un tableau de bord d'activité à l'admin. Un cabinet en pause peut toujours se connecter et parcourir la marketplace, mais ne peut plus débloquer de prospects tant qu'il n'a pas contacté l'équipe LGM sur WhatsApp pour réactivation.
 
 ---
 
-## 2. Frontend — page d'inscription (`src/routes/inscription-partenaire.tsx`)
+## 1. Base de données (migration)
 
-- Modifier le bloc d'intro : remplacer *"activation immédiate"* par un texte clair :
-  > "Après inscription, un membre de l'équipe LGM vous contactera pour valider votre cabinet. Prévoyez votre **RCCM** et tout justificatif d'activité (attestation fiscale, DFE, carte pro…) pour accélérer la validation."
-- Après soumission réussie, ne plus rediriger vers `/marketplace` avec un toast "Bienvenue" — rediriger vers `/espace-partenaire` avec un toast *"Compte créé. En attente de validation."*.
+Ajouter à la table `partners` :
+- `last_login_at TIMESTAMPTZ` — mise à jour à chaque appel `getMyPartner` par le partenaire.
+- Index `partners_last_login_idx` sur `(status, last_login_at)` pour le cron.
 
-## 3. Frontend — bandeau "En attente d'approbation" partout
+Créer une **fonction SQL** `public.auto_pause_inactive_partners()` (SECURITY DEFINER) qui :
+- Sélectionne les partenaires `status = 'approved'` dont `last_login_at < now() - interval '14 days'` (ou `NULL` avec `approved_at < now() - interval '14 days'`).
+- Passe leur `status` à `'paused'`, set `paused_at = now()`, `pause_reason = 'Inactivité (14 jours sans connexion)'`, `paused_by = NULL`.
+- Retourne le nombre de comptes affectés (pour logs cron).
 
-Créer `src/components/partner/PendingApprovalBanner.tsx` :
+Planifier via `pg_cron` : exécution **quotidienne à 03:00 UTC** (`0 3 * * *`) qui appelle `SELECT public.auto_pause_inactive_partners();`. Pas de `pg_net`, pas d'endpoint HTTP — logique 100 % SQL, plus fiable et gratuit.
 
-- Affiché en haut de chaque page authentifiée quand `me.partner.status === "pending_review"`.
-- Contenu :
-  - Titre : *"Compte en cours de validation"*
-  - Texte : *"Notre équipe vérifie votre cabinet. Vous pouvez explorer la marketplace, mais le déblocage de prospects sera activé dès approbation."*
-  - Deux boutons :
-    1. **Bouton WhatsApp** (vert) → `https://wa.me/<numero>?text=<message pré-rempli>` avec `target="_blank"`. Message pré-rempli : *"Bonjour LGM, je viens de créer mon compte partenaire ({cabinet_name}). Voici mes documents pour accélérer la validation."*
-    2. Lien secondaire *"Voir les documents demandés"* qui déroule une liste (RCCM, DFE, pièce d'identité du gérant, attestation fiscale, éventuel agrément expert-comptable).
+## 2. Backend — mise à jour du "dernier login"
 
-Intégration : injecter le bandeau dans `src/routes/_authenticated.tsx` (au-dessus de `<Outlet />`) pour qu'il apparaisse sur toutes les pages partenaires (marketplace, historique, espace-partenaire, recharger).
+**`src/lib/partners.functions.ts` → `getMyPartner`**
+- Après avoir récupéré le partenaire (branche `profile_id = userId`, donc pas les membres d'équipe), mettre à jour `last_login_at = now()` via `supabaseAdmin` **si** l'appelant est bien le propriétaire du cabinet.
+- Fire-and-forget (pas de `await` bloquant sur le résultat) pour ne pas ralentir chaque appel.
 
-## 4. Marketplace — navigation OK, unlock bloqué
+Cette approche évite d'ajouter un endpoint dédié : `getMyPartner` est déjà appelé sur chaque page authentifiée et à chaque login.
 
-`src/routes/_authenticated.marketplace.tsx`
+## 3. Frontend — bandeau "Compte en pause"
 
-- **Retirer** le blocage total actuel (lignes 83-88 qui affichent *"Votre compte n'est pas encore activé"*).
-- Les partenaires `pending_review` voient la liste normalement.
-- Sur chaque carte de lead, remplacer le bouton **Débloquer** par un bouton désactivé *"Approbation requise"* + tooltip renvoyant vers le bandeau.
-- Garder aussi la garde côté serveur : `unlock_lead` RPC utilise déjà `partner_not_approved` (fonction `unlock_lead` en base), donc pas de risque même si un partenaire contourne le front.
+Créer `src/components/partner/PausedBanner.tsx` (basé sur `PendingApprovalBanner`) :
+- Couleur orange (distincte de l'amber "pending").
+- Titre : *"Compte en pause — réactivation requise"*
+- Texte : *"Votre compte est actuellement en pause (motif : {pause_reason}). Vous pouvez toujours parcourir la marketplace, mais le déblocage de prospects est désactivé. Contactez-nous sur WhatsApp pour réactiver votre compte."*
+- Bouton **WhatsApp** vert → +225 07 98 17 23 39 avec message pré-rempli :
+  > *"Bonjour LGM, je souhaite réactiver mon compte partenaire ({cabinet_name}). Merci."*
 
-## 5. WhatsApp — numéro configurable
+Intégration dans `src/routes/_authenticated.tsx` : afficher `PausedBanner` quand `me.partner.status === 'paused'` (mêmes règles d'exclusion staff que le bandeau pending).
 
-- Ajouter une constante `WHATSAPP_SUPPORT_NUMBER` dans `src/lib/utils.ts` (ou nouveau `src/lib/contact.ts`), valeur en dur pour l'instant : `2250700000000` (à confirmer avec toi — voir question ci-dessous).
-- Utilisée par le bandeau et par tout futur point de contact.
+## 4. Frontend — marketplace (extension du blocage existant)
 
-## 6. Emails / notifications
+`src/routes/_authenticated.marketplace.tsx` :
+- Ajouter `partnerPaused = data.partner.status === 'paused'` et passer à `LeadCard`.
+- Étendre la branche *"Approbation requise"* pour couvrir aussi le cas paused, avec un libellé conditionnel : *"Réactivation requise"* si paused, *"Approbation requise"* si pending.
 
-- La webhook `emitPartnerEvent(partner, "signup")` existe déjà et envoie vers GHL → suffit pour prévenir l'équipe qu'un nouveau cabinet attend validation.
-- Pas de nouveau template email dans ce lot (peut venir dans un second temps).
+La garde serveur `unlock_lead` refuse déjà tout statut ≠ `approved` (`partner_not_approved`) — aucune modification RPC nécessaire.
+
+## 5. Admin — Tableau de bord "Activité partenaires"
+
+Nouvelle server function `getPartnerActivity` (dans `src/lib/partners.functions.ts`, middleware admin/agent) qui retourne pour tous les partenaires non-supprimés :
+- `id, cabinet_name, contact_first_name, contact_last_name, email, phone, city, status, last_login_at, approved_at, paused_at, pause_reason, credits_balance`
+- Trié par `last_login_at` croissant (les plus inactifs en tête), avec `NULL` en premier (jamais connectés).
+
+Nouvelle section dans `src/routes/_authenticated.admin.tsx` (nouvel onglet `?tab=activity` ou bloc dans l'onglet Partners existant, à décider — cf. question ci-dessous) affichant un tableau avec :
+| Cabinet | Contact | Ville | Statut | Dernière connexion | Jours d'inactivité | Crédits | Actions |
+- Colonne "Dernière connexion" : *"il y a X jours"* + date brute au survol. Rouge si ≥ 14 j, orange 7-13 j, vert < 7 j, gris "Jamais connecté".
+- Colonne Actions : bouton **Réactiver** (visible si `status = paused`) — utilise le flux existant `resumePartner`. Bouton **Mettre en pause** manuel si `approved`.
+- Filtres rapides : *Tous / Actifs / En pause / Inactifs 7+ jours / Jamais connectés*.
+
+## 6. Fichiers touchés
+- **Migration** : ajout colonne `last_login_at`, index, fonction `auto_pause_inactive_partners`, planification `pg_cron`.
+- `src/lib/partners.functions.ts` : bump `last_login_at` dans `getMyPartner` + nouvelle `getPartnerActivity`.
+- `src/components/partner/PausedBanner.tsx` (nouveau).
+- `src/routes/_authenticated.tsx` : montage du bandeau paused.
+- `src/routes/_authenticated.marketplace.tsx` : prise en compte de `paused`.
+- `src/routes/_authenticated.admin.tsx` : nouvelle section activité.
+- `src/lib/contact.ts` : ajout d'un helper `whatsappReactivationUrl(cabinet_name)`.
 
 ---
-
-## Fichiers touchés
-
-- `src/lib/partners.functions.ts` (signup → pending_review, retrait crédits auto)
-- `src/routes/inscription-partenaire.tsx` (copy + redirect)
-- `src/routes/_authenticated.tsx` (montage bandeau)
-- `src/routes/_authenticated.marketplace.tsx` (retrait blocage, bouton désactivé)
-- `src/components/partner/PendingApprovalBanner.tsx` (nouveau)
-- `src/lib/contact.ts` (nouveau, numéro WhatsApp)
 
 ## Résultat attendu
+- À chaque connexion partenaire, `last_login_at` est mis à jour.
+- Chaque nuit, le cron passe automatiquement en pause les cabinets inactifs ≥ 14 j.
+- Un cabinet paused voit un bandeau orange avec bouton WhatsApp de réactivation, parcourt la marketplace mais ne peut pas débloquer de leads.
+- L'admin dispose d'un tableau trié par inactivité pour piloter la réactivation manuelle et les relances commerciales.
 
-- Nouvel inscrit → `status = pending_review`, 0 crédit, redirigé sur `/espace-partenaire`.
-- Bandeau jaune visible sur toutes les pages avec bouton WhatsApp direct.
-- Marketplace visible mais unlock impossible (front + back).
-- Admin valide via `/admin` (flux existant `approvePartner`) → status passe à `approved`, +30 crédits, bandeau disparaît, unlock devient possible.
+---
 
-## Question avant de coder
-
-Quel numéro WhatsApp doit-on utiliser pour le bouton ? le numéro est le +2250798172339
+## Questions avant de coder
+1. **Placement du tableau d'activité** : nouvel onglet dédié dans `/admin?tab=activity`, ou intégré directement à l'onglet **Partenaires** existant (colonne "Dernière connexion" ajoutée à la liste actuelle) ?
+2. **Seuil confirmé** à 14 jours ? (option : 21 j / 30 j si tu veux être plus souple pour le lancement)

@@ -242,6 +242,57 @@ function PendingBadge({ count }: { count: number }) {
   );
 }
 
+function byLastLoginAsc(a: any, b: any): number {
+  const ax = a.last_login_at ? new Date(a.last_login_at).getTime() : 0;
+  const bx = b.last_login_at ? new Date(b.last_login_at).getTime() : 0;
+  return ax - bx;
+}
+
+function LastLoginBadge({
+  lastLoginAt,
+  status,
+}: {
+  lastLoginAt: string | null;
+  status: string;
+}) {
+  // On n'affiche cette info que pour les cabinets ayant atteint l'étape approbation
+  if (status === "pending_review" || status === "rejected") return null;
+  if (!lastLoginAt) {
+    return (
+      <p className="text-xs mt-1 text-muted-foreground">
+        Dernière connexion : <span className="font-medium text-gray-500">jamais connecté</span>
+      </p>
+    );
+  }
+  const ts = new Date(lastLoginAt).getTime();
+  const days = Math.floor((Date.now() - ts) / 86_400_000);
+  const label =
+    days === 0
+      ? "aujourd'hui"
+      : days === 1
+        ? "hier"
+        : `il y a ${days} jours`;
+  const color =
+    days >= 14
+      ? "text-red-600"
+      : days >= 7
+        ? "text-orange-600"
+        : "text-emerald-700";
+  const dateFr = new Date(lastLoginAt).toLocaleDateString("fr-FR", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+  return (
+    <p className="text-xs mt-1 text-muted-foreground">
+      Dernière connexion :{" "}
+      <span className={`font-semibold ${color}`} title={dateFr}>
+        {label}
+      </span>
+    </p>
+  );
+}
+
 function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
   const listFn = useServerFn(listPartners);
   const qc = useQueryClient();
@@ -250,8 +301,14 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
 
   const buckets = {
     pending_review: partners.filter((p) => p.status === "pending_review"),
-    approved: partners.filter((p) => p.status === "approved"),
-    paused: partners.filter((p) => p.status === "paused"),
+    approved: partners
+      .filter((p) => p.status === "approved")
+      .slice()
+      .sort(byLastLoginAsc),
+    paused: partners
+      .filter((p) => p.status === "paused")
+      .slice()
+      .sort(byLastLoginAsc),
     rejected: partners.filter((p) => p.status === "rejected"),
   };
 
@@ -342,6 +399,7 @@ function PartnerCard({
           <p className="text-xs text-muted-foreground mt-1">
             {partner.city} · Crédits : <strong>{partner.credits_balance}</strong>
           </p>
+          <LastLoginBadge lastLoginAt={partner.last_login_at} status={partner.status} />
           {partner.services?.length > 0 && (
             <p className="text-xs mt-1">Services : {partner.services.join(", ")}</p>
           )}

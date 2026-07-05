@@ -82,6 +82,7 @@ function MarketplacePage() {
   }
   const partnerApproved = data.partner.status === "approved";
   const partnerPending = data.partner.status === "pending_review";
+  const partnerPaused = data.partner.status === "paused";
 
   const availableLeads = data.leads.filter((l) => l.unlock_count < l.max_unlocks);
   const fullLeads = data.leads.filter((l) => l.unlock_count >= l.max_unlocks);
@@ -195,6 +196,7 @@ function MarketplacePage() {
                 isPremium={isPremium}
                 partnerApproved={partnerApproved}
                 partnerPending={partnerPending}
+                partnerPaused={partnerPaused}
               />
             ))}
           </div>
@@ -237,6 +239,7 @@ function LeadCard({
   isPremium,
   partnerApproved,
   partnerPending,
+  partnerPaused,
 }: {
   lead: Lead;
   alreadyUnlocked: boolean;
@@ -244,6 +247,7 @@ function LeadCard({
   isPremium: boolean;
   partnerApproved: boolean;
   partnerPending: boolean;
+  partnerPaused: boolean;
 }) {
   const qc = useQueryClient();
   const unlock = useServerFn(unlockLead);
@@ -467,7 +471,7 @@ function LeadCard({
             </a>
           </Button>
         </div>
-      ) : partnerPending || !partnerApproved ? (
+      ) : partnerPaused || partnerPending || !partnerApproved ? (
         <div className="space-y-1.5 pt-1">
           <Button
             type="button"
@@ -475,13 +479,19 @@ function LeadCard({
             size="lg"
             variant="outline"
             className="w-full font-semibold"
-            title="Votre compte est en cours de validation par l'équipe LGM."
+            title={
+              partnerPaused
+                ? "Votre compte est en pause. Contactez-nous sur WhatsApp pour le réactiver."
+                : "Votre compte est en cours de validation par l'équipe LGM."
+            }
           >
             <Lock className="h-4 w-4 mr-2" />
-            Approbation requise
+            {partnerPaused ? "Réactivation requise" : "Approbation requise"}
           </Button>
           <p className="text-[11px] text-center text-muted-foreground">
-            Le déblocage sera activé dès la validation de votre cabinet.
+            {partnerPaused
+              ? "Contactez l'équipe LGM sur WhatsApp pour réactiver votre compte."
+              : "Le déblocage sera activé dès la validation de votre cabinet."}
           </p>
         </div>
       ) : credits < 1 ? (
