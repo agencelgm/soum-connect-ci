@@ -114,9 +114,7 @@ export const signupPartner = createServerFn({ method: "POST" })
         wants_website: data.wants_website ?? null,
         wants_logo: data.wants_logo ?? null,
         contact_role: data.contact_role,
-        status: "approved",
-        approved_at: new Date().toISOString(),
-        approved_by: userId,
+        status: "pending_review",
         credits_balance: 0,
       })
       .select("id")
@@ -131,14 +129,9 @@ export const signupPartner = createServerFn({ method: "POST" })
 
     const partner = await fetchPartner(inserted.id);
     if (partner) {
-      // Bonus de bienvenue automatique (même montant que l'approbation manuelle)
-      try {
-        await grantCredits(partner, 30, "signup_bonus", userId, "Bonus d'inscription (auto-approbation)");
-      } catch (err) {
-        console.error("[signupPartner] grantCredits failed", err);
-      }
+      // Notifie l'équipe LGM qu'un nouveau cabinet est en attente de validation.
+      // Les crédits de bienvenue (+30) seront octroyés à l'approbation manuelle.
       await emitPartnerEvent(partner, "signup");
-      await emitPartnerEvent(partner, "approved");
     }
 
     return { id: inserted.id };
