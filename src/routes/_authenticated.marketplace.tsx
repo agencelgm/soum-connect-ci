@@ -80,16 +80,8 @@ function MarketplacePage() {
       </div>
     );
   }
-  if (data.partner.status !== "approved") {
-    return (
-      <div className="rounded-lg border border-amber-200 bg-amber-50 p-6">
-        <p>Votre compte n'est pas encore activé. Vous ne pouvez pas accéder à la marketplace.</p>
-        <Button asChild variant="outline" className="mt-3">
-          <Link to="/marketplace">Retour</Link>
-        </Button>
-      </div>
-    );
-  }
+  const partnerApproved = data.partner.status === "approved";
+  const partnerPending = data.partner.status === "pending_review";
 
   const availableLeads = data.leads.filter((l) => l.unlock_count < l.max_unlocks);
   const fullLeads = data.leads.filter((l) => l.unlock_count >= l.max_unlocks);
@@ -201,6 +193,8 @@ function MarketplacePage() {
                 alreadyUnlocked={data.unlocked_ids.includes(lead.id)}
                 credits={data.partner!.credits_balance}
                 isPremium={isPremium}
+                partnerApproved={partnerApproved}
+                partnerPending={partnerPending}
               />
             ))}
           </div>
@@ -241,11 +235,15 @@ function LeadCard({
   alreadyUnlocked,
   credits,
   isPremium,
+  partnerApproved,
+  partnerPending,
 }: {
   lead: Lead;
   alreadyUnlocked: boolean;
   credits: number;
   isPremium: boolean;
+  partnerApproved: boolean;
+  partnerPending: boolean;
 }) {
   const qc = useQueryClient();
   const unlock = useServerFn(unlockLead);
@@ -468,6 +466,23 @@ function LeadCard({
               Devenir Premium (WhatsApp)
             </a>
           </Button>
+        </div>
+      ) : partnerPending || !partnerApproved ? (
+        <div className="space-y-1.5 pt-1">
+          <Button
+            type="button"
+            disabled
+            size="lg"
+            variant="outline"
+            className="w-full font-semibold"
+            title="Votre compte est en cours de validation par l'équipe LGM."
+          >
+            <Lock className="h-4 w-4 mr-2" />
+            Approbation requise
+          </Button>
+          <p className="text-[11px] text-center text-muted-foreground">
+            Le déblocage sera activé dès la validation de votre cabinet.
+          </p>
         </div>
       ) : credits < 1 ? (
         <div className="space-y-1">

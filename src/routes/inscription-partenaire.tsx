@@ -124,7 +124,7 @@ function InscriptionPage() {
         },
       });
 
-      toast.success("Compte créé et activé. Bienvenue !");
+      toast.success("Compte créé. Notre équipe vous contactera pour la validation.");
       trackMetaConversion(
         "CompleteRegistration",
         {
@@ -140,7 +140,7 @@ function InscriptionPage() {
           ct: form.city,
         },
       );
-      navigate({ to: "/marketplace", replace: true });
+      navigate({ to: "/espace-partenaire", replace: true });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Erreur inconnue");
     } finally {
@@ -151,10 +151,19 @@ function InscriptionPage() {
   return (
     <section className="mx-auto max-w-2xl px-6 py-12">
       <h1 className="text-3xl font-bold mb-2">Devenir cabinet partenaire</h1>
-      <p className="text-muted-foreground mb-8">
-        Recevez des demandes qualifiées d'entrepreneurs en Côte d'Ivoire. Inscription gratuite
-        et activation immédiate de votre compte.
+      <p className="text-muted-foreground mb-4">
+        Recevez des demandes qualifiées d'entrepreneurs en Côte d'Ivoire. L'inscription est
+        gratuite. Après votre demande, un membre de l'équipe LGM vous contactera pour valider
+        votre cabinet avant d'activer l'accès aux prospects.
       </p>
+      <div className="mb-8 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+        <p className="font-semibold">Documents à prévoir pour accélérer la validation</p>
+        <p className="mt-1">
+          RCCM, DFE ou attestation fiscale, pièce d'identité du gérant, et tout justificatif
+          d'activité (agrément expert-comptable, site, portfolio). Vous pourrez les envoyer par
+          WhatsApp dès la création de votre compte.
+        </p>
+      </div>
       <form onSubmit={onSubmit} className="space-y-4">
         <div>
           <Label>Nom du cabinet *</Label>
