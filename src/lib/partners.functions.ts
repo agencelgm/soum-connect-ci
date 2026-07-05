@@ -221,7 +221,10 @@ export const markTutorialProgress = createServerFn({ method: "POST" })
     const shouldComplete =
       !current?.tutorial_watched_at && data.completed === true && data.progress >= 0.95;
 
-    const patch: Record<string, unknown> = { tutorial_max_progress: newMax };
+    const patch: {
+      tutorial_max_progress: number;
+      tutorial_watched_at?: string;
+    } = { tutorial_max_progress: newMax };
     if (shouldComplete) patch.tutorial_watched_at = new Date().toISOString();
 
     const { error } = await supabaseAdmin
