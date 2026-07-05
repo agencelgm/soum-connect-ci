@@ -467,6 +467,23 @@ function LeadCard({
             </a>
           </Button>
         </div>
+      ) : partnerPending || !partnerApproved ? (
+        <div className="space-y-1.5 pt-1">
+          <Button
+            type="button"
+            disabled
+            size="lg"
+            variant="outline"
+            className="w-full font-semibold"
+            title="Votre compte est en cours de validation par l'équipe LGM."
+          >
+            <Lock className="h-4 w-4 mr-2" />
+            Approbation requise
+          </Button>
+          <p className="text-[11px] text-center text-muted-foreground">
+            Le déblocage sera activé dès la validation de votre cabinet.
+          </p>
+        </div>
       ) : credits < 1 ? (
         <div className="space-y-1">
           <Button asChild variant="default" size="lg" className="w-full">
