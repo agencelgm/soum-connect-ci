@@ -80,16 +80,8 @@ function MarketplacePage() {
       </div>
     );
   }
-  if (data.partner.status !== "approved") {
-    return (
-      <div className="rounded-lg border border-amber-200 bg-amber-50 p-6">
-        <p>Votre compte n'est pas encore activé. Vous ne pouvez pas accéder à la marketplace.</p>
-        <Button asChild variant="outline" className="mt-3">
-          <Link to="/marketplace">Retour</Link>
-        </Button>
-      </div>
-    );
-  }
+  const partnerApproved = data.partner.status === "approved";
+  const partnerPending = data.partner.status === "pending_review";
 
   const availableLeads = data.leads.filter((l) => l.unlock_count < l.max_unlocks);
   const fullLeads = data.leads.filter((l) => l.unlock_count >= l.max_unlocks);
@@ -201,6 +193,8 @@ function MarketplacePage() {
                 alreadyUnlocked={data.unlocked_ids.includes(lead.id)}
                 credits={data.partner!.credits_balance}
                 isPremium={isPremium}
+                partnerApproved={partnerApproved}
+                partnerPending={partnerPending}
               />
             ))}
           </div>
