@@ -342,6 +342,7 @@ function PartnerCard({
           <p className="text-xs text-muted-foreground mt-1">
             {partner.city} · Crédits : <strong>{partner.credits_balance}</strong>
           </p>
+          <LastLoginBadge lastLoginAt={partner.last_login_at} status={partner.status} />
           {partner.services?.length > 0 && (
             <p className="text-xs mt-1">Services : {partner.services.join(", ")}</p>
           )}
