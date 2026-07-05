@@ -288,6 +288,7 @@ export type Database = {
           email: string
           facebook_url: string | null
           id: string
+          last_login_at: string | null
           pause_reason: string | null
           paused_at: string | null
           paused_by: string | null
@@ -319,6 +320,7 @@ export type Database = {
           email: string
           facebook_url?: string | null
           id?: string
+          last_login_at?: string | null
           pause_reason?: string | null
           paused_at?: string | null
           paused_by?: string | null
@@ -350,6 +352,7 @@ export type Database = {
           email?: string
           facebook_url?: string | null
           id?: string
+          last_login_at?: string | null
           pause_reason?: string | null
           paused_at?: string | null
           paused_by?: string | null
@@ -521,6 +524,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      auto_pause_inactive_partners: { Args: never; Returns: number }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
