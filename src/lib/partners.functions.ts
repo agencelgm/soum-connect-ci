@@ -152,14 +152,6 @@ export const getMyPartner = createServerFn({ method: "GET" })
       .maybeSingle();
     if (error) throw new Error(error.message);
     let isOwner = !!data;
-    // Bump last_login_at pour le propriétaire (fire-and-forget)
-    if (data) {
-      void supabaseAdmin
-        .from("partners")
-        .update({ last_login_at: new Date().toISOString() })
-        .eq("id", data.id)
-        .then(() => {});
-    }
     // 2) Sinon, cabinet auquel ce user est rattaché comme membre
     if (!data) {
       const { data: mem } = await supabaseAdmin
@@ -175,6 +167,22 @@ export const getMyPartner = createServerFn({ method: "GET" })
           .is("deleted_at", null)
           .maybeSingle();
         data = p ?? null;
+      }
+    }
+    // Bump last_login_at à chaque appel (propriétaire OU membre d'équipe).
+    // IMPORTANT : on doit awaiter — sur Cloudflare Workers, un promise
+    // « fire-and-forget » est tué dès que la réponse est renvoyée, ce qui
+    // faisait que la colonne restait vide en production.
+    if (data?.id) {
+      const { error: bumpErr } = await supabaseAdmin
+        .from("partners")
+        .update({ last_login_at: new Date().toISOString() })
+        .eq("id", data.id);
+      if (bumpErr) {
+        console.error("[getMyPartner] last_login_at bump failed", bumpErr);
+      } else {
+        // Refléter immédiatement la nouvelle valeur dans la réponse.
+        data = { ...data, last_login_at: new Date().toISOString() };
       }
     }
     const { data: roles } = await supabaseAdmin
