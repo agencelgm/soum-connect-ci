@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import { isUnauthorizedError, signOutAndClear } from "@/lib/auth-actions";
 import { UnauthorizedScreen } from "@/components/auth/UnauthorizedScreen";
 import { AppShell } from "@/components/layout/AppShell";
+import { PendingApprovalBanner } from "@/components/partner/PendingApprovalBanner";
 
 export const Route = createFileRoute("/_authenticated")({
   head: () => ({ meta: [{ name: "robots", content: "noindex,nofollow" }] }),
@@ -71,6 +72,7 @@ function AuthLayout() {
 
   const unauthorized = isUnauthorizedError(meError);
   const creditsBalance = me?.partner?.credits_balance ?? null;
+  const isPending = !isStaff && me?.partner?.status === "pending_review";
 
   return (
     <AppShell
@@ -81,7 +83,14 @@ function AuthLayout() {
       onSignOut={signOut}
     >
       <div className="mx-auto max-w-6xl w-full">
-        {unauthorized ? <UnauthorizedScreen /> : <Outlet />}
+        {unauthorized ? (
+          <UnauthorizedScreen />
+        ) : (
+          <>
+            {isPending && <PendingApprovalBanner cabinetName={me?.partner?.cabinet_name} />}
+            <Outlet />
+          </>
+        )}
       </div>
     </AppShell>
   );
