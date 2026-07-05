@@ -42,6 +42,22 @@ function AuthLayout() {
   const isStaff = (me?.roles ?? []).some((r) => r === "admin" || r === "agent");
   const isAdmin = (me?.roles ?? []).includes("admin");
 
+  // Gate vidéo tutorielle obligatoire pour les partenaires en attente qui n'ont pas encore
+  // regardé la vidéo jusqu'au bout.
+  const needsTutorial =
+    !isStaff &&
+    me?.partner?.status === "pending_review" &&
+    !me?.partner?.tutorial_watched_at;
+  useEffect(() => {
+    if (!needsTutorial) return;
+    if (
+      pathname !== "/tutoriel-partenaire" &&
+      pathname !== "/changer-mot-de-passe"
+    ) {
+      navigate({ to: "/tutoriel-partenaire", replace: true });
+    }
+  }, [needsTutorial, pathname, navigate]);
+
   // Le staff n'a pas accès aux pages partenaires (marketplace/recharger/historique)
   useEffect(() => {
     if (!isStaff) return;
@@ -75,6 +91,8 @@ function AuthLayout() {
   const creditsBalance = me?.partner?.credits_balance ?? null;
   const isPending = !isStaff && me?.partner?.status === "pending_review";
   const isPaused = !isStaff && me?.partner?.status === "paused";
+  // Ne pas afficher le bandeau "en attente" sur la page tutoriel (info déjà présente)
+  const showPendingBanner = isPending && pathname !== "/tutoriel-partenaire";
 
   return (
     <AppShell
@@ -89,7 +107,7 @@ function AuthLayout() {
           <UnauthorizedScreen />
         ) : (
           <>
-            {isPending && <PendingApprovalBanner cabinetName={me?.partner?.cabinet_name} />}
+            {showPendingBanner && <PendingApprovalBanner cabinetName={me?.partner?.cabinet_name} />}
             {isPaused && (
               <PausedBanner
                 cabinetName={me?.partner?.cabinet_name}
