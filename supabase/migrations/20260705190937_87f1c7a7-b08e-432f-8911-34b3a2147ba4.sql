@@ -1,0 +1,1 @@
+REVOKE ALL ON FUNCTION public.auto_pause_inactive_partners() FROM PUBLIC, anon, authenticated;
