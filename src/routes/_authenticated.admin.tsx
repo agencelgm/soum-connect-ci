@@ -5,6 +5,54 @@ import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { computeDuplicates, normalizeText, type DuplicateInfo } from "@/lib/duplicates";
 
+function DuplicateBadge<T extends { id: string }>({
+  info,
+  items,
+  renderItem,
+}: {
+  info: DuplicateInfo;
+  items: T[];
+  renderItem: (item: T) => string;
+}) {
+  const [open, setOpen] = useState(false);
+  const matchIds = new Set([...info.emailMatches, ...info.phoneMatches]);
+  const matches = items.filter((i) => matchIds.has(i.id));
+  const label =
+    info.email && info.phone
+      ? "⚠ Doublon email+tél"
+      : info.email
+        ? "⚠ Doublon email"
+        : "⚠ Doublon téléphone";
+  return (
+    <span className="relative inline-block ml-2 align-middle">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="rounded-full bg-red-100 text-red-800 border border-red-300 text-[10px] font-semibold px-2 py-0.5 hover:bg-red-200"
+      >
+        {label}
+      </button>
+      {open && (
+        <div className="absolute z-50 mt-1 w-80 rounded-md border bg-popover p-3 text-xs shadow-lg text-popover-foreground">
+          <div className="flex justify-between items-center mb-2">
+            <strong>Autres entrées correspondantes</strong>
+            <button className="text-muted-foreground" onClick={() => setOpen(false)}>×</button>
+          </div>
+          {matches.length === 0 ? (
+            <p className="text-muted-foreground">Aucune autre entrée trouvée.</p>
+          ) : (
+            <ul className="space-y-1">
+              {matches.map((m) => (
+                <li key={m.id} className="border-l-2 border-red-400 pl-2">{renderItem(m)}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+    </span>
+  );
+}
+
 const FORM_VERSION = "v4-2026-07-01";
 import {
   listPartners,
