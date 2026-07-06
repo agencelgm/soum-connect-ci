@@ -1,7 +1,9 @@
 import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Search } from "lucide-react";
+import { computeDuplicates, normalizeText, type DuplicateInfo } from "@/lib/duplicates";
 
 const FORM_VERSION = "v4-2026-07-01";
 import {
