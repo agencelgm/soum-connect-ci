@@ -1,7 +1,57 @@
 import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Search } from "lucide-react";
+import { computeDuplicates, normalizeText, type DuplicateInfo } from "@/lib/duplicates";
+
+function DuplicateBadge<T extends { id: string }>({
+  info,
+  items,
+  renderItem,
+}: {
+  info: DuplicateInfo;
+  items: T[];
+  renderItem: (item: T) => string;
+}) {
+  const [open, setOpen] = useState(false);
+  const matchIds = new Set([...info.emailMatches, ...info.phoneMatches]);
+  const matches = items.filter((i) => matchIds.has(i.id));
+  const label =
+    info.email && info.phone
+      ? "⚠ Doublon email+tél"
+      : info.email
+        ? "⚠ Doublon email"
+        : "⚠ Doublon téléphone";
+  return (
+    <span className="relative inline-block ml-2 align-middle">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="rounded-full bg-red-100 text-red-800 border border-red-300 text-[10px] font-semibold px-2 py-0.5 hover:bg-red-200"
+      >
+        {label}
+      </button>
+      {open && (
+        <div className="absolute z-50 mt-1 w-80 rounded-md border bg-popover p-3 text-xs shadow-lg text-popover-foreground">
+          <div className="flex justify-between items-center mb-2">
+            <strong>Autres entrées correspondantes</strong>
+            <button className="text-muted-foreground" onClick={() => setOpen(false)}>×</button>
+          </div>
+          {matches.length === 0 ? (
+            <p className="text-muted-foreground">Aucune autre entrée trouvée.</p>
+          ) : (
+            <ul className="space-y-1">
+              {matches.map((m) => (
+                <li key={m.id} className="border-l-2 border-red-400 pl-2">{renderItem(m)}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+    </span>
+  );
+}
 
 const FORM_VERSION = "v4-2026-07-01";
 import {
@@ -332,30 +382,147 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
   const { data, isLoading } = useQuery({ queryKey: ["partners"], queryFn: () => listFn() });
   const partners = data?.partners ?? [];
   const [tutorialFilter, setTutorialFilter] = useState<"all" | "watched" | "not_watched">("all");
+  const [searchQ, setSearchQ] = useState("");
+  const [cityFilter, setCityFilter] = useState<string>("all");
+  const [serviceFilter, setServiceFilter] = useState<string>("all");
+  const [tierFilter, setTierFilter] = useState<"all" | "premium" | "regular">("all");
+  const [duplicatesOnly, setDuplicatesOnly] = useState(false);
 
+  const duplicates = useMemo(
+    () => computeDuplicates(partners, (p: any) => p.email, (p: any) => p.phone),
+    [partners],
+  );
+
+  const cities = useMemo(() => {
+    const s = new Set<string>();
+    partners.forEach((p: any) => { if (p.city) s.add(p.city); });
+    return Array.from(s).sort((a, b) => a.localeCompare(b, "fr"));
+  }, [partners]);
+
+  const services = useMemo(() => {
+    const s = new Set<string>();
+    partners.forEach((p: any) => (p.services ?? []).forEach((sv: string) => sv && s.add(sv)));
+    return Array.from(s).sort((a, b) => a.localeCompare(b, "fr"));
+  }, [partners]);
+
+  function matchesFilters(p: any): boolean {
+    if (duplicatesOnly && !duplicates.has(p.id)) return false;
+    if (cityFilter !== "all" && p.city !== cityFilter) return false;
+    if (serviceFilter !== "all" && !(p.services ?? []).includes(serviceFilter)) return false;
+    if (tierFilter !== "all") {
+      const t = p.tier === "premium" ? "premium" : "regular";
+      if (t !== tierFilter) return false;
+    }
+    if (searchQ.trim()) {
+      const q = normalizeText(searchQ);
+      const hay = normalizeText(
+        [p.cabinet_name, p.contact_first_name, p.contact_last_name, p.email, p.phone, p.city]
+          .filter(Boolean).join(" "),
+      );
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  }
+
+  const filteredAll = partners.filter(matchesFilters);
   const buckets = {
-    pending_review: partners
+    pending_review: filteredAll
       .filter((p) => p.status === "pending_review")
       .filter((p) => {
         if (tutorialFilter === "watched") return !!p.tutorial_watched_at;
         if (tutorialFilter === "not_watched") return !p.tutorial_watched_at;
         return true;
       }),
-    approved: partners
+    approved: filteredAll
       .filter((p) => p.status === "approved")
       .slice()
       .sort(byLastLoginAsc),
-    paused: partners
+    paused: filteredAll
       .filter((p) => p.status === "paused")
       .slice()
       .sort(byLastLoginAsc),
-    rejected: partners.filter((p) => p.status === "rejected"),
+    rejected: filteredAll.filter((p) => p.status === "rejected"),
   };
+
+  const duplicatesCount = duplicates.size;
 
   if (isLoading) return <p>Chargement…</p>;
 
   return (
-    <Tabs defaultValue="pending_review">
+    <div className="space-y-4">
+      <div className="rounded-lg border bg-card p-3 space-y-3">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            value={searchQ}
+            onChange={(e) => setSearchQ(e.target.value)}
+            placeholder="Rechercher (cabinet, contact, email, téléphone, ville)…"
+            className="pl-9"
+          />
+        </div>
+        <div className="flex flex-wrap items-center gap-2 text-xs">
+          <select
+            value={cityFilter}
+            onChange={(e) => setCityFilter(e.target.value)}
+            className="h-8 rounded-md border border-input bg-background px-2 text-xs"
+          >
+            <option value="all">Toutes villes</option>
+            {cities.map((c) => <option key={c} value={c}>{c}</option>)}
+          </select>
+          <select
+            value={serviceFilter}
+            onChange={(e) => setServiceFilter(e.target.value)}
+            className="h-8 rounded-md border border-input bg-background px-2 text-xs"
+          >
+            <option value="all">Tous services</option>
+            {services.map((s) => <option key={s} value={s}>{s}</option>)}
+          </select>
+          <div className="flex gap-1">
+            {(["all", "premium", "regular"] as const).map((k) => (
+              <button
+                key={k}
+                type="button"
+                onClick={() => setTierFilter(k)}
+                className={cn(
+                  "rounded-full border px-3 py-1 text-xs font-medium",
+                  tierFilter === k
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-background text-muted-foreground border-border hover:border-primary/50",
+                )}
+              >
+                {k === "all" ? "Tous tiers" : k === "premium" ? "★ Premium" : "Regular"}
+              </button>
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={() => setDuplicatesOnly((v) => !v)}
+            className={cn(
+              "rounded-full border px-3 py-1 text-xs font-medium",
+              duplicatesOnly
+                ? "bg-red-600 text-white border-red-600"
+                : "bg-background text-muted-foreground border-border hover:border-red-400",
+            )}
+            title="Afficher uniquement les cabinets flagués comme doublons"
+          >
+            ⚠ Doublons ({duplicatesCount})
+          </button>
+          {(searchQ || cityFilter !== "all" || serviceFilter !== "all" || tierFilter !== "all" || duplicatesOnly) && (
+            <button
+              type="button"
+              onClick={() => { setSearchQ(""); setCityFilter("all"); setServiceFilter("all"); setTierFilter("all"); setDuplicatesOnly(false); }}
+              className="text-xs text-muted-foreground underline"
+            >
+              Réinitialiser
+            </button>
+          )}
+          <span className="ml-auto text-xs text-muted-foreground">
+            {filteredAll.length} cabinet(s) affiché(s) sur {partners.length}
+          </span>
+        </div>
+      </div>
+
+      <Tabs defaultValue="pending_review">
       <TabsList>
         <TabsTrigger value="pending_review">
           En attente ({buckets.pending_review.length}){" "}
@@ -399,22 +566,29 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
               key={p.id}
               partner={p}
               isAdmin={isAdmin}
+              duplicateInfo={duplicates.get(p.id)}
+              allPartners={partners}
               onChange={() => qc.invalidateQueries({ queryKey: ["partners"] })}
             />
           ))}
         </TabsContent>
       ))}
-    </Tabs>
+      </Tabs>
+    </div>
   );
 }
 
 function PartnerCard({
   partner,
   isAdmin,
+  duplicateInfo,
+  allPartners,
   onChange,
 }: {
   partner: any;
   isAdmin: boolean;
+  duplicateInfo?: DuplicateInfo;
+  allPartners?: any[];
   onChange: () => void;
 }) {
   const approveFn = useServerFn(approvePartner);
@@ -460,6 +634,13 @@ function PartnerCard({
             <TutorialBadge
               watchedAt={partner.tutorial_watched_at}
               maxProgress={partner.tutorial_max_progress}
+            />
+          )}
+          {duplicateInfo && (
+            <DuplicateBadge
+              info={duplicateInfo}
+              items={allPartners ?? []}
+              renderItem={(o: any) => `${o.cabinet_name} — ${o.email || "?"} · ${o.phone || "?"} · ${o.status}`}
             />
           )}
           <p className="text-sm text-muted-foreground">
@@ -678,6 +859,28 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
     "all",
   );
   const [detailsProspect, setDetailsProspect] = useState<any>(null);
+  const [searchQ, setSearchQ] = useState("");
+  const [cityFilter, setCityFilter] = useState<string>("all");
+  const [serviceFilter, setServiceFilter] = useState<string>("all");
+  const [periodFilter, setPeriodFilter] = useState<"all" | "7" | "30">("all");
+  const [duplicatesOnly, setDuplicatesOnly] = useState(false);
+
+  const allProspects = data?.prospects ?? [];
+  const duplicates = useMemo(
+    () => computeDuplicates(allProspects, (p: any) => p.email, (p: any) => p.phone),
+    [allProspects],
+  );
+
+  const pCities = useMemo(() => {
+    const s = new Set<string>();
+    allProspects.forEach((p: any) => { if (p.city) s.add(p.city); });
+    return Array.from(s).sort((a, b) => a.localeCompare(b, "fr"));
+  }, [allProspects]);
+  const pServices = useMemo(() => {
+    const s = new Set<string>();
+    allProspects.forEach((p: any) => { if (p.service) s.add(p.service); });
+    return Array.from(s).sort((a, b) => a.localeCompare(b, "fr"));
+  }, [allProspects]);
 
   async function run(id: string, fn: () => Promise<unknown>) {
     setBusyId(id);
@@ -698,11 +901,97 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
     });
   }
   if (isLoading) return <p>Chargement…</p>;
-  const all = data?.prospects ?? [];
+  const all = allProspects;
   const pendingCount = all.filter((p: any) => p.status === "pending_qualification").length;
-  const prospects = filter === "all" ? all : all.filter((p: any) => p.status === filter);
+  const nowMs = Date.now();
+  const prospects = all.filter((p: any) => {
+    if (filter !== "all" && p.status !== filter) return false;
+    if (duplicatesOnly && !duplicates.has(p.id)) return false;
+    if (cityFilter !== "all" && p.city !== cityFilter) return false;
+    if (serviceFilter !== "all" && p.service !== serviceFilter) return false;
+    if (periodFilter !== "all") {
+      const days = Number(periodFilter);
+      const created = new Date(p.created_at).getTime();
+      if (Number.isFinite(created) && nowMs - created > days * 86_400_000) return false;
+    }
+    if (searchQ.trim()) {
+      const q = normalizeText(searchQ);
+      const hay = normalizeText(
+        [p.full_name, p.email, p.phone, p.city, p.service, p.message].filter(Boolean).join(" "),
+      );
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
   return (
     <div className="space-y-2">
+      <div className="rounded-lg border bg-card p-3 space-y-3">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            value={searchQ}
+            onChange={(e) => setSearchQ(e.target.value)}
+            placeholder="Rechercher (nom, email, téléphone, ville, service, message)…"
+            className="pl-9"
+          />
+        </div>
+        <div className="flex flex-wrap items-center gap-2 text-xs">
+          <select
+            value={cityFilter}
+            onChange={(e) => setCityFilter(e.target.value)}
+            className="h-8 rounded-md border border-input bg-background px-2 text-xs"
+          >
+            <option value="all">Toutes villes</option>
+            {pCities.map((c) => <option key={c} value={c}>{c}</option>)}
+          </select>
+          <select
+            value={serviceFilter}
+            onChange={(e) => setServiceFilter(e.target.value)}
+            className="h-8 rounded-md border border-input bg-background px-2 text-xs"
+          >
+            <option value="all">Tous services</option>
+            {pServices.map((s) => <option key={s} value={s}>{s}</option>)}
+          </select>
+          <div className="flex gap-1">
+            {(["all", "7", "30"] as const).map((k) => (
+              <button
+                key={k}
+                type="button"
+                onClick={() => setPeriodFilter(k)}
+                className={cn(
+                  "rounded-full border px-3 py-1 text-xs font-medium",
+                  periodFilter === k
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-background text-muted-foreground border-border hover:border-primary/50",
+                )}
+              >
+                {k === "all" ? "Toute période" : k === "7" ? "7 derniers jours" : "30 derniers jours"}
+              </button>
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={() => setDuplicatesOnly((v) => !v)}
+            className={cn(
+              "rounded-full border px-3 py-1 text-xs font-medium",
+              duplicatesOnly
+                ? "bg-red-600 text-white border-red-600"
+                : "bg-background text-muted-foreground border-border hover:border-red-400",
+            )}
+          >
+            ⚠ Doublons ({duplicates.size})
+          </button>
+          {(searchQ || cityFilter !== "all" || serviceFilter !== "all" || periodFilter !== "all" || duplicatesOnly) && (
+            <button
+              type="button"
+              onClick={() => { setSearchQ(""); setCityFilter("all"); setServiceFilter("all"); setPeriodFilter("all"); setDuplicatesOnly(false); }}
+              className="text-xs text-muted-foreground underline"
+            >
+              Réinitialiser
+            </button>
+          )}
+        </div>
+      </div>
       <div className="flex justify-between items-center flex-wrap gap-2">
         <p className="text-sm text-muted-foreground">
           {prospects.length} prospect(s) affichés (sur {all.length})
@@ -747,6 +1036,13 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
               <span className="ml-1 inline-block rounded bg-muted px-2 py-0.5 text-xs">
                 {p.status}
               </span>
+              {duplicates.has(p.id) && (
+                <DuplicateBadge
+                  info={duplicates.get(p.id)!}
+                  items={all}
+                  renderItem={(o: any) => `${o.full_name || "—"} — ${o.email || "?"} · ${o.phone || "?"} · ${o.status}`}
+                />
+              )}
             </div>
             <span className="text-xs text-muted-foreground">
               {new Date(p.created_at).toLocaleString("fr-FR")}
