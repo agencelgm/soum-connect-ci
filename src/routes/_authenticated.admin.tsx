@@ -334,30 +334,147 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
   const { data, isLoading } = useQuery({ queryKey: ["partners"], queryFn: () => listFn() });
   const partners = data?.partners ?? [];
   const [tutorialFilter, setTutorialFilter] = useState<"all" | "watched" | "not_watched">("all");
+  const [searchQ, setSearchQ] = useState("");
+  const [cityFilter, setCityFilter] = useState<string>("all");
+  const [serviceFilter, setServiceFilter] = useState<string>("all");
+  const [tierFilter, setTierFilter] = useState<"all" | "premium" | "regular">("all");
+  const [duplicatesOnly, setDuplicatesOnly] = useState(false);
 
+  const duplicates = useMemo(
+    () => computeDuplicates(partners, (p: any) => p.email, (p: any) => p.phone),
+    [partners],
+  );
+
+  const cities = useMemo(() => {
+    const s = new Set<string>();
+    partners.forEach((p: any) => { if (p.city) s.add(p.city); });
+    return Array.from(s).sort((a, b) => a.localeCompare(b, "fr"));
+  }, [partners]);
+
+  const services = useMemo(() => {
+    const s = new Set<string>();
+    partners.forEach((p: any) => (p.services ?? []).forEach((sv: string) => sv && s.add(sv)));
+    return Array.from(s).sort((a, b) => a.localeCompare(b, "fr"));
+  }, [partners]);
+
+  function matchesFilters(p: any): boolean {
+    if (duplicatesOnly && !duplicates.has(p.id)) return false;
+    if (cityFilter !== "all" && p.city !== cityFilter) return false;
+    if (serviceFilter !== "all" && !(p.services ?? []).includes(serviceFilter)) return false;
+    if (tierFilter !== "all") {
+      const t = p.tier === "premium" ? "premium" : "regular";
+      if (t !== tierFilter) return false;
+    }
+    if (searchQ.trim()) {
+      const q = normalizeText(searchQ);
+      const hay = normalizeText(
+        [p.cabinet_name, p.contact_first_name, p.contact_last_name, p.email, p.phone, p.city]
+          .filter(Boolean).join(" "),
+      );
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  }
+
+  const filteredAll = partners.filter(matchesFilters);
   const buckets = {
-    pending_review: partners
+    pending_review: filteredAll
       .filter((p) => p.status === "pending_review")
       .filter((p) => {
         if (tutorialFilter === "watched") return !!p.tutorial_watched_at;
         if (tutorialFilter === "not_watched") return !p.tutorial_watched_at;
         return true;
       }),
-    approved: partners
+    approved: filteredAll
       .filter((p) => p.status === "approved")
       .slice()
       .sort(byLastLoginAsc),
-    paused: partners
+    paused: filteredAll
       .filter((p) => p.status === "paused")
       .slice()
       .sort(byLastLoginAsc),
-    rejected: partners.filter((p) => p.status === "rejected"),
+    rejected: filteredAll.filter((p) => p.status === "rejected"),
   };
+
+  const duplicatesCount = duplicates.size;
 
   if (isLoading) return <p>Chargement…</p>;
 
   return (
-    <Tabs defaultValue="pending_review">
+    <div className="space-y-4">
+      <div className="rounded-lg border bg-card p-3 space-y-3">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            value={searchQ}
+            onChange={(e) => setSearchQ(e.target.value)}
+            placeholder="Rechercher (cabinet, contact, email, téléphone, ville)…"
+            className="pl-9"
+          />
+        </div>
+        <div className="flex flex-wrap items-center gap-2 text-xs">
+          <select
+            value={cityFilter}
+            onChange={(e) => setCityFilter(e.target.value)}
+            className="h-8 rounded-md border border-input bg-background px-2 text-xs"
+          >
+            <option value="all">Toutes villes</option>
+            {cities.map((c) => <option key={c} value={c}>{c}</option>)}
+          </select>
+          <select
+            value={serviceFilter}
+            onChange={(e) => setServiceFilter(e.target.value)}
+            className="h-8 rounded-md border border-input bg-background px-2 text-xs"
+          >
+            <option value="all">Tous services</option>
+            {services.map((s) => <option key={s} value={s}>{s}</option>)}
+          </select>
+          <div className="flex gap-1">
+            {(["all", "premium", "regular"] as const).map((k) => (
+              <button
+                key={k}
+                type="button"
+                onClick={() => setTierFilter(k)}
+                className={cn(
+                  "rounded-full border px-3 py-1 text-xs font-medium",
+                  tierFilter === k
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-background text-muted-foreground border-border hover:border-primary/50",
+                )}
+              >
+                {k === "all" ? "Tous tiers" : k === "premium" ? "★ Premium" : "Regular"}
+              </button>
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={() => setDuplicatesOnly((v) => !v)}
+            className={cn(
+              "rounded-full border px-3 py-1 text-xs font-medium",
+              duplicatesOnly
+                ? "bg-red-600 text-white border-red-600"
+                : "bg-background text-muted-foreground border-border hover:border-red-400",
+            )}
+            title="Afficher uniquement les cabinets flagués comme doublons"
+          >
+            ⚠ Doublons ({duplicatesCount})
+          </button>
+          {(searchQ || cityFilter !== "all" || serviceFilter !== "all" || tierFilter !== "all" || duplicatesOnly) && (
+            <button
+              type="button"
+              onClick={() => { setSearchQ(""); setCityFilter("all"); setServiceFilter("all"); setTierFilter("all"); setDuplicatesOnly(false); }}
+              className="text-xs text-muted-foreground underline"
+            >
+              Réinitialiser
+            </button>
+          )}
+          <span className="ml-auto text-xs text-muted-foreground">
+            {filteredAll.length} cabinet(s) affiché(s) sur {partners.length}
+          </span>
+        </div>
+      </div>
+
+      <Tabs defaultValue="pending_review">
       <TabsList>
         <TabsTrigger value="pending_review">
           En attente ({buckets.pending_review.length}){" "}
@@ -401,12 +518,15 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
               key={p.id}
               partner={p}
               isAdmin={isAdmin}
+              duplicateInfo={duplicates.get(p.id)}
+              allPartners={partners}
               onChange={() => qc.invalidateQueries({ queryKey: ["partners"] })}
             />
           ))}
         </TabsContent>
       ))}
-    </Tabs>
+      </Tabs>
+    </div>
   );
 }
 
