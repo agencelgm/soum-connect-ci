@@ -859,6 +859,28 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
     "all",
   );
   const [detailsProspect, setDetailsProspect] = useState<any>(null);
+  const [searchQ, setSearchQ] = useState("");
+  const [cityFilter, setCityFilter] = useState<string>("all");
+  const [serviceFilter, setServiceFilter] = useState<string>("all");
+  const [periodFilter, setPeriodFilter] = useState<"all" | "7" | "30">("all");
+  const [duplicatesOnly, setDuplicatesOnly] = useState(false);
+
+  const allProspects = data?.prospects ?? [];
+  const duplicates = useMemo(
+    () => computeDuplicates(allProspects, (p: any) => p.email, (p: any) => p.phone),
+    [allProspects],
+  );
+
+  const pCities = useMemo(() => {
+    const s = new Set<string>();
+    allProspects.forEach((p: any) => { if (p.city) s.add(p.city); });
+    return Array.from(s).sort((a, b) => a.localeCompare(b, "fr"));
+  }, [allProspects]);
+  const pServices = useMemo(() => {
+    const s = new Set<string>();
+    allProspects.forEach((p: any) => { if (p.service) s.add(p.service); });
+    return Array.from(s).sort((a, b) => a.localeCompare(b, "fr"));
+  }, [allProspects]);
 
   async function run(id: string, fn: () => Promise<unknown>) {
     setBusyId(id);
@@ -879,11 +901,97 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
     });
   }
   if (isLoading) return <p>Chargement…</p>;
-  const all = data?.prospects ?? [];
+  const all = allProspects;
   const pendingCount = all.filter((p: any) => p.status === "pending_qualification").length;
-  const prospects = filter === "all" ? all : all.filter((p: any) => p.status === filter);
+  const nowMs = Date.now();
+  const prospects = all.filter((p: any) => {
+    if (filter !== "all" && p.status !== filter) return false;
+    if (duplicatesOnly && !duplicates.has(p.id)) return false;
+    if (cityFilter !== "all" && p.city !== cityFilter) return false;
+    if (serviceFilter !== "all" && p.service !== serviceFilter) return false;
+    if (periodFilter !== "all") {
+      const days = Number(periodFilter);
+      const created = new Date(p.created_at).getTime();
+      if (Number.isFinite(created) && nowMs - created > days * 86_400_000) return false;
+    }
+    if (searchQ.trim()) {
+      const q = normalizeText(searchQ);
+      const hay = normalizeText(
+        [p.full_name, p.email, p.phone, p.city, p.service, p.message].filter(Boolean).join(" "),
+      );
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
   return (
     <div className="space-y-2">
+      <div className="rounded-lg border bg-card p-3 space-y-3">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            value={searchQ}
+            onChange={(e) => setSearchQ(e.target.value)}
+            placeholder="Rechercher (nom, email, téléphone, ville, service, message)…"
+            className="pl-9"
+          />
+        </div>
+        <div className="flex flex-wrap items-center gap-2 text-xs">
+          <select
+            value={cityFilter}
+            onChange={(e) => setCityFilter(e.target.value)}
+            className="h-8 rounded-md border border-input bg-background px-2 text-xs"
+          >
+            <option value="all">Toutes villes</option>
+            {pCities.map((c) => <option key={c} value={c}>{c}</option>)}
+          </select>
+          <select
+            value={serviceFilter}
+            onChange={(e) => setServiceFilter(e.target.value)}
+            className="h-8 rounded-md border border-input bg-background px-2 text-xs"
+          >
+            <option value="all">Tous services</option>
+            {pServices.map((s) => <option key={s} value={s}>{s}</option>)}
+          </select>
+          <div className="flex gap-1">
+            {(["all", "7", "30"] as const).map((k) => (
+              <button
+                key={k}
+                type="button"
+                onClick={() => setPeriodFilter(k)}
+                className={cn(
+                  "rounded-full border px-3 py-1 text-xs font-medium",
+                  periodFilter === k
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-background text-muted-foreground border-border hover:border-primary/50",
+                )}
+              >
+                {k === "all" ? "Toute période" : k === "7" ? "7 derniers jours" : "30 derniers jours"}
+              </button>
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={() => setDuplicatesOnly((v) => !v)}
+            className={cn(
+              "rounded-full border px-3 py-1 text-xs font-medium",
+              duplicatesOnly
+                ? "bg-red-600 text-white border-red-600"
+                : "bg-background text-muted-foreground border-border hover:border-red-400",
+            )}
+          >
+            ⚠ Doublons ({duplicates.size})
+          </button>
+          {(searchQ || cityFilter !== "all" || serviceFilter !== "all" || periodFilter !== "all" || duplicatesOnly) && (
+            <button
+              type="button"
+              onClick={() => { setSearchQ(""); setCityFilter("all"); setServiceFilter("all"); setPeriodFilter("all"); setDuplicatesOnly(false); }}
+              className="text-xs text-muted-foreground underline"
+            >
+              Réinitialiser
+            </button>
+          )}
+        </div>
+      </div>
       <div className="flex justify-between items-center flex-wrap gap-2">
         <p className="text-sm text-muted-foreground">
           {prospects.length} prospect(s) affichés (sur {all.length})
@@ -928,6 +1036,13 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
               <span className="ml-1 inline-block rounded bg-muted px-2 py-0.5 text-xs">
                 {p.status}
               </span>
+              {duplicates.has(p.id) && (
+                <DuplicateBadge
+                  info={duplicates.get(p.id)!}
+                  items={all}
+                  renderItem={(o: any) => `${o.full_name || "—"} — ${o.email || "?"} · ${o.phone || "?"} · ${o.status}`}
+                />
+              )}
             </div>
             <span className="text-xs text-muted-foreground">
               {new Date(p.created_at).toLocaleString("fr-FR")}
