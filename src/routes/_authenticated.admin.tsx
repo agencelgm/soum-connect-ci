@@ -533,10 +533,14 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
 function PartnerCard({
   partner,
   isAdmin,
+  duplicateInfo,
+  allPartners,
   onChange,
 }: {
   partner: any;
   isAdmin: boolean;
+  duplicateInfo?: DuplicateInfo;
+  allPartners?: any[];
   onChange: () => void;
 }) {
   const approveFn = useServerFn(approvePartner);
@@ -582,6 +586,13 @@ function PartnerCard({
             <TutorialBadge
               watchedAt={partner.tutorial_watched_at}
               maxProgress={partner.tutorial_max_progress}
+            />
+          )}
+          {duplicateInfo && (
+            <DuplicateBadge
+              info={duplicateInfo}
+              items={allPartners ?? []}
+              renderItem={(o: any) => `${o.cabinet_name} — ${o.email || "?"} · ${o.phone || "?"} · ${o.status}`}
             />
           )}
           <p className="text-sm text-muted-foreground">
