@@ -42,21 +42,12 @@ function AuthLayout() {
   const isStaff = (me?.roles ?? []).some((r) => r === "admin" || r === "agent");
   const isAdmin = (me?.roles ?? []).includes("admin");
 
-  // Gate vidéo tutorielle obligatoire pour les partenaires en attente qui n'ont pas encore
-  // regardé la vidéo jusqu'au bout.
+  // Tutoriel obligatoire : accessible en permanence via le menu et rappelé
+  // par un bandeau tant que la vidéo n'a pas été terminée.
   const needsTutorial =
     !isStaff &&
-    me?.partner?.status === "pending_review" &&
+    !!me?.partner &&
     !me?.partner?.tutorial_watched_at;
-  useEffect(() => {
-    if (!needsTutorial) return;
-    if (
-      pathname !== "/tutoriel-partenaire" &&
-      pathname !== "/changer-mot-de-passe"
-    ) {
-      navigate({ to: "/tutoriel-partenaire", replace: true });
-    }
-  }, [needsTutorial, pathname, navigate]);
 
   // Le staff n'a pas accès aux pages partenaires (marketplace/recharger/historique)
   useEffect(() => {
@@ -93,6 +84,7 @@ function AuthLayout() {
   const isPaused = !isStaff && me?.partner?.status === "paused";
   // Ne pas afficher le bandeau "en attente" sur la page tutoriel (info déjà présente)
   const showPendingBanner = isPending && pathname !== "/tutoriel-partenaire";
+  const showTutorialBanner = needsTutorial && pathname !== "/tutoriel-partenaire";
 
   return (
     <AppShell
@@ -100,6 +92,7 @@ function AuthLayout() {
       creditsBalance={creditsBalance}
       isStaff={isStaff}
       isAdmin={isAdmin}
+      showTutorialLink={!isStaff && !!me?.partner}
       onSignOut={signOut}
     >
       <div className="mx-auto max-w-6xl w-full">
@@ -107,6 +100,9 @@ function AuthLayout() {
           <UnauthorizedScreen />
         ) : (
           <>
+            {showTutorialBanner && (
+              <TutorialReminderBanner />
+            )}
             {showPendingBanner && <PendingApprovalBanner cabinetName={me?.partner?.cabinet_name} />}
             {isPaused && (
               <PausedBanner
@@ -119,5 +115,34 @@ function AuthLayout() {
         )}
       </div>
     </AppShell>
+  );
+}
+
+function TutorialReminderBanner() {
+  return (
+    <div className="mb-6 rounded-xl border border-red-300 bg-red-50 p-4 sm:p-5">
+      <div className="flex flex-col sm:flex-row sm:items-start gap-4">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-100 text-red-700">
+          <PlayCircle className="h-5 w-5" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="font-semibold text-red-900">
+            Vidéo tutoriel obligatoire non terminée
+          </p>
+          <p className="mt-1 text-sm text-red-900/90">
+            Sans visionnage complet de la vidéo, votre compte ne sera pas approuvé
+            par notre équipe. Vous pouvez reprendre là où vous vous êtes arrêté.
+          </p>
+          <div className="mt-3">
+            <Button asChild className="bg-red-600 text-white hover:bg-red-700">
+              <Link to="/tutoriel-partenaire">
+                <PlayCircle className="h-4 w-4" />
+                Regarder la vidéo maintenant
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
