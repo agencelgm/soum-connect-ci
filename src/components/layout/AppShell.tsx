@@ -16,13 +16,14 @@ import {
   Inbox,
   UserPlus,
   Users2,
+  PlayCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import logo from "@/assets/brand/logo-soumissions-comptables.jpg";
 
 type NavItem = {
-  to: "/marketplace" | "/recharger" | "/historique" | "/espace-partenaire" | "/admin";
+  to: "/marketplace" | "/recharger" | "/historique" | "/espace-partenaire" | "/admin" | "/tutoriel-partenaire";
   search?: Record<string, string>;
   label: string;
   icon: typeof Briefcase;
@@ -36,6 +37,12 @@ const NAV_PARTNER: NavItem[] = [
   { to: "/historique", label: "Historique", icon: History },
   { to: "/espace-partenaire", label: "Mon compte", icon: UserCircle2 },
 ];
+
+const TUTORIAL_ITEM: NavItem = {
+  to: "/tutoriel-partenaire",
+  label: "Tutoriel",
+  icon: PlayCircle,
+};
 
 const NAV_STAFF: NavItem[] = [
   { to: "/admin", label: "Tableau de bord", icon: LayoutDashboard, exact: true },
@@ -52,19 +59,21 @@ type Props = {
   creditsBalance: number | null;
   isStaff: boolean;
   isAdmin?: boolean;
+  showTutorialLink?: boolean;
   onSignOut: () => void;
   children: React.ReactNode;
 };
 
-export function AppShell({ email, creditsBalance, isStaff, isAdmin = false, onSignOut, children }: Props) {
+export function AppShell({ email, creditsBalance, isStaff, isAdmin = false, showTutorialLink = false, onSignOut, children }: Props) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const search = useRouterState({ select: (s) => s.location.search as Record<string, unknown> });
   const navigate = useNavigate();
 
-  const items = (isStaff ? NAV_STAFF : NAV_PARTNER).filter(
+  const baseItems = (isStaff ? NAV_STAFF : NAV_PARTNER).filter(
     (n) => !n.adminOnly || isAdmin,
   );
+  const items = !isStaff && showTutorialLink ? [...baseItems, TUTORIAL_ITEM] : baseItems;
 
   const isItemActive = (item: NavItem) => {
     if (item.to === "/admin") {
