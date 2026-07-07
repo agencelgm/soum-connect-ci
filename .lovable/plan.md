@@ -1,61 +1,33 @@
-## Objectif
-Ajouter recherche + filtres dans l'admin (Partenaires et Prospects) et détecter automatiquement les doublons d'email / téléphone pour identifier les fraudes potentielles.
+## Deux ajustements demandés
 
-## 1. Panneau "Partenaires" (`PartnersPanel`)
+### 1. Accès permanent à la vidéo tutoriel pour les partenaires
 
-Ajouter au-dessus de la liste :
-- Un **champ de recherche** (Input avec icône) qui filtre en temps réel sur : nom du cabinet, prénom, nom du contact, email, téléphone, ville.
-- Une barre de **filtres** (chips) :
-  - Ville (dropdown alimenté par les villes distinctes des partenaires)
-  - Service (dropdown)
-  - Tier (Tous / Regular / Premium)
-  - **Doublons uniquement** (toggle) — n'affiche que les cabinets flagués
-- Le filtre "Vidéo vue / non vue" déjà présent reste (onglet En attente).
-- Compteur `X cabinets affichés (sur Y)`.
+**Problème** : la page `/tutoriel-partenaire` n'est accessible que via la redirection forcée quand `tutorial_watched_at` est `null`. Dès qu'un partenaire quitte la page (ou si son statut change), il ne peut plus y revenir — donc s'il n'a pas terminé la vidéo, il n'a aucun moyen de la reprendre.
 
-La recherche/les filtres s'appliquent à l'intérieur de chaque onglet (En attente / Actifs / En pause / Rejetés) sans en changer la logique.
+**Correctif** :
+- Retirer la redirection forcée automatique. Le partenaire arrive directement dans son espace après inscription, mais on affiche un **bandeau rouge très visible** en haut de l'espace partenaire tant que `tutorial_watched_at` est `null` :
+  > « ⚠️ Vidéo tutoriel obligatoire non terminée — sans visionnage complet, votre compte ne sera pas approuvé. » + bouton **« Regarder la vidéo »** qui mène à `/tutoriel-partenaire`.
+- Ajouter un **lien permanent « Tutoriel »** dans le menu partenaire (header/AppShell), visible pour tous les partenaires (même ceux qui l'ont déjà vue, pour révision).
+- La page `/tutoriel-partenaire` reste accessible en permanence via ce lien, avec la progression déjà sauvegardée (grâce à `tutorial_max_progress`) qui permet de reprendre où on s'est arrêté.
+- Côté admin, la colonne « Vidéo vue » reste le critère de validation — rien ne change dans la logique d'approbation.
 
-## 2. Panneau "Prospects" (`ProspectsPanel`)
+### 2. Filtre « Doublons uniquement » côté Prospects (déjà en place, à confirmer)
 
-Ajouter au-dessus de la liste :
-- Un **champ de recherche** qui filtre sur : nom, email, téléphone, ville, service demandé, message.
-- Une barre de **filtres** :
-  - Ville
-  - Service demandé
-  - Période (7 j / 30 j / Tous)
-  - **Doublons uniquement** (toggle)
-- Le filtre de statut (Tous / En attente / Qualifiés / Rejetés) déjà présent reste.
-- Compteur `X prospects affichés (sur Y)`.
+Le filtre a été ajouté lors de l'itération précédente dans `_authenticated.admin.tsx` (toggle **Doublons uniquement** + badge rouge sur chaque prospect flagué + compteur global). 
 
-## 3. Détection automatique des doublons
+**Si le comportement actuel te convient**, cette partie est déjà livrée — pas de changement à faire.
 
-Logique côté client (aucun changement DB), calculée une fois par liste :
+**Si tu veux aller plus loin**, je peux ajouter :
+- Un **filtre croisé partenaire ↔ prospect** : détecter qu'un prospect utilise le même email/téléphone qu'un partenaire déjà inscrit (utile pour repérer les faux prospects créés par des partenaires).
+- Un **bouton « Rejeter »** en un clic directement sur les prospects flagués comme doublons.
+- Un **regroupement visuel** : afficher tous les doublons d'un même email côte à côte (au lieu de simples badges).
 
-Pour chaque entité (partenaires d'une part, prospects d'autre part) :
-- Normaliser l'email : trim + lowercase.
-- Normaliser le téléphone : ne garder que les chiffres, ignorer l'indicatif pays (comparer sur les 8 à 10 derniers chiffres).
-- Grouper par email normalisé, puis par téléphone normalisé.
-- Tout élément appartenant à un groupe ≥ 2 est marqué `isDuplicate` avec le type (`email` / `phone` / `both`).
+Dis-moi lequel de ces trois tu veux, ou si le filtre actuel suffit.
 
-Rendu :
-- Un **badge rouge "⚠ Doublon email"** ou **"⚠ Doublon téléphone"** (ou les deux) sur la carte du partenaire / du prospect concerné.
-- Au clic sur le badge, une petite popover liste les autres entrées partageant la même valeur (nom + date d'inscription + statut) pour vérification manuelle.
-- Un compteur global en haut du panneau : `N doublons détectés` (cliquable → active le toggle "Doublons uniquement").
+### Fichiers concernés
+- `src/routes/_authenticated.tsx` : remplacer la redirection forcée par un bandeau + lien permanent.
+- `src/components/partner/PendingApprovalBanner.tsx` ou nouveau `TutorialReminderBanner.tsx` : bandeau « vidéo non terminée ».
+- `src/components/layout/AppShell.tsx` : ajouter le lien « Tutoriel » dans la nav partenaire.
+- `src/routes/_authenticated.admin.tsx` : uniquement si tu veux le croisement partenaire↔prospect ou l'action rapide.
 
-Les doublons croisés partenaire ↔ prospect ne sont **pas** couverts dans cette itération (chaque liste est traitée séparément), à moins que tu le demandes explicitement.
-
-## 4. Détails techniques
-
-- Aucun changement de schéma DB, aucun nouveau server function : la détection et le filtrage sont 100 % client.
-- Fichier modifié : `src/routes/_authenticated.admin.tsx` uniquement.
-- Nouveaux utilitaires locaux dans le même fichier (ou petit helper `src/lib/duplicates.ts`) :
-  - `normalizeEmail(email)`
-  - `normalizePhone(phone)` → 8 derniers chiffres
-  - `computeDuplicates(items, getEmail, getPhone)` → `Map<id, { email?: string[]; phone?: string[] }>`
-- Utilisation de `useMemo` pour recalculer uniquement quand la liste change.
-- Recherche insensible à la casse et aux accents (`.normalize('NFD').replace(/\p{Diacritic}/gu,'')`).
-
-## 5. Hors périmètre
-- Pas de fusion/suppression automatique des doublons (uniquement flag + affichage).
-- Pas de blocage à l'inscription (uniquement détection a posteriori dans l'admin).
-- Pas de recherche/filtrage côté serveur (les listes actuelles sont chargées en entier).
+Aucune migration DB nécessaire.
