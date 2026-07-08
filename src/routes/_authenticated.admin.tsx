@@ -5,6 +5,78 @@ import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { computeDuplicates, normalizeText, type DuplicateInfo } from "@/lib/duplicates";
 
+// Filters for upsell interest (logo / website) and age of the record.
+type BoolFilter = "all" | "yes" | "no" | "unknown";
+type AgeFilter = "all" | "new" | "recent" | "old";
+
+function matchBoolFilter(value: unknown, filter: BoolFilter): boolean {
+  if (filter === "all") return true;
+  const norm =
+    value === true || value === "oui" || value === "yes" || value === 1 || value === "1"
+      ? "yes"
+      : value === false || value === "non" || value === "no" || value === 0 || value === "0"
+        ? "no"
+        : "unknown";
+  return norm === filter;
+}
+
+function matchAgeFilter(createdAt: unknown, filter: AgeFilter): boolean {
+  if (filter === "all") return true;
+  if (typeof createdAt !== "string") return false;
+  const t = Date.parse(createdAt);
+  if (!Number.isFinite(t)) return false;
+  const days = (Date.now() - t) / 86_400_000;
+  if (filter === "new") return days <= 7;
+  if (filter === "recent") return days <= 30;
+  return days > 30; // old
+}
+
+function UpsellSelect({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: BoolFilter;
+  onChange: (v: BoolFilter) => void;
+}) {
+  return (
+    <select
+      value={value}
+      onChange={(e) => onChange(e.target.value as BoolFilter)}
+      className="h-8 rounded-md border border-input bg-background px-2 text-xs"
+      title={label}
+    >
+      <option value="all">{label} : tous</option>
+      <option value="yes">{label} : oui</option>
+      <option value="no">{label} : non</option>
+      <option value="unknown">{label} : sans réponse</option>
+    </select>
+  );
+}
+
+function AgeSelect({
+  value,
+  onChange,
+}: {
+  value: AgeFilter;
+  onChange: (v: AgeFilter) => void;
+}) {
+  return (
+    <select
+      value={value}
+      onChange={(e) => onChange(e.target.value as AgeFilter)}
+      className="h-8 rounded-md border border-input bg-background px-2 text-xs"
+      title="Ancienneté"
+    >
+      <option value="all">Toute ancienneté</option>
+      <option value="new">Nouveaux (≤ 7 j)</option>
+      <option value="recent">Récents (≤ 30 j)</option>
+      <option value="old">Anciens (&gt; 30 j)</option>
+    </select>
+  );
+}
+
 function DuplicateBadge<T extends { id: string }>({
   info,
   items,
