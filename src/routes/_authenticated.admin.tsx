@@ -945,6 +945,9 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
   const [serviceFilter, setServiceFilter] = useState<string>("all");
   const [periodFilter, setPeriodFilter] = useState<"all" | "7" | "30">("all");
   const [duplicatesOnly, setDuplicatesOnly] = useState(false);
+  const [siteFilter, setSiteFilter] = useState<BoolFilter>("all");
+  const [logoFilter, setLogoFilter] = useState<BoolFilter>("all");
+  const [ageFilter, setAgeFilter] = useState<AgeFilter>("all");
 
   const allProspects = data?.prospects ?? [];
   const duplicates = useMemo(
@@ -990,6 +993,10 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
     if (duplicatesOnly && !duplicates.has(p.id)) return false;
     if (cityFilter !== "all" && p.city !== cityFilter) return false;
     if (serviceFilter !== "all" && p.service !== serviceFilter) return false;
+    const rp = (p.raw_payload && typeof p.raw_payload === "object") ? p.raw_payload as Record<string, unknown> : {};
+    if (!matchBoolFilter(rp.upsell_site, siteFilter)) return false;
+    if (!matchBoolFilter(rp.upsell_logo, logoFilter)) return false;
+    if (!matchAgeFilter(p.created_at, ageFilter)) return false;
     if (periodFilter !== "all") {
       const days = Number(periodFilter);
       const created = new Date(p.created_at).getTime();
