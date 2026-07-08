@@ -1130,10 +1130,78 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
   const [detailsProspect, setDetailsProspect] = useState<any>(null);
 
   const all = data?.prospects ?? [];
-  const prospects = all.filter((prospect: any) => {
-    if (filter === "published") return isPublishedProspect(prospect.status);
-    return prospect.status === filter;
-  });
+
+  // New filters (search + upsell + age + duplicates)
+  const [searchQ, setSearchQ] = useState("");
+  const [siteFilter, setSiteFilter] = useState<BoolFilter>("all");
+  const [logoFilter, setLogoFilter] = useState<BoolFilter>("all");
+  const [ageFilter, setAgeFilter] = useState<AgeFilter>("all");
+  const [duplicatesOnly, setDuplicatesOnly] = useState(false);
+
+  const duplicates = useMemo(
+    () =>
+      computeDuplicates(
+        all as any[],
+        (p: any) => p.email,
+        (p: any) => p.phone,
+      ),
+    [all],
+  );
+
+  const prospects = useMemo(() => {
+    const q = normalizeText(searchQ).trim();
+    return all.filter((prospect: any) => {
+      // Status filter (existing segmented buttons)
+      if (filter === "published") {
+        if (!isPublishedProspect(prospect.status)) return false;
+      } else if (prospect.status !== filter) {
+        return false;
+      }
+      // Text search
+      if (q) {
+        const hay = normalizeText(
+          [
+            prospect.full_name,
+            prospect.email,
+            prospect.phone,
+            prospect.company_name,
+            prospect.city,
+            prospect.service,
+          ]
+            .filter(Boolean)
+            .join(" "),
+        );
+        if (!hay.includes(q)) return false;
+      }
+      // Upsell filters (read from raw_payload)
+      const rp =
+        prospect.raw_payload && typeof prospect.raw_payload === "object"
+          ? (prospect.raw_payload as Record<string, unknown>)
+          : {};
+      if (!matchBoolFilter(rp.upsell_site, siteFilter)) return false;
+      if (!matchBoolFilter(rp.upsell_logo, logoFilter)) return false;
+      // Age
+      if (!matchAgeFilter(prospect.created_at, ageFilter)) return false;
+      // Duplicates
+      if (duplicatesOnly && !duplicates.has(prospect.id)) return false;
+      return true;
+    });
+  }, [all, filter, searchQ, siteFilter, logoFilter, ageFilter, duplicatesOnly, duplicates]);
+
+  function resetFilters() {
+    setSearchQ("");
+    setSiteFilter("all");
+    setLogoFilter("all");
+    setAgeFilter("all");
+    setDuplicatesOnly(false);
+  }
+  const hasActiveFilters =
+    searchQ !== "" ||
+    siteFilter !== "all" ||
+    logoFilter !== "all" ||
+    ageFilter !== "all" ||
+    duplicatesOnly;
+
   const selected =
     prospects.find((prospect: any) => prospect.id === selectedId) ?? prospects[0] ?? null;
 
