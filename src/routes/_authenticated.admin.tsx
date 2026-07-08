@@ -1040,6 +1040,9 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
             <option value="all">Tous services</option>
             {pServices.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
+          <UpsellSelect label="Site" value={siteFilter} onChange={setSiteFilter} />
+          <UpsellSelect label="Logo" value={logoFilter} onChange={setLogoFilter} />
+          <AgeSelect value={ageFilter} onChange={setAgeFilter} />
           <div className="flex gap-1">
             {(["all", "7", "30"] as const).map((k) => (
               <button
@@ -1069,10 +1072,10 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
           >
             ⚠ Doublons ({duplicates.size})
           </button>
-          {(searchQ || cityFilter !== "all" || serviceFilter !== "all" || periodFilter !== "all" || duplicatesOnly) && (
+          {(searchQ || cityFilter !== "all" || serviceFilter !== "all" || periodFilter !== "all" || duplicatesOnly || siteFilter !== "all" || logoFilter !== "all" || ageFilter !== "all") && (
             <button
               type="button"
-              onClick={() => { setSearchQ(""); setCityFilter("all"); setServiceFilter("all"); setPeriodFilter("all"); setDuplicatesOnly(false); }}
+              onClick={() => { setSearchQ(""); setCityFilter("all"); setServiceFilter("all"); setPeriodFilter("all"); setDuplicatesOnly(false); setSiteFilter("all"); setLogoFilter("all"); setAgeFilter("all"); }}
               className="text-xs text-muted-foreground underline"
             >
               Réinitialiser
