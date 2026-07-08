@@ -927,293 +927,6 @@ function GrantButton({
   );
 }
 
-function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
-  const listFn = useServerFn(listProspects);
-  const qc = useQueryClient();
-  const publishFn = useServerFn(publishProspect);
-  const rejectFn = useServerFn(rejectProspect);
-  const reactivateFn = useServerFn(reactivateProspect);
-  const deleteFn = useServerFn(deleteProspect);
-  const { data, isLoading } = useQuery({ queryKey: ["prospects"], queryFn: () => listFn() });
-  const [busyId, setBusyId] = useState<string | null>(null);
-  const [filter, setFilter] = useState<"all" | "pending_qualification" | "qualified" | "rejected">(
-    "all",
-  );
-  const [detailsProspect, setDetailsProspect] = useState<any>(null);
-  const [searchQ, setSearchQ] = useState("");
-  const [cityFilter, setCityFilter] = useState<string>("all");
-  const [serviceFilter, setServiceFilter] = useState<string>("all");
-  const [periodFilter, setPeriodFilter] = useState<"all" | "7" | "30">("all");
-  const [duplicatesOnly, setDuplicatesOnly] = useState(false);
-  const [siteFilter, setSiteFilter] = useState<BoolFilter>("all");
-  const [logoFilter, setLogoFilter] = useState<BoolFilter>("all");
-  const [ageFilter, setAgeFilter] = useState<AgeFilter>("all");
-
-  const allProspects = data?.prospects ?? [];
-  const duplicates = useMemo(
-    () => computeDuplicates(allProspects, (p: any) => p.email, (p: any) => p.phone),
-    [allProspects],
-  );
-
-  const pCities = useMemo(() => {
-    const s = new Set<string>();
-    allProspects.forEach((p: any) => { if (p.city) s.add(p.city); });
-    return Array.from(s).sort((a, b) => a.localeCompare(b, "fr"));
-  }, [allProspects]);
-  const pServices = useMemo(() => {
-    const s = new Set<string>();
-    allProspects.forEach((p: any) => { if (p.service) s.add(p.service); });
-    return Array.from(s).sort((a, b) => a.localeCompare(b, "fr"));
-  }, [allProspects]);
-
-  async function run(id: string, fn: () => Promise<unknown>) {
-    setBusyId(id);
-    try {
-      await fn();
-      qc.invalidateQueries({ queryKey: ["prospects"] });
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Erreur");
-    } finally {
-      setBusyId(null);
-    }
-  }
-
-  async function onPublish(prospect_id: string) {
-    await run(prospect_id, async () => {
-      await publishFn({ data: { prospect_id, max_unlocks: 5 } });
-      toast.success("Lead publié dans la marketplace.");
-    });
-  }
-  if (isLoading) return <p>Chargement…</p>;
-  const all = allProspects;
-  const pendingCount = all.filter((p: any) => p.status === "pending_qualification").length;
-  const nowMs = Date.now();
-  const prospects = all.filter((p: any) => {
-    if (filter !== "all" && p.status !== filter) return false;
-    if (duplicatesOnly && !duplicates.has(p.id)) return false;
-    if (cityFilter !== "all" && p.city !== cityFilter) return false;
-    if (serviceFilter !== "all" && p.service !== serviceFilter) return false;
-    const rp = (p.raw_payload && typeof p.raw_payload === "object") ? p.raw_payload as Record<string, unknown> : {};
-    if (!matchBoolFilter(rp.upsell_site, siteFilter)) return false;
-    if (!matchBoolFilter(rp.upsell_logo, logoFilter)) return false;
-    if (!matchAgeFilter(p.created_at, ageFilter)) return false;
-    if (periodFilter !== "all") {
-      const days = Number(periodFilter);
-      const created = new Date(p.created_at).getTime();
-      if (Number.isFinite(created) && nowMs - created > days * 86_400_000) return false;
-    }
-    if (searchQ.trim()) {
-      const q = normalizeText(searchQ);
-      const hay = normalizeText(
-        [p.full_name, p.email, p.phone, p.city, p.service, p.message].filter(Boolean).join(" "),
-      );
-      if (!hay.includes(q)) return false;
-    }
-    return true;
-  });
-  return (
-    <div className="space-y-2">
-      <div className="rounded-lg border bg-card p-3 space-y-3">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            value={searchQ}
-            onChange={(e) => setSearchQ(e.target.value)}
-            placeholder="Rechercher (nom, email, téléphone, ville, service, message)…"
-            className="pl-9"
-          />
-        </div>
-        <div className="flex flex-wrap items-center gap-2 text-xs">
-          <select
-            value={cityFilter}
-            onChange={(e) => setCityFilter(e.target.value)}
-            className="h-8 rounded-md border border-input bg-background px-2 text-xs"
-          >
-            <option value="all">Toutes villes</option>
-            {pCities.map((c) => <option key={c} value={c}>{c}</option>)}
-          </select>
-          <select
-            value={serviceFilter}
-            onChange={(e) => setServiceFilter(e.target.value)}
-            className="h-8 rounded-md border border-input bg-background px-2 text-xs"
-          >
-            <option value="all">Tous services</option>
-            {pServices.map((s) => <option key={s} value={s}>{s}</option>)}
-          </select>
-          <UpsellSelect label="Site" value={siteFilter} onChange={setSiteFilter} />
-          <UpsellSelect label="Logo" value={logoFilter} onChange={setLogoFilter} />
-          <AgeSelect value={ageFilter} onChange={setAgeFilter} />
-          <div className="flex gap-1">
-            {(["all", "7", "30"] as const).map((k) => (
-              <button
-                key={k}
-                type="button"
-                onClick={() => setPeriodFilter(k)}
-                className={cn(
-                  "rounded-full border px-3 py-1 text-xs font-medium",
-                  periodFilter === k
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-background text-muted-foreground border-border hover:border-primary/50",
-                )}
-              >
-                {k === "all" ? "Toute période" : k === "7" ? "7 derniers jours" : "30 derniers jours"}
-              </button>
-            ))}
-          </div>
-          <button
-            type="button"
-            onClick={() => setDuplicatesOnly((v) => !v)}
-            className={cn(
-              "rounded-full border px-3 py-1 text-xs font-medium",
-              duplicatesOnly
-                ? "bg-red-600 text-white border-red-600"
-                : "bg-background text-muted-foreground border-border hover:border-red-400",
-            )}
-          >
-            ⚠ Doublons ({duplicates.size})
-          </button>
-          {(searchQ || cityFilter !== "all" || serviceFilter !== "all" || periodFilter !== "all" || duplicatesOnly || siteFilter !== "all" || logoFilter !== "all" || ageFilter !== "all") && (
-            <button
-              type="button"
-              onClick={() => { setSearchQ(""); setCityFilter("all"); setServiceFilter("all"); setPeriodFilter("all"); setDuplicatesOnly(false); setSiteFilter("all"); setLogoFilter("all"); setAgeFilter("all"); }}
-              className="text-xs text-muted-foreground underline"
-            >
-              Réinitialiser
-            </button>
-          )}
-        </div>
-      </div>
-      <div className="flex justify-between items-center flex-wrap gap-2">
-        <p className="text-sm text-muted-foreground">
-          {prospects.length} prospect(s) affichés (sur {all.length})
-        </p>
-        <div className="flex gap-1 text-xs">
-          {(["all", "pending_qualification", "qualified", "rejected"] as const).map((k) => (
-            <Button
-              key={k}
-              size="sm"
-              variant={filter === k ? "default" : "outline"}
-              onClick={() => setFilter(k)}
-            >
-              {k === "all"
-                ? "Tous"
-                : k === "pending_qualification"
-                  ? "En attente"
-                  : k === "qualified"
-                    ? "Qualifiés"
-                    : "Rejetés"}
-              {k === "pending_qualification" && <PendingBadge count={pendingCount} />}
-            </Button>
-          ))}
-        </div>
-      </div>
-      {prospects.map((p: any) => (
-        <div
-          key={p.id}
-          className={`rounded border p-3 bg-card text-sm ${p.status === "rejected" ? "opacity-60" : ""}`}
-        >
-          <div className="flex justify-between flex-wrap gap-2">
-            <div>
-              <button
-                type="button"
-                onClick={() => setDetailsProspect(p)}
-                className="text-left hover:underline"
-              >
-                <strong>{p.full_name || "—"}</strong> · {p.email || "—"} · {p.phone || "—"}
-              </button>
-              <span className="ml-2 inline-block rounded bg-muted px-2 py-0.5 text-xs">
-                {p.audience}
-              </span>
-              <span className="ml-1 inline-block rounded bg-muted px-2 py-0.5 text-xs">
-                {p.status}
-              </span>
-              {duplicates.has(p.id) && (
-                <DuplicateBadge
-                  info={duplicates.get(p.id)!}
-                  items={all}
-                  renderItem={(o: any) => `${o.full_name || "—"} — ${o.email || "?"} · ${o.phone || "?"} · ${o.status}`}
-                />
-              )}
-            </div>
-            <span className="text-xs text-muted-foreground">
-              {new Date(p.created_at).toLocaleString("fr-FR")}
-            </span>
-          </div>
-          <div className="text-xs text-muted-foreground mt-1">
-            {p.service && <>Service : {p.service} · </>}
-            {p.city && <>Ville : {p.city} · </>}
-            {p.budget && <>Budget : {p.budget} · </>}
-            {p.legal_form && <>Forme : {p.legal_form}</>}
-          </div>
-          {p.message && <p className="mt-1 text-xs italic">"{p.message}"</p>}
-          {p.status === "rejected" && p.qualification_notes && (
-            <p className="mt-1 text-xs text-destructive">Motif rejet : {p.qualification_notes}</p>
-          )}
-          <div className="mt-2 flex justify-end gap-2 flex-wrap">
-            <Button size="sm" variant="ghost" onClick={() => setDetailsProspect(p)}>
-              Voir détails
-            </Button>
-            {p.status !== "rejected" && p.status !== "qualified" && (
-              <>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  disabled={busyId === p.id}
-                  onClick={() => onPublish(p.id)}
-                >
-                  {busyId === p.id ? "…" : "Publier comme lead (6 places)"}
-                </Button>
-                <RejectButton
-                  label="Rejeter"
-                  disabled={busyId === p.id}
-                  onConfirm={(reason) =>
-                    run(p.id, async () => {
-                      await rejectFn({ data: { prospect_id: p.id, reason } });
-                      toast.success("Prospect rejeté");
-                    })
-                  }
-                />
-              </>
-            )}
-            {p.status === "rejected" && (
-              <Button
-                size="sm"
-                variant="outline"
-                disabled={busyId === p.id}
-                onClick={() =>
-                  run(p.id, async () => {
-                    await reactivateFn({ data: { prospect_id: p.id } });
-                    toast.success("Prospect réactivé");
-                  })
-                }
-              >
-                Réactiver
-              </Button>
-            )}
-            {isAdmin && (
-              <Button
-                size="sm"
-                variant="destructive"
-                disabled={busyId === p.id}
-                onClick={() => {
-                  if (confirm("Supprimer définitivement ce prospect ?")) {
-                    run(p.id, async () => {
-                      await deleteFn({ data: { prospect_id: p.id } });
-                      toast.success("Prospect supprimé");
-                    });
-                  }
-                }}
-              >
-                Supprimer
-              </Button>
-            )}
-          </div>
-        </div>
-      ))}
-      <ProspectDetailsDialog prospect={detailsProspect} onClose={() => setDetailsProspect(null)} />
-    </div>
-  );
-}
 
 type ProspectFilter = "pending_qualification" | "published" | "rejected";
 
@@ -1417,10 +1130,78 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
   const [detailsProspect, setDetailsProspect] = useState<any>(null);
 
   const all = data?.prospects ?? [];
-  const prospects = all.filter((prospect: any) => {
-    if (filter === "published") return isPublishedProspect(prospect.status);
-    return prospect.status === filter;
-  });
+
+  // New filters (search + upsell + age + duplicates)
+  const [searchQ, setSearchQ] = useState("");
+  const [siteFilter, setSiteFilter] = useState<BoolFilter>("all");
+  const [logoFilter, setLogoFilter] = useState<BoolFilter>("all");
+  const [ageFilter, setAgeFilter] = useState<AgeFilter>("all");
+  const [duplicatesOnly, setDuplicatesOnly] = useState(false);
+
+  const duplicates = useMemo(
+    () =>
+      computeDuplicates(
+        all as any[],
+        (p: any) => p.email,
+        (p: any) => p.phone,
+      ),
+    [all],
+  );
+
+  const prospects = useMemo(() => {
+    const q = normalizeText(searchQ).trim();
+    return all.filter((prospect: any) => {
+      // Status filter (existing segmented buttons)
+      if (filter === "published") {
+        if (!isPublishedProspect(prospect.status)) return false;
+      } else if (prospect.status !== filter) {
+        return false;
+      }
+      // Text search
+      if (q) {
+        const hay = normalizeText(
+          [
+            prospect.full_name,
+            prospect.email,
+            prospect.phone,
+            prospect.company_name,
+            prospect.city,
+            prospect.service,
+          ]
+            .filter(Boolean)
+            .join(" "),
+        );
+        if (!hay.includes(q)) return false;
+      }
+      // Upsell filters (read from raw_payload)
+      const rp =
+        prospect.raw_payload && typeof prospect.raw_payload === "object"
+          ? (prospect.raw_payload as Record<string, unknown>)
+          : {};
+      if (!matchBoolFilter(rp.upsell_site, siteFilter)) return false;
+      if (!matchBoolFilter(rp.upsell_logo, logoFilter)) return false;
+      // Age
+      if (!matchAgeFilter(prospect.created_at, ageFilter)) return false;
+      // Duplicates
+      if (duplicatesOnly && !duplicates.has(prospect.id)) return false;
+      return true;
+    });
+  }, [all, filter, searchQ, siteFilter, logoFilter, ageFilter, duplicatesOnly, duplicates]);
+
+  function resetFilters() {
+    setSearchQ("");
+    setSiteFilter("all");
+    setLogoFilter("all");
+    setAgeFilter("all");
+    setDuplicatesOnly(false);
+  }
+  const hasActiveFilters =
+    searchQ !== "" ||
+    siteFilter !== "all" ||
+    logoFilter !== "all" ||
+    ageFilter !== "all" ||
+    duplicatesOnly;
+
   const selected =
     prospects.find((prospect: any) => prospect.id === selectedId) ?? prospects[0] ?? null;
 
@@ -1510,6 +1291,46 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
               onClick={() => setFilter("rejected")}
             />
           </div>
+          <div className="mt-3 space-y-2">
+            <div className="relative">
+              <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <input
+                type="search"
+                value={searchQ}
+                onChange={(e) => setSearchQ(e.target.value)}
+                placeholder="Rechercher (nom, email, tél, ville…)"
+                className="h-9 w-full rounded-md border border-input bg-background pl-8 pr-2 text-sm"
+              />
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <UpsellSelect label="Site" value={siteFilter} onChange={setSiteFilter} />
+              <UpsellSelect label="Logo" value={logoFilter} onChange={setLogoFilter} />
+              <AgeSelect value={ageFilter} onChange={setAgeFilter} />
+            </div>
+            <div className="flex items-center justify-between text-xs">
+              <label className="inline-flex items-center gap-1.5 text-muted-foreground cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={duplicatesOnly}
+                  onChange={(e) => setDuplicatesOnly(e.target.checked)}
+                  className="h-3.5 w-3.5"
+                />
+                Doublons uniquement ({duplicates.size})
+              </label>
+              {hasActiveFilters && (
+                <button
+                  type="button"
+                  onClick={resetFilters}
+                  className="text-primary hover:underline"
+                >
+                  Réinitialiser
+                </button>
+              )}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {prospects.length} affiché(s) sur {all.length}
+            </p>
+          </div>
         </div>
         <div className="max-h-[720px] overflow-y-auto p-2">
           {prospects.length === 0 ? (
@@ -1530,6 +1351,15 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
                   <div className="min-w-0">
                     <p className="truncate font-semibold">
                       {prospect.full_name || prospect.email || "Prospect sans nom"}
+                      {duplicates.has(prospect.id) && (
+                        <DuplicateBadge
+                          info={duplicates.get(prospect.id)!}
+                          items={all as any[]}
+                          renderItem={(m: any) =>
+                            `${m.full_name || m.email || "—"} · ${m.email ?? ""} · ${m.phone ?? ""}`
+                          }
+                        />
+                      )}
                     </p>
                     <p className="truncate text-xs text-muted-foreground">
                       {prospect.service || "Service a definir"}
