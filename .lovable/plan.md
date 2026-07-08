@@ -1,33 +1,52 @@
-## Deux ajustements demandés
+## Objectif
 
-### 1. Accès permanent à la vidéo tutoriel pour les partenaires
+Ajouter dans l'admin (`/admin`) des filtres pour identifier rapidement :
+- Qui veut un **logo** (Oui / Non / Sans réponse)
+- Qui veut un **site internet** (Oui / Non / Sans réponse)
+- **Ancienneté** : nouveaux (≤ 7 j), récents (≤ 30 j), anciens (> 30 j)
 
-**Problème** : la page `/tutoriel-partenaire` n'est accessible que via la redirection forcée quand `tutorial_watched_at` est `null`. Dès qu'un partenaire quitte la page (ou si son statut change), il ne peut plus y revenir — donc s'il n'a pas terminé la vidéo, il n'a aucun moyen de la reprendre.
+Appliqué aux deux onglets : **Partenaires** et **Prospects**.
 
-**Correctif** :
-- Retirer la redirection forcée automatique. Le partenaire arrive directement dans son espace après inscription, mais on affiche un **bandeau rouge très visible** en haut de l'espace partenaire tant que `tutorial_watched_at` est `null` :
-  > « ⚠️ Vidéo tutoriel obligatoire non terminée — sans visionnage complet, votre compte ne sera pas approuvé. » + bouton **« Regarder la vidéo »** qui mène à `/tutoriel-partenaire`.
-- Ajouter un **lien permanent « Tutoriel »** dans le menu partenaire (header/AppShell), visible pour tous les partenaires (même ceux qui l'ont déjà vue, pour révision).
-- La page `/tutoriel-partenaire` reste accessible en permanence via ce lien, avec la progression déjà sauvegardée (grâce à `tutorial_max_progress`) qui permet de reprendre où on s'est arrêté.
-- Côté admin, la colonne « Vidéo vue » reste le critère de validation — rien ne change dans la logique d'approbation.
+## Données déjà disponibles
 
-### 2. Filtre « Doublons uniquement » côté Prospects (déjà en place, à confirmer)
-
-Le filtre a été ajouté lors de l'itération précédente dans `_authenticated.admin.tsx` (toggle **Doublons uniquement** + badge rouge sur chaque prospect flagué + compteur global). 
-
-**Si le comportement actuel te convient**, cette partie est déjà livrée — pas de changement à faire.
-
-**Si tu veux aller plus loin**, je peux ajouter :
-- Un **filtre croisé partenaire ↔ prospect** : détecter qu'un prospect utilise le même email/téléphone qu'un partenaire déjà inscrit (utile pour repérer les faux prospects créés par des partenaires).
-- Un **bouton « Rejeter »** en un clic directement sur les prospects flagués comme doublons.
-- Un **regroupement visuel** : afficher tous les doublons d'un même email côte à côte (au lieu de simples badges).
-
-Dis-moi lequel de ces trois tu veux, ou si le filtre actuel suffit.
-
-### Fichiers concernés
-- `src/routes/_authenticated.tsx` : remplacer la redirection forcée par un bandeau + lien permanent.
-- `src/components/partner/PendingApprovalBanner.tsx` ou nouveau `TutorialReminderBanner.tsx` : bandeau « vidéo non terminée ».
-- `src/components/layout/AppShell.tsx` : ajouter le lien « Tutoriel » dans la nav partenaire.
-- `src/routes/_authenticated.admin.tsx` : uniquement si tu veux le croisement partenaire↔prospect ou l'action rapide.
+- **Partenaires** : colonnes `wants_website` et `wants_logo` (booleans, nullable) — remplies à l'inscription.
+- **Prospects** : réponses upsell stockées dans `raw_payload` sous les clés `upsell_logo` et `upsell_site` (valeurs `"oui"` / `"non"`) — remplies après soumission du lead via `/api/public/lead-upsell`.
+- **Ancienneté** : `created_at` existe sur les deux tables.
 
 Aucune migration DB nécessaire.
+
+## Changements UI
+
+Fichier unique : `src/routes/_authenticated.admin.tsx`.
+
+### Panneau Partenaires
+Ajouter à la barre de filtres existante (à côté de Ville / Service / Tier / Tutoriel) :
+- **Select « Site internet »** : Tous · Oui · Non · Sans réponse
+- **Select « Logo »** : Tous · Oui · Non · Sans réponse
+- **Select « Ancienneté »** : Tous · Nouveaux (≤ 7 j) · Récents (≤ 30 j) · Anciens (> 30 j)
+
+Logique : filtrage client-side dans le `useMemo` existant, basé sur `wants_website`, `wants_logo`, `created_at`.
+
+### Panneau Prospects
+Mêmes trois selects, avec la même sémantique. Lecture des valeurs upsell via `prospect.raw_payload?.upsell_logo` / `upsell_site` (comparaison à `"oui"` / `"non"`, sinon « sans réponse »).
+
+Le filtre « période » actuel (7 j / 30 j) reste — le nouveau filtre « Ancienneté » est complémentaire (permet aussi d'isoler les **anciens** > 30 j, ce que la période actuelle ne permet pas).
+
+### Bouton « Réinitialiser filtres »
+Étendre le reset existant pour remettre à zéro les trois nouveaux selects.
+
+### Compteur
+Le compteur global affiché en haut de chaque panneau (« X partenaires », « Y prospects ») reflète déjà le résultat filtré — aucun changement nécessaire.
+
+## Détails techniques
+
+- Type des états : `"all" | "yes" | "no" | "unknown"` pour logo/site, `"all" | "new" | "recent" | "old"` pour ancienneté.
+- Helper `matchUpsell(value, filter)` : `value` est `boolean | null` (partenaires) ou `"oui" | "non" | null` (prospects) — normaliser en amont.
+- Helper `matchAge(created_at, filter)` : compare à `Date.now() - 7*86400_000` et `30*86400_000`.
+- Les filtres se combinent en AND avec ceux existants (search, ville, service, doublons, etc.).
+
+## Ce qui n'est pas inclus
+
+- Pas d'export CSV filtré (peut être ajouté plus tard si besoin).
+- Pas de nouvelle colonne DB, pas de migration.
+- Pas de changement côté formulaires ou webhooks.

@@ -5,6 +5,78 @@ import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { computeDuplicates, normalizeText, type DuplicateInfo } from "@/lib/duplicates";
 
+// Filters for upsell interest (logo / website) and age of the record.
+type BoolFilter = "all" | "yes" | "no" | "unknown";
+type AgeFilter = "all" | "new" | "recent" | "old";
+
+function matchBoolFilter(value: unknown, filter: BoolFilter): boolean {
+  if (filter === "all") return true;
+  const norm =
+    value === true || value === "oui" || value === "yes" || value === 1 || value === "1"
+      ? "yes"
+      : value === false || value === "non" || value === "no" || value === 0 || value === "0"
+        ? "no"
+        : "unknown";
+  return norm === filter;
+}
+
+function matchAgeFilter(createdAt: unknown, filter: AgeFilter): boolean {
+  if (filter === "all") return true;
+  if (typeof createdAt !== "string") return false;
+  const t = Date.parse(createdAt);
+  if (!Number.isFinite(t)) return false;
+  const days = (Date.now() - t) / 86_400_000;
+  if (filter === "new") return days <= 7;
+  if (filter === "recent") return days <= 30;
+  return days > 30; // old
+}
+
+function UpsellSelect({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: BoolFilter;
+  onChange: (v: BoolFilter) => void;
+}) {
+  return (
+    <select
+      value={value}
+      onChange={(e) => onChange(e.target.value as BoolFilter)}
+      className="h-8 rounded-md border border-input bg-background px-2 text-xs"
+      title={label}
+    >
+      <option value="all">{label} : tous</option>
+      <option value="yes">{label} : oui</option>
+      <option value="no">{label} : non</option>
+      <option value="unknown">{label} : sans réponse</option>
+    </select>
+  );
+}
+
+function AgeSelect({
+  value,
+  onChange,
+}: {
+  value: AgeFilter;
+  onChange: (v: AgeFilter) => void;
+}) {
+  return (
+    <select
+      value={value}
+      onChange={(e) => onChange(e.target.value as AgeFilter)}
+      className="h-8 rounded-md border border-input bg-background px-2 text-xs"
+      title="Ancienneté"
+    >
+      <option value="all">Toute ancienneté</option>
+      <option value="new">Nouveaux (≤ 7 j)</option>
+      <option value="recent">Récents (≤ 30 j)</option>
+      <option value="old">Anciens (&gt; 30 j)</option>
+    </select>
+  );
+}
+
 function DuplicateBadge<T extends { id: string }>({
   info,
   items,
@@ -387,6 +459,9 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
   const [serviceFilter, setServiceFilter] = useState<string>("all");
   const [tierFilter, setTierFilter] = useState<"all" | "premium" | "regular">("all");
   const [duplicatesOnly, setDuplicatesOnly] = useState(false);
+  const [siteFilter, setSiteFilter] = useState<"all" | "yes" | "no" | "unknown">("all");
+  const [logoFilter, setLogoFilter] = useState<"all" | "yes" | "no" | "unknown">("all");
+  const [ageFilter, setAgeFilter] = useState<"all" | "new" | "recent" | "old">("all");
 
   const duplicates = useMemo(
     () => computeDuplicates(partners, (p: any) => p.email, (p: any) => p.phone),
@@ -413,6 +488,9 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
       const t = p.tier === "premium" ? "premium" : "regular";
       if (t !== tierFilter) return false;
     }
+    if (!matchBoolFilter(p.wants_website, siteFilter)) return false;
+    if (!matchBoolFilter(p.wants_logo, logoFilter)) return false;
+    if (!matchAgeFilter(p.created_at, ageFilter)) return false;
     if (searchQ.trim()) {
       const q = normalizeText(searchQ);
       const hay = normalizeText(
@@ -477,6 +555,9 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
             <option value="all">Tous services</option>
             {services.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
+          <UpsellSelect label="Site" value={siteFilter} onChange={setSiteFilter} />
+          <UpsellSelect label="Logo" value={logoFilter} onChange={setLogoFilter} />
+          <AgeSelect value={ageFilter} onChange={setAgeFilter} />
           <div className="flex gap-1">
             {(["all", "premium", "regular"] as const).map((k) => (
               <button
@@ -507,10 +588,10 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
           >
             ⚠ Doublons ({duplicatesCount})
           </button>
-          {(searchQ || cityFilter !== "all" || serviceFilter !== "all" || tierFilter !== "all" || duplicatesOnly) && (
+          {(searchQ || cityFilter !== "all" || serviceFilter !== "all" || tierFilter !== "all" || duplicatesOnly || siteFilter !== "all" || logoFilter !== "all" || ageFilter !== "all") && (
             <button
               type="button"
-              onClick={() => { setSearchQ(""); setCityFilter("all"); setServiceFilter("all"); setTierFilter("all"); setDuplicatesOnly(false); }}
+              onClick={() => { setSearchQ(""); setCityFilter("all"); setServiceFilter("all"); setTierFilter("all"); setDuplicatesOnly(false); setSiteFilter("all"); setLogoFilter("all"); setAgeFilter("all"); }}
               className="text-xs text-muted-foreground underline"
             >
               Réinitialiser
@@ -864,6 +945,9 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
   const [serviceFilter, setServiceFilter] = useState<string>("all");
   const [periodFilter, setPeriodFilter] = useState<"all" | "7" | "30">("all");
   const [duplicatesOnly, setDuplicatesOnly] = useState(false);
+  const [siteFilter, setSiteFilter] = useState<BoolFilter>("all");
+  const [logoFilter, setLogoFilter] = useState<BoolFilter>("all");
+  const [ageFilter, setAgeFilter] = useState<AgeFilter>("all");
 
   const allProspects = data?.prospects ?? [];
   const duplicates = useMemo(
@@ -909,6 +993,10 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
     if (duplicatesOnly && !duplicates.has(p.id)) return false;
     if (cityFilter !== "all" && p.city !== cityFilter) return false;
     if (serviceFilter !== "all" && p.service !== serviceFilter) return false;
+    const rp = (p.raw_payload && typeof p.raw_payload === "object") ? p.raw_payload as Record<string, unknown> : {};
+    if (!matchBoolFilter(rp.upsell_site, siteFilter)) return false;
+    if (!matchBoolFilter(rp.upsell_logo, logoFilter)) return false;
+    if (!matchAgeFilter(p.created_at, ageFilter)) return false;
     if (periodFilter !== "all") {
       const days = Number(periodFilter);
       const created = new Date(p.created_at).getTime();
@@ -952,6 +1040,9 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
             <option value="all">Tous services</option>
             {pServices.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
+          <UpsellSelect label="Site" value={siteFilter} onChange={setSiteFilter} />
+          <UpsellSelect label="Logo" value={logoFilter} onChange={setLogoFilter} />
+          <AgeSelect value={ageFilter} onChange={setAgeFilter} />
           <div className="flex gap-1">
             {(["all", "7", "30"] as const).map((k) => (
               <button
@@ -981,10 +1072,10 @@ function ProspectsPanel({ isAdmin }: { isAdmin: boolean }) {
           >
             ⚠ Doublons ({duplicates.size})
           </button>
-          {(searchQ || cityFilter !== "all" || serviceFilter !== "all" || periodFilter !== "all" || duplicatesOnly) && (
+          {(searchQ || cityFilter !== "all" || serviceFilter !== "all" || periodFilter !== "all" || duplicatesOnly || siteFilter !== "all" || logoFilter !== "all" || ageFilter !== "all") && (
             <button
               type="button"
-              onClick={() => { setSearchQ(""); setCityFilter("all"); setServiceFilter("all"); setPeriodFilter("all"); setDuplicatesOnly(false); }}
+              onClick={() => { setSearchQ(""); setCityFilter("all"); setServiceFilter("all"); setPeriodFilter("all"); setDuplicatesOnly(false); setSiteFilter("all"); setLogoFilter("all"); setAgeFilter("all"); }}
               className="text-xs text-muted-foreground underline"
             >
               Réinitialiser
