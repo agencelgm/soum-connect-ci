@@ -387,6 +387,9 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
   const [serviceFilter, setServiceFilter] = useState<string>("all");
   const [tierFilter, setTierFilter] = useState<"all" | "premium" | "regular">("all");
   const [duplicatesOnly, setDuplicatesOnly] = useState(false);
+  const [siteFilter, setSiteFilter] = useState<"all" | "yes" | "no" | "unknown">("all");
+  const [logoFilter, setLogoFilter] = useState<"all" | "yes" | "no" | "unknown">("all");
+  const [ageFilter, setAgeFilter] = useState<"all" | "new" | "recent" | "old">("all");
 
   const duplicates = useMemo(
     () => computeDuplicates(partners, (p: any) => p.email, (p: any) => p.phone),
@@ -413,6 +416,9 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
       const t = p.tier === "premium" ? "premium" : "regular";
       if (t !== tierFilter) return false;
     }
+    if (!matchBoolFilter(p.wants_website, siteFilter)) return false;
+    if (!matchBoolFilter(p.wants_logo, logoFilter)) return false;
+    if (!matchAgeFilter(p.created_at, ageFilter)) return false;
     if (searchQ.trim()) {
       const q = normalizeText(searchQ);
       const hay = normalizeText(
