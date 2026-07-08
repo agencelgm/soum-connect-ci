@@ -555,6 +555,9 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
             <option value="all">Tous services</option>
             {services.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
+          <UpsellSelect label="Site" value={siteFilter} onChange={setSiteFilter} />
+          <UpsellSelect label="Logo" value={logoFilter} onChange={setLogoFilter} />
+          <AgeSelect value={ageFilter} onChange={setAgeFilter} />
           <div className="flex gap-1">
             {(["all", "premium", "regular"] as const).map((k) => (
               <button
@@ -585,10 +588,10 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
           >
             ⚠ Doublons ({duplicatesCount})
           </button>
-          {(searchQ || cityFilter !== "all" || serviceFilter !== "all" || tierFilter !== "all" || duplicatesOnly) && (
+          {(searchQ || cityFilter !== "all" || serviceFilter !== "all" || tierFilter !== "all" || duplicatesOnly || siteFilter !== "all" || logoFilter !== "all" || ageFilter !== "all") && (
             <button
               type="button"
-              onClick={() => { setSearchQ(""); setCityFilter("all"); setServiceFilter("all"); setTierFilter("all"); setDuplicatesOnly(false); }}
+              onClick={() => { setSearchQ(""); setCityFilter("all"); setServiceFilter("all"); setTierFilter("all"); setDuplicatesOnly(false); setSiteFilter("all"); setLogoFilter("all"); setAgeFilter("all"); }}
               className="text-xs text-muted-foreground underline"
             >
               Réinitialiser
