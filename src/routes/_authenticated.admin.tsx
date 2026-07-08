@@ -1291,6 +1291,46 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
               onClick={() => setFilter("rejected")}
             />
           </div>
+          <div className="mt-3 space-y-2">
+            <div className="relative">
+              <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <input
+                type="search"
+                value={searchQ}
+                onChange={(e) => setSearchQ(e.target.value)}
+                placeholder="Rechercher (nom, email, tél, ville…)"
+                className="h-9 w-full rounded-md border border-input bg-background pl-8 pr-2 text-sm"
+              />
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <UpsellSelect label="Site" value={siteFilter} onChange={setSiteFilter} />
+              <UpsellSelect label="Logo" value={logoFilter} onChange={setLogoFilter} />
+              <AgeSelect value={ageFilter} onChange={setAgeFilter} />
+            </div>
+            <div className="flex items-center justify-between text-xs">
+              <label className="inline-flex items-center gap-1.5 text-muted-foreground cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={duplicatesOnly}
+                  onChange={(e) => setDuplicatesOnly(e.target.checked)}
+                  className="h-3.5 w-3.5"
+                />
+                Doublons uniquement ({duplicates.size})
+              </label>
+              {hasActiveFilters && (
+                <button
+                  type="button"
+                  onClick={resetFilters}
+                  className="text-primary hover:underline"
+                >
+                  Réinitialiser
+                </button>
+              )}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {prospects.length} affiché(s) sur {all.length}
+            </p>
+          </div>
         </div>
         <div className="max-h-[720px] overflow-y-auto p-2">
           {prospects.length === 0 ? (
@@ -1311,6 +1351,15 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
                   <div className="min-w-0">
                     <p className="truncate font-semibold">
                       {prospect.full_name || prospect.email || "Prospect sans nom"}
+                      {duplicates.has(prospect.id) && (
+                        <DuplicateBadge
+                          info={duplicates.get(prospect.id)!}
+                          items={all as any[]}
+                          renderItem={(m: any) =>
+                            `${m.full_name || m.email || "—"} · ${m.email ?? ""} · ${m.phone ?? ""}`
+                          }
+                        />
+                      )}
                     </p>
                     <p className="truncate text-xs text-muted-foreground">
                       {prospect.service || "Service a definir"}
