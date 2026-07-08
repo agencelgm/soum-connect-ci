@@ -1,52 +1,51 @@
-## Objectif
+## Diagnostic
 
-Ajouter dans l'admin (`/admin`) des filtres pour identifier rapidement :
-- Qui veut un **logo** (Oui / Non / Sans réponse)
-- Qui veut un **site internet** (Oui / Non / Sans réponse)
-- **Ancienneté** : nouveaux (≤ 7 j), récents (≤ 30 j), anciens (> 30 j)
+L'onglet Prospects affiche `ProspectQualificationPanel` (ligne 1404), pas `ProspectsPanel` (ligne 930). Les filtres avaient été ajoutés dans `ProspectsPanel` — qui n'est jamais rendu. C'est pour ça que rien n'apparaît côté prospects.
 
-Appliqué aux deux onglets : **Partenaires** et **Prospects**.
+## Correctif
 
-## Données déjà disponibles
+Enrichir `ProspectQualificationPanel` dans `src/routes/_authenticated.admin.tsx` — sans toucher au reste (formulaire de qualification, publication, rejet, notes).
 
-- **Partenaires** : colonnes `wants_website` et `wants_logo` (booleans, nullable) — remplies à l'inscription.
-- **Prospects** : réponses upsell stockées dans `raw_payload` sous les clés `upsell_logo` et `upsell_site` (valeurs `"oui"` / `"non"`) — remplies après soumission du lead via `/api/public/lead-upsell`.
-- **Ancienneté** : `created_at` existe sur les deux tables.
+### Ajouts dans la sidebar gauche (au-dessus de la liste)
 
-Aucune migration DB nécessaire.
-
-## Changements UI
-
-Fichier unique : `src/routes/_authenticated.admin.tsx`.
-
-### Panneau Partenaires
-Ajouter à la barre de filtres existante (à côté de Ville / Service / Tier / Tutoriel) :
-- **Select « Site internet »** : Tous · Oui · Non · Sans réponse
-- **Select « Logo »** : Tous · Oui · Non · Sans réponse
-- **Select « Ancienneté »** : Tous · Nouveaux (≤ 7 j) · Récents (≤ 30 j) · Anciens (> 30 j)
-
-Logique : filtrage client-side dans le `useMemo` existant, basé sur `wants_website`, `wants_logo`, `created_at`.
-
-### Panneau Prospects
-Mêmes trois selects, avec la même sémantique. Lecture des valeurs upsell via `prospect.raw_payload?.upsell_logo` / `upsell_site` (comparaison à `"oui"` / `"non"`, sinon « sans réponse »).
-
-Le filtre « période » actuel (7 j / 30 j) reste — le nouveau filtre « Ancienneté » est complémentaire (permet aussi d'isoler les **anciens** > 30 j, ce que la période actuelle ne permet pas).
-
-### Bouton « Réinitialiser filtres »
-Étendre le reset existant pour remettre à zéro les trois nouveaux selects.
+- **Barre de recherche** : nom, email, téléphone, entreprise, ville, service (matching insensible casse/accents via `normalizeText` de `src/lib/duplicates.ts`).
+- **Select « Site internet »** : Tous · Oui · Non · Sans réponse (lit `raw_payload.upsell_site`).
+- **Select « Logo »** : Tous · Oui · Non · Sans réponse (lit `raw_payload.upsell_logo`).
+- **Select « Ancienneté »** : Tous · Nouveaux (≤7 j) · Récents (≤30 j) · Anciens (>30 j) (basé sur `created_at`).
+- **Checkbox « Doublons uniquement »** : utilise `computeDuplicates` sur `email`/`phone` de **tous** les prospects (avant filtre statut) — un prospect qualifié + un nouveau prospect du même email ressortent tous deux.
+- **Badge doublon** dans chaque carte de la liste : petit tag rouge « Doublon email » / « Doublon tél » à côté du nom quand détecté, cliquable en tooltip qui affiche combien d'autres correspondances existent.
+- **Bouton « Réinitialiser »** qui remet à zéro recherche + les 4 selects/checkbox.
 
 ### Compteur
-Le compteur global affiché en haut de chaque panneau (« X partenaires », « Y prospects ») reflète déjà le résultat filtré — aucun changement nécessaire.
+
+Sous les filtres, afficher `X prospect(s) affiché(s) (sur Y)` — reflète le filtrage combiné.
+
+### Logique
+
+Filtrage AND, tout côté client dans un `useMemo` :
+1. filtre statut actuel (À qualifier / Publiés / Rejetés) — inchangé, reste en boutons segmentés en haut ;
+2. recherche texte ;
+3. upsell site ;
+4. upsell logo ;
+5. ancienneté ;
+6. doublons uniquement.
+
+Les compteurs des 3 boutons statut (`À qualifier`, `Publiés`, `Rejetés`) continuent de refléter le **total** par statut (non filtré), pour ne pas cacher qu'il reste des prospects ailleurs.
+
+### Nettoyage
+
+Supprimer la fonction `ProspectsPanel` inutilisée (ligne 930, ~285 lignes de code mort) pour éviter la confusion future.
 
 ## Détails techniques
 
-- Type des états : `"all" | "yes" | "no" | "unknown"` pour logo/site, `"all" | "new" | "recent" | "old"` pour ancienneté.
-- Helper `matchUpsell(value, filter)` : `value` est `boolean | null` (partenaires) ou `"oui" | "non" | null` (prospects) — normaliser en amont.
-- Helper `matchAge(created_at, filter)` : compare à `Date.now() - 7*86400_000` et `30*86400_000`.
-- Les filtres se combinent en AND avec ceux existants (search, ville, service, doublons, etc.).
+- Réutilise `matchBoolFilter`, `matchAgeFilter`, `UpsellSelect`, `AgeSelect` déjà définis (lignes 12-83).
+- Réutilise `computeDuplicates`, `normalizeText` de `src/lib/duplicates.ts`.
+- Types : `BoolFilter = "all" | "yes" | "no" | "unknown"`, `AgeFilter = "all" | "new" | "recent" | "old"`.
+- Aucune migration DB, aucun changement webhook/formulaire.
+- Aucun changement dans `PartnersPanel`.
 
-## Ce qui n'est pas inclus
+## Hors périmètre
 
-- Pas d'export CSV filtré (peut être ajouté plus tard si besoin).
-- Pas de nouvelle colonne DB, pas de migration.
-- Pas de changement côté formulaires ou webhooks.
+- Pas d'export CSV filtré.
+- Pas de fusion automatique des doublons — juste flagage visuel.
+- Pas de modification du formulaire de qualification à droite.
