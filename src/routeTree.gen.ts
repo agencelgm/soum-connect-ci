@@ -10,9 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as ReinitialiserMotDePasseRouteImport } from './routes/reinitialiser-mot-de-passe'
 import { Route as OffreSiteInternetRouteImport } from './routes/offre-site-internet'
 import { Route as OffreLogoRouteImport } from './routes/offre-logo'
 import { Route as NousContacterRouteImport } from './routes/nous-contacter'
+import { Route as MotDePasseOublieRouteImport } from './routes/mot-de-passe-oublie'
 import { Route as MerciRouteImport } from './routes/merci'
 import { Route as InscriptionPartenaireRouteImport } from './routes/inscription-partenaire'
 import { Route as GuidesRouteImport } from './routes/guides'
@@ -62,6 +64,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReinitialiserMotDePasseRoute = ReinitialiserMotDePasseRouteImport.update({
+  id: '/reinitialiser-mot-de-passe',
+  path: '/reinitialiser-mot-de-passe',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OffreSiteInternetRoute = OffreSiteInternetRouteImport.update({
   id: '/offre-site-internet',
   path: '/offre-site-internet',
@@ -75,6 +82,11 @@ const OffreLogoRoute = OffreLogoRouteImport.update({
 const NousContacterRoute = NousContacterRouteImport.update({
   id: '/nous-contacter',
   path: '/nous-contacter',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MotDePasseOublieRoute = MotDePasseOublieRouteImport.update({
+  id: '/mot-de-passe-oublie',
+  path: '/mot-de-passe-oublie',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MerciRoute = MerciRouteImport.update({
@@ -325,9 +337,11 @@ export interface FileRoutesByFullPath {
   '/guides': typeof GuidesRouteWithChildren
   '/inscription-partenaire': typeof InscriptionPartenaireRoute
   '/merci': typeof MerciRoute
+  '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/nous-contacter': typeof NousContacterRoute
   '/offre-logo': typeof OffreLogoRoute
   '/offre-site-internet': typeof OffreSiteInternetRoute
+  '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/espace-partenaire': typeof AuthenticatedEspacePartenaireRoute
@@ -373,9 +387,11 @@ export interface FileRoutesByTo {
   '/guides': typeof GuidesRouteWithChildren
   '/inscription-partenaire': typeof InscriptionPartenaireRoute
   '/merci': typeof MerciRoute
+  '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/nous-contacter': typeof NousContacterRoute
   '/offre-logo': typeof OffreLogoRoute
   '/offre-site-internet': typeof OffreSiteInternetRoute
+  '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/espace-partenaire': typeof AuthenticatedEspacePartenaireRoute
@@ -423,9 +439,11 @@ export interface FileRoutesById {
   '/guides': typeof GuidesRouteWithChildren
   '/inscription-partenaire': typeof InscriptionPartenaireRoute
   '/merci': typeof MerciRoute
+  '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/nous-contacter': typeof NousContacterRoute
   '/offre-logo': typeof OffreLogoRoute
   '/offre-site-internet': typeof OffreSiteInternetRoute
+  '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/espace-partenaire': typeof AuthenticatedEspacePartenaireRoute
@@ -473,9 +491,11 @@ export interface FileRouteTypes {
     | '/guides'
     | '/inscription-partenaire'
     | '/merci'
+    | '/mot-de-passe-oublie'
     | '/nous-contacter'
     | '/offre-logo'
     | '/offre-site-internet'
+    | '/reinitialiser-mot-de-passe'
     | '/sitemap.xml'
     | '/admin'
     | '/espace-partenaire'
@@ -521,9 +541,11 @@ export interface FileRouteTypes {
     | '/guides'
     | '/inscription-partenaire'
     | '/merci'
+    | '/mot-de-passe-oublie'
     | '/nous-contacter'
     | '/offre-logo'
     | '/offre-site-internet'
+    | '/reinitialiser-mot-de-passe'
     | '/sitemap.xml'
     | '/admin'
     | '/espace-partenaire'
@@ -570,9 +592,11 @@ export interface FileRouteTypes {
     | '/guides'
     | '/inscription-partenaire'
     | '/merci'
+    | '/mot-de-passe-oublie'
     | '/nous-contacter'
     | '/offre-logo'
     | '/offre-site-internet'
+    | '/reinitialiser-mot-de-passe'
     | '/sitemap.xml'
     | '/_authenticated/admin'
     | '/_authenticated/espace-partenaire'
@@ -620,9 +644,11 @@ export interface RootRouteChildren {
   GuidesRoute: typeof GuidesRouteWithChildren
   InscriptionPartenaireRoute: typeof InscriptionPartenaireRoute
   MerciRoute: typeof MerciRoute
+  MotDePasseOublieRoute: typeof MotDePasseOublieRoute
   NousContacterRoute: typeof NousContacterRoute
   OffreLogoRoute: typeof OffreLogoRoute
   OffreSiteInternetRoute: typeof OffreSiteInternetRoute
+  ReinitialiserMotDePasseRoute: typeof ReinitialiserMotDePasseRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   EnAboutRoute: typeof EnAboutRoute
   EnAccountingFirmAbidjanRoute: typeof EnAccountingFirmAbidjanRoute
@@ -651,6 +677,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reinitialiser-mot-de-passe': {
+      id: '/reinitialiser-mot-de-passe'
+      path: '/reinitialiser-mot-de-passe'
+      fullPath: '/reinitialiser-mot-de-passe'
+      preLoaderRoute: typeof ReinitialiserMotDePasseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/offre-site-internet': {
       id: '/offre-site-internet'
       path: '/offre-site-internet'
@@ -670,6 +703,13 @@ declare module '@tanstack/react-router' {
       path: '/nous-contacter'
       fullPath: '/nous-contacter'
       preLoaderRoute: typeof NousContacterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mot-de-passe-oublie': {
+      id: '/mot-de-passe-oublie'
+      path: '/mot-de-passe-oublie'
+      fullPath: '/mot-de-passe-oublie'
+      preLoaderRoute: typeof MotDePasseOublieRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/merci': {
@@ -1031,9 +1071,11 @@ const rootRouteChildren: RootRouteChildren = {
   GuidesRoute: GuidesRouteWithChildren,
   InscriptionPartenaireRoute: InscriptionPartenaireRoute,
   MerciRoute: MerciRoute,
+  MotDePasseOublieRoute: MotDePasseOublieRoute,
   NousContacterRoute: NousContacterRoute,
   OffreLogoRoute: OffreLogoRoute,
   OffreSiteInternetRoute: OffreSiteInternetRoute,
+  ReinitialiserMotDePasseRoute: ReinitialiserMotDePasseRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   EnAboutRoute: EnAboutRoute,
   EnAccountingFirmAbidjanRoute: EnAccountingFirmAbidjanRoute,
@@ -1055,13 +1097,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

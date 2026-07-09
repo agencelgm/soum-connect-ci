@@ -1,51 +1,63 @@
-## Diagnostic
+## Objectif
+Deux mécanismes complémentaires :
+1. **Self-service** — tout utilisateur (partenaire, agent, admin) peut cliquer « Mot de passe oublié » sur la page de connexion et recevoir un email.
+2. **Admin** — l'équipe LGM peut réinitialiser le mot de passe d'un partenaire depuis l'admin, sans passer par l'email.
 
-L'onglet Prospects affiche `ProspectQualificationPanel` (ligne 1404), pas `ProspectsPanel` (ligne 930). Les filtres avaient été ajoutés dans `ProspectsPanel` — qui n'est jamais rendu. C'est pour ça que rien n'apparaît côté prospects.
+## 1. Self-service « Mot de passe oublié »
 
-## Correctif
+### Sur `/connexion`
+- Ajouter un lien **« Mot de passe oublié ? »** sous le champ mot de passe.
+- Nouvelle route publique **`/mot-de-passe-oublie`** :
+  - Champ email + bouton « Envoyer le lien »
+  - Appelle `supabase.auth.resetPasswordForEmail(email, { redirectTo: ${window.location.origin}/reinitialiser-mot-de-passe })`
+  - Message de confirmation neutre (« Si un compte existe avec cet email, un lien vient d'être envoyé ») — pas de fuite d'information.
 
-Enrichir `ProspectQualificationPanel` dans `src/routes/_authenticated.admin.tsx` — sans toucher au reste (formulaire de qualification, publication, rejet, notes).
+### Nouvelle route publique `/reinitialiser-mot-de-passe`
+- Détecte le token `type=recovery` dans l'URL (Supabase pose une session temporaire).
+- Formulaire : nouveau mot de passe + confirmation (10 caractères min, comme la page existante `/changer-mot-de-passe`).
+- Appelle `supabase.auth.updateUser({ password })`.
+- Après succès : toast + redirection vers `/marketplace` ou `/admin` selon le rôle (réutiliser la logique de `changer-mot-de-passe.tsx`).
+- Route **publique** (pas sous `_authenticated`), noindex.
 
-### Ajouts dans la sidebar gauche (au-dessus de la liste)
+### Email de réinitialisation
+Le projet a déjà l'infrastructure d'emails auth Lovable en place (Meta Pixel, GHL, etc. configurés). Je vérifierai que le template **« Reset password »** existe ; sinon j'appelle `scaffold_auth_email_templates` pour générer les 6 templates auth avec la charte du site (bleu primaire, Poppins/Inter).
 
-- **Barre de recherche** : nom, email, téléphone, entreprise, ville, service (matching insensible casse/accents via `normalizeText` de `src/lib/duplicates.ts`).
-- **Select « Site internet »** : Tous · Oui · Non · Sans réponse (lit `raw_payload.upsell_site`).
-- **Select « Logo »** : Tous · Oui · Non · Sans réponse (lit `raw_payload.upsell_logo`).
-- **Select « Ancienneté »** : Tous · Nouveaux (≤7 j) · Récents (≤30 j) · Anciens (>30 j) (basé sur `created_at`).
-- **Checkbox « Doublons uniquement »** : utilise `computeDuplicates` sur `email`/`phone` de **tous** les prospects (avant filtre statut) — un prospect qualifié + un nouveau prospect du même email ressortent tous deux.
-- **Badge doublon** dans chaque carte de la liste : petit tag rouge « Doublon email » / « Doublon tél » à côté du nom quand détecté, cliquable en tooltip qui affiche combien d'autres correspondances existent.
-- **Bouton « Réinitialiser »** qui remet à zéro recherche + les 4 selects/checkbox.
+## 2. Reset admin d'un partenaire
 
-### Compteur
+### Dans l'admin (`_authenticated.admin.tsx`, panneau Partenaires)
+- Sur chaque carte partenaire, ajouter un bouton **« Réinitialiser mot de passe »** (dans le menu d'actions à côté de « Suspendre », « Supprimer », etc.).
+- Deux options proposées via un petit dialog :
+  - **Option A — Envoyer un email de réinitialisation** : appelle une nouvelle server fn `sendPasswordResetForPartner({ partnerId })` qui utilise `supabaseAdmin.auth.admin.generateLink({ type: 'recovery', email })` puis envoie l'email (via l'infra auth existante). Aucun mot de passe temporaire à communiquer.
+  - **Option B — Définir un mot de passe temporaire** : génère un mot de passe aléatoire (12 caractères), le pousse via `supabaseAdmin.auth.admin.updateUserById(userId, { password })`, remet le flag `must_change_password = true` sur la ligne `partners`, et affiche le mot de passe **une seule fois** dans un dialog à copier. À la prochaine connexion, le partenaire est redirigé vers `/changer-mot-de-passe` (logique déjà en place dans `_authenticated.tsx`).
 
-Sous les filtres, afficher `X prospect(s) affiché(s) (sur Y)` — reflète le filtrage combiné.
+### Sécurité (côté server fn)
+Nouvelle fonction `src/lib/partners.functions.ts` :
+```ts
+adminResetPartnerPassword({ partnerId, mode: "email" | "temporary" })
+```
+- `.middleware([requireSupabaseAuth])`
+- Vérifie `has_role(userId, 'admin')` **OU** `has_role(userId, 'agent')` (les deux rôles staff peuvent le faire — cohérent avec les autres actions admin du projet).
+- Charge `supabaseAdmin` **dans le handler** (`await import('@/integrations/supabase/client.server')`).
+- Récupère l'email du partenaire, exécute l'action Supabase Admin.
+- Journalise (console.log server-side) pour audit léger.
+- Retourne `{ mode, temporaryPassword? }`.
 
-### Logique
+### Interdictions
+- Ne **pas** permettre à un agent/admin de reset le mot de passe d'un **autre membre staff** via cet endpoint (protection contre l'escalade latérale). Un admin doit passer par le self-service ou un autre admin via Supabase directement. Vérification : refuser si la cible a `admin` ou `agent` dans `user_roles`.
 
-Filtrage AND, tout côté client dans un `useMemo` :
-1. filtre statut actuel (À qualifier / Publiés / Rejetés) — inchangé, reste en boutons segmentés en haut ;
-2. recherche texte ;
-3. upsell site ;
-4. upsell logo ;
-5. ancienneté ;
-6. doublons uniquement.
+## 3. Éléments hors périmètre
+- Pas de refonte de `/changer-mot-de-passe` (déjà OK pour le flow first-login).
+- Pas de 2FA.
+- Pas de changement de la table `user_roles` ni de la RLS.
+- Pas d'historique visible des resets (juste logs serveur pour l'instant).
 
-Les compteurs des 3 boutons statut (`À qualifier`, `Publiés`, `Rejetés`) continuent de refléter le **total** par statut (non filtré), pour ne pas cacher qu'il reste des prospects ailleurs.
+## Fichiers touchés
+- **Créés** : `src/routes/mot-de-passe-oublie.tsx`, `src/routes/reinitialiser-mot-de-passe.tsx`
+- **Modifiés** :
+  - `src/routes/connexion.tsx` (ajout du lien)
+  - `src/lib/partners.functions.ts` (nouvelle server fn)
+  - `src/routes/_authenticated.admin.tsx` (bouton + dialog dans le panneau Partenaires)
+- **Éventuellement** : scaffold des templates auth si manquants.
 
-### Nettoyage
-
-Supprimer la fonction `ProspectsPanel` inutilisée (ligne 930, ~285 lignes de code mort) pour éviter la confusion future.
-
-## Détails techniques
-
-- Réutilise `matchBoolFilter`, `matchAgeFilter`, `UpsellSelect`, `AgeSelect` déjà définis (lignes 12-83).
-- Réutilise `computeDuplicates`, `normalizeText` de `src/lib/duplicates.ts`.
-- Types : `BoolFilter = "all" | "yes" | "no" | "unknown"`, `AgeFilter = "all" | "new" | "recent" | "old"`.
-- Aucune migration DB, aucun changement webhook/formulaire.
-- Aucun changement dans `PartnersPanel`.
-
-## Hors périmètre
-
-- Pas d'export CSV filtré.
-- Pas de fusion automatique des doublons — juste flagage visuel.
-- Pas de modification du formulaire de qualification à droite.
+## Question ouverte
+Préfères-tu que le bouton admin propose **les deux options** (email + mot de passe temporaire), **seulement l'email** (plus sûr), ou **seulement le mot de passe temporaire** (plus pratique quand le partenaire n'a plus accès à son email) ? Par défaut je propose **les deux**, avec l'email en option recommandée.
