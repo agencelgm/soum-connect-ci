@@ -415,6 +415,63 @@ export const markPasswordChanged = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+// ---------------------- Admin: reset partner password ----------------------
+
+function generateTempPassword(): string {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
+  let pwd = "";
+  const bytes = new Uint8Array(14);
+  crypto.getRandomValues(bytes);
+  for (let i = 0; i < bytes.length; i++) pwd += chars[bytes[i] % chars.length];
+  return pwd + "!2";
+}
+
+export const resetPartnerPassword = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) => z.object({ partner_id: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    await assertStaff(context.userId);
+
+    const { data: partner, error: pErr } = await supabaseAdmin
+      .from("partners")
+      .select("id, profile_id, email, cabinet_name")
+      .eq("id", data.partner_id)
+      .is("deleted_at", null)
+      .maybeSingle();
+    if (pErr) throw new Error(pErr.message);
+    if (!partner || !partner.profile_id) {
+      throw new Error("Partenaire introuvable ou sans compte utilisateur.");
+    }
+
+    // Protection: interdire la réinitialisation d'un membre du staff via ce endpoint.
+    const { data: targetRoles } = await supabaseAdmin
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", partner.profile_id);
+    const rs = (targetRoles ?? []).map((r) => r.role);
+    if (rs.includes("admin") || rs.includes("agent")) {
+      throw new Error("Ce compte est un membre du staff. Utilisez la gestion Équipe.");
+    }
+
+    const tempPassword = generateTempPassword();
+    const { error: authErr } = await supabaseAdmin.auth.admin.updateUserById(
+      partner.profile_id,
+      { password: tempPassword },
+    );
+    if (authErr) throw new Error(authErr.message);
+
+    await supabaseAdmin
+      .from("profiles")
+      .update({ must_change_password: true, updated_at: new Date().toISOString() })
+      .eq("id", partner.profile_id);
+
+    console.log(
+      `[resetPartnerPassword] Partner ${partner.id} (${partner.email}) password reset by ${context.userId}`,
+    );
+
+    return { temp_password: tempPassword, email: partner.email as string };
+  });
+
 // ---------------------- Admin: list partners ----------------------
 
 export const listPartners = createServerFn({ method: "GET" })
