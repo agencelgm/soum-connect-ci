@@ -140,6 +140,7 @@ import {
   getAdminDashboardStats,
   listChariowPayments,
   setPartnerTier,
+  resetPartnerPassword,
 } from "@/lib/partners.functions";
 import { publishProspect } from "@/lib/marketplace.functions";
 import {
