@@ -680,8 +680,10 @@ function PartnerCard({
   const deleteFn = useServerFn(deletePartner);
   const grantFn = useServerFn(adminGrantCredits);
   const tierFn = useServerFn(setPartnerTier);
+  const resetPwdFn = useServerFn(resetPartnerPassword);
   const [busy, setBusy] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+  const [tempPwd, setTempPwd] = useState<{ email: string; pwd: string } | null>(null);
 
   async function run(fn: () => Promise<unknown>) {
     setBusy(true);
@@ -826,8 +828,60 @@ function PartnerCard({
               Supprimer
             </Button>
           )}
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={busy}
+            onClick={() => {
+              if (
+                !confirm(
+                  `Réinitialiser le mot de passe de ${partner.email} ?\n\n` +
+                    `Un mot de passe temporaire sera généré. Le partenaire devra le changer à sa prochaine connexion.`,
+                )
+              )
+                return;
+              setBusy(true);
+              resetPwdFn({ data: { partner_id: partner.id } })
+                .then((res) => {
+                  setTempPwd({ email: res.email, pwd: res.temp_password });
+                  toast.success("Mot de passe réinitialisé");
+                })
+                .catch((e) => toast.error(e instanceof Error ? e.message : "Erreur"))
+                .finally(() => setBusy(false));
+            }}
+          >
+            Reset mdp
+          </Button>
         </div>
       </div>
+      {tempPwd && (
+        <div className="mt-3 rounded-lg border-2 border-primary bg-primary/5 p-3 space-y-2">
+          <p className="font-semibold text-sm">
+            Mot de passe temporaire pour {tempPwd.email}
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Communique-le au partenaire. Il devra le changer à sa prochaine connexion.
+            Ce mot de passe ne sera plus affiché.
+          </p>
+          <div className="flex gap-2 items-center">
+            <code className="flex-1 rounded bg-background border px-3 py-2 font-mono text-sm break-all">
+              {tempPwd.pwd}
+            </code>
+            <Button
+              size="sm"
+              onClick={() => {
+                navigator.clipboard.writeText(tempPwd.pwd);
+                toast.success("Copié");
+              }}
+            >
+              Copier
+            </Button>
+            <Button size="sm" variant="ghost" onClick={() => setTempPwd(null)}>
+              Fermer
+            </Button>
+          </div>
+        </div>
+      )}
       <PartnerDetailsDialog
         open={showDetails}
         onClose={() => setShowDetails(false)}

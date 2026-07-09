@@ -96,6 +96,14 @@ function ConnexionPage() {
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           </div>
+          <div className="mt-2 text-right">
+            <Link
+              to="/mot-de-passe-oublie"
+              className="text-sm text-primary hover:underline"
+            >
+              Mot de passe oublié ?
+            </Link>
+          </div>
         </div>
         <Button type="submit" disabled={submitting} className="w-full">
           {submitting ? "Connexion…" : "Se connecter"}
