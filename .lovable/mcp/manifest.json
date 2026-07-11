@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "sdk_version": "0.20.1",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://kjaewnwrponkkgefkggx.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "soumissions-comptables-mcp",
+      "version": "0.1.0",
+      "title": "SoumissionsComptables — Outils partenaires"
+    },
+    "tools": [
+      {
+        "name": "get_me",
+        "title": "Récupérer mon profil",
+        "description": "Retourne l'utilisateur connecté (email, rôles LGM, et le cabinet partenaire associé le cas échéant).",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_marketplace_leads",
+        "title": "Lister les leads de la marketplace",
+        "description": "Retourne les publications de leads actives visibles dans la marketplace (service, ville, audience, budget, places restantes).",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "limit": {
+              "description": "Nombre max de leads (défaut 20)",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            }
+          }
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}

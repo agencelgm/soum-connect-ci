@@ -16,6 +16,7 @@ import { Route as OffreLogoRouteImport } from './routes/offre-logo'
 import { Route as NousContacterRouteImport } from './routes/nous-contacter'
 import { Route as MotDePasseOublieRouteImport } from './routes/mot-de-passe-oublie'
 import { Route as MerciRouteImport } from './routes/merci'
+import { Route as McpRouteImport } from './routes/mcp'
 import { Route as InscriptionPartenaireRouteImport } from './routes/inscription-partenaire'
 import { Route as GuidesRouteImport } from './routes/guides'
 import { Route as FaqRouteImport } from './routes/faq'
@@ -52,12 +53,15 @@ import { Route as AuthenticatedMarketplaceRouteImport } from './routes/_authenti
 import { Route as AuthenticatedHistoriqueRouteImport } from './routes/_authenticated.historique'
 import { Route as AuthenticatedEspacePartenaireRouteImport } from './routes/_authenticated.espace-partenaire'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated.admin'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as ApiPublicTestPartnerWebhookRouteImport } from './routes/api/public/test-partner-webhook'
 import { Route as ApiPublicMetaCapiRouteImport } from './routes/api/public/meta-capi'
 import { Route as ApiPublicLeadUpsellRouteImport } from './routes/api/public/lead-upsell'
 import { Route as ApiPublicLeadRouteImport } from './routes/api/public/lead'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
 import { Route as ApiPublicChariowWebhookRouteImport } from './routes/api/public/chariow-webhook'
+import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -92,6 +96,11 @@ const MotDePasseOublieRoute = MotDePasseOublieRouteImport.update({
 const MerciRoute = MerciRouteImport.update({
   id: '/merci',
   path: '/merci',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InscriptionPartenaireRoute = InscriptionPartenaireRouteImport.update({
@@ -285,6 +294,18 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char91DotmcpChar93ListToolsRoute =
+  Char91DotmcpChar93ListToolsRouteImport.update({
+    id: '/.mcp/list-tools',
+    path: '/.mcp/list-tools',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicTestPartnerWebhookRoute =
   ApiPublicTestPartnerWebhookRouteImport.update({
     id: '/api/public/test-partner-webhook',
@@ -316,6 +337,12 @@ const ApiPublicChariowWebhookRoute = ApiPublicChariowWebhookRouteImport.update({
   path: '/api/public/chariow-webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char91DotmcpChar93InvokeToolToolRoute =
+  Char91DotmcpChar93InvokeToolToolRouteImport.update({
+    id: '/.mcp/invoke-tool/$tool',
+    path: '/.mcp/invoke-tool/$tool',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -336,6 +363,7 @@ export interface FileRoutesByFullPath {
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRouteWithChildren
   '/inscription-partenaire': typeof InscriptionPartenaireRoute
+  '/mcp': typeof McpRoute
   '/merci': typeof MerciRoute
   '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/nous-contacter': typeof NousContacterRoute
@@ -343,6 +371,8 @@ export interface FileRoutesByFullPath {
   '/offre-site-internet': typeof OffreSiteInternetRoute
   '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/espace-partenaire': typeof AuthenticatedEspacePartenaireRoute
   '/historique': typeof AuthenticatedHistoriqueRoute
@@ -360,6 +390,7 @@ export interface FileRoutesByFullPath {
   '/en/website-offer': typeof EnWebsiteOfferRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/en/': typeof EnIndexRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/api/public/chariow-webhook': typeof ApiPublicChariowWebhookRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
@@ -386,6 +417,7 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRouteWithChildren
   '/inscription-partenaire': typeof InscriptionPartenaireRoute
+  '/mcp': typeof McpRoute
   '/merci': typeof MerciRoute
   '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/nous-contacter': typeof NousContacterRoute
@@ -393,6 +425,8 @@ export interface FileRoutesByTo {
   '/offre-site-internet': typeof OffreSiteInternetRoute
   '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/espace-partenaire': typeof AuthenticatedEspacePartenaireRoute
   '/historique': typeof AuthenticatedHistoriqueRoute
@@ -410,6 +444,7 @@ export interface FileRoutesByTo {
   '/en/website-offer': typeof EnWebsiteOfferRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/en': typeof EnIndexRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/api/public/chariow-webhook': typeof ApiPublicChariowWebhookRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
@@ -438,6 +473,7 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/guides': typeof GuidesRouteWithChildren
   '/inscription-partenaire': typeof InscriptionPartenaireRoute
+  '/mcp': typeof McpRoute
   '/merci': typeof MerciRoute
   '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/nous-contacter': typeof NousContacterRoute
@@ -445,6 +481,8 @@ export interface FileRoutesById {
   '/offre-site-internet': typeof OffreSiteInternetRoute
   '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/espace-partenaire': typeof AuthenticatedEspacePartenaireRoute
   '/_authenticated/historique': typeof AuthenticatedHistoriqueRoute
@@ -462,6 +500,7 @@ export interface FileRoutesById {
   '/en/website-offer': typeof EnWebsiteOfferRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/en/': typeof EnIndexRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/api/public/chariow-webhook': typeof ApiPublicChariowWebhookRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
@@ -490,6 +529,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/guides'
     | '/inscription-partenaire'
+    | '/mcp'
     | '/merci'
     | '/mot-de-passe-oublie'
     | '/nous-contacter'
@@ -497,6 +537,8 @@ export interface FileRouteTypes {
     | '/offre-site-internet'
     | '/reinitialiser-mot-de-passe'
     | '/sitemap.xml'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/admin'
     | '/espace-partenaire'
     | '/historique'
@@ -514,6 +556,7 @@ export interface FileRouteTypes {
     | '/en/website-offer'
     | '/guides/$slug'
     | '/en/'
+    | '/.mcp/invoke-tool/$tool'
     | '/api/public/chariow-webhook'
     | '/api/public/contact'
     | '/api/public/lead'
@@ -540,6 +583,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/guides'
     | '/inscription-partenaire'
+    | '/mcp'
     | '/merci'
     | '/mot-de-passe-oublie'
     | '/nous-contacter'
@@ -547,6 +591,8 @@ export interface FileRouteTypes {
     | '/offre-site-internet'
     | '/reinitialiser-mot-de-passe'
     | '/sitemap.xml'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/admin'
     | '/espace-partenaire'
     | '/historique'
@@ -564,6 +610,7 @@ export interface FileRouteTypes {
     | '/en/website-offer'
     | '/guides/$slug'
     | '/en'
+    | '/.mcp/invoke-tool/$tool'
     | '/api/public/chariow-webhook'
     | '/api/public/contact'
     | '/api/public/lead'
@@ -591,6 +638,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/guides'
     | '/inscription-partenaire'
+    | '/mcp'
     | '/merci'
     | '/mot-de-passe-oublie'
     | '/nous-contacter'
@@ -598,6 +646,8 @@ export interface FileRouteTypes {
     | '/offre-site-internet'
     | '/reinitialiser-mot-de-passe'
     | '/sitemap.xml'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/_authenticated/admin'
     | '/_authenticated/espace-partenaire'
     | '/_authenticated/historique'
@@ -615,6 +665,7 @@ export interface FileRouteTypes {
     | '/en/website-offer'
     | '/guides/$slug'
     | '/en/'
+    | '/.mcp/invoke-tool/$tool'
     | '/api/public/chariow-webhook'
     | '/api/public/contact'
     | '/api/public/lead'
@@ -643,6 +694,7 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   GuidesRoute: typeof GuidesRouteWithChildren
   InscriptionPartenaireRoute: typeof InscriptionPartenaireRoute
+  McpRoute: typeof McpRoute
   MerciRoute: typeof MerciRoute
   MotDePasseOublieRoute: typeof MotDePasseOublieRoute
   NousContacterRoute: typeof NousContacterRoute
@@ -650,6 +702,8 @@ export interface RootRouteChildren {
   OffreSiteInternetRoute: typeof OffreSiteInternetRoute
   ReinitialiserMotDePasseRoute: typeof ReinitialiserMotDePasseRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
+  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   EnAboutRoute: typeof EnAboutRoute
   EnAccountingFirmAbidjanRoute: typeof EnAccountingFirmAbidjanRoute
   EnCompanyRegistrationIvoryCoastRoute: typeof EnCompanyRegistrationIvoryCoastRoute
@@ -660,6 +714,7 @@ export interface RootRouteChildren {
   EnThankYouRoute: typeof EnThankYouRoute
   EnWebsiteOfferRoute: typeof EnWebsiteOfferRoute
   EnIndexRoute: typeof EnIndexRoute
+  Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ApiPublicChariowWebhookRoute: typeof ApiPublicChariowWebhookRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
   ApiPublicLeadRoute: typeof ApiPublicLeadRoute
@@ -717,6 +772,13 @@ declare module '@tanstack/react-router' {
       path: '/merci'
       fullPath: '/merci'
       preLoaderRoute: typeof MerciRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/inscription-partenaire': {
@@ -971,6 +1033,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/list-tools': {
+      id: '/.mcp/list-tools'
+      path: '/.mcp/list-tools'
+      fullPath: '/.mcp/list-tools'
+      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/test-partner-webhook': {
       id: '/api/public/test-partner-webhook'
       path: '/api/public/test-partner-webhook'
@@ -1011,6 +1087,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/chariow-webhook'
       fullPath: '/api/public/chariow-webhook'
       preLoaderRoute: typeof ApiPublicChariowWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/invoke-tool/$tool': {
+      id: '/.mcp/invoke-tool/$tool'
+      path: '/.mcp/invoke-tool/$tool'
+      fullPath: '/.mcp/invoke-tool/$tool'
+      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -1070,6 +1153,7 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   GuidesRoute: GuidesRouteWithChildren,
   InscriptionPartenaireRoute: InscriptionPartenaireRoute,
+  McpRoute: McpRoute,
   MerciRoute: MerciRoute,
   MotDePasseOublieRoute: MotDePasseOublieRoute,
   NousContacterRoute: NousContacterRoute,
@@ -1077,6 +1161,9 @@ const rootRouteChildren: RootRouteChildren = {
   OffreSiteInternetRoute: OffreSiteInternetRoute,
   ReinitialiserMotDePasseRoute: ReinitialiserMotDePasseRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
+  Char91DotwellKnownChar93OauthProtectedResourceRoute:
+    Char91DotwellKnownChar93OauthProtectedResourceRoute,
   EnAboutRoute: EnAboutRoute,
   EnAccountingFirmAbidjanRoute: EnAccountingFirmAbidjanRoute,
   EnCompanyRegistrationIvoryCoastRoute: EnCompanyRegistrationIvoryCoastRoute,
@@ -1087,6 +1174,7 @@ const rootRouteChildren: RootRouteChildren = {
   EnThankYouRoute: EnThankYouRoute,
   EnWebsiteOfferRoute: EnWebsiteOfferRoute,
   EnIndexRoute: EnIndexRoute,
+  Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ApiPublicChariowWebhookRoute: ApiPublicChariowWebhookRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
   ApiPublicLeadRoute: ApiPublicLeadRoute,
