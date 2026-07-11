@@ -353,14 +353,14 @@ function makeSchema(c: Copy) {
     statut: z.string().min(1, c.errStatut),
     description: z.string().trim().min(10, c.errDescription).max(1000),
     nbAssocies: z.coerce
-      .number({ invalid_type_error: c.errAssocies })
+      .number({ error: c.errAssocies })
       .int()
       .min(1, c.errAssocies)
       .max(50, c.errAssocies),
-    bureau: z.enum(["oui", "non"], { errorMap: () => ({ message: c.errBureau }) }),
-    logo: z.enum(["oui", "non"], { errorMap: () => ({ message: c.errLogo }) }),
-    siteWeb: z.enum(["oui", "non"], { errorMap: () => ({ message: c.errSite }) }),
-    publicite: z.enum(["oui", "non"], { errorMap: () => ({ message: c.errPub }) }),
+    bureau: z.enum(["oui", "non"], { error: c.errBureau }),
+    logo: z.enum(["oui", "non"], { error: c.errLogo }),
+    siteWeb: z.enum(["oui", "non"], { error: c.errSite }),
+    publicite: z.enum(["oui", "non"], { error: c.errPub }),
     localisation: z.string().min(1, c.errLoc),
     delai: z.string().min(1, c.errDelai),
     budget: z.string().min(1, c.errBudget),
@@ -373,7 +373,7 @@ function makeSchema(c: Copy) {
       .regex(/^[+0-9 ]+$/, c.errMobileFmt),
     email: z.string().trim().email(c.errEmail).max(255),
     entreprise: z.string().trim().min(2, c.errEnt).max(120),
-    consent: z.literal(true, { errorMap: () => ({ message: c.errConsent }) }),
+    consent: z.literal(true, { error: c.errConsent }),
   });
 }
 
