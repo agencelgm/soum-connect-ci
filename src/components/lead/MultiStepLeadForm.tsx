@@ -409,7 +409,7 @@ export function MultiStepLeadForm({
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
 
   const form = useForm<FormValues>({
-    resolver: zodResolver(makeSchema(c)),
+    resolver: zodResolver(makeSchema(c)) as unknown as import("react-hook-form").Resolver<FormValues>,
     mode: "onBlur",
     defaultValues: {
       service: "",
