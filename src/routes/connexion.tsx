@@ -17,12 +17,18 @@ export const Route = createFileRoute("/connexion")({
       { name: "robots", content: "noindex,nofollow" },
     ],
   }),
+  validateSearch: (s: Record<string, unknown>) => ({
+    next: typeof s.next === "string" && s.next.startsWith("/") && !s.next.startsWith("//")
+      ? s.next
+      : undefined,
+  }),
   component: ConnexionPage,
 });
 
 function ConnexionPage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const { next } = Route.useSearch();
   const meFn = useServerFn(getMyPartner);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,6 +37,10 @@ function ConnexionPage() {
 
   useEffect(() => {
     if (!loading && user) {
+      if (next) {
+        window.location.href = next;
+        return;
+      }
       meFn().then((me) => {
         if (me.mustChangePassword) {
           navigate({ to: "/changer-mot-de-passe", replace: true });
@@ -53,6 +63,10 @@ function ConnexionPage() {
       return;
     }
     toast.success("Connexion réussie");
+    if (next) {
+      window.location.href = next;
+      return;
+    }
     try {
       const me = await meFn();
       if (me.mustChangePassword) {

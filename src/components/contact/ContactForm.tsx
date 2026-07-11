@@ -170,7 +170,7 @@ export function ContactForm({ language }: { language: Lang }) {
       .trim()
       .min(20, t.errDescMin)
       .max(1000, t.errDescMax),
-    consent: z.literal(true, { errorMap: () => ({ message: t.errConsent }) }),
+    consent: z.literal(true, { error: t.errConsent }),
   });
   type FormValues = z.infer<typeof schema>;
 
