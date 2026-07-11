@@ -353,8 +353,8 @@ function makeSchema(c: Copy) {
     statut: z.string().min(1, c.errStatut),
     description: z.string().trim().min(10, c.errDescription).max(1000),
     nbAssocies: z.coerce
-      .number({ error: c.errAssocies })
-      .int()
+      .number()
+      .int(c.errAssocies)
       .min(1, c.errAssocies)
       .max(50, c.errAssocies),
     bureau: z.enum(["oui", "non"], { error: c.errBureau }),
