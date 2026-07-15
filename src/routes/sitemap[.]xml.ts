@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { ARTICLES } from "@/lib/guides-data.tsx";
+import { ACADEMIE_MODULES } from "@/lib/academie-data";
 
 const BASE_URL = "https://www.soumissioncomptable.com";
 
@@ -42,6 +43,16 @@ export const Route = createFileRoute("/sitemap.xml")({
           // Offer pages
           { path: "/offre-logo", changefreq: "monthly", priority: "0.4", lastmod: today },
           { path: "/offre-site-internet", changefreq: "monthly", priority: "0.4", lastmod: today },
+          // Académie LGM
+          { path: "/academie", changefreq: "weekly", priority: "0.6", lastmod: today },
+          ...ACADEMIE_MODULES.flatMap((m) =>
+            m.videos.map((v) => ({
+              path: `/academie/${m.slug}/${v.slug}`,
+              changefreq: "monthly" as const,
+              priority: "0.5",
+              lastmod: today,
+            })),
+          ),
           // Dynamic guides
           ...ARTICLES.map((a) => ({
             path: `/guides/${a.slug}`,
