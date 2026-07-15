@@ -1,8 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { AcademieVideoPlayer } from "@/components/academie/AcademieVideoPlayer";
 import { ShareButtons } from "@/components/academie/ShareButtons";
@@ -97,9 +95,7 @@ export const Route = createFileRoute("/academie/$module/$slug")({
 
 function NotFoundVideo() {
   return (
-    <>
-      <Header />
-      <main className="max-w-3xl mx-auto px-6 py-20 text-center">
+    <div className="max-w-3xl mx-auto px-6 py-20 text-center">
         <h1 className="text-2xl font-bold">Vidéo introuvable</h1>
         <p className="mt-2 text-muted-foreground">
           Cette vidéo n'existe pas (ou plus) dans l'Académie LGM.
@@ -107,25 +103,19 @@ function NotFoundVideo() {
         <Button asChild className="mt-6">
           <Link to="/academie">Retour à l'Académie</Link>
         </Button>
-      </main>
-      <Footer />
-    </>
+    </div>
   );
 }
 
 function ErrorVideo() {
   return (
-    <>
-      <Header />
-      <main className="max-w-3xl mx-auto px-6 py-20 text-center">
+    <div className="max-w-3xl mx-auto px-6 py-20 text-center">
         <h1 className="text-2xl font-bold">Une erreur est survenue</h1>
         <p className="mt-2 text-muted-foreground">Merci de réessayer dans un instant.</p>
         <Button asChild className="mt-6">
           <Link to="/academie">Retour à l'Académie</Link>
         </Button>
-      </main>
-      <Footer />
-    </>
+    </div>
   );
 }
 
@@ -166,9 +156,7 @@ function AcademieVideoPage() {
   const shareUrl = `${BASE}/academie/${params.module}/${params.slug}`;
 
   return (
-    <>
-      <Header />
-      <main className="bg-muted/20 min-h-screen">
+    <div className="bg-muted/20 min-h-screen">
         <div className="max-w-5xl mx-auto px-6 pt-6">
           <nav aria-label="Fil d'Ariane" className="text-sm text-muted-foreground">
             <ol className="flex flex-wrap items-center gap-1">
@@ -330,8 +318,6 @@ function AcademieVideoPage() {
             </aside>
           </div>
         </section>
-      </main>
-      <Footer />
-    </>
+    </div>
   );
 }

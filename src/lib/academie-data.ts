@@ -1,5 +1,6 @@
 import tutoVideo from "@/assets/tutoriel-partenaire.mp4.asset.json";
 import prospectVsClient from "@/assets/academie/prospect-vs-client.mp4.asset.json";
+import inboundVsOutbound from "@/assets/academie/inbound-vs-outbound.mp4.asset.json";
 
 /**
  * Slug spécial : la vidéo n°1 de l'Académie EST la vidéo obligatoire du
@@ -76,6 +77,22 @@ export const ACADEMIE_MODULES: AcademieModule[] = [
         ],
         videoUrl: prospectVsClient.url,
         duration: "10 min",
+      },
+      {
+        slug: "inbound-vs-outbound",
+        order: 3,
+        title: "Inbound vs Outbound : deux façons d'aller chercher des clients",
+        description:
+          "La différence entre l'inbound (le client vient à vous) et l'outbound (vous allez vers le client), et comment les combiner dans un cabinet comptable.",
+        brief:
+          "En vente, il existe deux grandes approches : l'inbound, où le client vous trouve grâce à votre visibilité (site, SEO, bouche-à-oreille, SoumissionComptable.com), et l'outbound, où vous allez chercher activement le client (appels, emails, visites, réseautage). Cette vidéo explique les deux et comment les combiner.",
+        keyPoints: [
+          "Ce qu'est l'inbound et pourquoi il coûte moins cher à long terme",
+          "Ce qu'est l'outbound et quand il reste indispensable",
+          "Comment combiner les deux dans un cabinet comptable",
+        ],
+        videoUrl: inboundVsOutbound.url,
+        duration: "9 min",
       },
     ],
   },

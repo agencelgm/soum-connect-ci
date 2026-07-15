@@ -2,8 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth-context";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
 import { ACADEMIE_MODULES } from "@/lib/academie-data";
 import { getMyAcademieProgress } from "@/lib/academie.functions";
 import { CheckCircle2, PlayCircle, GraduationCap, Clock } from "lucide-react";
@@ -59,9 +57,7 @@ function AcademieIndex() {
   const progressMap = new Map((progress ?? []).map((p) => [p.slug, p]));
 
   return (
-    <>
-      <Header />
-      <main className="bg-muted/20 min-h-screen">
+    <div className="bg-muted/20 min-h-screen">
         <section className="bg-gradient-to-br from-primary/10 via-background to-background border-b">
           <div className="max-w-5xl mx-auto px-6 py-14 lg:py-20">
             <div className="inline-flex items-center gap-2 rounded-full border bg-card px-3 py-1 text-xs font-semibold text-primary">
@@ -162,8 +158,6 @@ function AcademieIndex() {
             </div>
           ))}
         </section>
-      </main>
-      <Footer />
-    </>
+    </div>
   );
 }
