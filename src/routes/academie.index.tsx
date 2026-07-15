@@ -8,7 +8,7 @@ import { CheckCircle2, PlayCircle, GraduationCap, Clock } from "lucide-react";
 
 const CANONICAL = "https://www.soumissioncomptable.com/academie";
 
-export const Route = createFileRoute("/academie")({
+export const Route = createFileRoute("/academie/")({
   head: () => ({
     meta: [
       { title: "Académie LGM — Formations vente pour cabinets comptables" },
