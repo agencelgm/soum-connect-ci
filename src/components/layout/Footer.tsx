@@ -56,6 +56,7 @@ export function Footer() {
             <li><Link to="/a-propos" className="hover:text-secondary">{t.footer.links.about}</Link></li>
             <li><Link to="/cabinets-comptables-partenaires" className="hover:text-secondary">{t.footer.links.partners}</Link></li>
             <li><Link to="/guides" className="hover:text-secondary">{t.footer.links.guides}</Link></li>
+            <li><Link to="/academie" className="hover:text-secondary">Académie LGM</Link></li>
           </ul>
         </div>
 

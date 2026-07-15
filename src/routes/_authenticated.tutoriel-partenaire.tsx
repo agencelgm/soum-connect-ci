@@ -7,6 +7,9 @@ import { Button } from "@/components/ui/button";
 import { whatsappSupportUrl, WHATSAPP_SUPPORT_NUMBER } from "@/lib/contact";
 import { AlertTriangle, CheckCircle2, Clock, MessageCircle, Phone } from "lucide-react";
 import tutoVideo from "@/assets/tutoriel-partenaire.mp4.asset.json";
+import { nextVideoAfterTutorial } from "@/lib/academie-data";
+import { GraduationCap, ArrowRight } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authenticated/tutoriel-partenaire")({
   head: () => ({
@@ -129,6 +132,33 @@ function TutorielPage() {
           </Button>
         </div>
       )}
+
+      {completed && (() => {
+        const nxt = nextVideoAfterTutorial();
+        if (!nxt) return null;
+        return (
+          <div className="mb-6 flex items-start gap-3 rounded-xl border border-primary/30 bg-primary/5 p-4">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <GraduationCap className="h-5 w-5" />
+            </div>
+            <div className="flex-1 text-sm">
+              <p className="font-semibold text-foreground">Continuez votre formation</p>
+              <p className="mt-0.5 text-foreground/80">
+                Prochaine vidéo de l'Académie LGM : <strong>{nxt.video.title}</strong>.
+              </p>
+            </div>
+            <Button asChild className="shrink-0">
+              <Link
+                to="/academie/$module/$slug"
+                params={{ module: nxt.moduleSlug, slug: nxt.video.slug }}
+              >
+                Regarder
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
+        );
+      })()}
 
       <div className="grid gap-6 md:grid-cols-[2fr_1fr]">
         <div className="rounded-xl border bg-card p-3">
