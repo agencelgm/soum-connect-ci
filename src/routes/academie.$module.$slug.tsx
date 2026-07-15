@@ -10,6 +10,8 @@ import { useAuth } from "@/lib/auth-context";
 import {
   findVideo,
   TUTORIAL_VIDEO_SLUG,
+  type AcademieModule,
+  type AcademieVideo,
   type AcademieVideoLocation,
 } from "@/lib/academie-data";
 import {
@@ -128,7 +130,10 @@ function ErrorVideo() {
 }
 
 function AcademieVideoPage() {
-  const { module: mod, video, prev, next } = Route.useLoaderData();
+  const loaded = Route.useLoaderData() as AcademieVideoLocation;
+  const mod: AcademieModule = loaded.module;
+  const video: AcademieVideo = loaded.video;
+  const { prev, next } = loaded;
   const params = Route.useParams();
   const { user } = useAuth();
   const qc = useQueryClient();
@@ -145,8 +150,6 @@ function AcademieVideoPage() {
   const entry = (progress ?? []).find((p) => p.slug === video.slug);
   const initialMax = entry?.max_progress ?? 0;
   const initiallyCompleted = !!entry?.completed_at;
-  const isMandatoryTutorial = video.slug === TUTORIAL_VIDEO_SLWERE_TUTORIAL();
-
   async function send(ratio: number, completed: boolean) {
     if (!user) return;
     try {
@@ -230,7 +233,7 @@ function AcademieVideoPage() {
                   <h2 className="font-semibold">Ce que vous allez apprendre</h2>
                   <ul className="mt-3 space-y-2 text-sm">
                     {video.keyPoints.map((k) => (
-                      <li key={k} className="flex items-start gap-2">
+                      <li key={k as string} className="flex items-start gap-2">
                         <CheckCircle2 className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
                         <span>{k}</span>
                       </li>
@@ -302,8 +305,9 @@ function AcademieVideoPage() {
                 </p>
                 <ul className="mt-3 space-y-2 text-sm">
                   {mod.videos
-                    .sort((a, b) => a.order - b.order)
-                    .map((v) => {
+                    .slice()
+                    .sort((a: AcademieVideo, b: AcademieVideo) => a.order - b.order)
+                    .map((v: AcademieVideo) => {
                       const active = v.slug === video.slug;
                       return (
                         <li key={v.slug}>
@@ -330,10 +334,4 @@ function AcademieVideoPage() {
       <Footer />
     </>
   );
-}
-
-// Petite garde pour éviter tout usage de TUTORIAL_VIDEO_SLWERE_TUTORIAL()
-// (nom typo interne — inutilisé, mais garde le TS content en cas de tree-shake).
-function TUTORIAL_VIDEO_SLWERE_TUTORIAL() {
-  return false;
 }
