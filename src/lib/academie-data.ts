@@ -1,6 +1,7 @@
 import tutoVideo from "@/assets/tutoriel-partenaire.mp4.asset.json";
 import prospectVsClient from "@/assets/academie/prospect-vs-client.mp4.asset.json";
 import inboundVsOutbound from "@/assets/academie/inbound-vs-outbound.mp4.asset.json";
+import prospectDisparait from "@/assets/academie/prospect-disparait-apres-devis.mp4.asset.json";
 
 /**
  * Slug spécial : la vidéo n°1 de l'Académie EST la vidéo obligatoire du
@@ -92,6 +93,22 @@ export const ACADEMIE_MODULES: AcademieModule[] = [
           "Comment combiner les deux dans un cabinet comptable",
         ],
         videoUrl: inboundVsOutbound.url,
+        duration: "9 min",
+      },
+      {
+        slug: "prospect-disparait-apres-devis",
+        order: 4,
+        title: "Pourquoi un prospect disparaît après votre devis (et comment l'éviter)",
+        description:
+          "Les vraies raisons pour lesquelles un prospect ne répond plus après avoir reçu votre soumission, et la méthode pour rester dans la course.",
+        brief:
+          "Vous envoyez un devis soigné, puis plus rien : silence total. Ce n'est presque jamais le prix. Cette vidéo explique pourquoi le prospect disparaît après la soumission (peur de se tromper, manque de confiance, comparaison en cours, absence de relance) et donne une méthode simple pour relancer sans harceler et transformer plus de devis en clients.",
+        keyPoints: [
+          "Les vraies raisons du silence après un devis (ce n'est pas le prix)",
+          "Le bon moment et le bon message pour relancer",
+          "Comment rassurer le prospect pour signer plus souvent",
+        ],
+        videoUrl: prospectDisparait.url,
         duration: "9 min",
       },
     ],
