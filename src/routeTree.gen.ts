@@ -62,6 +62,7 @@ import { Route as ApiPublicLeadUpsellRouteImport } from './routes/api/public/lea
 import { Route as ApiPublicLeadRouteImport } from './routes/api/public/lead'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
 import { Route as ApiPublicChariowWebhookRouteImport } from './routes/api/public/chariow-webhook'
+import { Route as AcademieModuleSlugRouteImport } from './routes/academie.$module.$slug'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 
@@ -344,6 +345,11 @@ const ApiPublicChariowWebhookRoute = ApiPublicChariowWebhookRouteImport.update({
   path: '/api/public/chariow-webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AcademieModuleSlugRoute = AcademieModuleSlugRouteImport.update({
+  id: '/$module/$slug',
+  path: '/$module/$slug',
+  getParentRoute: () => AcademieRoute,
+} as any)
 const Char91DotmcpChar93InvokeToolToolRoute =
   Char91DotmcpChar93InvokeToolToolRouteImport.update({
     id: '/.mcp/invoke-tool/$tool',
@@ -359,7 +365,7 @@ const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
-  '/academie': typeof AcademieRoute
+  '/academie': typeof AcademieRouteWithChildren
   '/blog': typeof BlogRoute
   '/cabinet-comptable-abidjan': typeof CabinetComptableAbidjanRoute
   '/cabinets-comptables-partenaires': typeof CabinetsComptablesPartenairesRoute
@@ -405,6 +411,7 @@ export interface FileRoutesByFullPath {
   '/en/': typeof EnIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/academie/$module/$slug': typeof AcademieModuleSlugRoute
   '/api/public/chariow-webhook': typeof ApiPublicChariowWebhookRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
@@ -415,7 +422,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
-  '/academie': typeof AcademieRoute
+  '/academie': typeof AcademieRouteWithChildren
   '/blog': typeof BlogRoute
   '/cabinet-comptable-abidjan': typeof CabinetComptableAbidjanRoute
   '/cabinets-comptables-partenaires': typeof CabinetsComptablesPartenairesRoute
@@ -461,6 +468,7 @@ export interface FileRoutesByTo {
   '/en': typeof EnIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/academie/$module/$slug': typeof AcademieModuleSlugRoute
   '/api/public/chariow-webhook': typeof ApiPublicChariowWebhookRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
@@ -473,7 +481,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/a-propos': typeof AProposRoute
-  '/academie': typeof AcademieRoute
+  '/academie': typeof AcademieRouteWithChildren
   '/blog': typeof BlogRoute
   '/cabinet-comptable-abidjan': typeof CabinetComptableAbidjanRoute
   '/cabinets-comptables-partenaires': typeof CabinetsComptablesPartenairesRoute
@@ -519,6 +527,7 @@ export interface FileRoutesById {
   '/en/': typeof EnIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/academie/$module/$slug': typeof AcademieModuleSlugRoute
   '/api/public/chariow-webhook': typeof ApiPublicChariowWebhookRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
@@ -577,6 +586,7 @@ export interface FileRouteTypes {
     | '/en/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/academie/$module/$slug'
     | '/api/public/chariow-webhook'
     | '/api/public/contact'
     | '/api/public/lead'
@@ -633,6 +643,7 @@ export interface FileRouteTypes {
     | '/en'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/academie/$module/$slug'
     | '/api/public/chariow-webhook'
     | '/api/public/contact'
     | '/api/public/lead'
@@ -690,6 +701,7 @@ export interface FileRouteTypes {
     | '/en/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/academie/$module/$slug'
     | '/api/public/chariow-webhook'
     | '/api/public/contact'
     | '/api/public/lead'
@@ -702,7 +714,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AProposRoute: typeof AProposRoute
-  AcademieRoute: typeof AcademieRoute
+  AcademieRoute: typeof AcademieRouteWithChildren
   BlogRoute: typeof BlogRoute
   CabinetComptableAbidjanRoute: typeof CabinetComptableAbidjanRoute
   CabinetsComptablesPartenairesRoute: typeof CabinetsComptablesPartenairesRoute
@@ -1122,6 +1134,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicChariowWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/academie/$module/$slug': {
+      id: '/academie/$module/$slug'
+      path: '/$module/$slug'
+      fullPath: '/academie/$module/$slug'
+      preLoaderRoute: typeof AcademieModuleSlugRouteImport
+      parentRoute: typeof AcademieRoute
+    }
     '/.mcp/invoke-tool/$tool': {
       id: '/.mcp/invoke-tool/$tool'
       path: '/.mcp/invoke-tool/$tool'
@@ -1161,6 +1180,18 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
   AuthenticatedRouteChildren,
 )
 
+interface AcademieRouteChildren {
+  AcademieModuleSlugRoute: typeof AcademieModuleSlugRoute
+}
+
+const AcademieRouteChildren: AcademieRouteChildren = {
+  AcademieModuleSlugRoute: AcademieModuleSlugRoute,
+}
+
+const AcademieRouteWithChildren = AcademieRoute._addFileChildren(
+  AcademieRouteChildren,
+)
+
 interface GuidesRouteChildren {
   GuidesSlugRoute: typeof GuidesSlugRoute
 }
@@ -1176,7 +1207,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AProposRoute: AProposRoute,
-  AcademieRoute: AcademieRoute,
+  AcademieRoute: AcademieRouteWithChildren,
   BlogRoute: BlogRoute,
   CabinetComptableAbidjanRoute: CabinetComptableAbidjanRoute,
   CabinetsComptablesPartenairesRoute: CabinetsComptablesPartenairesRoute,
