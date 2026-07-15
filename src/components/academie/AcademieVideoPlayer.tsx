@@ -64,19 +64,22 @@ export function AcademieVideoPlayer({
   }
 
   return (
-    <div>
+    <div className="w-full">
+      <div className="relative w-full aspect-video overflow-hidden rounded-lg bg-black">
       <video
         ref={videoRef}
         src={src}
-        className="w-full rounded-lg bg-black"
+        className="absolute inset-0 h-full w-full object-contain"
         controls
         playsInline
+        preload="metadata"
         controlsList="nodownload noplaybackrate"
         onContextMenu={(e) => e.preventDefault()}
         onTimeUpdate={handleTimeUpdate}
         onSeeking={handleSeeking}
         onEnded={handleEnded}
       />
+      </div>
       <div className="mt-3">
         <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
           <span>Progression</span>
