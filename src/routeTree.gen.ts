@@ -33,11 +33,11 @@ import { Route as ChangerMotDePasseRouteImport } from './routes/changer-mot-de-p
 import { Route as CabinetsComptablesPartenairesRouteImport } from './routes/cabinets-comptables-partenaires'
 import { Route as CabinetComptableAbidjanRouteImport } from './routes/cabinet-comptable-abidjan'
 import { Route as BlogRouteImport } from './routes/blog'
-import { Route as AcademieRouteImport } from './routes/academie'
 import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EnIndexRouteImport } from './routes/en/index'
+import { Route as AcademieIndexRouteImport } from './routes/academie.index'
 import { Route as GuidesSlugRouteImport } from './routes/guides.$slug'
 import { Route as EnWebsiteOfferRouteImport } from './routes/en/website-offer'
 import { Route as EnThankYouRouteImport } from './routes/en/thank-you'
@@ -193,11 +193,6 @@ const BlogRoute = BlogRouteImport.update({
   path: '/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AcademieRoute = AcademieRouteImport.update({
-  id: '/academie',
-  path: '/academie',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AProposRoute = AProposRouteImport.update({
   id: '/a-propos',
   path: '/a-propos',
@@ -215,6 +210,11 @@ const IndexRoute = IndexRouteImport.update({
 const EnIndexRoute = EnIndexRouteImport.update({
   id: '/en/',
   path: '/en/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AcademieIndexRoute = AcademieIndexRouteImport.update({
+  id: '/academie/',
+  path: '/academie/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GuidesSlugRoute = GuidesSlugRouteImport.update({
@@ -346,9 +346,9 @@ const ApiPublicChariowWebhookRoute = ApiPublicChariowWebhookRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AcademieModuleSlugRoute = AcademieModuleSlugRouteImport.update({
-  id: '/$module/$slug',
-  path: '/$module/$slug',
-  getParentRoute: () => AcademieRoute,
+  id: '/academie/$module/$slug',
+  path: '/academie/$module/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const Char91DotmcpChar93InvokeToolToolRoute =
   Char91DotmcpChar93InvokeToolToolRouteImport.update({
@@ -365,7 +365,6 @@ const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
-  '/academie': typeof AcademieRouteWithChildren
   '/blog': typeof BlogRoute
   '/cabinet-comptable-abidjan': typeof CabinetComptableAbidjanRoute
   '/cabinets-comptables-partenaires': typeof CabinetsComptablesPartenairesRoute
@@ -408,6 +407,7 @@ export interface FileRoutesByFullPath {
   '/en/thank-you': typeof EnThankYouRoute
   '/en/website-offer': typeof EnWebsiteOfferRoute
   '/guides/$slug': typeof GuidesSlugRoute
+  '/academie/': typeof AcademieIndexRoute
   '/en/': typeof EnIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -422,7 +422,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
-  '/academie': typeof AcademieRouteWithChildren
   '/blog': typeof BlogRoute
   '/cabinet-comptable-abidjan': typeof CabinetComptableAbidjanRoute
   '/cabinets-comptables-partenaires': typeof CabinetsComptablesPartenairesRoute
@@ -465,6 +464,7 @@ export interface FileRoutesByTo {
   '/en/thank-you': typeof EnThankYouRoute
   '/en/website-offer': typeof EnWebsiteOfferRoute
   '/guides/$slug': typeof GuidesSlugRoute
+  '/academie': typeof AcademieIndexRoute
   '/en': typeof EnIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -481,7 +481,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/a-propos': typeof AProposRoute
-  '/academie': typeof AcademieRouteWithChildren
   '/blog': typeof BlogRoute
   '/cabinet-comptable-abidjan': typeof CabinetComptableAbidjanRoute
   '/cabinets-comptables-partenaires': typeof CabinetsComptablesPartenairesRoute
@@ -524,6 +523,7 @@ export interface FileRoutesById {
   '/en/thank-you': typeof EnThankYouRoute
   '/en/website-offer': typeof EnWebsiteOfferRoute
   '/guides/$slug': typeof GuidesSlugRoute
+  '/academie/': typeof AcademieIndexRoute
   '/en/': typeof EnIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -540,7 +540,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/a-propos'
-    | '/academie'
     | '/blog'
     | '/cabinet-comptable-abidjan'
     | '/cabinets-comptables-partenaires'
@@ -583,6 +582,7 @@ export interface FileRouteTypes {
     | '/en/thank-you'
     | '/en/website-offer'
     | '/guides/$slug'
+    | '/academie/'
     | '/en/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
@@ -597,7 +597,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/a-propos'
-    | '/academie'
     | '/blog'
     | '/cabinet-comptable-abidjan'
     | '/cabinets-comptables-partenaires'
@@ -640,6 +639,7 @@ export interface FileRouteTypes {
     | '/en/thank-you'
     | '/en/website-offer'
     | '/guides/$slug'
+    | '/academie'
     | '/en'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
@@ -655,7 +655,6 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/a-propos'
-    | '/academie'
     | '/blog'
     | '/cabinet-comptable-abidjan'
     | '/cabinets-comptables-partenaires'
@@ -698,6 +697,7 @@ export interface FileRouteTypes {
     | '/en/thank-you'
     | '/en/website-offer'
     | '/guides/$slug'
+    | '/academie/'
     | '/en/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
@@ -714,7 +714,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AProposRoute: typeof AProposRoute
-  AcademieRoute: typeof AcademieRouteWithChildren
   BlogRoute: typeof BlogRoute
   CabinetComptableAbidjanRoute: typeof CabinetComptableAbidjanRoute
   CabinetsComptablesPartenairesRoute: typeof CabinetsComptablesPartenairesRoute
@@ -750,9 +749,11 @@ export interface RootRouteChildren {
   EnStartABusinessIvoryCoastRoute: typeof EnStartABusinessIvoryCoastRoute
   EnThankYouRoute: typeof EnThankYouRoute
   EnWebsiteOfferRoute: typeof EnWebsiteOfferRoute
+  AcademieIndexRoute: typeof AcademieIndexRoute
   EnIndexRoute: typeof EnIndexRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
+  AcademieModuleSlugRoute: typeof AcademieModuleSlugRoute
   ApiPublicChariowWebhookRoute: typeof ApiPublicChariowWebhookRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
   ApiPublicLeadRoute: typeof ApiPublicLeadRoute
@@ -931,13 +932,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/academie': {
-      id: '/academie'
-      path: '/academie'
-      fullPath: '/academie'
-      preLoaderRoute: typeof AcademieRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/a-propos': {
       id: '/a-propos'
       path: '/a-propos'
@@ -964,6 +958,13 @@ declare module '@tanstack/react-router' {
       path: '/en'
       fullPath: '/en/'
       preLoaderRoute: typeof EnIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/academie/': {
+      id: '/academie/'
+      path: '/academie'
+      fullPath: '/academie/'
+      preLoaderRoute: typeof AcademieIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/guides/$slug': {
@@ -1136,10 +1137,10 @@ declare module '@tanstack/react-router' {
     }
     '/academie/$module/$slug': {
       id: '/academie/$module/$slug'
-      path: '/$module/$slug'
+      path: '/academie/$module/$slug'
       fullPath: '/academie/$module/$slug'
       preLoaderRoute: typeof AcademieModuleSlugRouteImport
-      parentRoute: typeof AcademieRoute
+      parentRoute: typeof rootRouteImport
     }
     '/.mcp/invoke-tool/$tool': {
       id: '/.mcp/invoke-tool/$tool'
@@ -1180,18 +1181,6 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
   AuthenticatedRouteChildren,
 )
 
-interface AcademieRouteChildren {
-  AcademieModuleSlugRoute: typeof AcademieModuleSlugRoute
-}
-
-const AcademieRouteChildren: AcademieRouteChildren = {
-  AcademieModuleSlugRoute: AcademieModuleSlugRoute,
-}
-
-const AcademieRouteWithChildren = AcademieRoute._addFileChildren(
-  AcademieRouteChildren,
-)
-
 interface GuidesRouteChildren {
   GuidesSlugRoute: typeof GuidesSlugRoute
 }
@@ -1207,7 +1196,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AProposRoute: AProposRoute,
-  AcademieRoute: AcademieRouteWithChildren,
   BlogRoute: BlogRoute,
   CabinetComptableAbidjanRoute: CabinetComptableAbidjanRoute,
   CabinetsComptablesPartenairesRoute: CabinetsComptablesPartenairesRoute,
@@ -1245,9 +1233,11 @@ const rootRouteChildren: RootRouteChildren = {
   EnStartABusinessIvoryCoastRoute: EnStartABusinessIvoryCoastRoute,
   EnThankYouRoute: EnThankYouRoute,
   EnWebsiteOfferRoute: EnWebsiteOfferRoute,
+  AcademieIndexRoute: AcademieIndexRoute,
   EnIndexRoute: EnIndexRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
+  AcademieModuleSlugRoute: AcademieModuleSlugRoute,
   ApiPublicChariowWebhookRoute: ApiPublicChariowWebhookRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
   ApiPublicLeadRoute: ApiPublicLeadRoute,
