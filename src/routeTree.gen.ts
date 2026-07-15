@@ -33,6 +33,7 @@ import { Route as ChangerMotDePasseRouteImport } from './routes/changer-mot-de-p
 import { Route as CabinetsComptablesPartenairesRouteImport } from './routes/cabinets-comptables-partenaires'
 import { Route as CabinetComptableAbidjanRouteImport } from './routes/cabinet-comptable-abidjan'
 import { Route as BlogRouteImport } from './routes/blog'
+import { Route as AcademieRouteImport } from './routes/academie'
 import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
@@ -189,6 +190,11 @@ const CabinetComptableAbidjanRoute = CabinetComptableAbidjanRouteImport.update({
 const BlogRoute = BlogRouteImport.update({
   id: '/blog',
   path: '/blog',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AcademieRoute = AcademieRouteImport.update({
+  id: '/academie',
+  path: '/academie',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AProposRoute = AProposRouteImport.update({
@@ -353,6 +359,7 @@ const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
+  '/academie': typeof AcademieRoute
   '/blog': typeof BlogRoute
   '/cabinet-comptable-abidjan': typeof CabinetComptableAbidjanRoute
   '/cabinets-comptables-partenaires': typeof CabinetsComptablesPartenairesRoute
@@ -408,6 +415,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
+  '/academie': typeof AcademieRoute
   '/blog': typeof BlogRoute
   '/cabinet-comptable-abidjan': typeof CabinetComptableAbidjanRoute
   '/cabinets-comptables-partenaires': typeof CabinetsComptablesPartenairesRoute
@@ -465,6 +473,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/a-propos': typeof AProposRoute
+  '/academie': typeof AcademieRoute
   '/blog': typeof BlogRoute
   '/cabinet-comptable-abidjan': typeof CabinetComptableAbidjanRoute
   '/cabinets-comptables-partenaires': typeof CabinetsComptablesPartenairesRoute
@@ -522,6 +531,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/a-propos'
+    | '/academie'
     | '/blog'
     | '/cabinet-comptable-abidjan'
     | '/cabinets-comptables-partenaires'
@@ -577,6 +587,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/a-propos'
+    | '/academie'
     | '/blog'
     | '/cabinet-comptable-abidjan'
     | '/cabinets-comptables-partenaires'
@@ -633,6 +644,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/a-propos'
+    | '/academie'
     | '/blog'
     | '/cabinet-comptable-abidjan'
     | '/cabinets-comptables-partenaires'
@@ -690,6 +702,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AProposRoute: typeof AProposRoute
+  AcademieRoute: typeof AcademieRoute
   BlogRoute: typeof BlogRoute
   CabinetComptableAbidjanRoute: typeof CabinetComptableAbidjanRoute
   CabinetsComptablesPartenairesRoute: typeof CabinetsComptablesPartenairesRoute
@@ -904,6 +917,13 @@ declare module '@tanstack/react-router' {
       path: '/blog'
       fullPath: '/blog'
       preLoaderRoute: typeof BlogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/academie': {
+      id: '/academie'
+      path: '/academie'
+      fullPath: '/academie'
+      preLoaderRoute: typeof AcademieRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/a-propos': {
@@ -1156,6 +1176,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AProposRoute: AProposRoute,
+  AcademieRoute: AcademieRoute,
   BlogRoute: BlogRoute,
   CabinetComptableAbidjanRoute: CabinetComptableAbidjanRoute,
   CabinetsComptablesPartenairesRoute: CabinetsComptablesPartenairesRoute,
