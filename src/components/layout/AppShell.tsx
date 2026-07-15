@@ -17,13 +17,21 @@ import {
   UserPlus,
   Users2,
   PlayCircle,
+  GraduationCap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import logo from "@/assets/brand/logo-soumissions-comptables.jpg";
 
 type NavItem = {
-  to: "/marketplace" | "/recharger" | "/historique" | "/espace-partenaire" | "/admin" | "/tutoriel-partenaire";
+  to:
+    | "/marketplace"
+    | "/recharger"
+    | "/historique"
+    | "/espace-partenaire"
+    | "/admin"
+    | "/tutoriel-partenaire"
+    | "/academie";
   search?: Record<string, string>;
   label: string;
   icon: typeof Briefcase;
@@ -42,6 +50,12 @@ const TUTORIAL_ITEM: NavItem = {
   to: "/tutoriel-partenaire",
   label: "Tutoriel",
   icon: PlayCircle,
+};
+
+const ACADEMIE_ITEM: NavItem = {
+  to: "/academie",
+  label: "Académie LGM",
+  icon: GraduationCap,
 };
 
 const NAV_STAFF: NavItem[] = [
@@ -73,7 +87,11 @@ export function AppShell({ email, creditsBalance, isStaff, isAdmin = false, show
   const baseItems = (isStaff ? NAV_STAFF : NAV_PARTNER).filter(
     (n) => !n.adminOnly || isAdmin,
   );
-  const items = !isStaff && showTutorialLink ? [...baseItems, TUTORIAL_ITEM] : baseItems;
+  const items = !isStaff && showTutorialLink
+    ? [...baseItems, TUTORIAL_ITEM, ACADEMIE_ITEM]
+    : !isStaff
+    ? [...baseItems, ACADEMIE_ITEM]
+    : baseItems;
 
   const isItemActive = (item: NavItem) => {
     if (item.to === "/admin") {
