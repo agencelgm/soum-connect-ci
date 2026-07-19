@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { CREDIT_PACKS } from "@/lib/credit-packs";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import { ArrowLeft, Check, Coins, Copy, Crown, HelpCircle, Infinity as InfinityIcon, Mail, ShieldCheck, Zap } from "lucide-react";
+import { ArrowLeft, Check, Coins, Copy, Crown, HelpCircle, History, Infinity as InfinityIcon, Mail, ShieldCheck, Zap } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/recharger")({
   head: () => ({ meta: [{ title: "Recharger mes crédits" }, { name: "robots", content: "noindex,nofollow" }] }),
@@ -210,8 +210,61 @@ function RechargerPage() {
                 Vos {partner?.credits_balance ?? 0} crédits restent conservés et redeviendront utilisables à l'expiration.
               </p>
             </div>
+            <Button asChild variant="outline" size="sm" className="border-amber-400 text-amber-900 hover:bg-amber-100">
+              <Link to="/historique">
+                <History className="h-4 w-4 mr-1.5" />
+                Historique
+              </Link>
+            </Button>
           </div>
         )}
+
+        <div className="max-w-4xl mx-auto mb-10 rounded-2xl border bg-card overflow-hidden">
+          <div className="px-5 py-3 border-b bg-muted/30">
+            <h2 className="font-semibold">Comparez les 3 formules</h2>
+            <p className="text-xs text-muted-foreground">1 lead débloqué = coordonnées complètes du prospect (nom, email, téléphone, entreprise).</p>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-muted/20 text-left">
+                <tr>
+                  <th className="px-4 py-2.5 font-medium text-muted-foreground">Formule</th>
+                  <th className="px-4 py-2.5 font-medium text-muted-foreground">Prix</th>
+                  <th className="px-4 py-2.5 font-medium text-muted-foreground">Ce que vous obtenez</th>
+                  <th className="px-4 py-2.5 font-medium text-muted-foreground">Déduction crédits</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y">
+                <tr>
+                  <td className="px-4 py-3 font-semibold">Starter</td>
+                  <td className="px-4 py-3">10 000 FCFA</td>
+                  <td className="px-4 py-3">50 prospects débloquables (200 FCFA / prospect)</td>
+                  <td className="px-4 py-3 text-muted-foreground">–1 crédit par déblocage</td>
+                </tr>
+                <tr className="bg-primary/5">
+                  <td className="px-4 py-3 font-semibold">
+                    Pro <span className="ml-1 rounded-full bg-primary text-primary-foreground px-2 py-0.5 text-[10px] uppercase font-bold">Populaire</span>
+                  </td>
+                  <td className="px-4 py-3">25 000 FCFA</td>
+                  <td className="px-4 py-3">125 prospects débloquables (200 FCFA / prospect)</td>
+                  <td className="px-4 py-3 text-muted-foreground">–1 crédit par déblocage</td>
+                </tr>
+                <tr className="bg-amber-50/60">
+                  <td className="px-4 py-3 font-semibold text-amber-900">
+                    Illimité <Crown className="inline h-3.5 w-3.5 text-amber-600 ml-0.5" />
+                  </td>
+                  <td className="px-4 py-3">50 000 FCFA</td>
+                  <td className="px-4 py-3"><strong>Prospects illimités</strong> pendant <strong>30 jours calendaires</strong></td>
+                  <td className="px-4 py-3 text-emerald-700 font-medium">Aucune déduction · vos crédits sont gelés</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div className="px-5 py-3 border-t bg-muted/20 text-xs text-muted-foreground">
+            Rachat de l'illimité avant expiration : les 30 nouveaux jours s'<strong>ajoutent</strong> aux jours restants.
+            Vos crédits Starter/Pro ne périment jamais.
+          </div>
+        </div>
 
         <div className="grid gap-6 md:grid-cols-3 items-stretch">
           {CREDIT_PACKS.map((pack) => {
