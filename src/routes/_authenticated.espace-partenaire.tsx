@@ -18,7 +18,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { isUnauthorizedError } from "@/lib/auth-actions";
 import { UnauthorizedScreen } from "@/components/auth/UnauthorizedScreen";
-import { Trash2, UserPlus, ShieldCheck, KeyRound, LayoutDashboard } from "lucide-react";
+import { Trash2, UserPlus, ShieldCheck, KeyRound, LayoutDashboard, Crown, History, Coins } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/espace-partenaire")({
   head: () => ({ meta: [{ title: "Espace partenaire" }, { name: "robots", content: "noindex,nofollow" }] }),
@@ -85,22 +85,80 @@ function EspacePartenaire() {
       )}
       {partner && partner.status === "approved" && (
         <>
-          <StatusCard title={`Bienvenue, ${partner.cabinet_name}`} tone="success">
-            <p>Crédits disponibles : <strong>{partner.credits_balance}</strong></p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              <Button asChild>
-                <Link to="/marketplace">Accéder à la marketplace</Link>
-              </Button>
-              <Button asChild variant="outline">
-                <Link to="/recharger">Recharger mes crédits</Link>
-              </Button>
-            </div>
-          </StatusCard>
+          <WelcomeCard partner={partner} />
 
           <PartnerInfoForm partner={partner} onSaved={refetch} />
           <TeamMembersSection isOwner={isOwner} />
         </>
       )}
+    </div>
+  );
+}
+
+function WelcomeCard({ partner }: { partner: any }) {
+  const unlimitedUntilRaw = partner?.unlimited_until as string | null | undefined;
+  const unlimitedUntil = unlimitedUntilRaw ? new Date(unlimitedUntilRaw) : null;
+  const isUnlimitedActive = !!(unlimitedUntil && unlimitedUntil.getTime() > Date.now());
+  const daysLeft = isUnlimitedActive && unlimitedUntil
+    ? Math.max(0, Math.ceil((unlimitedUntil.getTime() - Date.now()) / (24 * 60 * 60 * 1000)))
+    : 0;
+  const formattedDate = unlimitedUntil?.toLocaleDateString("fr-FR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
+  return (
+    <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-6 space-y-4">
+      <h2 className="text-xl font-semibold">Bienvenue, {partner.cabinet_name}</h2>
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div className="rounded-lg border bg-card p-4 flex items-center gap-3">
+          <Coins className="h-6 w-6 text-primary shrink-0" />
+          <div>
+            <div className="text-xs uppercase text-muted-foreground">Crédits disponibles</div>
+            <div className="text-2xl font-bold">{partner.credits_balance}</div>
+          </div>
+        </div>
+
+        {isUnlimitedActive ? (
+          <div className="rounded-lg border border-amber-300 bg-gradient-to-br from-amber-50 to-yellow-50 p-4 flex items-center gap-3">
+            <Crown className="h-6 w-6 text-amber-600 shrink-0" />
+            <div className="min-w-0">
+              <div className="text-xs uppercase text-amber-800 font-semibold">Accès illimité</div>
+              <div className="text-sm font-semibold text-amber-900">
+                Actif jusqu'au {formattedDate}
+              </div>
+              <div className="text-xs text-amber-800">{daysLeft} jour{daysLeft > 1 ? "s" : ""} restant{daysLeft > 1 ? "s" : ""}</div>
+            </div>
+          </div>
+        ) : (
+          <div className="rounded-lg border bg-card p-4 flex items-center gap-3">
+            <Crown className="h-6 w-6 text-muted-foreground shrink-0" />
+            <div>
+              <div className="text-xs uppercase text-muted-foreground">Accès illimité</div>
+              <div className="text-sm text-muted-foreground">
+                {unlimitedUntil ? `Expiré le ${formattedDate}` : "Non actif"}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="flex flex-wrap gap-2">
+        <Button asChild>
+          <Link to="/marketplace">Accéder à la marketplace</Link>
+        </Button>
+        <Button asChild variant="outline">
+          <Link to="/recharger">Recharger mes crédits</Link>
+        </Button>
+        <Button asChild variant="outline">
+          <Link to="/historique">
+            <History className="h-4 w-4 mr-2" />
+            Historique des achats
+          </Link>
+        </Button>
+      </div>
     </div>
   );
 }
