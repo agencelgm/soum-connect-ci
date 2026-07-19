@@ -64,6 +64,9 @@ function MarketplacePage() {
   const [tab, setTab] = useState<"available" | "mine">("available");
   const [filter, setFilter] = useState<"all" | "available" | "full">("available");
   const isPremium = data?.partner?.tier === "premium";
+  const unlimitedUntilRaw = (data?.partner as { unlimited_until?: string | null } | undefined)?.unlimited_until ?? null;
+  const unlimitedUntil = unlimitedUntilRaw ? new Date(unlimitedUntilRaw) : null;
+  const isUnlimitedActive = !!(unlimitedUntil && unlimitedUntil.getTime() > Date.now());
 
   if (isUnauthorizedError(error) || isUnauthorizedError(mineError)) {
     return <UnauthorizedScreen />;
@@ -110,6 +113,19 @@ function MarketplacePage() {
           </Button>
         </div>
       </div>
+
+      {isUnlimitedActive && (
+        <div className="rounded-xl border border-amber-300 bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-50 p-4 flex items-center gap-3">
+          <Crown className="h-6 w-6 text-amber-600 shrink-0" />
+          <div>
+            <p className="font-semibold text-amber-900">Accès illimité actif</p>
+            <p className="text-sm text-amber-800">
+              Débloquez autant de leads que vous souhaitez sans consommer de crédits jusqu'au{" "}
+              <strong>{unlimitedUntil?.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</strong>.
+            </p>
+          </div>
+        </div>
+      )}
 
       {isPremium ? (
         <div className="rounded-xl border border-amber-300 bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-50 p-4 flex items-center gap-3">
@@ -194,6 +210,7 @@ function MarketplacePage() {
                 alreadyUnlocked={data.unlocked_ids.includes(lead.id)}
                 credits={data.partner!.credits_balance}
                 isPremium={isPremium}
+                isUnlimited={isUnlimitedActive}
                 partnerApproved={partnerApproved}
                 partnerPending={partnerPending}
                 partnerPaused={partnerPaused}
