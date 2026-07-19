@@ -24,8 +24,14 @@ const Email = ({
   expiresAt,
   renewUrl = 'https://www.soumissioncomptable.com/recharger',
 }: Props) => {
+  const isToday = daysLeft <= 0
   const isUrgent = daysLeft <= 1
-  const dayLabel = daysLeft <= 1 ? 'demain' : `dans ${daysLeft} jours`
+  const dayLabel = isToday
+    ? "aujourd'hui"
+    : daysLeft === 1
+      ? 'demain'
+      : `dans ${daysLeft} jours`
+  const ctaColor = isToday ? '#b91c1c' : isUrgent ? '#dc2626' : daysLeft <= 3 ? '#ea580c' : '#f59e0b'
   return (
     <Html lang="fr" dir="ltr">
       <Head />
@@ -33,7 +39,7 @@ const Email = ({
       <Body style={main}>
         <Container style={container}>
           <Heading style={h1}>
-            {isUrgent ? '⚠️ Dernier rappel' : '⏰ Rappel important'} : votre accès
+            {isToday ? '🚨 Expire aujourd\u2019hui' : isUrgent ? '⚠️ Dernier rappel' : '⏰ Rappel important'} : votre accès
             illimité expire {dayLabel}
           </Heading>
           <Text style={text}>Bonjour {partnerFirstName},</Text>
@@ -47,7 +53,7 @@ const Email = ({
             débloquer autant de prospects que vous voulez, renouvelez dès
             maintenant en un clic.
           </Text>
-          <Button style={{ ...button, backgroundColor: isUrgent ? '#dc2626' : '#ea580c' }} href={renewUrl}>
+          <Button style={{ ...button, backgroundColor: ctaColor }} href={renewUrl}>
             Renouveler mon accès illimité
           </Button>
           <Text style={ps}>
@@ -64,7 +70,8 @@ export const template = {
   component: Email,
   subject: (data: Record<string, unknown>) => {
     const d = (data.daysLeft as number) ?? 7
-    if (d <= 1) return '⚠️ Votre accès illimité expire demain'
+    if (d <= 0) return '🚨 Votre accès illimité expire aujourd\u2019hui'
+    if (d === 1) return '⚠️ Votre accès illimité expire demain'
     return `⏰ Votre accès illimité expire dans ${d} jours`
   },
   displayName: 'Accès illimité — expiration',
