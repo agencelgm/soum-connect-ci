@@ -36,7 +36,7 @@ const Email = ({
   return (
     <Html lang="fr" dir="ltr">
       <Head />
-      <Preview>Alerte : taux de rebonds / plaintes {'>'} {threshold}%</Preview>
+          <Preview>{`Alerte : taux de rebonds / plaintes > ${threshold}%`}</Preview>
       <Body style={main}>
         <Container style={container}>
           <Heading style={h1}>🚨 Alerte santé emails</Heading>
