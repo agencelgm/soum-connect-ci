@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createHmac, timingSafeEqual } from "crypto";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import { getPackByProductId } from "@/lib/credit-packs";
+import { getPackByProductId, stackUnlimitedUntil } from "@/lib/credit-packs";
 
 // Chariow envoie ce webhook lorsqu'une licence est créée pour l'un de nos packs de crédits.
 // Ce handler :
@@ -249,10 +249,18 @@ export const Route = createFileRoute("/api/public/chariow-webhook")({
 
         let balErr: { message: string } | null = null;
         if (pack.unlimited && pack.unlimitedDays) {
-          const now = new Date();
-          const base = currentUnlimitedUntil && currentUnlimitedUntil > now ? currentUnlimitedUntil : now;
-          const next = new Date(base.getTime() + pack.unlimitedDays * 24 * 60 * 60 * 1000);
-          newUnlimitedUntil = next.toISOString();
+          const stack = stackUnlimitedUntil(currentUnlimitedUntil, pack.unlimitedDays);
+          newUnlimitedUntil = stack.newUntil.toISOString();
+          console.log("[chariow-webhook] unlimited stack", {
+            partner_id: partner.id,
+            license_code: licenseCode,
+            product_id: productId,
+            previous_unlimited_until: currentUnlimitedUntil?.toISOString() ?? null,
+            stacked: stack.stacked,
+            base_used: stack.baseUsed.toISOString(),
+            days_added: pack.unlimitedDays,
+            new_unlimited_until: newUnlimitedUntil,
+          });
           const { error } = await supabaseAdmin
             .from("partners")
             .update({ unlimited_until: newUnlimitedUntil })
@@ -260,6 +268,14 @@ export const Route = createFileRoute("/api/public/chariow-webhook")({
           balErr = error;
         } else {
           newBalance = currentBalance + pack.credits;
+          console.log("[chariow-webhook] credit purchase", {
+            partner_id: partner.id,
+            license_code: licenseCode,
+            product_id: productId,
+            previous_balance: currentBalance,
+            credits_added: pack.credits,
+            new_balance: newBalance,
+          });
           const { error } = await supabaseAdmin
             .from("partners")
             .update({ credits_balance: newBalance })
