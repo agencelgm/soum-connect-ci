@@ -47,7 +47,7 @@ const Email = ({
             débloquer autant de prospects que vous voulez, renouvelez dès
             maintenant en un clic.
           </Text>
-          <Button style={{ ...button, backgroundColor: isUrgent ? '#dc2626' : '#0f766e' }} href={renewUrl}>
+          <Button style={{ ...button, backgroundColor: isUrgent ? '#dc2626' : '#ea580c' }} href={renewUrl}>
             Renouveler mon accès illimité
           </Button>
           <Text style={ps}>
