@@ -17,6 +17,8 @@ interface Props {
   service?: string
   city?: string
   message?: string | null
+  budget?: string | null
+  audience?: string | null
   creditsBalance?: number
   hasUnlimited?: boolean
   unlimitedUntil?: string | null
@@ -30,6 +32,8 @@ const Email = ({
   service = 'un service comptable',
   city,
   message,
+  budget,
+  audience,
   creditsBalance = 0,
   hasUnlimited = false,
   unlimitedUntil = null,
@@ -57,6 +61,16 @@ const Email = ({
           <strong>{prospectFirstName}</strong> vient d'être approuvé{city ? <> à <strong>{city}</strong></> : null} et
           recherche : <strong>{service}</strong>.
         </Text>
+        {(audience || budget) ? (
+          <div style={details}>
+            {audience ? (
+              <p style={detailRow}><strong>Profil :</strong> {audience}</p>
+            ) : null}
+            {budget ? (
+              <p style={detailRow}><strong>Budget indiqué :</strong> {budget}</p>
+            ) : null}
+          </div>
+        ) : null}
         {message ? (
           <div style={quote}>
             <p style={quoteLabel}>Message du prospect :</p>
@@ -185,4 +199,16 @@ const quoteText = {
   lineHeight: '1.6',
   fontStyle: 'italic' as const,
   margin: 0,
+}
+const details = {
+  backgroundColor: '#f1f5f9',
+  borderRadius: '6px',
+  padding: '10px 14px',
+  margin: '0 0 12px',
+}
+const detailRow = {
+  fontSize: '13px',
+  color: '#0f172a',
+  margin: '2px 0',
+  lineHeight: '1.5',
 }
