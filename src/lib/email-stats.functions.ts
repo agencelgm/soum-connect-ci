@@ -128,3 +128,51 @@ export const getEmailStats = createServerFn({ method: "POST" })
         "Les taux d'ouverture et de clics ne sont pas encore captés (nécessite les webhooks Mailgun opened/clicked). Les rebonds, plaintes et désabonnements sont suivis en temps réel.",
     };
   });
+
+/**
+ * Renvoie un email à partir de son message_id d'origine.
+ * Récupère le template et les templateData depuis metadata, puis
+ * réutilise sendTransactionalServer avec une nouvelle clé d'idempotence.
+ */
+export const resendEmailLog = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z.object({ messageId: z.string().min(1), overrideRecipient: z.string().email().optional() }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { data: isAdmin } = await context.supabase.rpc("has_role", {
+      _user_id: context.userId,
+      _role: "admin",
+    });
+    const { data: isAgent } = await context.supabase.rpc("has_role", {
+      _user_id: context.userId,
+      _role: "agent",
+    });
+    if (!isAdmin && !isAgent) throw new Error("Forbidden");
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    // On veut la ligne "pending" originale car c'est elle qui contient les templateData.
+    const { data: rows, error } = await supabaseAdmin
+      .from("email_send_log")
+      .select("template_name, recipient_email, metadata, status, created_at")
+      .eq("message_id", data.messageId)
+      .order("created_at", { ascending: true });
+    if (error) throw new Error(error.message);
+    if (!rows || rows.length === 0) throw new Error("Email introuvable");
+
+    const pendingRow = rows.find((r) => r.status === "pending") ?? rows[0];
+    const meta = (pendingRow.metadata ?? {}) as Record<string, unknown>;
+    const templateData = (meta.template_data ?? {}) as Record<string, unknown>;
+    const recipient = data.overrideRecipient || pendingRow.recipient_email;
+    if (!recipient) throw new Error("Destinataire manquant");
+
+    const { sendTransactionalServer } = await import("@/lib/email/send.server");
+    const res = await sendTransactionalServer({
+      templateName: pendingRow.template_name,
+      recipientEmail: recipient,
+      idempotencyKey: `resend:${data.messageId}:${Date.now()}`,
+      templateData,
+    });
+    return res;
+  });
