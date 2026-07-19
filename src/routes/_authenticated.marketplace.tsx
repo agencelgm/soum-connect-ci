@@ -39,11 +39,15 @@ export const Route = createFileRoute("/_authenticated/marketplace")({
   head: () => ({
     meta: [{ title: "Marketplace de leads" }, { name: "robots", content: "noindex,nofollow" }],
   }),
+  validateSearch: (s: Record<string, unknown>) => ({
+    lead: typeof s.lead === "string" && s.lead.length > 0 && s.lead.length < 100 ? s.lead : undefined,
+  }),
   component: MarketplacePage,
 });
 
 function MarketplacePage() {
   const { user } = useAuth();
+  const { lead: focusLeadId } = Route.useSearch();
   const fetchList = useServerFn(listMarketplace);
   const fetchMine = useServerFn(myUnlockedLeads);
   const { data, isLoading, error } = useQuery({
@@ -67,7 +71,24 @@ function MarketplacePage() {
     retry: false,
   });
   const [tab, setTab] = useState<"available" | "mine">("available");
-  const [filter, setFilter] = useState<"all" | "available" | "full">("available");
+  const [filter, setFilter] = useState<"all" | "available" | "full">(
+    focusLeadId ? "all" : "available",
+  );
+
+  // Scroll to and highlight the lead from ?lead= (deep-link from email).
+  useEffect(() => {
+    if (!focusLeadId || !data) return;
+    const t = setTimeout(() => {
+      const el = document.querySelector<HTMLElement>(`[data-lead-id="${focusLeadId}"]`);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        el.classList.add("ring-2", "ring-primary", "ring-offset-2");
+        setTimeout(() => el.classList.remove("ring-2", "ring-primary", "ring-offset-2"), 4000);
+      }
+    }, 200);
+    return () => clearTimeout(t);
+  }, [focusLeadId, data]);
+
   const isPremium = data?.partner?.tier === "premium";
   const unlimitedUntilRaw = (data?.partner as { unlimited_until?: string | null } | undefined)?.unlimited_until ?? null;
   const unlimitedStatus = getUnlimitedStatus(unlimitedUntilRaw);
