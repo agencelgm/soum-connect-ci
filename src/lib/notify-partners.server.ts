@@ -18,7 +18,7 @@ export async function notifyPartnersNewProspect(
 ): Promise<{ notified: number; skipped: number }> {
   const { data: prospect, error: pErr } = await supabaseAdmin
     .from("prospects")
-    .select("full_name, service, city, message")
+    .select("full_name, service, city, message, budget, audience")
     .eq("id", prospectId)
     .maybeSingle();
   if (pErr || !prospect) {
@@ -28,6 +28,13 @@ export async function notifyPartnersNewProspect(
 
   const prospectFirstName = (prospect.full_name || "").trim().split(/\s+/)[0] || "Un prospect";
   const prospectMessage = (prospect.message || "").trim() || null;
+  const audienceLabel =
+    prospect.audience === "creation"
+      ? "Création d'entreprise"
+      : prospect.audience === "gestion"
+        ? "Gestion / comptabilité"
+        : null;
+  const budgetLabel = (prospect.budget || "").trim() || null;
   const loginUrl = deepLoginUrl(publicationId);
 
   const { data: partners, error: paErr } = await supabaseAdmin
@@ -64,6 +71,8 @@ export async function notifyPartnersNewProspect(
         service: prospect.service || "un service comptable",
         city: prospect.city || null,
         message: prospectMessage,
+        budget: budgetLabel,
+        audience: audienceLabel,
         creditsBalance: credits,
         hasUnlimited: Boolean(hasUnlimited),
         unlimitedUntil: hasUnlimited ? (p.unlimited_until as string) : null,
