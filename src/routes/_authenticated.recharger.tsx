@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { CREDIT_PACKS } from "@/lib/credit-packs";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import { ArrowLeft, Check, Coins, Copy, HelpCircle, Mail, ShieldCheck, Zap } from "lucide-react";
+import { ArrowLeft, Check, Coins, Copy, Crown, HelpCircle, Infinity as InfinityIcon, Mail, ShieldCheck, Zap } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/recharger")({
   head: () => ({ meta: [{ title: "Recharger mes crédits" }, { name: "robots", content: "noindex,nofollow" }] }),
@@ -134,6 +134,12 @@ function RechargerPage() {
   });
 
   const accountEmail = partner?.email ?? data?.profile?.email ?? "";
+  const unlimitedUntilRaw = (partner as { unlimited_until?: string | null } | undefined)?.unlimited_until ?? null;
+  const unlimitedUntil = unlimitedUntilRaw ? new Date(unlimitedUntilRaw) : null;
+  const isUnlimitedActive = !!(unlimitedUntil && unlimitedUntil.getTime() > Date.now());
+  const unlimitedDaysLeft = isUnlimitedActive && unlimitedUntil
+    ? Math.max(0, Math.ceil((unlimitedUntil.getTime() - Date.now()) / (24 * 60 * 60 * 1000)))
+    : 0;
 
   return (
     <div className="min-h-full flex flex-col justify-center -my-6 lg:-my-8 py-10 lg:py-14 bg-gradient-to-b from-background via-background to-muted/40">
@@ -143,10 +149,19 @@ function RechargerPage() {
             <Link to="/marketplace"><ArrowLeft className="h-4 w-4 mr-1" /> Retour à la marketplace</Link>
           </Button>
           {partner && (
-            <div className="inline-flex items-center gap-2 rounded-full border bg-card px-3 py-1.5 text-sm shadow-sm">
-              <Coins className="h-4 w-4 text-primary" />
-              <span className="font-semibold">{partner.credits_balance}</span>
-              <span className="text-muted-foreground">crédits disponibles</span>
+            <div className="flex items-center gap-2">
+              {isUnlimitedActive && (
+                <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-300 bg-gradient-to-r from-amber-100 to-yellow-100 px-3 py-1.5 text-sm shadow-sm">
+                  <Crown className="h-4 w-4 text-amber-600" />
+                  <span className="font-semibold text-amber-900">Illimité actif</span>
+                  <span className="text-amber-800">· {unlimitedDaysLeft} j restants</span>
+                </div>
+              )}
+              <div className="inline-flex items-center gap-2 rounded-full border bg-card px-3 py-1.5 text-sm shadow-sm">
+                <Coins className="h-4 w-4 text-primary" />
+                <span className="font-semibold">{partner.credits_balance}</span>
+                <span className="text-muted-foreground">crédits</span>
+              </div>
             </div>
           )}
         </div>
@@ -184,57 +199,116 @@ function RechargerPage() {
           )}
         </div>
 
+        {isUnlimitedActive && (
+          <div className="max-w-3xl mx-auto mb-8 rounded-2xl border border-amber-300 bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-50 p-5 flex items-center gap-4">
+            <Crown className="h-8 w-8 text-amber-600 shrink-0" />
+            <div className="flex-1">
+              <p className="font-semibold text-amber-900">Votre accès illimité est actif</p>
+              <p className="text-sm text-amber-800">
+                Débloquez autant de leads que vous voulez sans consommer vos crédits jusqu'au{" "}
+                <strong>{unlimitedUntil?.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</strong>.
+                Vos {partner?.credits_balance ?? 0} crédits restent conservés et redeviendront utilisables à l'expiration.
+              </p>
+            </div>
+          </div>
+        )}
+
         <div className="grid gap-6 md:grid-cols-3 items-stretch">
           {CREDIT_PACKS.map((pack) => {
-            const pricePerCredit = Math.round(parseInt(pack.price.replace(/\D/g, ""), 10) / pack.credits);
+            const priceNum = parseInt(pack.price.replace(/\D/g, ""), 10);
+            const pricePerCredit = pack.unlimited ? 0 : Math.round(priceNum / pack.credits);
+            const isUnlimitedPack = !!pack.unlimited;
             return (
               <div
-                key={pack.credits}
+                key={pack.productId}
                 className={cn(
                   "relative rounded-2xl border bg-card p-7 flex flex-col transition-all",
-                  pack.popular
+                  isUnlimitedPack
+                    ? "border-amber-300 shadow-xl shadow-amber-500/10 bg-gradient-to-b from-amber-50/70 to-card"
+                    : pack.popular
                     ? "border-primary/60 shadow-xl shadow-primary/10 md:scale-[1.04] md:-translate-y-1 bg-gradient-to-b from-primary/5 to-card"
                     : "border-border/60 shadow-sm hover:shadow-md hover:border-border",
                 )}
               >
-                {pack.popular && (
+                {pack.popular && !isUnlimitedPack && (
                   <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary text-primary-foreground px-4 py-1 text-[11px] font-bold uppercase tracking-wider shadow-md">
                     Le plus choisi
                   </span>
                 )}
+                {isUnlimitedPack && (
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 text-white px-4 py-1 text-[11px] font-bold uppercase tracking-wider shadow-md">
+                    Meilleure valeur
+                  </span>
+                )}
 
                 <div className="flex items-baseline gap-2">
-                  <Zap className={cn("h-5 w-5", pack.popular ? "text-primary" : "text-muted-foreground")} />
-                  <div className="text-6xl font-bold leading-none tracking-tight">{pack.credits}</div>
-                  <div className="text-sm text-muted-foreground">crédits</div>
+                  {isUnlimitedPack ? (
+                    <>
+                      <Crown className="h-5 w-5 text-amber-600" />
+                      <div className="text-5xl font-bold leading-none tracking-tight text-amber-900">Illimité</div>
+                    </>
+                  ) : (
+                    <>
+                      <Zap className={cn("h-5 w-5", pack.popular ? "text-primary" : "text-muted-foreground")} />
+                      <div className="text-6xl font-bold leading-none tracking-tight">{pack.credits}</div>
+                      <div className="text-sm text-muted-foreground">crédits</div>
+                    </>
+                  )}
                 </div>
 
                 <div className="mt-5 pb-5 border-b">
                   <div className="text-3xl font-bold">{pack.price}</div>
                   <div className="text-xs text-muted-foreground mt-1">
-                    soit {pricePerCredit.toLocaleString("fr-FR")} FCFA / crédit
+                    {isUnlimitedPack
+                      ? `Pour ${pack.unlimitedDays} jours calendaires`
+                      : `soit ${pricePerCredit.toLocaleString("fr-FR")} FCFA / crédit`}
                   </div>
                 </div>
 
                 <ul className="mt-5 space-y-2.5 text-sm flex-1">
-                  <li className="flex items-start gap-2">
-                    <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                    <span>1 crédit = 1 lead débloqué (coordonnées complètes)</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                    <span>Crédits livrés instantanément après paiement</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                    <span>Sans abonnement, sans engagement</span>
-                  </li>
+                  {isUnlimitedPack ? (
+                    <>
+                      <li className="flex items-start gap-2">
+                        <InfinityIcon className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
+                        <span><strong>Déblocages illimités</strong> de leads pendant 30 jours</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
+                        <span>Vos crédits accumulés sont <strong>conservés</strong> et réutilisables ensuite</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
+                        <span>Rachat = les jours restants s'<strong>ajoutent</strong> à la période active</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
+                        <span>Sans abonnement, à racheter manuellement chaque mois</span>
+                      </li>
+                    </>
+                  ) : (
+                    <>
+                      <li className="flex items-start gap-2">
+                        <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                        <span>1 crédit = 1 lead débloqué (coordonnées complètes)</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                        <span>Crédits livrés instantanément après paiement</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                        <span>Crédits <strong>non expirants</strong> — reportés d'un mois à l'autre</span>
+                      </li>
+                    </>
+                  )}
                 </ul>
 
                 <div className="mt-6">
                   <ChariowButton
                     productId={pack.productId}
-                    ctaText={`Recharger ${pack.credits} crédits`}
+                    ctaText={isUnlimitedPack
+                      ? (isUnlimitedActive ? "Prolonger de 30 jours" : "Activer l'illimité")
+                      : `Recharger ${pack.credits} crédits`}
                     partnerId={partner?.id}
                     onIntent={handleIntent}
                   />

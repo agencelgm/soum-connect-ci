@@ -79,6 +79,7 @@ export const listMarketplace = createServerFn({ method: "GET" })
         credits_balance: partner.credits_balance,
         cabinet_name: partner.cabinet_name,
         tier: (partner as { tier?: string }).tier ?? "regular",
+        unlimited_until: (partner as { unlimited_until?: string | null }).unlimited_until ?? null,
       },
       leads,
       unlocked_ids,

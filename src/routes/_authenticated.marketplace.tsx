@@ -64,6 +64,9 @@ function MarketplacePage() {
   const [tab, setTab] = useState<"available" | "mine">("available");
   const [filter, setFilter] = useState<"all" | "available" | "full">("available");
   const isPremium = data?.partner?.tier === "premium";
+  const unlimitedUntilRaw = (data?.partner as { unlimited_until?: string | null } | undefined)?.unlimited_until ?? null;
+  const unlimitedUntil = unlimitedUntilRaw ? new Date(unlimitedUntilRaw) : null;
+  const isUnlimitedActive = !!(unlimitedUntil && unlimitedUntil.getTime() > Date.now());
 
   if (isUnauthorizedError(error) || isUnauthorizedError(mineError)) {
     return <UnauthorizedScreen />;
@@ -110,6 +113,19 @@ function MarketplacePage() {
           </Button>
         </div>
       </div>
+
+      {isUnlimitedActive && (
+        <div className="rounded-xl border border-amber-300 bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-50 p-4 flex items-center gap-3">
+          <Crown className="h-6 w-6 text-amber-600 shrink-0" />
+          <div>
+            <p className="font-semibold text-amber-900">Accès illimité actif</p>
+            <p className="text-sm text-amber-800">
+              Débloquez autant de leads que vous souhaitez sans consommer de crédits jusqu'au{" "}
+              <strong>{unlimitedUntil?.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</strong>.
+            </p>
+          </div>
+        </div>
+      )}
 
       {isPremium ? (
         <div className="rounded-xl border border-amber-300 bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-50 p-4 flex items-center gap-3">
@@ -194,6 +210,7 @@ function MarketplacePage() {
                 alreadyUnlocked={data.unlocked_ids.includes(lead.id)}
                 credits={data.partner!.credits_balance}
                 isPremium={isPremium}
+                isUnlimited={isUnlimitedActive}
                 partnerApproved={partnerApproved}
                 partnerPending={partnerPending}
                 partnerPaused={partnerPaused}
@@ -237,6 +254,7 @@ function LeadCard({
   alreadyUnlocked,
   credits,
   isPremium,
+  isUnlimited,
   partnerApproved,
   partnerPending,
   partnerPaused,
@@ -245,6 +263,7 @@ function LeadCard({
   alreadyUnlocked: boolean;
   credits: number;
   isPremium: boolean;
+  isUnlimited: boolean;
   partnerApproved: boolean;
   partnerPending: boolean;
   partnerPaused: boolean;
@@ -267,7 +286,11 @@ function LeadCard({
     onSuccess: (res) => {
       setRevealed(res.prospect);
       toast.success(
-        res.already_unlocked ? "Lead déjà débloqué" : "Lead débloqué — 1 crédit utilisé",
+        res.already_unlocked
+          ? "Lead déjà débloqué"
+          : isUnlimited
+            ? "Lead débloqué (accès illimité)"
+            : "Lead débloqué — 1 crédit utilisé",
       );
       qc.invalidateQueries({ queryKey: ["marketplace"] });
       qc.invalidateQueries({ queryKey: ["my-unlocks"] });
@@ -494,7 +517,7 @@ function LeadCard({
               : "Le déblocage sera activé dès la validation de votre cabinet."}
           </p>
         </div>
-      ) : credits < 1 ? (
+      ) : !isUnlimited && credits < 1 ? (
         <div className="space-y-1">
           <Button asChild variant="default" size="lg" className="w-full">
             <Link to="/recharger">Recharger pour débloquer</Link>
@@ -510,7 +533,11 @@ function LeadCard({
             className="w-full font-semibold shadow-sm"
           >
             <Lock className="h-4 w-4 mr-2" />
-            {mut.isPending ? "Déblocage…" : "Débloquer ce lead (1 crédit)"}
+            {mut.isPending
+              ? "Déblocage…"
+              : isUnlimited
+                ? "Débloquer ce lead (illimité)"
+                : "Débloquer ce lead (1 crédit)"}
           </Button>
           <p className="text-[11px] text-center text-muted-foreground">
             Vous obtiendrez : nom, email, téléphone et message complet
