@@ -90,6 +90,10 @@ export const template = {
     prospectFirstName: 'Awa',
     service: 'Création d\'entreprise',
     city: 'Abidjan',
+    audience: "Création d'entreprise",
+    budget: '150 000 – 300 000 FCFA',
+    message:
+      "Je souhaite créer une SARL à Abidjan pour lancer mon activité de conseil. J'aimerais un accompagnement complet et un devis rapide.",
     loginUrl: 'https://www.soumissioncomptable.com/connexion',
   },
 } satisfies TemplateEntry
