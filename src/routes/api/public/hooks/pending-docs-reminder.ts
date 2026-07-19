@@ -18,9 +18,10 @@ export const Route = createFileRoute("/api/public/hooks/pending-docs-reminder")(
         const { data: partners, error } = await supabaseAdmin
           .from("partners")
           .select(
-            "id, email, contact_first_name, cabinet_name, created_at, docs_reminder_last_sent_at",
+            "id, email, contact_first_name, cabinet_name, created_at, docs_reminder_last_sent_at, docs_received_at",
           )
           .eq("status", "pending_review")
+          .is("docs_received_at", null)
           .is("deleted_at", null);
 
         if (error) {

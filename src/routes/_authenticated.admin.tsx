@@ -141,6 +141,7 @@ import {
   listChariowPayments,
   setPartnerTier,
   resetPartnerPassword,
+  markPartnerDocsReceived,
 } from "@/lib/partners.functions";
 import { publishProspect } from "@/lib/marketplace.functions";
 import {
@@ -687,6 +688,7 @@ function PartnerCard({
   const grantFn = useServerFn(adminGrantCredits);
   const tierFn = useServerFn(setPartnerTier);
   const resetPwdFn = useServerFn(resetPartnerPassword);
+  const docsFn = useServerFn(markPartnerDocsReceived);
   const [busy, setBusy] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [tempPwd, setTempPwd] = useState<{ email: string; pwd: string } | null>(null);
@@ -767,6 +769,28 @@ function PartnerCard({
                 }}
               >
                 Approuver (+30 crédits)
+              </Button>
+              <Button
+                size="sm"
+                variant={partner.docs_received_at ? "secondary" : "outline"}
+                disabled={busy}
+                title={
+                  partner.docs_received_at
+                    ? "Documents marqués reçus — les relances sont stoppées"
+                    : "Marquer les documents comme reçus (stoppe les relances par email)"
+                }
+                onClick={() =>
+                  run(() =>
+                    docsFn({
+                      data: {
+                        partner_id: partner.id,
+                        received: !partner.docs_received_at,
+                      },
+                    }),
+                  )
+                }
+              >
+                {partner.docs_received_at ? "✓ Docs reçus" : "Marquer docs reçus"}
               </Button>
               <RejectButton
                 disabled={busy}

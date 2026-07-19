@@ -98,6 +98,11 @@ export async function sendTransactionalServer(input: SendTransactionalInput): Pr
     template_name: input.templateName,
     recipient_email: recipient,
     status: 'pending',
+    metadata: {
+      subject,
+      template_data: data,
+      idempotency_key: idempotencyKey,
+    } as unknown as Record<string, unknown> as any,
   })
 
   const { error: enqErr } = await supabaseAdmin.rpc('enqueue_email', {

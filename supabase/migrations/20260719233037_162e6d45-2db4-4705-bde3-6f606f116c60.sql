@@ -1,0 +1,1 @@
+ALTER TABLE public.partners ADD COLUMN IF NOT EXISTS docs_received_at TIMESTAMPTZ;

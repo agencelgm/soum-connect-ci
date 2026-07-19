@@ -18,7 +18,10 @@ interface Props {
   city?: string
   message?: string | null
   creditsBalance?: number
+  hasUnlimited?: boolean
+  unlimitedUntil?: string | null
   loginUrl?: string
+  rechargeUrl?: string
 }
 
 const Email = ({
@@ -28,14 +31,27 @@ const Email = ({
   city,
   message,
   creditsBalance = 0,
+  hasUnlimited = false,
+  unlimitedUntil = null,
   loginUrl = 'https://soumissioncomptable.com/connexion',
-}: Props) => (
+  rechargeUrl = 'https://soumissioncomptable.com/connexion',
+}: Props) => {
+  const hasCredits = creditsBalance > 0
+  const canUnlock = hasCredits || hasUnlimited
+  const unlimitedDate = unlimitedUntil
+    ? new Date(unlimitedUntil).toLocaleDateString('fr-FR', {
+        day: 'numeric', month: 'long', year: 'numeric',
+      })
+    : null
+  return (
   <Html lang="fr" dir="ltr">
     <Head />
-    <Preview>{`Vous avez ${creditsBalance} crédits — ${prospectFirstName} vous attend`}</Preview>
+    <Preview>{canUnlock
+      ? `Vous avez ${hasUnlimited ? 'un accès illimité actif' : `${creditsBalance} crédit${creditsBalance > 1 ? 's' : ''}`} — ${prospectFirstName} vous attend`
+      : `${prospectFirstName} vous attend — reconnectez-vous pour ne pas passer à côté`}</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Heading style={h1}>Vous n'avez rien à perdre.</Heading>
+        <Heading style={h1}>{canUnlock ? "Vous n'avez rien à perdre." : `${prospectFirstName} vous attend.`}</Heading>
         <Text style={text}>Bonjour {partnerFirstName},</Text>
         <Text style={text}>
           <strong>{prospectFirstName}</strong> vient d'être approuvé{city ? <> à <strong>{city}</strong></> : null} et
@@ -47,18 +63,42 @@ const Email = ({
             <p style={quoteText}>« {message} »</p>
           </div>
         ) : null}
-        <div style={callout}>
-          Il vous reste <strong>{creditsBalance} crédit{creditsBalance > 1 ? 's' : ''}</strong> déjà
-          payés sur votre compte.
-        </div>
+        {hasUnlimited ? (
+          <div style={callout}>
+            Votre <strong>accès illimité</strong> est encore actif
+            {unlimitedDate ? <> jusqu'au <strong>{unlimitedDate}</strong></> : null} —
+            vous pouvez débloquer ce prospect sans dépenser de crédit.
+          </div>
+        ) : hasCredits ? (
+          <div style={callout}>
+            Il vous reste <strong>{creditsBalance} crédit{creditsBalance > 1 ? 's' : ''}</strong> déjà
+            payés sur votre compte.
+          </div>
+        ) : (
+          <div style={calloutWarn}>
+            Votre compte est en pause et votre solde est à <strong>0 crédit</strong>.
+            Rechargez en 2 minutes et vous êtes de nouveau dans la course.
+          </div>
+        )}
         <Text style={text}>
-          Votre compte est en pause, mais ces crédits sont toujours à vous.
-          Reconnectez-vous, débloquez ses coordonnées, et appelez-le. C'est tout.
-          Trois clics et vous êtes en ligne avec un prospect qualifié.
+          Votre compte est en pause (14 jours sans connexion), mais vos crédits et
+          votre historique sont préservés. Reconnectez-vous : notre équipe réactive
+          votre compte dès que vous nous le demandez.
         </Text>
-        <Button style={button} href={loginUrl}>
-          Me reconnecter et débloquer
-        </Button>
+        {canUnlock ? (
+          <Button style={button} href={loginUrl}>
+            Me reconnecter et débloquer
+          </Button>
+        ) : (
+          <>
+            <Button style={buttonWarn} href={rechargeUrl}>
+              Recharger et rattraper ce prospect
+            </Button>
+            <Text style={secondaryLink}>
+              Ou <a href={loginUrl} style={link}>connectez-vous d'abord</a> pour voir la fiche.
+            </Text>
+          </>
+        )}
         <Text style={ps}>
           <strong>P.S.</strong> Seuls 5 partenaires peuvent débloquer ce prospect.
           Passé ce cap, l'opportunité est perdue.
@@ -66,7 +106,7 @@ const Email = ({
       </Container>
     </Body>
   </Html>
-)
+)}
 
 export const template = {
   component: Email,
@@ -83,6 +123,7 @@ export const template = {
     city: 'Abidjan',
     creditsBalance: 12,
     loginUrl: 'https://soumissioncomptable.com/connexion',
+    rechargeUrl: 'https://soumissioncomptable.com/connexion',
   },
 } satisfies TemplateEntry
 
@@ -110,6 +151,18 @@ const button = {
   display: 'inline-block',
   margin: '8px 0 20px',
 }
+const buttonWarn = { ...button, backgroundColor: '#dc2626' }
+const calloutWarn = {
+  backgroundColor: '#fef2f2',
+  border: '1px solid #dc2626',
+  color: '#991b1b',
+  padding: '12px 16px',
+  borderRadius: '8px',
+  margin: '0 0 16px',
+  fontSize: '15px',
+}
+const secondaryLink = { fontSize: '13px', color: '#64748b', margin: '0 0 12px' }
+const link = { color: '#0f766e', textDecoration: 'underline' }
 const ps = { fontSize: '13px', color: '#64748b', margin: '24px 0 0', fontStyle: 'italic' as const }
 const quote = {
   backgroundColor: '#f8fafc',

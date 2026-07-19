@@ -540,6 +540,26 @@ export const rejectPartner = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+// ---------------------- Mark docs received ----------------------
+
+export const markPartnerDocsReceived = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) =>
+    z
+      .object({ partner_id: z.string().uuid(), received: z.boolean().optional() })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    await assertStaff(context.userId);
+    const received = data.received ?? true;
+    const { error } = await supabaseAdmin
+      .from("partners")
+      .update({ docs_received_at: received ? new Date().toISOString() : null })
+      .eq("id", data.partner_id);
+    if (error) throw new Error(error.message);
+    return { ok: true, received };
+  });
+
 // ---------------------- Pause ----------------------
 
 export const pausePartner = createServerFn({ method: "POST" })

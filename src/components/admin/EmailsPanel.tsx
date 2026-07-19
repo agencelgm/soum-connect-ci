@@ -1,9 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { getEmailStats } from "@/lib/email-stats.functions";
+import { getEmailStats, resendEmailLog } from "@/lib/email-stats.functions";
 import { cn } from "@/lib/utils";
-import { Mail, AlertTriangle, Ban, UserMinus, Send, CheckCircle2, XCircle, Info } from "lucide-react";
+import { toast } from "sonner";
+import { Mail, AlertTriangle, Ban, UserMinus, Send, CheckCircle2, XCircle, Info, RefreshCw } from "lucide-react";
 
 const RANGES: Array<{ label: string; days: number }> = [
   { label: "7 j", days: 7 },
@@ -13,15 +14,44 @@ const RANGES: Array<{ label: string; days: number }> = [
 
 export function EmailsPanel() {
   const fetchStats = useServerFn(getEmailStats);
+  const resendFn = useServerFn(resendEmailLog);
+  const qc = useQueryClient();
   const [days, setDays] = useState(30);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [templateFilter, setTemplateFilter] = useState<string>("all");
+  const [pendingId, setPendingId] = useState<string | null>(null);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["email-stats", days],
     queryFn: () => fetchStats({ data: { days } }),
     retry: false,
   });
+
+  const resendMut = useMutation({
+    mutationFn: (input: { messageId: string; overrideRecipient?: string }) =>
+      resendFn({ data: input }),
+    onMutate: (v) => setPendingId(v.messageId),
+    onSettled: () => setPendingId(null),
+    onSuccess: (res: any) => {
+      if (res?.success) {
+        toast.success("Email renvoyé.");
+        qc.invalidateQueries({ queryKey: ["email-stats"] });
+      } else {
+        toast.error(`Renvoi refusé : ${res?.reason ?? "raison inconnue"}`);
+      }
+    },
+    onError: (e) => toast.error((e as Error).message || "Erreur"),
+  });
+
+  const handleResend = (messageId: string, currentRecipient: string) => {
+    const override = window.prompt(
+      `Renvoyer à quel destinataire ?\nLaissez vide pour garder ${currentRecipient}.`,
+      "",
+    );
+    if (override === null) return;
+    const trimmed = override.trim();
+    resendMut.mutate({ messageId, overrideRecipient: trimmed || undefined });
+  };
 
   if (isLoading) return <p className="text-muted-foreground">Chargement…</p>;
   if (error) return <p className="text-red-600">Erreur : {(error as Error).message}</p>;
@@ -197,11 +227,12 @@ export function EmailsPanel() {
                 <th className="px-3 py-2">Destinataire</th>
                 <th className="px-3 py-2">Statut</th>
                 <th className="px-3 py-2">Date</th>
+                <th className="px-3 py-2 text-right">Action</th>
               </tr>
             </thead>
             <tbody>
               {filtered.length === 0 && (
-                <tr><td colSpan={4} className="px-3 py-4 text-center text-muted-foreground">Aucune entrée.</td></tr>
+                <tr><td colSpan={5} className="px-3 py-4 text-center text-muted-foreground">Aucune entrée.</td></tr>
               )}
               {filtered.map((r, i) => (
                 <tr key={(r.message_id ?? "no-msg") + i} className="border-t">
@@ -210,6 +241,21 @@ export function EmailsPanel() {
                   <td className="px-3 py-2"><StatusBadge status={r.status} /></td>
                   <td className="px-3 py-2 text-xs text-muted-foreground whitespace-nowrap">
                     {new Date(r.created_at).toLocaleString("fr-FR")}
+                  </td>
+                  <td className="px-3 py-2 text-right">
+                    {r.message_id ? (
+                      <button
+                        onClick={() => handleResend(r.message_id!, r.recipient_email)}
+                        disabled={pendingId === r.message_id}
+                        className="inline-flex items-center gap-1 rounded-md border px-2 py-1 text-xs hover:bg-muted disabled:opacity-50"
+                        title="Renvoyer cet email"
+                      >
+                        <RefreshCw className={cn("h-3 w-3", pendingId === r.message_id && "animate-spin")} />
+                        Renvoyer
+                      </button>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">—</span>
+                    )}
                   </td>
                 </tr>
               ))}
