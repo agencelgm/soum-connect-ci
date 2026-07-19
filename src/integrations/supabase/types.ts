@@ -340,6 +340,7 @@ export type Database = {
           tier: string
           tutorial_max_progress: number
           tutorial_watched_at: string | null
+          unlimited_until: string | null
           updated_at: string
           wants_logo: boolean | null
           wants_website: boolean | null
@@ -374,6 +375,7 @@ export type Database = {
           tier?: string
           tutorial_max_progress?: number
           tutorial_watched_at?: string | null
+          unlimited_until?: string | null
           updated_at?: string
           wants_logo?: boolean | null
           wants_website?: boolean | null
@@ -408,6 +410,7 @@ export type Database = {
           tier?: string
           tutorial_max_progress?: number
           tutorial_watched_at?: string | null
+          unlimited_until?: string | null
           updated_at?: string
           wants_logo?: boolean | null
           wants_website?: boolean | null
@@ -598,6 +601,7 @@ export type Database = {
         | "unlock_spend"
         | "recharge"
         | "chariow_purchase"
+        | "chariow_unlimited"
       partner_status: "pending_review" | "approved" | "paused" | "rejected"
       prospect_status:
         | "pending_qualification"
@@ -741,6 +745,7 @@ export const Constants = {
         "unlock_spend",
         "recharge",
         "chariow_purchase",
+        "chariow_unlimited",
       ],
       partner_status: ["pending_review", "approved", "paused", "rejected"],
       prospect_status: [
