@@ -133,6 +133,30 @@ export type Database = {
           },
         ]
       }
+      email_alert_state: {
+        Row: {
+          last_alert_at: string
+          last_rate: number | null
+          last_volume: number | null
+          metric: string
+          scope: string
+        }
+        Insert: {
+          last_alert_at?: string
+          last_rate?: number | null
+          last_volume?: number | null
+          metric: string
+          scope: string
+        }
+        Update: {
+          last_alert_at?: string
+          last_rate?: number | null
+          last_volume?: number | null
+          metric?: string
+          scope?: string
+        }
+        Relationships: []
+      }
       email_send_log: {
         Row: {
           created_at: string
