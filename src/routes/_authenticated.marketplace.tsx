@@ -11,6 +11,7 @@ import { isUnauthorizedError } from "@/lib/auth-actions";
 import { UnauthorizedScreen } from "@/components/auth/UnauthorizedScreen";
 import { cn } from "@/lib/utils";
 import { getUnlimitedStatus } from "@/lib/credit-packs";
+import { RenewUnlimitedButton } from "@/components/payments/RenewUnlimitedButton";
 import {
   MapPin,
   Building2,
@@ -164,9 +165,16 @@ function MarketplacePage() {
               </p>
             </div>
             {(critical || warning) ? (
-              <Button asChild size="sm" className={critical ? "bg-red-600 hover:bg-red-700" : "bg-orange-600 hover:bg-orange-700"}>
-                <Link to="/recharger">Renouveler</Link>
-              </Button>
+              <div className="flex flex-col items-end gap-1">
+                <RenewUnlimitedButton
+                  partnerId={data.partner.id}
+                  variant={critical ? "red" : "orange"}
+                  ctaText={critical ? "Renouveler maintenant" : "Prolonger 30 jours"}
+                />
+                <Link to="/recharger" className="text-[11px] text-muted-foreground hover:underline">
+                  ou comparer les packs
+                </Link>
+              </div>
             ) : (
               <Button asChild variant="outline" size="sm" className="border-amber-400 text-amber-900 hover:bg-amber-100">
                 <Link to="/historique">
@@ -188,9 +196,16 @@ function MarketplacePage() {
               Vos crédits {data.partner.credits_balance} sont de nouveau utilisés à chaque déblocage. Renouvelez pour retrouver l'illimité et les 3 h d'avance Premium.
             </p>
           </div>
-          <Button asChild size="sm">
-            <Link to="/recharger">Renouveler</Link>
-          </Button>
+          <div className="flex flex-col items-end gap-1">
+            <RenewUnlimitedButton
+              partnerId={data.partner.id}
+              variant="slate"
+              ctaText="Réactiver l'illimité"
+            />
+            <Link to="/recharger" className="text-[11px] text-muted-foreground hover:underline">
+              ou comparer les packs
+            </Link>
+          </div>
         </div>
       )}
 
