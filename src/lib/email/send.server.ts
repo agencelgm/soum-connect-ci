@@ -3,7 +3,7 @@ import { render } from '@react-email/render'
 import { supabaseAdmin } from '@/integrations/supabase/client.server'
 import { TEMPLATES } from '@/lib/email-templates/registry'
 
-const SITE_NAME = 'SoumissionsComptables.ci'
+const SITE_NAME = 'Soumission Comptable'
 const SENDER_DOMAIN = 'notify.soumissioncomptable.com'
 const FROM_DOMAIN = 'soumissioncomptable.com'
 
