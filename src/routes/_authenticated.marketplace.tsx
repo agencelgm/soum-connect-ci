@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { isUnauthorizedError } from "@/lib/auth-actions";
 import { UnauthorizedScreen } from "@/components/auth/UnauthorizedScreen";
 import { cn } from "@/lib/utils";
+import { getUnlimitedStatus } from "@/lib/credit-packs";
 import {
   MapPin,
   Building2,
@@ -24,6 +25,7 @@ import {
   Star,
   History,
   Info,
+  AlertTriangle,
 } from "lucide-react";
 
 const WHATSAPP_PREMIUM_URL =
@@ -67,8 +69,10 @@ function MarketplacePage() {
   const [filter, setFilter] = useState<"all" | "available" | "full">("available");
   const isPremium = data?.partner?.tier === "premium";
   const unlimitedUntilRaw = (data?.partner as { unlimited_until?: string | null } | undefined)?.unlimited_until ?? null;
-  const unlimitedUntil = unlimitedUntilRaw ? new Date(unlimitedUntilRaw) : null;
-  const isUnlimitedActive = !!(unlimitedUntil && unlimitedUntil.getTime() > Date.now());
+  const unlimitedStatus = getUnlimitedStatus(unlimitedUntilRaw);
+  const isUnlimitedActive = unlimitedStatus.active;
+  const unlimitedUntil = unlimitedStatus.expiresAt;
+  const hasPriorityAccess = isPremium || isUnlimitedActive;
 
   if (isUnauthorizedError(error) || isUnauthorizedError(mineError)) {
     return <UnauthorizedScreen />;
@@ -116,21 +120,76 @@ function MarketplacePage() {
         </div>
       </div>
 
-      {isUnlimitedActive && (
-        <div className="rounded-xl border border-amber-300 bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-50 p-4 flex items-center gap-3">
-          <Crown className="h-6 w-6 text-amber-600 shrink-0" />
+      {isUnlimitedActive && (() => {
+        const critical = unlimitedStatus.level === "critical";
+        const warning = unlimitedStatus.level === "warning";
+        const tone = critical
+          ? "border-red-300 bg-gradient-to-r from-red-50 via-orange-50 to-red-50"
+          : warning
+            ? "border-orange-300 bg-gradient-to-r from-orange-50 via-amber-50 to-orange-50"
+            : "border-amber-300 bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-50";
+        const Icon = critical || warning ? AlertTriangle : Crown;
+        const iconColor = critical ? "text-red-600" : warning ? "text-orange-600" : "text-amber-600";
+        const titleColor = critical ? "text-red-900" : warning ? "text-orange-900" : "text-amber-900";
+        const bodyColor = critical ? "text-red-800" : warning ? "text-orange-800" : "text-amber-800";
+        const daysTxt =
+          unlimitedStatus.daysLeft <= 1
+            ? unlimitedStatus.hoursLeft <= 24
+              ? `${unlimitedStatus.hoursLeft} h`
+              : "1 jour"
+            : `${unlimitedStatus.daysLeft} jours`;
+        const title = critical
+          ? `Votre accès illimité expire dans ${daysTxt}`
+          : warning
+            ? `Votre accès illimité expire dans ${daysTxt}`
+            : "Accès illimité actif";
+        return (
+          <div className={`rounded-xl border p-4 flex items-center gap-3 ${tone}`}>
+            <Icon className={`h-6 w-6 shrink-0 ${iconColor}`} />
+            <div className="flex-1">
+              <p className={`font-semibold ${titleColor}`}>{title}</p>
+              <p className={`text-sm ${bodyColor}`}>
+                {critical || warning ? (
+                  <>
+                    Renouvelez avant le{" "}
+                    <strong>{unlimitedUntil?.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</strong>{" "}
+                    pour continuer à débloquer des leads sans consommer vos crédits.
+                  </>
+                ) : (
+                  <>
+                    Déblocages sans consommer vos crédits + <strong>3 h d'avance</strong> sur chaque nouveau prospect, jusqu'au{" "}
+                    <strong>{unlimitedUntil?.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</strong>.
+                  </>
+                )}
+              </p>
+            </div>
+            {(critical || warning) ? (
+              <Button asChild size="sm" className={critical ? "bg-red-600 hover:bg-red-700" : "bg-orange-600 hover:bg-orange-700"}>
+                <Link to="/recharger">Renouveler</Link>
+              </Button>
+            ) : (
+              <Button asChild variant="outline" size="sm" className="border-amber-400 text-amber-900 hover:bg-amber-100">
+                <Link to="/historique">
+                  <History className="h-4 w-4 mr-1.5" />
+                  Historique
+                </Link>
+              </Button>
+            )}
+          </div>
+        );
+      })()}
+
+      {!isUnlimitedActive && unlimitedStatus.level === "expired" && (
+        <div className="rounded-xl border border-slate-300 bg-slate-50 p-4 flex items-center gap-3">
+          <Clock className="h-6 w-6 text-slate-600 shrink-0" />
           <div className="flex-1">
-            <p className="font-semibold text-amber-900">Accès illimité actif</p>
-            <p className="text-sm text-amber-800">
-              Débloquez autant de leads que vous souhaitez sans consommer de crédits jusqu'au{" "}
-              <strong>{unlimitedUntil?.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</strong>.
+            <p className="font-semibold text-slate-900">Votre accès illimité a expiré</p>
+            <p className="text-sm text-slate-700">
+              Vos crédits {data.partner.credits_balance} sont de nouveau utilisés à chaque déblocage. Renouvelez pour retrouver l'illimité et les 3 h d'avance Premium.
             </p>
           </div>
-          <Button asChild variant="outline" size="sm" className="border-amber-400 text-amber-900 hover:bg-amber-100">
-            <Link to="/historique">
-              <History className="h-4 w-4 mr-1.5" />
-              Historique
-            </Link>
+          <Button asChild size="sm">
+            <Link to="/recharger">Renouveler</Link>
           </Button>
         </div>
       )}
@@ -163,13 +222,23 @@ function MarketplacePage() {
             </p>
           </div>
         </div>
+      ) : isUnlimitedActive ? (
+        <div className="rounded-xl border border-amber-300 bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-50 p-4 flex items-center gap-3">
+          <Crown className="h-6 w-6 text-amber-600 shrink-0" />
+          <div>
+            <p className="font-semibold text-amber-900">Avantages Premium inclus avec l'illimité</p>
+            <p className="text-sm text-amber-800">
+              Tant que votre accès illimité est actif, vous accédez aussi aux nouveaux prospects <strong>3 heures avant</strong> les autres cabinets, comme nos clients Premium.
+            </p>
+          </div>
+        </div>
       ) : (
         <div className="rounded-xl border bg-muted/40 p-4 flex items-center gap-3">
           <Star className="h-5 w-5 text-amber-500 shrink-0" />
           <div className="flex-1">
             <p className="font-semibold">Devenez client Premium</p>
             <p className="text-sm text-muted-foreground">
-              Accédez aux nouveaux prospects 3 heures avant tout le monde.
+              Accédez aux nouveaux prospects 3 heures avant tout le monde — également inclus dans le pack Illimité.
             </p>
           </div>
           <Button asChild size="sm" variant="outline">

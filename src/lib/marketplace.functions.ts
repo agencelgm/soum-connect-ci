@@ -103,7 +103,7 @@ export const unlockLead = createServerFn({ method: "POST" })
         publication_inactive: "Ce lead n'est plus disponible.",
         publication_full: "Ce lead a atteint le nombre maximum de déblocages.",
         premium_window_active:
-          "Ce prospect est actuellement réservé à nos clients Premium. Patientez ou contactez-nous pour devenir Premium.",
+          "Ce prospect est actuellement réservé à nos clients Premium et Illimité. Patientez la fin de la fenêtre d'exclusivité, ou activez l'accès illimité pour y accéder immédiatement.",
       };
       throw new Error(map[error.message] ?? error.message);
     }
