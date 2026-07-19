@@ -17,6 +17,8 @@ interface Props {
   service?: string
   city?: string
   message?: string | null
+  budget?: string | null
+  audience?: string | null
   loginUrl?: string
 }
 
@@ -26,6 +28,8 @@ const Email = ({
   service = 'un service comptable',
   city,
   message,
+  budget,
+  audience,
   loginUrl = 'https://www.soumissioncomptable.com/connexion',
 }: Props) => (
   <Html lang="fr" dir="ltr">
@@ -42,6 +46,16 @@ const Email = ({
           {' '}Il/elle recherche : <strong>{service}</strong>
           {city ? <> à <strong>{city}</strong></> : null}.
         </Text>
+        {(audience || budget) ? (
+          <div style={details}>
+            {audience ? (
+              <p style={detailRow}><strong>Profil :</strong> {audience}</p>
+            ) : null}
+            {budget ? (
+              <p style={detailRow}><strong>Budget indiqué :</strong> {budget}</p>
+            ) : null}
+          </div>
+        ) : null}
         {message ? (
           <div style={quote}>
             <p style={quoteLabel}>Message du prospect :</p>
@@ -117,4 +131,16 @@ const quoteText = {
   lineHeight: '1.6',
   fontStyle: 'italic' as const,
   margin: 0,
+}
+const details = {
+  backgroundColor: '#f1f5f9',
+  borderRadius: '6px',
+  padding: '10px 14px',
+  margin: '0 0 12px',
+}
+const detailRow = {
+  fontSize: '13px',
+  color: '#0f172a',
+  margin: '2px 0',
+  lineHeight: '1.5',
 }
