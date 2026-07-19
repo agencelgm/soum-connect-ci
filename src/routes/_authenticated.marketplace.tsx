@@ -471,6 +471,7 @@ function LeadCard({
 
   return (
     <div
+      data-lead-id={lead.id}
       className={cn(
         "rounded-xl border p-5 space-y-4",
         isFull && !alreadyUnlocked
