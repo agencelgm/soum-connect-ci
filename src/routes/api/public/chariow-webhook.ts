@@ -235,10 +235,33 @@ export const Route = createFileRoute("/api/public/chariow-webhook")({
           return Response.json({ ok: true, matched: false });
         }
 
-        const newBalance = (partner.credits_balance ?? 0) + pack.credits;
+        // Récupère l'état actuel (credits + unlimited_until) pour empiler correctement
+        const { data: current } = await supabaseAdmin
+          .from("partners")
+          .select("credits_balance, unlimited_until")
+          .eq("id", partner.id)
+          .maybeSingle();
+        const currentBalance = current?.credits_balance ?? partner.credits_balance ?? 0;
+        const currentUnlimitedUntil = current?.unlimited_until ? new Date(current.unlimited_until) : null;
+
+        let newBalance = currentBalance;
+        let newUnlimitedUntil: string | null = current?.unlimited_until ?? null;
+        const updatePatch: Record<string, unknown> = {};
+
+        if (pack.unlimited && pack.unlimitedDays) {
+          const now = new Date();
+          const base = currentUnlimitedUntil && currentUnlimitedUntil > now ? currentUnlimitedUntil : now;
+          const next = new Date(base.getTime() + pack.unlimitedDays * 24 * 60 * 60 * 1000);
+          newUnlimitedUntil = next.toISOString();
+          updatePatch.unlimited_until = newUnlimitedUntil;
+        } else {
+          newBalance = currentBalance + pack.credits;
+          updatePatch.credits_balance = newBalance;
+        }
+
         const { error: balErr } = await supabaseAdmin
           .from("partners")
-          .update({ credits_balance: newBalance })
+          .update(updatePatch)
           .eq("id", partner.id);
         if (balErr) {
           await supabaseAdmin
@@ -250,11 +273,13 @@ export const Route = createFileRoute("/api/public/chariow-webhook")({
 
         await supabaseAdmin.from("credit_transactions").insert({
           partner_id: partner.id,
-          amount: pack.credits,
+          amount: pack.unlimited ? 0 : pack.credits,
           balance_after: newBalance,
-          tx_type: "chariow_purchase",
+          tx_type: pack.unlimited ? "chariow_unlimited" : "chariow_purchase",
           reference_id: payment.id,
-          note: `Achat Chariow (${pack.price}) — licence ${licenseCode}`,
+          note: pack.unlimited
+            ? `Achat Chariow — Accès illimité ${pack.unlimitedDays} jours (${pack.price}) — licence ${licenseCode}`
+            : `Achat Chariow (${pack.price}) — licence ${licenseCode}`,
           created_by: null,
         });
 
@@ -263,7 +288,7 @@ export const Route = createFileRoute("/api/public/chariow-webhook")({
           .update({
             status: "credited",
             partner_id: partner.id,
-            credits_granted: pack.credits,
+            credits_granted: pack.unlimited ? 0 : pack.credits,
             processed_at: new Date().toISOString(),
           })
           .eq("id", payment.id);
@@ -278,8 +303,9 @@ export const Route = createFileRoute("/api/public/chariow-webhook")({
         return Response.json({
           ok: true,
           matched: true,
-          credits_added: pack.credits,
+          credits_added: pack.unlimited ? 0 : pack.credits,
           new_balance: newBalance,
+          unlimited_until: newUnlimitedUntil,
         });
       },
     },
