@@ -1,7 +1,7 @@
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { sendTransactionalServer } from "@/lib/email/send.server";
 
-const SITE_ORIGIN = "https://soumissioncomptable.com";
+const SITE_ORIGIN = "https://www.soumissioncomptable.com";
 
 function deepLoginUrl(publicationId: string) {
   const next = `/marketplace?lead=${encodeURIComponent(publicationId)}`;
