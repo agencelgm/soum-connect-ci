@@ -243,6 +243,13 @@ export const publishProspect = createServerFn({ method: "POST" })
     } catch (e) {
       console.error("[publishProspect] notifyProspectApproved failed", e);
     }
+    // Email fan-out to all approved partners (best-effort, does not block admin response).
+    try {
+      const { notifyPartnersNewProspect } = await import("./notify-partners.server");
+      await notifyPartnersNewProspect(data.prospect_id, publicationId);
+    } catch (e) {
+      console.error("[publishProspect] notifyPartnersNewProspect failed", e);
+    }
     return { publication_id: publicationId };
   });
 
