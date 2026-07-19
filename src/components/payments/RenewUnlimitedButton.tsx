@@ -1,7 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useServerFn } from "@tanstack/react-start";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { createChariowIntent } from "@/lib/chariow.functions";
 import { CREDIT_PACKS } from "@/lib/credit-packs";
+import { supabase } from "@/integrations/supabase/client";
 
 declare global {
   interface Window {
@@ -55,10 +58,77 @@ export function RenewUnlimitedButton({
   variant?: "amber" | "orange" | "red" | "slate";
 }) {
   const intentFn = useServerFn(createChariowIntent);
+  const queryClient = useQueryClient();
+  const pollRef = useRef<{ timer: number | null; stop: () => void } | null>(null);
 
   useEffect(() => {
     ensureChariowLoaded();
   }, [partnerId]);
+
+  // Cleanup polling on unmount
+  useEffect(() => () => pollRef.current?.stop(), []);
+
+  /**
+   * Après clic sur le widget Chariow, on démarre un polling léger de la
+   * table `partners` (via my-partner). Dès que `unlimited_until` avance
+   * (webhook Chariow traité), on invalide les queries et on notifie.
+   */
+  function startRenewalPolling() {
+    if (!partnerId || pollRef.current) return;
+    let baseline: string | null = null;
+    let attempts = 0;
+    const MAX_ATTEMPTS = 60; // ~5 min à 5s
+
+    const fetchUnlimited = async (): Promise<string | null> => {
+      const { data } = await supabase
+        .from("partners")
+        .select("unlimited_until")
+        .eq("id", partnerId)
+        .maybeSingle();
+      return (data?.unlimited_until as string | null) ?? null;
+    };
+
+    const tick = async () => {
+      attempts += 1;
+      try {
+        const current = await fetchUnlimited();
+        if (baseline === null) baseline = current;
+        const baselineTs = baseline ? new Date(baseline).getTime() : 0;
+        const currentTs = current ? new Date(current).getTime() : 0;
+        if (currentTs > baselineTs) {
+          // Renouvellement détecté : rafraîchir toute l'UI
+          await Promise.all([
+            queryClient.invalidateQueries({ queryKey: ["my-partner"] }),
+            queryClient.invalidateQueries({ queryKey: ["marketplace"] }),
+            queryClient.invalidateQueries({ queryKey: ["credit-history"] }),
+            queryClient.invalidateQueries({ queryKey: ["chariow-history"] }),
+          ]);
+          toast.success("Accès illimité renouvelé — profitez de 30 jours supplémentaires.");
+          pollRef.current?.stop();
+          return;
+        }
+      } catch (e) {
+        console.warn("[renewal-poll] fetch failed", e);
+      }
+      if (attempts >= MAX_ATTEMPTS) {
+        pollRef.current?.stop();
+      }
+    };
+
+    const timer = window.setInterval(tick, 5000);
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") void tick();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    const stop = () => {
+      if (pollRef.current?.timer) window.clearInterval(pollRef.current.timer);
+      document.removeEventListener("visibilitychange", onVisibility);
+      pollRef.current = null;
+    };
+    pollRef.current = { timer, stop };
+    // Kick off first tick immediately for the baseline
+    void tick();
+  }
 
   if (!UNLIMITED_PACK) return null;
 
@@ -71,6 +141,7 @@ export function RenewUnlimitedButton({
         intentFn({ data: { productId: UNLIMITED_PACK.productId } }).catch((e) => {
           console.warn("[chariow] intent registration failed", e);
         });
+        startRenewalPolling();
       }}
     >
       <div
