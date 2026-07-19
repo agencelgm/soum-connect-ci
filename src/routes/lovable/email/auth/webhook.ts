@@ -12,12 +12,12 @@ import { EmailChangeEmail } from '@/lib/email-templates/email-change'
 import { ReauthenticationEmail } from '@/lib/email-templates/reauthentication'
 
 const EMAIL_SUBJECTS: Record<string, string> = {
-  signup: 'Confirm your email',
-  invite: "You've been invited",
-  magiclink: 'Your login link',
-  recovery: 'Reset your password',
-  email_change: 'Confirm your new email',
-  reauthentication: 'Your verification code',
+  signup: 'Confirmez votre email',
+  invite: 'Vous êtes invité(e)',
+  magiclink: 'Votre lien de connexion',
+  recovery: 'Réinitialisez votre mot de passe',
+  email_change: 'Confirmez votre nouvel email',
+  reauthentication: 'Votre code de vérification',
 }
 
 // Template mapping
@@ -31,7 +31,7 @@ const EMAIL_TEMPLATES: Record<string, React.ComponentType<any>> = {
 }
 
 // Configuration
-const SITE_NAME = "soum-connect-ci"
+const SITE_NAME = "Soumission Comptable"
 const SENDER_DOMAIN = "notify.soumissioncomptable.com"
 const ROOT_DOMAIN = "soumissioncomptable.com"
 const FROM_DOMAIN = "soumissioncomptable.com"
