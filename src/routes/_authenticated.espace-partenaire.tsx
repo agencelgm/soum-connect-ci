@@ -20,6 +20,7 @@ import { isUnauthorizedError } from "@/lib/auth-actions";
 import { UnauthorizedScreen } from "@/components/auth/UnauthorizedScreen";
 import { Trash2, UserPlus, ShieldCheck, KeyRound, LayoutDashboard, Crown, History, Coins, AlertTriangle } from "lucide-react";
 import { getUnlimitedStatus } from "@/lib/credit-packs";
+import { RenewUnlimitedButton } from "@/components/payments/RenewUnlimitedButton";
 
 export const Route = createFileRoute("/_authenticated/espace-partenaire")({
   head: () => ({ meta: [{ title: "Espace partenaire" }, { name: "robots", content: "noindex,nofollow" }] }),
@@ -181,15 +182,17 @@ function WelcomeCard({ partner }: { partner: any }) {
         <Button asChild>
           <Link to="/marketplace">Accéder à la marketplace</Link>
         </Button>
-        <Button
-          asChild
-          variant={isCritical || isExpiredRecent ? "default" : "outline"}
-          className={isCritical ? "bg-red-600 hover:bg-red-700" : isWarning ? "border-orange-400 text-orange-900 hover:bg-orange-50" : ""}
-        >
-          <Link to="/recharger">
-            {isCritical || isWarning ? "Renouveler l'illimité" : isExpiredRecent ? "Renouveler" : "Recharger mes crédits"}
-          </Link>
-        </Button>
+        {(isCritical || isWarning || isExpiredRecent) ? (
+          <RenewUnlimitedButton
+            partnerId={partner?.id}
+            variant={isCritical ? "red" : isWarning ? "orange" : "slate"}
+            ctaText={isCritical ? "Renouveler maintenant" : isWarning ? "Prolonger 30 jours" : "Réactiver l'illimité"}
+          />
+        ) : (
+          <Button asChild variant="outline">
+            <Link to="/recharger">Recharger mes crédits</Link>
+          </Button>
+        )}
         <Button asChild variant="outline">
           <Link to="/historique">
             <History className="h-4 w-4 mr-2" />
