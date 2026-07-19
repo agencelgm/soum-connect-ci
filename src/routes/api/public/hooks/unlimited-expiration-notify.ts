@@ -12,7 +12,14 @@ export const Route = createFileRoute("/api/public/hooks/unlimited-expiration-not
         const { sendTransactionalServer } = await import("@/lib/email/send.server");
 
         const RENEW_URL = "https://www.soumissioncomptable.com/recharger";
-        const buckets: Array<{ days: number }> = [{ days: 7 }, { days: 1 }];
+        // Reminders at J-7, J-5, J-3, J-1, and le jour même (J-0).
+        const buckets: Array<{ days: number }> = [
+          { days: 7 },
+          { days: 5 },
+          { days: 3 },
+          { days: 1 },
+          { days: 0 },
+        ];
         const results: Array<{ days: number; notified: number; skipped: number }> = [];
 
         for (const b of buckets) {
