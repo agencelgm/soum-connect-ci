@@ -76,6 +76,7 @@ import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/em
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as ApiPublicHooksUnlimitedExpirationNotifyRouteImport } from './routes/api/public/hooks/unlimited-expiration-notify'
 import { Route as ApiPublicHooksPendingDocsReminderRouteImport } from './routes/api/public/hooks/pending-docs-reminder'
+import { Route as ApiPublicHooksEmailHealthAlertRouteImport } from './routes/api/public/hooks/email-health-alert'
 import { Route as ApiPublicHooksAcademyDripRouteImport } from './routes/api/public/hooks/academy-drip'
 
 const UnsubscribeRoute = UnsubscribeRouteImport.update({
@@ -433,6 +434,12 @@ const ApiPublicHooksPendingDocsReminderRoute =
     path: '/api/public/hooks/pending-docs-reminder',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksEmailHealthAlertRoute =
+  ApiPublicHooksEmailHealthAlertRouteImport.update({
+    id: '/api/public/hooks/email-health-alert',
+    path: '/api/public/hooks/email-health-alert',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksAcademyDripRoute =
   ApiPublicHooksAcademyDripRouteImport.update({
     id: '/api/public/hooks/academy-drip',
@@ -501,6 +508,7 @@ export interface FileRoutesByFullPath {
   '/api/public/test-partner-webhook': typeof ApiPublicTestPartnerWebhookRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/api/public/hooks/academy-drip': typeof ApiPublicHooksAcademyDripRoute
+  '/api/public/hooks/email-health-alert': typeof ApiPublicHooksEmailHealthAlertRoute
   '/api/public/hooks/pending-docs-reminder': typeof ApiPublicHooksPendingDocsReminderRoute
   '/api/public/hooks/unlimited-expiration-notify': typeof ApiPublicHooksUnlimitedExpirationNotifyRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -569,6 +577,7 @@ export interface FileRoutesByTo {
   '/api/public/test-partner-webhook': typeof ApiPublicTestPartnerWebhookRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/api/public/hooks/academy-drip': typeof ApiPublicHooksAcademyDripRoute
+  '/api/public/hooks/email-health-alert': typeof ApiPublicHooksEmailHealthAlertRoute
   '/api/public/hooks/pending-docs-reminder': typeof ApiPublicHooksPendingDocsReminderRoute
   '/api/public/hooks/unlimited-expiration-notify': typeof ApiPublicHooksUnlimitedExpirationNotifyRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -640,6 +649,7 @@ export interface FileRoutesById {
   '/api/public/test-partner-webhook': typeof ApiPublicTestPartnerWebhookRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/api/public/hooks/academy-drip': typeof ApiPublicHooksAcademyDripRoute
+  '/api/public/hooks/email-health-alert': typeof ApiPublicHooksEmailHealthAlertRoute
   '/api/public/hooks/pending-docs-reminder': typeof ApiPublicHooksPendingDocsReminderRoute
   '/api/public/hooks/unlimited-expiration-notify': typeof ApiPublicHooksUnlimitedExpirationNotifyRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -711,6 +721,7 @@ export interface FileRouteTypes {
     | '/api/public/test-partner-webhook'
     | '/lovable/email/suppression'
     | '/api/public/hooks/academy-drip'
+    | '/api/public/hooks/email-health-alert'
     | '/api/public/hooks/pending-docs-reminder'
     | '/api/public/hooks/unlimited-expiration-notify'
     | '/lovable/email/auth/preview'
@@ -779,6 +790,7 @@ export interface FileRouteTypes {
     | '/api/public/test-partner-webhook'
     | '/lovable/email/suppression'
     | '/api/public/hooks/academy-drip'
+    | '/api/public/hooks/email-health-alert'
     | '/api/public/hooks/pending-docs-reminder'
     | '/api/public/hooks/unlimited-expiration-notify'
     | '/lovable/email/auth/preview'
@@ -849,6 +861,7 @@ export interface FileRouteTypes {
     | '/api/public/test-partner-webhook'
     | '/lovable/email/suppression'
     | '/api/public/hooks/academy-drip'
+    | '/api/public/hooks/email-health-alert'
     | '/api/public/hooks/pending-docs-reminder'
     | '/api/public/hooks/unlimited-expiration-notify'
     | '/lovable/email/auth/preview'
@@ -911,6 +924,7 @@ export interface RootRouteChildren {
   ApiPublicTestPartnerWebhookRoute: typeof ApiPublicTestPartnerWebhookRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ApiPublicHooksAcademyDripRoute: typeof ApiPublicHooksAcademyDripRoute
+  ApiPublicHooksEmailHealthAlertRoute: typeof ApiPublicHooksEmailHealthAlertRoute
   ApiPublicHooksPendingDocsReminderRoute: typeof ApiPublicHooksPendingDocsReminderRoute
   ApiPublicHooksUnlimitedExpirationNotifyRoute: typeof ApiPublicHooksUnlimitedExpirationNotifyRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
@@ -1391,6 +1405,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksPendingDocsReminderRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/email-health-alert': {
+      id: '/api/public/hooks/email-health-alert'
+      path: '/api/public/hooks/email-health-alert'
+      fullPath: '/api/public/hooks/email-health-alert'
+      preLoaderRoute: typeof ApiPublicHooksEmailHealthAlertRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/academy-drip': {
       id: '/api/public/hooks/academy-drip'
       path: '/api/public/hooks/academy-drip'
@@ -1503,6 +1524,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicTestPartnerWebhookRoute: ApiPublicTestPartnerWebhookRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ApiPublicHooksAcademyDripRoute: ApiPublicHooksAcademyDripRoute,
+  ApiPublicHooksEmailHealthAlertRoute: ApiPublicHooksEmailHealthAlertRoute,
   ApiPublicHooksPendingDocsReminderRoute:
     ApiPublicHooksPendingDocsReminderRoute,
   ApiPublicHooksUnlimitedExpirationNotifyRoute:
