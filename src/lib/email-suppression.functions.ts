@@ -6,7 +6,7 @@ export type SuppressionRow = {
   id: string;
   email: string;
   reason: "bounce" | "complaint" | "unsubscribe";
-  metadata: Record<string, unknown> | null;
+  metadata: any;
   created_at: string;
 };
 
