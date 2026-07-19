@@ -51,11 +51,8 @@ export async function notifyPartnersNewProspect(
       p.unlimited_until && new Date(p.unlimited_until as string) > new Date();
     const credits = Number(p.credits_balance ?? 0);
     const isPaused = p.status === "paused";
-    // Skip paused partners with nothing to use: no credits and no active unlimited.
-    if (isPaused && credits <= 0 && !hasUnlimited) {
-      skipped++;
-      continue;
-    }
+    // Note: on notifie AUSSI les partenaires en pause avec 0 crédits —
+    // ces emails les encouragent à recharger et à revenir sur le service.
     const templateName = isPaused ? "new-prospect-paused" : "new-prospect";
     const res = await sendTransactionalServer({
       templateName,
@@ -68,7 +65,10 @@ export async function notifyPartnersNewProspect(
         city: prospect.city || null,
         message: prospectMessage,
         creditsBalance: credits,
+        hasUnlimited: Boolean(hasUnlimited),
+        unlimitedUntil: hasUnlimited ? (p.unlimited_until as string) : null,
         loginUrl,
+        rechargeUrl: `${SITE_ORIGIN}/connexion?next=${encodeURIComponent("/recharger")}`,
       },
     });
     if (res.success) notified++;
