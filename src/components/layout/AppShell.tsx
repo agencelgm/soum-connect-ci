@@ -18,6 +18,7 @@ import {
   Users2,
   PlayCircle,
   GraduationCap,
+  Mail,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -64,6 +65,7 @@ const NAV_STAFF: NavItem[] = [
   { to: "/admin", search: { tab: "partners" }, label: "Partenaires", icon: Users },
   { to: "/admin", search: { tab: "create" }, label: "Nouveau partenaire", icon: UserPlus },
   { to: "/admin", search: { tab: "paiements" }, label: "Paiements crédits", icon: Coins },
+  { to: "/admin", search: { tab: "emails" }, label: "Emails", icon: Mail, adminOnly: true },
   { to: "/admin", search: { tab: "team" }, label: "Équipe LGM", icon: Users2, adminOnly: true },
   { to: "/espace-partenaire", label: "Mon compte", icon: UserCircle2 },
 ];
