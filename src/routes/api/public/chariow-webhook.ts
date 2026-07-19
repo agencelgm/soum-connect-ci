@@ -246,23 +246,26 @@ export const Route = createFileRoute("/api/public/chariow-webhook")({
 
         let newBalance = currentBalance;
         let newUnlimitedUntil: string | null = current?.unlimited_until ?? null;
-        const updatePatch: Record<string, unknown> = {};
 
+        let balErr: { message: string } | null = null;
         if (pack.unlimited && pack.unlimitedDays) {
           const now = new Date();
           const base = currentUnlimitedUntil && currentUnlimitedUntil > now ? currentUnlimitedUntil : now;
           const next = new Date(base.getTime() + pack.unlimitedDays * 24 * 60 * 60 * 1000);
           newUnlimitedUntil = next.toISOString();
-          updatePatch.unlimited_until = newUnlimitedUntil;
+          const { error } = await supabaseAdmin
+            .from("partners")
+            .update({ unlimited_until: newUnlimitedUntil })
+            .eq("id", partner.id);
+          balErr = error;
         } else {
           newBalance = currentBalance + pack.credits;
-          updatePatch.credits_balance = newBalance;
+          const { error } = await supabaseAdmin
+            .from("partners")
+            .update({ credits_balance: newBalance })
+            .eq("id", partner.id);
+          balErr = error;
         }
-
-        const { error: balErr } = await supabaseAdmin
-          .from("partners")
-          .update(updatePatch)
-          .eq("id", partner.id);
         if (balErr) {
           await supabaseAdmin
             .from("chariow_payments")
