@@ -254,6 +254,7 @@ function LeadCard({
   alreadyUnlocked,
   credits,
   isPremium,
+  isUnlimited,
   partnerApproved,
   partnerPending,
   partnerPaused,
@@ -262,6 +263,7 @@ function LeadCard({
   alreadyUnlocked: boolean;
   credits: number;
   isPremium: boolean;
+  isUnlimited: boolean;
   partnerApproved: boolean;
   partnerPending: boolean;
   partnerPaused: boolean;
@@ -511,7 +513,7 @@ function LeadCard({
               : "Le déblocage sera activé dès la validation de votre cabinet."}
           </p>
         </div>
-      ) : credits < 1 ? (
+      ) : !isUnlimited && credits < 1 ? (
         <div className="space-y-1">
           <Button asChild variant="default" size="lg" className="w-full">
             <Link to="/recharger">Recharger pour débloquer</Link>
@@ -527,7 +529,11 @@ function LeadCard({
             className="w-full font-semibold shadow-sm"
           >
             <Lock className="h-4 w-4 mr-2" />
-            {mut.isPending ? "Déblocage…" : "Débloquer ce lead (1 crédit)"}
+            {mut.isPending
+              ? "Déblocage…"
+              : isUnlimited
+                ? "Débloquer ce lead (illimité)"
+                : "Débloquer ce lead (1 crédit)"}
           </Button>
           <p className="text-[11px] text-center text-muted-foreground">
             Vous obtiendrez : nom, email, téléphone et message complet
