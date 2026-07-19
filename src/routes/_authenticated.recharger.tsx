@@ -254,7 +254,10 @@ function RechargerPage() {
                     Illimité <Crown className="inline h-3.5 w-3.5 text-amber-600 ml-0.5" />
                   </td>
                   <td className="px-4 py-3">50 000 FCFA</td>
-                  <td className="px-4 py-3"><strong>Prospects illimités</strong> pendant <strong>30 jours calendaires</strong></td>
+                  <td className="px-4 py-3">
+                    <strong>Prospects illimités</strong> pendant <strong>30 jours</strong>
+                    <span className="block text-xs text-amber-800 mt-0.5">+ 3 h d'avance sur chaque nouveau lead (avantage Premium inclus)</span>
+                  </td>
                   <td className="px-4 py-3 text-emerald-700 font-medium">Aucune déduction · vos crédits sont gelés</td>
                 </tr>
               </tbody>
@@ -328,6 +331,10 @@ function RechargerPage() {
                       <li className="flex items-start gap-2">
                         <Check className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
                         <span>Vos crédits accumulés sont <strong>conservés</strong> et réutilisables ensuite</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Crown className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
+                        <span><strong>3 heures d'avance</strong> sur chaque nouveau prospect (avantage Premium inclus)</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <Check className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />

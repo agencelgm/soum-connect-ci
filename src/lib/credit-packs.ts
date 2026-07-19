@@ -47,3 +47,46 @@ export function stackUnlimitedUntil(
   const newUntil = new Date(base.getTime() + days * 24 * 60 * 60 * 1000);
   return { newUntil, stacked, baseUsed: base };
 }
+
+/**
+ * Statut d'expiration de l'accès illimité.
+ * - ok : > 7 jours restants
+ * - warning : ≤ 7 jours (J-7)
+ * - critical : ≤ 1 jour (J-1 ou dernières heures)
+ * - expired : date passée depuis ≤ 3 jours (invite renouvellement)
+ * - none : jamais activé ou expiré depuis > 3 jours
+ */
+export type UnlimitedLevel = "ok" | "warning" | "critical" | "expired" | "none";
+
+export function getUnlimitedStatus(
+  unlimitedUntil: Date | string | null | undefined,
+  now: Date = new Date(),
+): {
+  active: boolean;
+  level: UnlimitedLevel;
+  daysLeft: number;
+  hoursLeft: number;
+  expiresAt: Date | null;
+} {
+  if (!unlimitedUntil) {
+    return { active: false, level: "none", daysLeft: 0, hoursLeft: 0, expiresAt: null };
+  }
+  const expiresAt = unlimitedUntil instanceof Date ? unlimitedUntil : new Date(unlimitedUntil);
+  const msLeft = expiresAt.getTime() - now.getTime();
+  const hoursLeft = Math.ceil(msLeft / (60 * 60 * 1000));
+  const daysLeft = Math.ceil(msLeft / (24 * 60 * 60 * 1000));
+  if (msLeft <= 0) {
+    const daysSinceExpiry = Math.floor(-msLeft / (24 * 60 * 60 * 1000));
+    return {
+      active: false,
+      level: daysSinceExpiry <= 3 ? "expired" : "none",
+      daysLeft: 0,
+      hoursLeft: 0,
+      expiresAt,
+    };
+  }
+  let level: UnlimitedLevel = "ok";
+  if (daysLeft <= 1) level = "critical";
+  else if (daysLeft <= 7) level = "warning";
+  return { active: true, level, daysLeft, hoursLeft, expiresAt };
+}

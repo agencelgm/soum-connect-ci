@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { isUnauthorizedError } from "@/lib/auth-actions";
 import { UnauthorizedScreen } from "@/components/auth/UnauthorizedScreen";
 import { cn } from "@/lib/utils";
+import { getUnlimitedStatus } from "@/lib/credit-packs";
 import {
   MapPin,
   Building2,
@@ -24,6 +25,7 @@ import {
   Star,
   History,
   Info,
+  AlertTriangle,
 } from "lucide-react";
 
 const WHATSAPP_PREMIUM_URL =
@@ -67,8 +69,10 @@ function MarketplacePage() {
   const [filter, setFilter] = useState<"all" | "available" | "full">("available");
   const isPremium = data?.partner?.tier === "premium";
   const unlimitedUntilRaw = (data?.partner as { unlimited_until?: string | null } | undefined)?.unlimited_until ?? null;
-  const unlimitedUntil = unlimitedUntilRaw ? new Date(unlimitedUntilRaw) : null;
-  const isUnlimitedActive = !!(unlimitedUntil && unlimitedUntil.getTime() > Date.now());
+  const unlimitedStatus = getUnlimitedStatus(unlimitedUntilRaw);
+  const isUnlimitedActive = unlimitedStatus.active;
+  const unlimitedUntil = unlimitedStatus.expiresAt;
+  const hasPriorityAccess = isPremium || isUnlimitedActive;
 
   if (isUnauthorizedError(error) || isUnauthorizedError(mineError)) {
     return <UnauthorizedScreen />;
@@ -116,21 +120,76 @@ function MarketplacePage() {
         </div>
       </div>
 
-      {isUnlimitedActive && (
-        <div className="rounded-xl border border-amber-300 bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-50 p-4 flex items-center gap-3">
-          <Crown className="h-6 w-6 text-amber-600 shrink-0" />
+      {isUnlimitedActive && (() => {
+        const critical = unlimitedStatus.level === "critical";
+        const warning = unlimitedStatus.level === "warning";
+        const tone = critical
+          ? "border-red-300 bg-gradient-to-r from-red-50 via-orange-50 to-red-50"
+          : warning
+            ? "border-orange-300 bg-gradient-to-r from-orange-50 via-amber-50 to-orange-50"
+            : "border-amber-300 bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-50";
+        const Icon = critical || warning ? AlertTriangle : Crown;
+        const iconColor = critical ? "text-red-600" : warning ? "text-orange-600" : "text-amber-600";
+        const titleColor = critical ? "text-red-900" : warning ? "text-orange-900" : "text-amber-900";
+        const bodyColor = critical ? "text-red-800" : warning ? "text-orange-800" : "text-amber-800";
+        const daysTxt =
+          unlimitedStatus.daysLeft <= 1
+            ? unlimitedStatus.hoursLeft <= 24
+              ? `${unlimitedStatus.hoursLeft} h`
+              : "1 jour"
+            : `${unlimitedStatus.daysLeft} jours`;
+        const title = critical
+          ? `Votre accès illimité expire dans ${daysTxt}`
+          : warning
+            ? `Votre accès illimité expire dans ${daysTxt}`
+            : "Accès illimité actif";
+        return (
+          <div className={`rounded-xl border p-4 flex items-center gap-3 ${tone}`}>
+            <Icon className={`h-6 w-6 shrink-0 ${iconColor}`} />
+            <div className="flex-1">
+              <p className={`font-semibold ${titleColor}`}>{title}</p>
+              <p className={`text-sm ${bodyColor}`}>
+                {critical || warning ? (
+                  <>
+                    Renouvelez avant le{" "}
+                    <strong>{unlimitedUntil?.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</strong>{" "}
+                    pour continuer à débloquer des leads sans consommer vos crédits.
+                  </>
+                ) : (
+                  <>
+                    Déblocages sans consommer vos crédits + <strong>3 h d'avance</strong> sur chaque nouveau prospect, jusqu'au{" "}
+                    <strong>{unlimitedUntil?.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</strong>.
+                  </>
+                )}
+              </p>
+            </div>
+            {(critical || warning) ? (
+              <Button asChild size="sm" className={critical ? "bg-red-600 hover:bg-red-700" : "bg-orange-600 hover:bg-orange-700"}>
+                <Link to="/recharger">Renouveler</Link>
+              </Button>
+            ) : (
+              <Button asChild variant="outline" size="sm" className="border-amber-400 text-amber-900 hover:bg-amber-100">
+                <Link to="/historique">
+                  <History className="h-4 w-4 mr-1.5" />
+                  Historique
+                </Link>
+              </Button>
+            )}
+          </div>
+        );
+      })()}
+
+      {!isUnlimitedActive && unlimitedStatus.level === "expired" && (
+        <div className="rounded-xl border border-slate-300 bg-slate-50 p-4 flex items-center gap-3">
+          <Clock className="h-6 w-6 text-slate-600 shrink-0" />
           <div className="flex-1">
-            <p className="font-semibold text-amber-900">Accès illimité actif</p>
-            <p className="text-sm text-amber-800">
-              Débloquez autant de leads que vous souhaitez sans consommer de crédits jusqu'au{" "}
-              <strong>{unlimitedUntil?.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</strong>.
+            <p className="font-semibold text-slate-900">Votre accès illimité a expiré</p>
+            <p className="text-sm text-slate-700">
+              Vos crédits {data.partner.credits_balance} sont de nouveau utilisés à chaque déblocage. Renouvelez pour retrouver l'illimité et les 3 h d'avance Premium.
             </p>
           </div>
-          <Button asChild variant="outline" size="sm" className="border-amber-400 text-amber-900 hover:bg-amber-100">
-            <Link to="/historique">
-              <History className="h-4 w-4 mr-1.5" />
-              Historique
-            </Link>
+          <Button asChild size="sm">
+            <Link to="/recharger">Renouveler</Link>
           </Button>
         </div>
       )}
@@ -163,13 +222,23 @@ function MarketplacePage() {
             </p>
           </div>
         </div>
+      ) : isUnlimitedActive ? (
+        <div className="rounded-xl border border-amber-300 bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-50 p-4 flex items-center gap-3">
+          <Crown className="h-6 w-6 text-amber-600 shrink-0" />
+          <div>
+            <p className="font-semibold text-amber-900">Avantages Premium inclus avec l'illimité</p>
+            <p className="text-sm text-amber-800">
+              Tant que votre accès illimité est actif, vous accédez aussi aux nouveaux prospects <strong>3 heures avant</strong> les autres cabinets, comme nos clients Premium.
+            </p>
+          </div>
+        </div>
       ) : (
         <div className="rounded-xl border bg-muted/40 p-4 flex items-center gap-3">
           <Star className="h-5 w-5 text-amber-500 shrink-0" />
           <div className="flex-1">
             <p className="font-semibold">Devenez client Premium</p>
             <p className="text-sm text-muted-foreground">
-              Accédez aux nouveaux prospects 3 heures avant tout le monde.
+              Accédez aux nouveaux prospects 3 heures avant tout le monde — également inclus dans le pack Illimité.
             </p>
           </div>
           <Button asChild size="sm" variant="outline">
@@ -236,6 +305,7 @@ function MarketplacePage() {
                 credits={data.partner!.credits_balance}
                 isPremium={isPremium}
                 isUnlimited={isUnlimitedActive}
+                hasPriorityAccess={hasPriorityAccess}
                 partnerApproved={partnerApproved}
                 partnerPending={partnerPending}
                 partnerPaused={partnerPaused}
@@ -280,6 +350,7 @@ function LeadCard({
   credits,
   isPremium,
   isUnlimited,
+  hasPriorityAccess,
   partnerApproved,
   partnerPending,
   partnerPaused,
@@ -289,6 +360,7 @@ function LeadCard({
   credits: number;
   isPremium: boolean;
   isUnlimited: boolean;
+  hasPriorityAccess: boolean;
   partnerApproved: boolean;
   partnerPending: boolean;
   partnerPaused: boolean;
@@ -368,20 +440,20 @@ function LeadCard({
         isFull && !alreadyUnlocked
           ? "bg-muted/40 opacity-60 grayscale-[30%]"
           : "group bg-card transition-all hover:shadow-lg hover:border-primary/40",
-        inPremiumWindow && isPremium && "border-amber-300 ring-1 ring-amber-200",
+        inPremiumWindow && hasPriorityAccess && "border-amber-300 ring-1 ring-amber-200",
       )}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 flex-wrap mb-1">
-            {inPremiumWindow && isPremium && (
+            {inPremiumWindow && hasPriorityAccess && (
               <span className="inline-flex items-center gap-1 text-[11px] font-semibold rounded-full bg-amber-100 text-amber-800 px-2 py-0.5">
-                <Crown className="h-3 w-3" /> Avance Premium · {countdown}
+                <Crown className="h-3 w-3" /> Avance prioritaire · {countdown}
               </span>
             )}
-            {inPremiumWindow && !isPremium && (
+            {inPremiumWindow && !hasPriorityAccess && (
               <span className="inline-flex items-center gap-1 text-[11px] font-semibold rounded-full bg-amber-100 text-amber-800 px-2 py-0.5">
-                <Crown className="h-3 w-3" /> Réservé Premium · {countdown}
+                <Crown className="h-3 w-3" /> Réservé Premium/Illimité · {countdown}
               </span>
             )}
             {isFull && (
@@ -504,20 +576,24 @@ function LeadCard({
             premiers à débloquer les nouveaux leads.
           </p>
         </div>
-      ) : inPremiumWindow && !isPremium ? (
+      ) : inPremiumWindow && !hasPriorityAccess ? (
         <div className="space-y-2 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm">
           <p className="font-semibold text-amber-900 text-center">
-            Réservé à nos clients Premium
+            Réservé aux clients Premium et Illimité
           </p>
           <p className="text-xs text-amber-800 text-center">
-            Disponible pour tous dans {countdown}. Devenez Premium pour accéder aux prospects en
-            avant-première.
+            Disponible pour tous dans {countdown}. Activez l'accès illimité ou devenez Premium pour accéder aux prospects en avant-première.
           </p>
-          <Button asChild size="sm" variant="outline" className="w-full border-amber-400">
-            <a href={WHATSAPP_PREMIUM_URL} target="_blank" rel="noopener noreferrer">
-              Devenir Premium (WhatsApp)
-            </a>
-          </Button>
+          <div className="grid grid-cols-2 gap-2">
+            <Button asChild size="sm" className="w-full">
+              <Link to="/recharger">Activer l'illimité</Link>
+            </Button>
+            <Button asChild size="sm" variant="outline" className="w-full border-amber-400">
+              <a href={WHATSAPP_PREMIUM_URL} target="_blank" rel="noopener noreferrer">
+                Devenir Premium
+              </a>
+            </Button>
+          </div>
         </div>
       ) : partnerPaused || partnerPending || !partnerApproved ? (
         <div className="space-y-1.5 pt-1">

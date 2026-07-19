@@ -1,54 +1,66 @@
-## Nouvelle structure de prix
+## Objectif
 
-| Formule | Prix | Crédits ajoutés | Contacts prospects |
-|---|---|---|---|
-| **Starter** | 10 000 FCFA | +50 crédits | 50 prospects (200 FCFA / prospect) |
-| **Pro** | 25 000 FCFA | +125 crédits | 125 prospects |
-| **Illimité** | 50 000 FCFA | Illimité 30 jours | Aucun plafond |
+1. Alerter visuellement quand l'accès illimité approche de son expiration (J-7 et J-1).
+2. Étendre les avantages du plan Premium (fenêtre d'avance de 3h sur les nouveaux leads) aux partenaires disposant d'un accès illimité actif.
 
-Base : 1 crédit = 1 prospect débloqué = 200 FCFA.
-Achat manuel (pas d'abonnement auto — l'utilisateur rachète quand il veut, comme aujourd'hui).
-Les crédits non utilisés restent au solde (comportement actuel conservé).
+---
 
-## Ce qui change
+## 1. Alertes d'expiration de l'accès illimité
 
-### 1. Packs Chariow (`src/lib/credit-packs.ts`)
-Remplacer les 3 packs actuels (10/25/60 crédits à 10k/25k/60k) par :
-- Starter : 50 crédits @ 10 000 FCFA
-- Pro : 125 crédits @ 25 000 FCFA (marqué "populaire")
-- Illimité : @ 50 000 FCFA — flag `unlimited: true`, durée 30 jours
+Ajouter une logique commune de calcul du statut d'expiration :
+- **Vert / normal** : > 7 jours restants
+- **Orange (J-7)** : ≤ 7 jours → bandeau "Votre accès illimité expire dans X jours"
+- **Rouge (J-1)** : ≤ 1 jour → bandeau urgent "Votre accès illimité expire demain / aujourd'hui" avec CTA "Renouveler maintenant"
+- **Expiré récent (≤ 3j)** : bandeau gris "Votre accès illimité a expiré, renouvelez pour reprendre"
 
-Les `productId` Chariow existants (`prd_kui1kil8`, `prd_ak61x0fl`, `prd_mm3xnkwg`) seront réutilisés/réaffectés — **à confirmer côté Chariow** que les prix des produits ont bien été mis à jour à 10k/25k/50k avant mise en prod, sinon le webhook créditera sur un montant qui ne correspond pas au paiement réel.
+Emplacements :
+- `src/routes/_authenticated.espace-partenaire.tsx` — tuile "Accès illimité" : bordure/couleur qui change selon le seuil, badge "Expire dans X j" à J-7, badge urgent à J-1.
+- `src/routes/_authenticated.marketplace.tsx` — bandeau du haut déjà présent : ajouter variantes couleur + CTA "Renouveler" à J-7 / J-1.
+- Ajouter un petit indicateur en tête de sidebar (`AppShell`) pour les partenaires concernés quand ≤ 7j, afin d'être visible sur toutes les pages.
 
-### 2. Base de données (migration)
-Ajouter sur `partners` :
-- `unlimited_until timestamptz null` — date de fin de la formule Illimité.
+Extraire un helper `getUnlimitedStatus(unlimited_until)` dans `src/lib/credit-packs.ts` retournant `{ active, daysLeft, level: "ok" | "warning" | "critical" | "expired" }` — testable et réutilisable.
 
-Modifier la RPC `unlock_lead` :
-- Si `unlimited_until > now()` → autoriser le déblocage **sans décrémenter** `credits_balance`, insérer une `credit_transactions` avec `amount = 0`, `tx_type = 'unlock_unlimited'`.
-- Sinon, comportement actuel (débit d'1 crédit).
+## 2. Traiter les partenaires "illimité" comme "premium" pour la fenêtre d'avance
 
-### 3. Webhook Chariow (`src/routes/api/public/chariow-webhook.ts`)
-Quand le pack acheté a `unlimited: true` :
-- Ne pas ajouter de crédits.
-- Mettre `unlimited_until = GREATEST(unlimited_until, now()) + interval '30 days'` (empilable si racheté avant expiration).
-- Insérer une `credit_transactions` `tx_type = 'chariow_unlimited'` avec `amount = 0` et note « Formule Illimité 30 jours ».
+Actuellement dans la fonction SQL `unlock_lead` :
+```sql
+IF v_pub.premium_until > now() AND v_partner.tier <> 'premium' THEN
+  RAISE 'premium_window_active';
+END IF;
+```
 
-### 4. Page `/recharger` (`src/routes/_authenticated.recharger.tsx`)
-Nouvelle UI 3 cartes reflétant le tableau ci-dessus. Sur la carte Illimité : afficher « Prospects illimités pendant 30 jours ». Si le partenaire a déjà `unlimited_until > now()`, afficher un badge « Formule Illimité active jusqu'au JJ/MM » et la date d'expiration.
+Migration : modifier `unlock_lead` pour aussi laisser passer les partenaires dont `unlimited_until > now()` :
+```sql
+IF v_pub.premium_until > now()
+   AND v_partner.tier <> 'premium'
+   AND (v_partner.unlimited_until IS NULL OR v_partner.unlimited_until <= now()) THEN
+  RAISE 'premium_window_active';
+END IF;
+```
 
-### 5. Affichage du solde (partenaire)
-- AppShell / espace-partenaire / marketplace : si `unlimited_until > now()`, remplacer « X crédits » par « **Illimité** — jusqu'au JJ/MM ». Sinon inchangé.
-- Marketplace : bouton « Débloquer » actif sans coût crédit pour les Illimités.
+Côté UI marketplace (`LeadCard`) : le badge "Avance Premium" et l'autorisation d'unlock pendant la fenêtre doivent aussi apparaître pour `isUnlimitedActive`. Remplacer les conditions `isPremium` par `hasPriorityAccess = isPremium || isUnlimitedActive` sur :
+- affichage du badge doré + compte à rebours
+- bouton actif pendant la fenêtre premium
+- message explicatif "réservé Premium/Illimité" pour les autres
 
-### 6. Admin
-- Carte partenaire : afficher badge « Illimité jusqu'au JJ/MM » quand actif.
-- Filtres : ajouter option « Formule Illimité » dans les filtres tier existants.
+Mettre à jour le mapping du message d'erreur `premium_window_active` pour mentionner "clients Premium ou Illimité".
 
-### 7. Pages publiques
-Mettre à jour toute mention du prix des crédits (page comment-ca-marche, FAQ, page cabinets-partenaires si applicable) pour refléter les 3 nouvelles formules. Je repérerai les occurrences à la mise en œuvre.
+## 3. Comparatif tarifaire
 
-## Points à confirmer avant exécution
-1. **Chariow** : les 3 produits (`prd_kui1kil8`, `prd_ak61x0fl`, `prd_mm3xnkwg`) doivent être renommés/reprisés côté Chariow (Starter 10k / Pro 25k / Illimité 50k). Si vous préférez créer 3 nouveaux `productId`, dites-le — j'utiliserai les nouveaux IDs.
-2. **Rétroactivité** : les partenaires ayant déjà un solde de crédits le conservent tel quel (aucune conversion). OK ?
-3. **Ordre d'usage** : si un partenaire achète Illimité alors qu'il a encore des crédits, on consomme d'abord Illimité (gratuit) et on garde ses crédits pour après expiration. Confirmez-vous cette logique ?
+Sur `/recharger`, préciser dans la colonne Illimité : "Accès prioritaire (3h d'avance sur chaque nouveau lead)" — même bénéfice que Premium.
+
+---
+
+## Détails techniques
+
+**Fichiers modifiés :**
+- `src/lib/credit-packs.ts` — ajout `getUnlimitedStatus()` + tests
+- `src/lib/credit-packs.test.ts` — cas J-8, J-7, J-1, J-0, expiré
+- `src/routes/_authenticated.espace-partenaire.tsx` — tuile dynamique
+- `src/routes/_authenticated.marketplace.tsx` — bandeau + `hasPriorityAccess`
+- `src/routes/_authenticated.recharger.tsx` — mention avantage prioritaire
+- `src/components/layout/AppShell.tsx` — indicateur sidebar (optionnel, si visible partout souhaité)
+- `src/lib/marketplace.functions.ts` — libellé d'erreur
+- Migration SQL — remplacement de la fonction `unlock_lead`
+
+**Note :** la fenêtre d'avance reste à **3h** (valeur actuelle en base). Tu as mentionné 4h — dis-moi si tu veux aussi la passer à 4h et j'ajouterai la modification de `publish_prospect_as_lead` (`interval '3 hours'` → `'4 hours'`).

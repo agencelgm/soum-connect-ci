@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { stackUnlimitedUntil } from "./credit-packs";
+import { getUnlimitedStatus, stackUnlimitedUntil } from "./credit-packs";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -44,5 +44,45 @@ describe("stackUnlimitedUntil", () => {
     expect(second.stacked).toBe(true);
     // Après 2e rachat : first.newUntil + 30j = now + 60j
     expect(second.newUntil.getTime()).toBe(now.getTime() + 60 * DAY_MS);
+  });
+});
+
+describe("getUnlimitedStatus", () => {
+  const now = new Date("2026-07-01T12:00:00Z");
+
+  it("retourne none quand null", () => {
+    const r = getUnlimitedStatus(null, now);
+    expect(r.active).toBe(false);
+    expect(r.level).toBe("none");
+  });
+
+  it("ok à J-8 (> 7 jours)", () => {
+    const r = getUnlimitedStatus(new Date(now.getTime() + 8 * DAY_MS), now);
+    expect(r.active).toBe(true);
+    expect(r.level).toBe("ok");
+    expect(r.daysLeft).toBe(8);
+  });
+
+  it("warning à J-7", () => {
+    const r = getUnlimitedStatus(new Date(now.getTime() + 7 * DAY_MS), now);
+    expect(r.level).toBe("warning");
+    expect(r.daysLeft).toBe(7);
+  });
+
+  it("critical à J-1", () => {
+    const r = getUnlimitedStatus(new Date(now.getTime() + 12 * 60 * 60 * 1000), now);
+    expect(r.level).toBe("critical");
+    expect(r.daysLeft).toBe(1);
+  });
+
+  it("expired dans les 3 jours après échéance", () => {
+    const r = getUnlimitedStatus(new Date(now.getTime() - 2 * DAY_MS), now);
+    expect(r.active).toBe(false);
+    expect(r.level).toBe("expired");
+  });
+
+  it("none quand expiré depuis > 3 jours", () => {
+    const r = getUnlimitedStatus(new Date(now.getTime() - 10 * DAY_MS), now);
+    expect(r.level).toBe("none");
   });
 });
