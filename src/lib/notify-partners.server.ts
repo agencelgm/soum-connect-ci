@@ -25,8 +25,8 @@ export async function notifyPartnersNewProspect(
 
   const { data: partners, error: paErr } = await supabaseAdmin
     .from("partners")
-    .select("id, email, contact_first_name")
-    .eq("status", "approved")
+    .select("id, email, contact_first_name, status, credits_balance, unlimited_until")
+    .in("status", ["approved", "paused"])
     .is("deleted_at", null);
   if (paErr) {
     console.error("[notifyPartnersNewProspect] partners fetch failed", paErr);
@@ -40,15 +40,26 @@ export async function notifyPartnersNewProspect(
       skipped++;
       continue;
     }
+    const hasUnlimited =
+      p.unlimited_until && new Date(p.unlimited_until as string) > new Date();
+    const credits = Number(p.credits_balance ?? 0);
+    const isPaused = p.status === "paused";
+    // Skip paused partners with nothing to use: no credits and no active unlimited.
+    if (isPaused && credits <= 0 && !hasUnlimited) {
+      skipped++;
+      continue;
+    }
+    const templateName = isPaused ? "new-prospect-paused" : "new-prospect";
     const res = await sendTransactionalServer({
-      templateName: "new-prospect",
+      templateName,
       recipientEmail: p.email,
-      idempotencyKey: `new-prospect:${publicationId}:${p.id}`,
+      idempotencyKey: `${templateName}:${publicationId}:${p.id}`,
       templateData: {
         partnerFirstName: p.contact_first_name || "Partenaire",
         prospectFirstName,
         service: prospect.service || "un service comptable",
         city: prospect.city || null,
+        creditsBalance: credits,
         loginUrl: LOGIN_URL,
       },
     });

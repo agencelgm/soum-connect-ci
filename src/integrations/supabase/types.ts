@@ -400,6 +400,8 @@ export type Database = {
       }
       partners: {
         Row: {
+          academy_drip_index: number
+          academy_drip_last_sent_at: string | null
           approved_at: string | null
           approved_by: string | null
           cabinet_name: string
@@ -410,6 +412,7 @@ export type Database = {
           created_at: string
           credits_balance: number
           deleted_at: string | null
+          docs_reminder_last_sent_at: string | null
           email: string
           facebook_url: string | null
           id: string
@@ -435,6 +438,8 @@ export type Database = {
           zones: string[]
         }
         Insert: {
+          academy_drip_index?: number
+          academy_drip_last_sent_at?: string | null
           approved_at?: string | null
           approved_by?: string | null
           cabinet_name: string
@@ -445,6 +450,7 @@ export type Database = {
           created_at?: string
           credits_balance?: number
           deleted_at?: string | null
+          docs_reminder_last_sent_at?: string | null
           email: string
           facebook_url?: string | null
           id?: string
@@ -470,6 +476,8 @@ export type Database = {
           zones?: string[]
         }
         Update: {
+          academy_drip_index?: number
+          academy_drip_last_sent_at?: string | null
           approved_at?: string | null
           approved_by?: string | null
           cabinet_name?: string
@@ -480,6 +488,7 @@ export type Database = {
           created_at?: string
           credits_balance?: number
           deleted_at?: string | null
+          docs_reminder_last_sent_at?: string | null
           email?: string
           facebook_url?: string | null
           id?: string
