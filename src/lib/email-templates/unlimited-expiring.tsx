@@ -22,7 +22,7 @@ const Email = ({
   partnerFirstName = 'Partenaire',
   daysLeft = 7,
   expiresAt,
-  renewUrl = 'https://soumissioncomptable.com/recharger',
+  renewUrl = 'https://www.soumissioncomptable.com/recharger',
 }: Props) => {
   const isUrgent = daysLeft <= 1
   const dayLabel = daysLeft <= 1 ? 'demain' : `dans ${daysLeft} jours`
@@ -72,7 +72,7 @@ export const template = {
     partnerFirstName: 'Marc',
     daysLeft: 7,
     expiresAt: new Date(Date.now() + 7 * 86400000).toISOString(),
-    renewUrl: 'https://soumissioncomptable.com/recharger',
+    renewUrl: 'https://www.soumissioncomptable.com/recharger',
   },
 } satisfies TemplateEntry
 

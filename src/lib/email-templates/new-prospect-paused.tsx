@@ -33,8 +33,8 @@ const Email = ({
   creditsBalance = 0,
   hasUnlimited = false,
   unlimitedUntil = null,
-  loginUrl = 'https://soumissioncomptable.com/connexion',
-  rechargeUrl = 'https://soumissioncomptable.com/connexion',
+  loginUrl = 'https://www.soumissioncomptable.com/connexion',
+  rechargeUrl = 'https://www.soumissioncomptable.com/connexion',
 }: Props) => {
   const hasCredits = creditsBalance > 0
   const canUnlock = hasCredits || hasUnlimited
@@ -122,8 +122,8 @@ export const template = {
     service: "Création d'entreprise",
     city: 'Abidjan',
     creditsBalance: 12,
-    loginUrl: 'https://soumissioncomptable.com/connexion',
-    rechargeUrl: 'https://soumissioncomptable.com/connexion',
+    loginUrl: 'https://www.soumissioncomptable.com/connexion',
+    rechargeUrl: 'https://www.soumissioncomptable.com/connexion',
   },
 } satisfies TemplateEntry
 

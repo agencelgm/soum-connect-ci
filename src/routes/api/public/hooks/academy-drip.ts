@@ -52,7 +52,7 @@ export const Route = createFileRoute("/api/public/hooks/academy-drip")({
             continue;
           }
           const entry = flat[idx];
-          const videoUrl = `https://soumissioncomptable.com/academie/${entry.module.slug}/${entry.video.slug}`;
+          const videoUrl = `https://www.soumissioncomptable.com/academie/${entry.module.slug}/${entry.video.slug}`;
           const res = await sendTransactionalServer({
             templateName: "academy-drip",
             recipientEmail: p.email,

@@ -26,7 +26,7 @@ const Email = ({
   service = 'un service comptable',
   city,
   message,
-  loginUrl = 'https://soumissioncomptable.com/connexion',
+  loginUrl = 'https://www.soumissioncomptable.com/connexion',
 }: Props) => (
   <Html lang="fr" dir="ltr">
     <Head />
@@ -76,7 +76,7 @@ export const template = {
     prospectFirstName: 'Awa',
     service: 'Création d\'entreprise',
     city: 'Abidjan',
-    loginUrl: 'https://soumissioncomptable.com/connexion',
+    loginUrl: 'https://www.soumissioncomptable.com/connexion',
   },
 } satisfies TemplateEntry
 

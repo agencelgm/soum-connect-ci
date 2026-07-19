@@ -26,7 +26,7 @@ const Email = ({
   videoTitle = "Vidéo de l'Académie",
   videoDescription = 'Une nouvelle vidéo pour vous aider à convertir vos prospects.',
   videoDuration = '',
-  videoUrl = 'https://soumissioncomptable.com/academie',
+  videoUrl = 'https://www.soumissioncomptable.com/academie',
   dayIndex = 1,
   totalVideos = 4,
 }: Props) => (
@@ -66,7 +66,7 @@ export const template = {
     videoDescription:
       "La différence entre un prospect et un client, et comment adapter votre discours à chaque étape.",
     videoDuration: '10 min',
-    videoUrl: 'https://soumissioncomptable.com/academie/vente/prospect-vs-client',
+    videoUrl: 'https://www.soumissioncomptable.com/academie/vente/prospect-vs-client',
     dayIndex: 2,
     totalVideos: 4,
   },

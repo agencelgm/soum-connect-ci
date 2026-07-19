@@ -11,7 +11,7 @@ export const Route = createFileRoute("/api/public/hooks/unlimited-expiration-not
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const { sendTransactionalServer } = await import("@/lib/email/send.server");
 
-        const RENEW_URL = "https://soumissioncomptable.com/recharger";
+        const RENEW_URL = "https://www.soumissioncomptable.com/recharger";
         const buckets: Array<{ days: number }> = [{ days: 7 }, { days: 1 }];
         const results: Array<{ days: number; notified: number; skipped: number }> = [];
 
