@@ -30,9 +30,7 @@ const Email = ({
 }: Props) => (
   <Html lang="fr" dir="ltr">
     <Head />
-    <Preview>
-      Vous avez {creditsBalance} crédits — {prospectFirstName} vous attend
-    </Preview>
+    <Preview>{`Vous avez ${creditsBalance} crédits — ${prospectFirstName} vous attend`}</Preview>
     <Body style={main}>
       <Container style={container}>
         <Heading style={h1}>Vous n'avez rien à perdre.</Heading>
