@@ -22,6 +22,8 @@ import {
   CalendarClock,
   Crown,
   Star,
+  History,
+  Info,
 } from "lucide-react";
 
 const WHATSAPP_PREMIUM_URL =
@@ -117,15 +119,38 @@ function MarketplacePage() {
       {isUnlimitedActive && (
         <div className="rounded-xl border border-amber-300 bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-50 p-4 flex items-center gap-3">
           <Crown className="h-6 w-6 text-amber-600 shrink-0" />
-          <div>
+          <div className="flex-1">
             <p className="font-semibold text-amber-900">Accès illimité actif</p>
             <p className="text-sm text-amber-800">
               Débloquez autant de leads que vous souhaitez sans consommer de crédits jusqu'au{" "}
               <strong>{unlimitedUntil?.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</strong>.
             </p>
           </div>
+          <Button asChild variant="outline" size="sm" className="border-amber-400 text-amber-900 hover:bg-amber-100">
+            <Link to="/historique">
+              <History className="h-4 w-4 mr-1.5" />
+              Historique
+            </Link>
+          </Button>
         </div>
       )}
+
+      {!isUnlimitedActive && (
+        <div className="rounded-xl border bg-muted/30 p-4 flex items-start gap-3">
+          <Info className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+          <div className="flex-1 text-sm">
+            <p className="font-medium text-foreground">Comment fonctionnent les crédits</p>
+            <p className="text-muted-foreground mt-0.5">
+              <strong>1 crédit</strong> = 1 prospect débloqué (coordonnées complètes).
+              Starter (10k) = 50 prospects · Pro (25k) = 125 prospects · Illimité (50k) = prospects illimités pendant 30 jours sans toucher à vos crédits.
+            </p>
+          </div>
+          <Button asChild size="sm" variant="outline">
+            <Link to="/recharger">Comparer les packs</Link>
+          </Button>
+        </div>
+      )}
+
 
       {isPremium ? (
         <div className="rounded-xl border border-amber-300 bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-50 p-4 flex items-center gap-3">
