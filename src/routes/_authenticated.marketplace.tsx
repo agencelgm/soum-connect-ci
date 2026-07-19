@@ -305,6 +305,7 @@ function MarketplacePage() {
                 credits={data.partner!.credits_balance}
                 isPremium={isPremium}
                 isUnlimited={isUnlimitedActive}
+                hasPriorityAccess={hasPriorityAccess}
                 partnerApproved={partnerApproved}
                 partnerPending={partnerPending}
                 partnerPaused={partnerPaused}
@@ -349,6 +350,7 @@ function LeadCard({
   credits,
   isPremium,
   isUnlimited,
+  hasPriorityAccess,
   partnerApproved,
   partnerPending,
   partnerPaused,
@@ -358,6 +360,7 @@ function LeadCard({
   credits: number;
   isPremium: boolean;
   isUnlimited: boolean;
+  hasPriorityAccess: boolean;
   partnerApproved: boolean;
   partnerPending: boolean;
   partnerPaused: boolean;
@@ -437,20 +440,20 @@ function LeadCard({
         isFull && !alreadyUnlocked
           ? "bg-muted/40 opacity-60 grayscale-[30%]"
           : "group bg-card transition-all hover:shadow-lg hover:border-primary/40",
-        inPremiumWindow && isPremium && "border-amber-300 ring-1 ring-amber-200",
+        inPremiumWindow && hasPriorityAccess && "border-amber-300 ring-1 ring-amber-200",
       )}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 flex-wrap mb-1">
-            {inPremiumWindow && isPremium && (
+            {inPremiumWindow && hasPriorityAccess && (
               <span className="inline-flex items-center gap-1 text-[11px] font-semibold rounded-full bg-amber-100 text-amber-800 px-2 py-0.5">
-                <Crown className="h-3 w-3" /> Avance Premium · {countdown}
+                <Crown className="h-3 w-3" /> Avance prioritaire · {countdown}
               </span>
             )}
-            {inPremiumWindow && !isPremium && (
+            {inPremiumWindow && !hasPriorityAccess && (
               <span className="inline-flex items-center gap-1 text-[11px] font-semibold rounded-full bg-amber-100 text-amber-800 px-2 py-0.5">
-                <Crown className="h-3 w-3" /> Réservé Premium · {countdown}
+                <Crown className="h-3 w-3" /> Réservé Premium/Illimité · {countdown}
               </span>
             )}
             {isFull && (
@@ -573,20 +576,24 @@ function LeadCard({
             premiers à débloquer les nouveaux leads.
           </p>
         </div>
-      ) : inPremiumWindow && !isPremium ? (
+      ) : inPremiumWindow && !hasPriorityAccess ? (
         <div className="space-y-2 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm">
           <p className="font-semibold text-amber-900 text-center">
-            Réservé à nos clients Premium
+            Réservé aux clients Premium et Illimité
           </p>
           <p className="text-xs text-amber-800 text-center">
-            Disponible pour tous dans {countdown}. Devenez Premium pour accéder aux prospects en
-            avant-première.
+            Disponible pour tous dans {countdown}. Activez l'accès illimité ou devenez Premium pour accéder aux prospects en avant-première.
           </p>
-          <Button asChild size="sm" variant="outline" className="w-full border-amber-400">
-            <a href={WHATSAPP_PREMIUM_URL} target="_blank" rel="noopener noreferrer">
-              Devenir Premium (WhatsApp)
-            </a>
-          </Button>
+          <div className="grid grid-cols-2 gap-2">
+            <Button asChild size="sm" className="w-full">
+              <Link to="/recharger">Activer l'illimité</Link>
+            </Button>
+            <Button asChild size="sm" variant="outline" className="w-full border-amber-400">
+              <a href={WHATSAPP_PREMIUM_URL} target="_blank" rel="noopener noreferrer">
+                Devenir Premium
+              </a>
+            </Button>
+          </div>
         </div>
       ) : partnerPaused || partnerPending || !partnerApproved ? (
         <div className="space-y-1.5 pt-1">
