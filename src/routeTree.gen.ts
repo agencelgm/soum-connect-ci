@@ -76,6 +76,7 @@ import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/em
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as ApiPublicHooksUnlimitedExpirationNotifyRouteImport } from './routes/api/public/hooks/unlimited-expiration-notify'
 import { Route as ApiPublicHooksPendingDocsReminderRouteImport } from './routes/api/public/hooks/pending-docs-reminder'
+import { Route as ApiPublicHooksAcademyDripRouteImport } from './routes/api/public/hooks/academy-drip'
 
 const UnsubscribeRoute = UnsubscribeRouteImport.update({
   id: '/unsubscribe',
@@ -432,6 +433,12 @@ const ApiPublicHooksPendingDocsReminderRoute =
     path: '/api/public/hooks/pending-docs-reminder',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksAcademyDripRoute =
+  ApiPublicHooksAcademyDripRouteImport.update({
+    id: '/api/public/hooks/academy-drip',
+    path: '/api/public/hooks/academy-drip',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -493,6 +500,7 @@ export interface FileRoutesByFullPath {
   '/api/public/meta-capi': typeof ApiPublicMetaCapiRoute
   '/api/public/test-partner-webhook': typeof ApiPublicTestPartnerWebhookRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
+  '/api/public/hooks/academy-drip': typeof ApiPublicHooksAcademyDripRoute
   '/api/public/hooks/pending-docs-reminder': typeof ApiPublicHooksPendingDocsReminderRoute
   '/api/public/hooks/unlimited-expiration-notify': typeof ApiPublicHooksUnlimitedExpirationNotifyRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -560,6 +568,7 @@ export interface FileRoutesByTo {
   '/api/public/meta-capi': typeof ApiPublicMetaCapiRoute
   '/api/public/test-partner-webhook': typeof ApiPublicTestPartnerWebhookRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
+  '/api/public/hooks/academy-drip': typeof ApiPublicHooksAcademyDripRoute
   '/api/public/hooks/pending-docs-reminder': typeof ApiPublicHooksPendingDocsReminderRoute
   '/api/public/hooks/unlimited-expiration-notify': typeof ApiPublicHooksUnlimitedExpirationNotifyRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -630,6 +639,7 @@ export interface FileRoutesById {
   '/api/public/meta-capi': typeof ApiPublicMetaCapiRoute
   '/api/public/test-partner-webhook': typeof ApiPublicTestPartnerWebhookRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
+  '/api/public/hooks/academy-drip': typeof ApiPublicHooksAcademyDripRoute
   '/api/public/hooks/pending-docs-reminder': typeof ApiPublicHooksPendingDocsReminderRoute
   '/api/public/hooks/unlimited-expiration-notify': typeof ApiPublicHooksUnlimitedExpirationNotifyRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -700,6 +710,7 @@ export interface FileRouteTypes {
     | '/api/public/meta-capi'
     | '/api/public/test-partner-webhook'
     | '/lovable/email/suppression'
+    | '/api/public/hooks/academy-drip'
     | '/api/public/hooks/pending-docs-reminder'
     | '/api/public/hooks/unlimited-expiration-notify'
     | '/lovable/email/auth/preview'
@@ -767,6 +778,7 @@ export interface FileRouteTypes {
     | '/api/public/meta-capi'
     | '/api/public/test-partner-webhook'
     | '/lovable/email/suppression'
+    | '/api/public/hooks/academy-drip'
     | '/api/public/hooks/pending-docs-reminder'
     | '/api/public/hooks/unlimited-expiration-notify'
     | '/lovable/email/auth/preview'
@@ -836,6 +848,7 @@ export interface FileRouteTypes {
     | '/api/public/meta-capi'
     | '/api/public/test-partner-webhook'
     | '/lovable/email/suppression'
+    | '/api/public/hooks/academy-drip'
     | '/api/public/hooks/pending-docs-reminder'
     | '/api/public/hooks/unlimited-expiration-notify'
     | '/lovable/email/auth/preview'
@@ -897,6 +910,7 @@ export interface RootRouteChildren {
   ApiPublicMetaCapiRoute: typeof ApiPublicMetaCapiRoute
   ApiPublicTestPartnerWebhookRoute: typeof ApiPublicTestPartnerWebhookRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
+  ApiPublicHooksAcademyDripRoute: typeof ApiPublicHooksAcademyDripRoute
   ApiPublicHooksPendingDocsReminderRoute: typeof ApiPublicHooksPendingDocsReminderRoute
   ApiPublicHooksUnlimitedExpirationNotifyRoute: typeof ApiPublicHooksUnlimitedExpirationNotifyRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
@@ -1377,6 +1391,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksPendingDocsReminderRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/academy-drip': {
+      id: '/api/public/hooks/academy-drip'
+      path: '/api/public/hooks/academy-drip'
+      fullPath: '/api/public/hooks/academy-drip'
+      preLoaderRoute: typeof ApiPublicHooksAcademyDripRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -1481,6 +1502,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicMetaCapiRoute: ApiPublicMetaCapiRoute,
   ApiPublicTestPartnerWebhookRoute: ApiPublicTestPartnerWebhookRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
+  ApiPublicHooksAcademyDripRoute: ApiPublicHooksAcademyDripRoute,
   ApiPublicHooksPendingDocsReminderRoute:
     ApiPublicHooksPendingDocsReminderRoute,
   ApiPublicHooksUnlimitedExpirationNotifyRoute:
