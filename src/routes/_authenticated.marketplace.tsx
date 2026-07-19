@@ -286,7 +286,11 @@ function LeadCard({
     onSuccess: (res) => {
       setRevealed(res.prospect);
       toast.success(
-        res.already_unlocked ? "Lead déjà débloqué" : "Lead débloqué — 1 crédit utilisé",
+        res.already_unlocked
+          ? "Lead déjà débloqué"
+          : isUnlimited
+            ? "Lead débloqué (accès illimité)"
+            : "Lead débloqué — 1 crédit utilisé",
       );
       qc.invalidateQueries({ queryKey: ["marketplace"] });
       qc.invalidateQueries({ queryKey: ["my-unlocks"] });
