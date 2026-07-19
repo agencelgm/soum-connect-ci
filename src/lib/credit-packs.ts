@@ -20,3 +20,30 @@ export const CREDIT_PACKS: CreditPack[] = [
 export function getPackByProductId(productId: string): CreditPack | undefined {
   return CREDIT_PACKS.find((p) => p.productId === productId);
 }
+
+/**
+ * Calcule la nouvelle date d'expiration `unlimited_until` en empilant `days`
+ * jours au-dessus de la date existante si elle est encore active, sinon
+ * en repartant de `now`.
+ *
+ * Règle métier : un rachat AVANT expiration ajoute 30 jours à l'expiration
+ * actuelle (empilement). Un rachat APRÈS expiration repart de maintenant.
+ *
+ * Exportée pour être testable indépendamment du webhook.
+ */
+export function stackUnlimitedUntil(
+  currentUnlimitedUntil: Date | string | null,
+  days: number,
+  now: Date = new Date(),
+): { newUntil: Date; stacked: boolean; baseUsed: Date } {
+  const current =
+    currentUnlimitedUntil instanceof Date
+      ? currentUnlimitedUntil
+      : currentUnlimitedUntil
+        ? new Date(currentUnlimitedUntil)
+        : null;
+  const stacked = current !== null && current > now;
+  const base = stacked ? (current as Date) : now;
+  const newUntil = new Date(base.getTime() + days * 24 * 60 * 60 * 1000);
+  return { newUntil, stacked, baseUsed: base };
+}
