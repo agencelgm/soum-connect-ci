@@ -412,6 +412,7 @@ export type Database = {
           created_at: string
           credits_balance: number
           deleted_at: string | null
+          docs_received_at: string | null
           docs_reminder_last_sent_at: string | null
           email: string
           facebook_url: string | null
@@ -450,6 +451,7 @@ export type Database = {
           created_at?: string
           credits_balance?: number
           deleted_at?: string | null
+          docs_received_at?: string | null
           docs_reminder_last_sent_at?: string | null
           email: string
           facebook_url?: string | null
@@ -488,6 +490,7 @@ export type Database = {
           created_at?: string
           credits_balance?: number
           deleted_at?: string | null
+          docs_received_at?: string | null
           docs_reminder_last_sent_at?: string | null
           email?: string
           facebook_url?: string | null
