@@ -18,7 +18,8 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { isUnauthorizedError } from "@/lib/auth-actions";
 import { UnauthorizedScreen } from "@/components/auth/UnauthorizedScreen";
-import { Trash2, UserPlus, ShieldCheck, KeyRound, LayoutDashboard, Crown, History, Coins } from "lucide-react";
+import { Trash2, UserPlus, ShieldCheck, KeyRound, LayoutDashboard, Crown, History, Coins, AlertTriangle } from "lucide-react";
+import { getUnlimitedStatus } from "@/lib/credit-packs";
 
 export const Route = createFileRoute("/_authenticated/espace-partenaire")({
   head: () => ({ meta: [{ title: "Espace partenaire" }, { name: "robots", content: "noindex,nofollow" }] }),
@@ -97,16 +98,32 @@ function EspacePartenaire() {
 
 function WelcomeCard({ partner }: { partner: any }) {
   const unlimitedUntilRaw = partner?.unlimited_until as string | null | undefined;
-  const unlimitedUntil = unlimitedUntilRaw ? new Date(unlimitedUntilRaw) : null;
-  const isUnlimitedActive = !!(unlimitedUntil && unlimitedUntil.getTime() > Date.now());
-  const daysLeft = isUnlimitedActive && unlimitedUntil
-    ? Math.max(0, Math.ceil((unlimitedUntil.getTime() - Date.now()) / (24 * 60 * 60 * 1000)))
-    : 0;
+  const status = getUnlimitedStatus(unlimitedUntilRaw);
+  const isUnlimitedActive = status.active;
+  const unlimitedUntil = status.expiresAt;
+  const daysLeft = status.daysLeft;
+  const isCritical = status.level === "critical";
+  const isWarning = status.level === "warning";
+  const isExpiredRecent = status.level === "expired";
   const formattedDate = unlimitedUntil?.toLocaleDateString("fr-FR", {
     day: "numeric",
     month: "long",
     year: "numeric",
   });
+
+  const tileTone = isUnlimitedActive
+    ? isCritical
+      ? "border-red-300 bg-gradient-to-br from-red-50 to-orange-50"
+      : isWarning
+        ? "border-orange-300 bg-gradient-to-br from-orange-50 to-amber-50"
+        : "border-amber-300 bg-gradient-to-br from-amber-50 to-yellow-50"
+    : isExpiredRecent
+      ? "border-slate-300 bg-slate-50"
+      : "";
+  const tileTextTitle = isCritical ? "text-red-900" : isWarning ? "text-orange-900" : "text-amber-900";
+  const tileTextBody = isCritical ? "text-red-800" : isWarning ? "text-orange-800" : "text-amber-800";
+  const IconComp = isCritical || isWarning ? AlertTriangle : Crown;
+  const iconColor = isCritical ? "text-red-600" : isWarning ? "text-orange-600" : "text-amber-600";
 
   return (
     <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-6 space-y-4">
@@ -122,14 +139,31 @@ function WelcomeCard({ partner }: { partner: any }) {
         </div>
 
         {isUnlimitedActive ? (
-          <div className="rounded-lg border border-amber-300 bg-gradient-to-br from-amber-50 to-yellow-50 p-4 flex items-center gap-3">
-            <Crown className="h-6 w-6 text-amber-600 shrink-0" />
+          <div className={`rounded-lg border p-4 flex items-center gap-3 ${tileTone}`}>
+            <IconComp className={`h-6 w-6 shrink-0 ${iconColor}`} />
             <div className="min-w-0">
-              <div className="text-xs uppercase text-amber-800 font-semibold">Accès illimité</div>
-              <div className="text-sm font-semibold text-amber-900">
-                Actif jusqu'au {formattedDate}
+              <div className={`text-xs uppercase font-semibold ${tileTextBody}`}>
+                Accès illimité {isCritical ? "· expire bientôt" : isWarning ? "· à renouveler" : ""}
               </div>
-              <div className="text-xs text-amber-800">{daysLeft} jour{daysLeft > 1 ? "s" : ""} restant{daysLeft > 1 ? "s" : ""}</div>
+              <div className={`text-sm font-semibold ${tileTextTitle}`}>
+                {isCritical
+                  ? `Expire dans ${status.hoursLeft <= 24 ? `${status.hoursLeft} h` : "1 jour"}`
+                  : `Actif jusqu'au ${formattedDate}`}
+              </div>
+              <div className={`text-xs ${tileTextBody}`}>
+                {isCritical || isWarning
+                  ? `Reste ${daysLeft} jour${daysLeft > 1 ? "s" : ""} — renouvelez avant le ${formattedDate}`
+                  : `${daysLeft} jour${daysLeft > 1 ? "s" : ""} restant${daysLeft > 1 ? "s" : ""} · 3 h d'avance sur chaque lead incluse`}
+              </div>
+            </div>
+          </div>
+        ) : isExpiredRecent ? (
+          <div className="rounded-lg border border-slate-300 bg-slate-50 p-4 flex items-center gap-3">
+            <Crown className="h-6 w-6 text-slate-500 shrink-0" />
+            <div className="min-w-0">
+              <div className="text-xs uppercase text-slate-700 font-semibold">Accès illimité expiré</div>
+              <div className="text-sm font-semibold text-slate-900">Expiré le {formattedDate}</div>
+              <div className="text-xs text-slate-700">Renouvelez pour retrouver l'illimité + les 3 h d'avance.</div>
             </div>
           </div>
         ) : (
@@ -137,9 +171,7 @@ function WelcomeCard({ partner }: { partner: any }) {
             <Crown className="h-6 w-6 text-muted-foreground shrink-0" />
             <div>
               <div className="text-xs uppercase text-muted-foreground">Accès illimité</div>
-              <div className="text-sm text-muted-foreground">
-                {unlimitedUntil ? `Expiré le ${formattedDate}` : "Non actif"}
-              </div>
+              <div className="text-sm text-muted-foreground">Non actif</div>
             </div>
           </div>
         )}
@@ -149,8 +181,14 @@ function WelcomeCard({ partner }: { partner: any }) {
         <Button asChild>
           <Link to="/marketplace">Accéder à la marketplace</Link>
         </Button>
-        <Button asChild variant="outline">
-          <Link to="/recharger">Recharger mes crédits</Link>
+        <Button
+          asChild
+          variant={isCritical || isExpiredRecent ? "default" : "outline"}
+          className={isCritical ? "bg-red-600 hover:bg-red-700" : isWarning ? "border-orange-400 text-orange-900 hover:bg-orange-50" : ""}
+        >
+          <Link to="/recharger">
+            {isCritical || isWarning ? "Renouveler l'illimité" : isExpiredRecent ? "Renouveler" : "Recharger mes crédits"}
+          </Link>
         </Button>
         <Button asChild variant="outline">
           <Link to="/historique">
