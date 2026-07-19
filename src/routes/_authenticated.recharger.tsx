@@ -220,7 +220,6 @@ function RechargerPage() {
             const isUnlimitedPack = !!pack.unlimited;
             return (
               <div
-                key={pack.credits}
                 key={pack.productId}
                 className={cn(
                   "relative rounded-2xl border bg-card p-7 flex flex-col transition-all",
