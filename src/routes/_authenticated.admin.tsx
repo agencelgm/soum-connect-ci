@@ -178,14 +178,15 @@ import { isUnauthorizedError } from "@/lib/auth-actions";
 import { UnauthorizedScreen } from "@/components/auth/UnauthorizedScreen";
 import { cn } from "@/lib/utils";
 import { EmailsPanel } from "@/components/admin/EmailsPanel";
+import { SuppressionPanel } from "@/components/admin/SuppressionPanel";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({ meta: [{ title: "Admin" }, { name: "robots", content: "noindex,nofollow" }] }),
   validateSearch: (search: Record<string, unknown>) => ({
     tab:
       typeof search.tab === "string" &&
-      ["partners", "prospects", "create", "team", "paiements", "emails"].includes(search.tab)
-        ? (search.tab as "partners" | "prospects" | "create" | "team" | "paiements" | "emails")
+      ["partners", "prospects", "create", "team", "paiements", "emails", "suppression"].includes(search.tab)
+        ? (search.tab as "partners" | "prospects" | "create" | "team" | "paiements" | "emails" | "suppression")
         : undefined,
   }),
   component: AdminPage,
@@ -272,6 +273,9 @@ function AdminPageInner({ roles }: { roles: string[] }) {
           {activeTab === "paiements" && <PaymentsPanel />}
           {activeTab === "team" && roles.includes("admin") && <TeamPanel />}
           {activeTab === "emails" && roles.includes("admin") && <EmailsPanel />}
+          {activeTab === "suppression" && roles.includes("admin") && (
+            <SuppressionPanel isAdmin={roles.includes("admin")} />
+          )}
         </div>
       </div>
     </div>
@@ -283,7 +287,7 @@ function SectionHeader({
   pendingPartners,
   pendingProspects,
 }: {
-  tab: "partners" | "prospects" | "create" | "team" | "paiements" | "emails";
+  tab: "partners" | "prospects" | "create" | "team" | "paiements" | "emails" | "suppression";
   pendingPartners: number;
   pendingProspects: number;
 }) {
@@ -315,6 +319,10 @@ function SectionHeader({
     emails: {
       title: "Emails",
       subtitle: "Envois, rebonds, plaintes et désabonnements.",
+    },
+    suppression: {
+      title: "Liste d'exclusion",
+      subtitle: "Adresses bloquées (rebonds, plaintes, désabonnements) — vérifier, ajouter, retirer.",
     },
   } as const;
   const { title, subtitle } = map[tab];
