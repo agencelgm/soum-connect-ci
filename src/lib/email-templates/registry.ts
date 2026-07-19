@@ -14,6 +14,7 @@ import { template as unlimitedExpiring } from './unlimited-expiring'
 import { template as newProspectPaused } from './new-prospect-paused'
 import { template as pendingDocsReminder } from './pending-docs-reminder'
 import { template as academyDrip } from './academy-drip'
+import { template as emailHealthAlert } from './email-health-alert'
 
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'new-prospect': newProspect,
@@ -21,4 +22,5 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'new-prospect-paused': newProspectPaused,
   'pending-docs-reminder': pendingDocsReminder,
   'academy-drip': academyDrip,
+  'email-health-alert': emailHealthAlert,
 }
