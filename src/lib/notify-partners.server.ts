@@ -1,0 +1,60 @@
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { sendTransactionalServer } from "@/lib/email/send.server";
+
+const LOGIN_URL = "https://soumissioncomptable.com/connexion";
+
+/**
+ * When a prospect is published as a lead, notify every approved partner by email.
+ * Uses a deterministic idempotency key per (publication, partner) so retries don't duplicate.
+ */
+export async function notifyPartnersNewProspect(
+  prospectId: string,
+  publicationId: string,
+): Promise<{ notified: number; skipped: number }> {
+  const { data: prospect, error: pErr } = await supabaseAdmin
+    .from("prospects")
+    .select("full_name, service, city")
+    .eq("id", prospectId)
+    .maybeSingle();
+  if (pErr || !prospect) {
+    console.error("[notifyPartnersNewProspect] prospect fetch failed", pErr);
+    return { notified: 0, skipped: 0 };
+  }
+
+  const prospectFirstName = (prospect.full_name || "").trim().split(/\s+/)[0] || "Un prospect";
+
+  const { data: partners, error: paErr } = await supabaseAdmin
+    .from("partners")
+    .select("id, email, contact_first_name")
+    .eq("status", "approved")
+    .is("deleted_at", null);
+  if (paErr) {
+    console.error("[notifyPartnersNewProspect] partners fetch failed", paErr);
+    return { notified: 0, skipped: 0 };
+  }
+
+  let notified = 0;
+  let skipped = 0;
+  for (const p of partners ?? []) {
+    if (!p.email) {
+      skipped++;
+      continue;
+    }
+    const res = await sendTransactionalServer({
+      templateName: "new-prospect",
+      recipientEmail: p.email,
+      idempotencyKey: `new-prospect:${publicationId}:${p.id}`,
+      templateData: {
+        partnerFirstName: p.contact_first_name || "Partenaire",
+        prospectFirstName,
+        service: prospect.service || "un service comptable",
+        city: prospect.city || null,
+        loginUrl: LOGIN_URL,
+      },
+    });
+    if (res.success) notified++;
+    else skipped++;
+  }
+  console.log("[notifyPartnersNewProspect]", { publicationId, notified, skipped });
+  return { notified, skipped };
+}
