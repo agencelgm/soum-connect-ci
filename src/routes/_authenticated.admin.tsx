@@ -176,6 +176,7 @@ import { useAuth } from "@/lib/auth-context";
 import { isUnauthorizedError } from "@/lib/auth-actions";
 import { UnauthorizedScreen } from "@/components/auth/UnauthorizedScreen";
 import { cn } from "@/lib/utils";
+import { EmailsPanel } from "@/components/admin/EmailsPanel";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({ meta: [{ title: "Admin" }, { name: "robots", content: "noindex,nofollow" }] }),
