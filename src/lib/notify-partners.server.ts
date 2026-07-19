@@ -1,7 +1,12 @@
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { sendTransactionalServer } from "@/lib/email/send.server";
 
-const LOGIN_URL = "https://soumissioncomptable.com/connexion";
+const SITE_ORIGIN = "https://soumissioncomptable.com";
+
+function deepLoginUrl(publicationId: string) {
+  const next = `/marketplace?lead=${encodeURIComponent(publicationId)}`;
+  return `${SITE_ORIGIN}/connexion?next=${encodeURIComponent(next)}`;
+}
 
 /**
  * When a prospect is published as a lead, notify every approved partner by email.
@@ -13,7 +18,7 @@ export async function notifyPartnersNewProspect(
 ): Promise<{ notified: number; skipped: number }> {
   const { data: prospect, error: pErr } = await supabaseAdmin
     .from("prospects")
-    .select("full_name, service, city")
+    .select("full_name, service, city, message")
     .eq("id", prospectId)
     .maybeSingle();
   if (pErr || !prospect) {
@@ -22,6 +27,8 @@ export async function notifyPartnersNewProspect(
   }
 
   const prospectFirstName = (prospect.full_name || "").trim().split(/\s+/)[0] || "Un prospect";
+  const prospectMessage = (prospect.message || "").trim() || null;
+  const loginUrl = deepLoginUrl(publicationId);
 
   const { data: partners, error: paErr } = await supabaseAdmin
     .from("partners")
@@ -59,8 +66,9 @@ export async function notifyPartnersNewProspect(
         prospectFirstName,
         service: prospect.service || "un service comptable",
         city: prospect.city || null,
+        message: prospectMessage,
         creditsBalance: credits,
-        loginUrl: LOGIN_URL,
+        loginUrl,
       },
     });
     if (res.success) notified++;

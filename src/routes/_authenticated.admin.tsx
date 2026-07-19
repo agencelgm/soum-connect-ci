@@ -176,14 +176,15 @@ import { useAuth } from "@/lib/auth-context";
 import { isUnauthorizedError } from "@/lib/auth-actions";
 import { UnauthorizedScreen } from "@/components/auth/UnauthorizedScreen";
 import { cn } from "@/lib/utils";
+import { EmailsPanel } from "@/components/admin/EmailsPanel";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({ meta: [{ title: "Admin" }, { name: "robots", content: "noindex,nofollow" }] }),
   validateSearch: (search: Record<string, unknown>) => ({
     tab:
       typeof search.tab === "string" &&
-      ["partners", "prospects", "create", "team", "paiements"].includes(search.tab)
-        ? (search.tab as "partners" | "prospects" | "create" | "team" | "paiements")
+      ["partners", "prospects", "create", "team", "paiements", "emails"].includes(search.tab)
+        ? (search.tab as "partners" | "prospects" | "create" | "team" | "paiements" | "emails")
         : undefined,
   }),
   component: AdminPage,
@@ -269,6 +270,7 @@ function AdminPageInner({ roles }: { roles: string[] }) {
           {activeTab === "create" && <CreatePartnerPanel key={FORM_VERSION} />}
           {activeTab === "paiements" && <PaymentsPanel />}
           {activeTab === "team" && roles.includes("admin") && <TeamPanel />}
+          {activeTab === "emails" && roles.includes("admin") && <EmailsPanel />}
         </div>
       </div>
     </div>
@@ -280,7 +282,7 @@ function SectionHeader({
   pendingPartners,
   pendingProspects,
 }: {
-  tab: "partners" | "prospects" | "create" | "team" | "paiements";
+  tab: "partners" | "prospects" | "create" | "team" | "paiements" | "emails";
   pendingPartners: number;
   pendingProspects: number;
 }) {
@@ -308,6 +310,10 @@ function SectionHeader({
     team: {
       title: "Équipe LGM",
       subtitle: "Gérer les administrateurs et agents.",
+    },
+    emails: {
+      title: "Emails",
+      subtitle: "Envois, rebonds, plaintes et désabonnements.",
     },
   } as const;
   const { title, subtitle } = map[tab];
