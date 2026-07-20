@@ -27,6 +27,8 @@ import {
   History,
   Info,
   AlertTriangle,
+  Search,
+  X,
 } from "lucide-react";
 
 const WHATSAPP_PREMIUM_URL =
@@ -74,6 +76,10 @@ function MarketplacePage() {
   const [filter, setFilter] = useState<"all" | "available" | "full">(
     focusLeadId ? "all" : "available",
   );
+  const [searchQ, setSearchQ] = useState("");
+  const [cityFilter, setCityFilter] = useState<string>("all");
+  const [serviceFilter, setServiceFilter] = useState<string>("all");
+  const [ageFilter, setAgeFilter] = useState<"all" | "24h" | "7d" | "30d">("all");
 
   // Scroll to and highlight the lead from ?lead= (deep-link from email).
   useEffect(() => {
@@ -115,14 +121,43 @@ function MarketplacePage() {
   const partnerPending = data.partner.status === "pending_review";
   const partnerPaused = data.partner.status === "paused";
 
-  const availableLeads = data.leads.filter((l) => l.unlock_count < l.max_unlocks);
-  const fullLeads = data.leads.filter((l) => l.unlock_count >= l.max_unlocks);
+  const normalize = (s: string) =>
+    s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const q = normalize(searchQ.trim());
+  const ageMs =
+    ageFilter === "24h" ? 864e5 : ageFilter === "7d" ? 7 * 864e5 : ageFilter === "30d" ? 30 * 864e5 : 0;
+  const nowMs = Date.now();
+  const searchedLeads = data.leads.filter((l) => {
+    if (cityFilter !== "all" && (l.city ?? "") !== cityFilter) return false;
+    if (serviceFilter !== "all" && (l.service ?? "") !== serviceFilter) return false;
+    if (ageMs > 0 && nowMs - new Date(l.published_at).getTime() > ageMs) return false;
+    if (q) {
+      const hay = normalize(
+        [l.city, l.service, l.legal_form, l.budget, l.summary, l.delai]
+          .filter(Boolean)
+          .join(" "),
+      );
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+  const availableLeads = searchedLeads.filter((l) => l.unlock_count < l.max_unlocks);
+  const fullLeads = searchedLeads.filter((l) => l.unlock_count >= l.max_unlocks);
   const visibleLeads =
     filter === "available"
       ? availableLeads
       : filter === "full"
         ? fullLeads
         : [...availableLeads, ...fullLeads];
+
+  const cityOptions = Array.from(
+    new Set(data.leads.map((l) => l.city).filter((v): v is string => !!v)),
+  ).sort();
+  const serviceOptions = Array.from(
+    new Set(data.leads.map((l) => l.service).filter((v): v is string => !!v)),
+  ).sort();
+  const hasActiveFilters =
+    searchQ !== "" || cityFilter !== "all" || serviceFilter !== "all" || ageFilter !== "all";
 
   return (
     <div className="space-y-6">
@@ -302,10 +337,76 @@ function MarketplacePage() {
 
       {tab === "available" && (
         <div className="space-y-4">
+          <div className="rounded-xl border bg-card p-3 space-y-2">
+            <div className="flex flex-wrap gap-2 items-center">
+              <div className="relative flex-1 min-w-[200px]">
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <input
+                  type="search"
+                  value={searchQ}
+                  onChange={(e) => setSearchQ(e.target.value)}
+                  placeholder="Rechercher (ville, service, budget, résumé…)"
+                  className="h-9 w-full rounded-md border border-input bg-background pl-8 pr-2 text-sm"
+                />
+              </div>
+              <select
+                value={cityFilter}
+                onChange={(e) => setCityFilter(e.target.value)}
+                className="h-9 rounded-md border border-input bg-background px-2 text-sm max-w-[180px]"
+              >
+                <option value="all">Toutes les villes</option>
+                {cityOptions.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+              <select
+                value={serviceFilter}
+                onChange={(e) => setServiceFilter(e.target.value)}
+                className="h-9 rounded-md border border-input bg-background px-2 text-sm max-w-[220px]"
+              >
+                <option value="all">Tous les services</option>
+                {serviceOptions.map((s) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
+                ))}
+              </select>
+              <select
+                value={ageFilter}
+                onChange={(e) => setAgeFilter(e.target.value as typeof ageFilter)}
+                className="h-9 rounded-md border border-input bg-background px-2 text-sm"
+              >
+                <option value="all">Toutes dates</option>
+                <option value="24h">Dernières 24h</option>
+                <option value="7d">7 derniers jours</option>
+                <option value="30d">30 derniers jours</option>
+              </select>
+              {hasActiveFilters && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchQ("");
+                    setCityFilter("all");
+                    setServiceFilter("all");
+                    setAgeFilter("all");
+                  }}
+                  className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                >
+                  <X className="h-3 w-3" /> Réinitialiser
+                </button>
+              )}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {searchedLeads.length} lead{searchedLeads.length > 1 ? "s" : ""} affiché{searchedLeads.length > 1 ? "s" : ""} sur {data.leads.length} au total
+            </p>
+          </div>
+
           <div className="flex gap-2 flex-wrap">
             {(
               [
-                ["all", "Tous", data.leads.length],
+                ["all", "Tous", searchedLeads.length],
                 ["available", "Disponibles", availableLeads.length],
                 ["full", "Complets", fullLeads.length],
               ] as const
