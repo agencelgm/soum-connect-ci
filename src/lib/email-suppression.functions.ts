@@ -130,5 +130,10 @@ export const removeSuppression = createServerFn({ method: "POST" })
       .delete()
       .eq("email", email);
     if (error) throw new Error(error.message);
+    // Also clear the partner-level bounce flag so future selections include them again.
+    await supabaseAdmin
+      .from("partners")
+      .update({ email_bounced_at: null, email_bounce_reason: null })
+      .ilike("email", email);
     return { success: true };
   });

@@ -22,7 +22,8 @@ export const Route = createFileRoute("/api/public/hooks/pending-docs-reminder")(
           )
           .eq("status", "pending_review")
           .is("docs_received_at", null)
-          .is("deleted_at", null);
+          .is("deleted_at", null)
+          .is("email_bounced_at", null);
 
         if (error) {
           console.error("[pending-docs-reminder] fetch failed", error);

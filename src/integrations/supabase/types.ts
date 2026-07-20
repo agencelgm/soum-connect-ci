@@ -439,6 +439,8 @@ export type Database = {
           docs_received_at: string | null
           docs_reminder_last_sent_at: string | null
           email: string
+          email_bounce_reason: string | null
+          email_bounced_at: string | null
           facebook_url: string | null
           id: string
           last_login_at: string | null
@@ -478,6 +480,8 @@ export type Database = {
           docs_received_at?: string | null
           docs_reminder_last_sent_at?: string | null
           email: string
+          email_bounce_reason?: string | null
+          email_bounced_at?: string | null
           facebook_url?: string | null
           id?: string
           last_login_at?: string | null
@@ -517,6 +521,8 @@ export type Database = {
           docs_received_at?: string | null
           docs_reminder_last_sent_at?: string | null
           email?: string
+          email_bounce_reason?: string | null
+          email_bounced_at?: string | null
           facebook_url?: string | null
           id?: string
           last_login_at?: string | null
