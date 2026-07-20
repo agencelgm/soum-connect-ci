@@ -497,6 +497,7 @@ type Lead = {
   published_at: string;
   delai: string | null;
   premium_until: string | null;
+  submitted_at?: string | null;
 };
 
 function LeadCard({
