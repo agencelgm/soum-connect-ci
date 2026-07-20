@@ -131,7 +131,7 @@ function MarketplacePage() {
   const searchedLeads = data.leads.filter((l) => {
     if (cityFilter !== "all" && (l.city ?? "") !== cityFilter) return false;
     if (serviceFilter !== "all" && (l.service ?? "") !== serviceFilter) return false;
-    const refTs = new Date(l.submitted_at ?? l.published_at).getTime();
+    const refTs = new Date(l.published_at).getTime();
     if (ageMs > 0 && nowMs - refTs > ageMs) return false;
     if (q) {
       const hay = normalize(
@@ -144,7 +144,7 @@ function MarketplacePage() {
     return true;
   });
   const tsOf = (l: typeof searchedLeads[number]) =>
-    new Date(l.submitted_at ?? l.published_at).getTime();
+    new Date(l.published_at).getTime();
   const sortedLeads = [...searchedLeads].sort((a, b) => {
     if (sortBy === "oldest") return tsOf(a) - tsOf(b);
     if (sortBy === "filling") return b.unlock_count / b.max_unlocks - a.unlock_count / a.max_unlocks;
@@ -387,10 +387,10 @@ function MarketplacePage() {
                 onChange={(e) => setAgeFilter(e.target.value as typeof ageFilter)}
                 className="h-9 rounded-md border border-input bg-background px-2 text-sm"
               >
-                <option value="all">Reçus : toutes dates</option>
-                <option value="24h">Reçus dernières 24h</option>
-                <option value="7d">Reçus 7 derniers jours</option>
-                <option value="30d">Reçus 30 derniers jours</option>
+                <option value="all">Publiés : toutes dates</option>
+                <option value="24h">Publiés dernières 24h</option>
+                <option value="7d">Publiés 7 derniers jours</option>
+                <option value="30d">Publiés 30 derniers jours</option>
               </select>
               <select
                 value={sortBy}
