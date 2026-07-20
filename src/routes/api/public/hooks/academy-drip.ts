@@ -25,6 +25,7 @@ export const Route = createFileRoute("/api/public/hooks/academy-drip")({
           )
           .eq("status", "approved")
           .is("deleted_at", null)
+          .is("email_bounced_at", null)
           .not("approved_at", "is", null)
           .lt("academy_drip_index", total);
 
