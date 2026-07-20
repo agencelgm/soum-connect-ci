@@ -8,9 +8,17 @@ function deepLoginUrl(publicationId: string) {
   return `${SITE_ORIGIN}/connexion?next=${encodeURIComponent(next)}`;
 }
 
+function abidjanToday(): string {
+  // Africa/Abidjan is UTC+0 year-round; using UTC date is exact.
+  return new Date().toISOString().slice(0, 10);
+}
+
 /**
- * When a prospect is published as a lead, notify every approved partner by email.
- * Uses a deterministic idempotency key per (publication, partner) so retries don't duplicate.
+ * When a prospect is published as a lead:
+ *  - Premium / Illimité: envoi immédiat, mais UNE seule fois par jour et par partenaire.
+ *  - Autres partenaires: on bufferise dans `pending_lead_notifications` et un cron
+ *    envoie un unique digest 3h après la première approbation du jour.
+ * Résultat: 1 email par partenaire par période de 24h maximum.
  */
 export async function notifyPartnersNewProspect(
   prospectId: string,
@@ -39,7 +47,7 @@ export async function notifyPartnersNewProspect(
 
   const { data: partners, error: paErr } = await supabaseAdmin
     .from("partners")
-    .select("id, email, contact_first_name, status, credits_balance, unlimited_until")
+    .select("id, email, contact_first_name, status, tier, credits_balance, unlimited_until")
     .in("status", ["approved", "paused"])
     .is("deleted_at", null)
     .is("email_bounced_at", null);
@@ -48,8 +56,33 @@ export async function notifyPartnersNewProspect(
     return { notified: 0, skipped: 0 };
   }
 
+  const day = abidjanToday();
+  const now = new Date();
+
+  // 1) Assurer une entrée digest_schedule pour aujourd'hui (T+3h après cette approbation).
+  const scheduledFor = new Date(now.getTime() + 3 * 3600 * 1000).toISOString();
+  await supabaseAdmin
+    .from("digest_schedule")
+    .upsert(
+      {
+        day,
+        first_publication_at: now.toISOString(),
+        scheduled_for: scheduledFor,
+      },
+      { onConflict: "day", ignoreDuplicates: true },
+    );
+
+  // 2) Charger les partenaires déjà notifiés aujourd'hui pour appliquer la règle 1/24h.
+  const { data: alreadyNotified } = await supabaseAdmin
+    .from("daily_notification_state")
+    .select("partner_id")
+    .eq("day", day);
+  const notifiedToday = new Set((alreadyNotified ?? []).map((r) => r.partner_id as string));
+
   let notified = 0;
   let skipped = 0;
+  const bufferInserts: Array<{ partner_id: string; publication_id: string }> = [];
+
   for (const p of partners ?? []) {
     if (!p.email) {
       skipped++;
@@ -57,33 +90,61 @@ export async function notifyPartnersNewProspect(
     }
     const hasUnlimited =
       p.unlimited_until && new Date(p.unlimited_until as string) > new Date();
-    const credits = Number(p.credits_balance ?? 0);
-    const isPaused = p.status === "paused";
-    // Note: on notifie AUSSI les partenaires en pause avec 0 crédits —
-    // ces emails les encouragent à recharger et à revenir sur le service.
-    const templateName = isPaused ? "new-prospect-paused" : "new-prospect";
-    const res = await sendTransactionalServer({
-      templateName,
-      recipientEmail: p.email,
-      idempotencyKey: `${templateName}:${publicationId}:${p.id}`,
-      templateData: {
-        partnerFirstName: p.contact_first_name || "Partenaire",
-        prospectFirstName,
-        service: prospect.service || "un service comptable",
-        city: prospect.city || null,
-        message: prospectMessage,
-        budget: budgetLabel,
-        audience: audienceLabel,
-        creditsBalance: credits,
-        hasUnlimited: Boolean(hasUnlimited),
-        unlimitedUntil: hasUnlimited ? (p.unlimited_until as string) : null,
-        loginUrl,
-        rechargeUrl: `${SITE_ORIGIN}/connexion?next=${encodeURIComponent("/recharger")}`,
-      },
-    });
-    if (res.success) notified++;
-    else skipped++;
+    const isPremium = p.tier === "premium" || Boolean(hasUnlimited);
+
+    if (isPremium) {
+      // Premium / Illimité : email immédiat, mais 1x par jour maximum.
+      if (notifiedToday.has(p.id)) {
+        skipped++;
+        continue;
+      }
+      const res = await sendTransactionalServer({
+        templateName: "new-prospect",
+        recipientEmail: p.email,
+        idempotencyKey: `new-prospect:${publicationId}:${p.id}`,
+        templateData: {
+          partnerFirstName: p.contact_first_name || "Partenaire",
+          prospectFirstName,
+          service: prospect.service || "un service comptable",
+          city: prospect.city || null,
+          message: prospectMessage,
+          budget: budgetLabel,
+          audience: audienceLabel,
+          loginUrl,
+        },
+      });
+      if (res.success) {
+        notified++;
+        notifiedToday.add(p.id);
+        await supabaseAdmin
+          .from("daily_notification_state")
+          .upsert(
+            { day, partner_id: p.id, first_notified_at: new Date().toISOString(), channel: "premium_instant" },
+            { onConflict: "day,partner_id", ignoreDuplicates: true },
+          );
+      } else {
+        skipped++;
+      }
+    } else {
+      // Autres partenaires : bufferisation, envoi via cron dans le digest.
+      bufferInserts.push({ partner_id: p.id, publication_id: publicationId });
+    }
   }
-  console.log("[notifyPartnersNewProspect]", { publicationId, notified, skipped });
+
+  if (bufferInserts.length > 0) {
+    const { error: bufErr } = await supabaseAdmin
+      .from("pending_lead_notifications")
+      .upsert(bufferInserts, { onConflict: "partner_id,publication_id", ignoreDuplicates: true });
+    if (bufErr) {
+      console.error("[notifyPartnersNewProspect] buffer insert failed", bufErr);
+    }
+  }
+
+  console.log("[notifyPartnersNewProspect]", {
+    publicationId,
+    notifiedPremium: notified,
+    bufferedForDigest: bufferInserts.length,
+    skipped,
+  });
   return { notified, skipped };
 }

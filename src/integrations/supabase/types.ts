@@ -133,6 +133,56 @@ export type Database = {
           },
         ]
       }
+      daily_notification_state: {
+        Row: {
+          channel: string
+          day: string
+          first_notified_at: string
+          partner_id: string
+        }
+        Insert: {
+          channel?: string
+          day: string
+          first_notified_at?: string
+          partner_id: string
+        }
+        Update: {
+          channel?: string
+          day?: string
+          first_notified_at?: string
+          partner_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "daily_notification_state_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      digest_schedule: {
+        Row: {
+          day: string
+          first_publication_at: string
+          scheduled_for: string
+          sent_at: string | null
+        }
+        Insert: {
+          day: string
+          first_publication_at: string
+          scheduled_for: string
+          sent_at?: string | null
+        }
+        Update: {
+          day?: string
+          first_publication_at?: string
+          scheduled_for?: string
+          sent_at?: string | null
+        }
+        Relationships: []
+      }
       email_alert_state: {
         Row: {
           last_alert_at: string
@@ -547,6 +597,45 @@ export type Database = {
           zones?: string[]
         }
         Relationships: []
+      }
+      pending_lead_notifications: {
+        Row: {
+          created_at: string
+          id: string
+          partner_id: string
+          publication_id: string
+          sent_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          partner_id: string
+          publication_id: string
+          sent_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          partner_id?: string
+          publication_id?: string
+          sent_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pending_lead_notifications_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partners"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pending_lead_notifications_publication_id_fkey"
+            columns: ["publication_id"]
+            isOneToOne: false
+            referencedRelation: "lead_publications"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {

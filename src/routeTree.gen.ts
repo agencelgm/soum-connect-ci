@@ -75,6 +75,7 @@ import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/e
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as ApiPublicHooksUnlimitedExpirationNotifyRouteImport } from './routes/api/public/hooks/unlimited-expiration-notify'
+import { Route as ApiPublicHooksSendLeadDigestsRouteImport } from './routes/api/public/hooks/send-lead-digests'
 import { Route as ApiPublicHooksPendingDocsReminderRouteImport } from './routes/api/public/hooks/pending-docs-reminder'
 import { Route as ApiPublicHooksEmailHealthAlertRouteImport } from './routes/api/public/hooks/email-health-alert'
 import { Route as ApiPublicHooksAcademyDripRouteImport } from './routes/api/public/hooks/academy-drip'
@@ -428,6 +429,12 @@ const ApiPublicHooksUnlimitedExpirationNotifyRoute =
     path: '/api/public/hooks/unlimited-expiration-notify',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksSendLeadDigestsRoute =
+  ApiPublicHooksSendLeadDigestsRouteImport.update({
+    id: '/api/public/hooks/send-lead-digests',
+    path: '/api/public/hooks/send-lead-digests',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksPendingDocsReminderRoute =
   ApiPublicHooksPendingDocsReminderRouteImport.update({
     id: '/api/public/hooks/pending-docs-reminder',
@@ -510,6 +517,7 @@ export interface FileRoutesByFullPath {
   '/api/public/hooks/academy-drip': typeof ApiPublicHooksAcademyDripRoute
   '/api/public/hooks/email-health-alert': typeof ApiPublicHooksEmailHealthAlertRoute
   '/api/public/hooks/pending-docs-reminder': typeof ApiPublicHooksPendingDocsReminderRoute
+  '/api/public/hooks/send-lead-digests': typeof ApiPublicHooksSendLeadDigestsRoute
   '/api/public/hooks/unlimited-expiration-notify': typeof ApiPublicHooksUnlimitedExpirationNotifyRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -579,6 +587,7 @@ export interface FileRoutesByTo {
   '/api/public/hooks/academy-drip': typeof ApiPublicHooksAcademyDripRoute
   '/api/public/hooks/email-health-alert': typeof ApiPublicHooksEmailHealthAlertRoute
   '/api/public/hooks/pending-docs-reminder': typeof ApiPublicHooksPendingDocsReminderRoute
+  '/api/public/hooks/send-lead-digests': typeof ApiPublicHooksSendLeadDigestsRoute
   '/api/public/hooks/unlimited-expiration-notify': typeof ApiPublicHooksUnlimitedExpirationNotifyRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -651,6 +660,7 @@ export interface FileRoutesById {
   '/api/public/hooks/academy-drip': typeof ApiPublicHooksAcademyDripRoute
   '/api/public/hooks/email-health-alert': typeof ApiPublicHooksEmailHealthAlertRoute
   '/api/public/hooks/pending-docs-reminder': typeof ApiPublicHooksPendingDocsReminderRoute
+  '/api/public/hooks/send-lead-digests': typeof ApiPublicHooksSendLeadDigestsRoute
   '/api/public/hooks/unlimited-expiration-notify': typeof ApiPublicHooksUnlimitedExpirationNotifyRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -723,6 +733,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/academy-drip'
     | '/api/public/hooks/email-health-alert'
     | '/api/public/hooks/pending-docs-reminder'
+    | '/api/public/hooks/send-lead-digests'
     | '/api/public/hooks/unlimited-expiration-notify'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -792,6 +803,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/academy-drip'
     | '/api/public/hooks/email-health-alert'
     | '/api/public/hooks/pending-docs-reminder'
+    | '/api/public/hooks/send-lead-digests'
     | '/api/public/hooks/unlimited-expiration-notify'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -863,6 +875,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/academy-drip'
     | '/api/public/hooks/email-health-alert'
     | '/api/public/hooks/pending-docs-reminder'
+    | '/api/public/hooks/send-lead-digests'
     | '/api/public/hooks/unlimited-expiration-notify'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -926,6 +939,7 @@ export interface RootRouteChildren {
   ApiPublicHooksAcademyDripRoute: typeof ApiPublicHooksAcademyDripRoute
   ApiPublicHooksEmailHealthAlertRoute: typeof ApiPublicHooksEmailHealthAlertRoute
   ApiPublicHooksPendingDocsReminderRoute: typeof ApiPublicHooksPendingDocsReminderRoute
+  ApiPublicHooksSendLeadDigestsRoute: typeof ApiPublicHooksSendLeadDigestsRoute
   ApiPublicHooksUnlimitedExpirationNotifyRoute: typeof ApiPublicHooksUnlimitedExpirationNotifyRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
@@ -1398,6 +1412,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksUnlimitedExpirationNotifyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/send-lead-digests': {
+      id: '/api/public/hooks/send-lead-digests'
+      path: '/api/public/hooks/send-lead-digests'
+      fullPath: '/api/public/hooks/send-lead-digests'
+      preLoaderRoute: typeof ApiPublicHooksSendLeadDigestsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/pending-docs-reminder': {
       id: '/api/public/hooks/pending-docs-reminder'
       path: '/api/public/hooks/pending-docs-reminder'
@@ -1527,6 +1548,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicHooksEmailHealthAlertRoute: ApiPublicHooksEmailHealthAlertRoute,
   ApiPublicHooksPendingDocsReminderRoute:
     ApiPublicHooksPendingDocsReminderRoute,
+  ApiPublicHooksSendLeadDigestsRoute: ApiPublicHooksSendLeadDigestsRoute,
   ApiPublicHooksUnlimitedExpirationNotifyRoute:
     ApiPublicHooksUnlimitedExpirationNotifyRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
