@@ -121,14 +121,43 @@ function MarketplacePage() {
   const partnerPending = data.partner.status === "pending_review";
   const partnerPaused = data.partner.status === "paused";
 
-  const availableLeads = data.leads.filter((l) => l.unlock_count < l.max_unlocks);
-  const fullLeads = data.leads.filter((l) => l.unlock_count >= l.max_unlocks);
+  const normalize = (s: string) =>
+    s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const q = normalize(searchQ.trim());
+  const ageMs =
+    ageFilter === "24h" ? 864e5 : ageFilter === "7d" ? 7 * 864e5 : ageFilter === "30d" ? 30 * 864e5 : 0;
+  const nowMs = Date.now();
+  const searchedLeads = data.leads.filter((l) => {
+    if (cityFilter !== "all" && (l.city ?? "") !== cityFilter) return false;
+    if (serviceFilter !== "all" && (l.service ?? "") !== serviceFilter) return false;
+    if (ageMs > 0 && nowMs - new Date(l.published_at).getTime() > ageMs) return false;
+    if (q) {
+      const hay = normalize(
+        [l.city, l.service, l.legal_form, l.budget, l.summary, l.delai]
+          .filter(Boolean)
+          .join(" "),
+      );
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+  const availableLeads = searchedLeads.filter((l) => l.unlock_count < l.max_unlocks);
+  const fullLeads = searchedLeads.filter((l) => l.unlock_count >= l.max_unlocks);
   const visibleLeads =
     filter === "available"
       ? availableLeads
       : filter === "full"
         ? fullLeads
         : [...availableLeads, ...fullLeads];
+
+  const cityOptions = Array.from(
+    new Set(data.leads.map((l) => l.city).filter((v): v is string => !!v)),
+  ).sort();
+  const serviceOptions = Array.from(
+    new Set(data.leads.map((l) => l.service).filter((v): v is string => !!v)),
+  ).sort();
+  const hasActiveFilters =
+    searchQ !== "" || cityFilter !== "all" || serviceFilter !== "all" || ageFilter !== "all";
 
   return (
     <div className="space-y-6">
