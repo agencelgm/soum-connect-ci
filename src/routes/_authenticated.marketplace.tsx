@@ -387,10 +387,19 @@ function MarketplacePage() {
                 onChange={(e) => setAgeFilter(e.target.value as typeof ageFilter)}
                 className="h-9 rounded-md border border-input bg-background px-2 text-sm"
               >
-                <option value="all">Toutes dates</option>
-                <option value="24h">Dernières 24h</option>
-                <option value="7d">7 derniers jours</option>
-                <option value="30d">30 derniers jours</option>
+                <option value="all">Reçus : toutes dates</option>
+                <option value="24h">Reçus dernières 24h</option>
+                <option value="7d">Reçus 7 derniers jours</option>
+                <option value="30d">Reçus 30 derniers jours</option>
+              </select>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+                className="h-9 rounded-md border border-input bg-background px-2 text-sm"
+              >
+                <option value="recent">Plus récents d'abord</option>
+                <option value="oldest">Plus anciens d'abord</option>
+                <option value="filling">Bientôt complets</option>
               </select>
               {hasActiveFilters && (
                 <button
