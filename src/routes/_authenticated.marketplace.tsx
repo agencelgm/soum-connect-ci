@@ -27,6 +27,8 @@ import {
   History,
   Info,
   AlertTriangle,
+  Search,
+  X,
 } from "lucide-react";
 
 const WHATSAPP_PREMIUM_URL =
@@ -74,6 +76,10 @@ function MarketplacePage() {
   const [filter, setFilter] = useState<"all" | "available" | "full">(
     focusLeadId ? "all" : "available",
   );
+  const [searchQ, setSearchQ] = useState("");
+  const [cityFilter, setCityFilter] = useState<string>("all");
+  const [serviceFilter, setServiceFilter] = useState<string>("all");
+  const [ageFilter, setAgeFilter] = useState<"all" | "24h" | "7d" | "30d">("all");
 
   // Scroll to and highlight the lead from ?lead= (deep-link from email).
   useEffect(() => {
