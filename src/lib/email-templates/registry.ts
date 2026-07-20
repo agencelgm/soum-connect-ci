@@ -16,6 +16,7 @@ import { template as pendingDocsReminder } from './pending-docs-reminder'
 import { template as academyDrip } from './academy-drip'
 import { template as emailHealthAlert } from './email-health-alert'
 import { template as newProspectsDigest } from './new-prospects-digest'
+import { template as growthSalesEmail } from './growth-sales-email'
 
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'new-prospect': newProspect,
@@ -25,4 +26,5 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'academy-drip': academyDrip,
   'email-health-alert': emailHealthAlert,
   'new-prospects-digest': newProspectsDigest,
+  'growth-sales-email': growthSalesEmail,
 }

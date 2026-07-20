@@ -294,6 +294,84 @@ export type Database = {
         }
         Relationships: []
       }
+      growth_email_batches: {
+        Row: {
+          body_markdown: string
+          created_at: string
+          cta_label: string
+          cta_url: string
+          generated_by: string
+          id: string
+          preview: string
+          scheduled_for: string
+          sent_at: string | null
+          slot: string
+          subject: string
+          week_start: string
+        }
+        Insert: {
+          body_markdown: string
+          created_at?: string
+          cta_label: string
+          cta_url: string
+          generated_by?: string
+          id?: string
+          preview: string
+          scheduled_for: string
+          sent_at?: string | null
+          slot: string
+          subject: string
+          week_start: string
+        }
+        Update: {
+          body_markdown?: string
+          created_at?: string
+          cta_label?: string
+          cta_url?: string
+          generated_by?: string
+          id?: string
+          preview?: string
+          scheduled_for?: string
+          sent_at?: string | null
+          slot?: string
+          subject?: string
+          week_start?: string
+        }
+        Relationships: []
+      }
+      growth_email_sends: {
+        Row: {
+          batch_id: string
+          partner_id: string
+          sent_at: string
+        }
+        Insert: {
+          batch_id: string
+          partner_id: string
+          sent_at?: string
+        }
+        Update: {
+          batch_id?: string
+          partner_id?: string
+          sent_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "growth_email_sends_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "growth_email_batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "growth_email_sends_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lead_publications: {
         Row: {
           audience: Database["public"]["Enums"]["audience_type"]

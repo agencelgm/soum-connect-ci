@@ -76,7 +76,9 @@ import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/em
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as ApiPublicHooksUnlimitedExpirationNotifyRouteImport } from './routes/api/public/hooks/unlimited-expiration-notify'
 import { Route as ApiPublicHooksSendLeadDigestsRouteImport } from './routes/api/public/hooks/send-lead-digests'
+import { Route as ApiPublicHooksSendGrowthEmailsRouteImport } from './routes/api/public/hooks/send-growth-emails'
 import { Route as ApiPublicHooksPendingDocsReminderRouteImport } from './routes/api/public/hooks/pending-docs-reminder'
+import { Route as ApiPublicHooksGenerateGrowthEmailsRouteImport } from './routes/api/public/hooks/generate-growth-emails'
 import { Route as ApiPublicHooksEmailHealthAlertRouteImport } from './routes/api/public/hooks/email-health-alert'
 import { Route as ApiPublicHooksAcademyDripRouteImport } from './routes/api/public/hooks/academy-drip'
 
@@ -435,10 +437,22 @@ const ApiPublicHooksSendLeadDigestsRoute =
     path: '/api/public/hooks/send-lead-digests',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksSendGrowthEmailsRoute =
+  ApiPublicHooksSendGrowthEmailsRouteImport.update({
+    id: '/api/public/hooks/send-growth-emails',
+    path: '/api/public/hooks/send-growth-emails',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksPendingDocsReminderRoute =
   ApiPublicHooksPendingDocsReminderRouteImport.update({
     id: '/api/public/hooks/pending-docs-reminder',
     path: '/api/public/hooks/pending-docs-reminder',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksGenerateGrowthEmailsRoute =
+  ApiPublicHooksGenerateGrowthEmailsRouteImport.update({
+    id: '/api/public/hooks/generate-growth-emails',
+    path: '/api/public/hooks/generate-growth-emails',
     getParentRoute: () => rootRouteImport,
   } as any)
 const ApiPublicHooksEmailHealthAlertRoute =
@@ -516,7 +530,9 @@ export interface FileRoutesByFullPath {
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/api/public/hooks/academy-drip': typeof ApiPublicHooksAcademyDripRoute
   '/api/public/hooks/email-health-alert': typeof ApiPublicHooksEmailHealthAlertRoute
+  '/api/public/hooks/generate-growth-emails': typeof ApiPublicHooksGenerateGrowthEmailsRoute
   '/api/public/hooks/pending-docs-reminder': typeof ApiPublicHooksPendingDocsReminderRoute
+  '/api/public/hooks/send-growth-emails': typeof ApiPublicHooksSendGrowthEmailsRoute
   '/api/public/hooks/send-lead-digests': typeof ApiPublicHooksSendLeadDigestsRoute
   '/api/public/hooks/unlimited-expiration-notify': typeof ApiPublicHooksUnlimitedExpirationNotifyRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -586,7 +602,9 @@ export interface FileRoutesByTo {
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/api/public/hooks/academy-drip': typeof ApiPublicHooksAcademyDripRoute
   '/api/public/hooks/email-health-alert': typeof ApiPublicHooksEmailHealthAlertRoute
+  '/api/public/hooks/generate-growth-emails': typeof ApiPublicHooksGenerateGrowthEmailsRoute
   '/api/public/hooks/pending-docs-reminder': typeof ApiPublicHooksPendingDocsReminderRoute
+  '/api/public/hooks/send-growth-emails': typeof ApiPublicHooksSendGrowthEmailsRoute
   '/api/public/hooks/send-lead-digests': typeof ApiPublicHooksSendLeadDigestsRoute
   '/api/public/hooks/unlimited-expiration-notify': typeof ApiPublicHooksUnlimitedExpirationNotifyRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -659,7 +677,9 @@ export interface FileRoutesById {
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/api/public/hooks/academy-drip': typeof ApiPublicHooksAcademyDripRoute
   '/api/public/hooks/email-health-alert': typeof ApiPublicHooksEmailHealthAlertRoute
+  '/api/public/hooks/generate-growth-emails': typeof ApiPublicHooksGenerateGrowthEmailsRoute
   '/api/public/hooks/pending-docs-reminder': typeof ApiPublicHooksPendingDocsReminderRoute
+  '/api/public/hooks/send-growth-emails': typeof ApiPublicHooksSendGrowthEmailsRoute
   '/api/public/hooks/send-lead-digests': typeof ApiPublicHooksSendLeadDigestsRoute
   '/api/public/hooks/unlimited-expiration-notify': typeof ApiPublicHooksUnlimitedExpirationNotifyRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -732,7 +752,9 @@ export interface FileRouteTypes {
     | '/lovable/email/suppression'
     | '/api/public/hooks/academy-drip'
     | '/api/public/hooks/email-health-alert'
+    | '/api/public/hooks/generate-growth-emails'
     | '/api/public/hooks/pending-docs-reminder'
+    | '/api/public/hooks/send-growth-emails'
     | '/api/public/hooks/send-lead-digests'
     | '/api/public/hooks/unlimited-expiration-notify'
     | '/lovable/email/auth/preview'
@@ -802,7 +824,9 @@ export interface FileRouteTypes {
     | '/lovable/email/suppression'
     | '/api/public/hooks/academy-drip'
     | '/api/public/hooks/email-health-alert'
+    | '/api/public/hooks/generate-growth-emails'
     | '/api/public/hooks/pending-docs-reminder'
+    | '/api/public/hooks/send-growth-emails'
     | '/api/public/hooks/send-lead-digests'
     | '/api/public/hooks/unlimited-expiration-notify'
     | '/lovable/email/auth/preview'
@@ -874,7 +898,9 @@ export interface FileRouteTypes {
     | '/lovable/email/suppression'
     | '/api/public/hooks/academy-drip'
     | '/api/public/hooks/email-health-alert'
+    | '/api/public/hooks/generate-growth-emails'
     | '/api/public/hooks/pending-docs-reminder'
+    | '/api/public/hooks/send-growth-emails'
     | '/api/public/hooks/send-lead-digests'
     | '/api/public/hooks/unlimited-expiration-notify'
     | '/lovable/email/auth/preview'
@@ -938,7 +964,9 @@ export interface RootRouteChildren {
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ApiPublicHooksAcademyDripRoute: typeof ApiPublicHooksAcademyDripRoute
   ApiPublicHooksEmailHealthAlertRoute: typeof ApiPublicHooksEmailHealthAlertRoute
+  ApiPublicHooksGenerateGrowthEmailsRoute: typeof ApiPublicHooksGenerateGrowthEmailsRoute
   ApiPublicHooksPendingDocsReminderRoute: typeof ApiPublicHooksPendingDocsReminderRoute
+  ApiPublicHooksSendGrowthEmailsRoute: typeof ApiPublicHooksSendGrowthEmailsRoute
   ApiPublicHooksSendLeadDigestsRoute: typeof ApiPublicHooksSendLeadDigestsRoute
   ApiPublicHooksUnlimitedExpirationNotifyRoute: typeof ApiPublicHooksUnlimitedExpirationNotifyRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
@@ -1419,11 +1447,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksSendLeadDigestsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/send-growth-emails': {
+      id: '/api/public/hooks/send-growth-emails'
+      path: '/api/public/hooks/send-growth-emails'
+      fullPath: '/api/public/hooks/send-growth-emails'
+      preLoaderRoute: typeof ApiPublicHooksSendGrowthEmailsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/pending-docs-reminder': {
       id: '/api/public/hooks/pending-docs-reminder'
       path: '/api/public/hooks/pending-docs-reminder'
       fullPath: '/api/public/hooks/pending-docs-reminder'
       preLoaderRoute: typeof ApiPublicHooksPendingDocsReminderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/generate-growth-emails': {
+      id: '/api/public/hooks/generate-growth-emails'
+      path: '/api/public/hooks/generate-growth-emails'
+      fullPath: '/api/public/hooks/generate-growth-emails'
+      preLoaderRoute: typeof ApiPublicHooksGenerateGrowthEmailsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/hooks/email-health-alert': {
@@ -1546,8 +1588,11 @@ const rootRouteChildren: RootRouteChildren = {
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ApiPublicHooksAcademyDripRoute: ApiPublicHooksAcademyDripRoute,
   ApiPublicHooksEmailHealthAlertRoute: ApiPublicHooksEmailHealthAlertRoute,
+  ApiPublicHooksGenerateGrowthEmailsRoute:
+    ApiPublicHooksGenerateGrowthEmailsRoute,
   ApiPublicHooksPendingDocsReminderRoute:
     ApiPublicHooksPendingDocsReminderRoute,
+  ApiPublicHooksSendGrowthEmailsRoute: ApiPublicHooksSendGrowthEmailsRoute,
   ApiPublicHooksSendLeadDigestsRoute: ApiPublicHooksSendLeadDigestsRoute,
   ApiPublicHooksUnlimitedExpirationNotifyRoute:
     ApiPublicHooksUnlimitedExpirationNotifyRoute,
