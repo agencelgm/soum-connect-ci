@@ -80,6 +80,7 @@ function MarketplacePage() {
   const [cityFilter, setCityFilter] = useState<string>("all");
   const [serviceFilter, setServiceFilter] = useState<string>("all");
   const [ageFilter, setAgeFilter] = useState<"all" | "24h" | "7d" | "30d">("all");
+  const [sortBy, setSortBy] = useState<"recent" | "oldest" | "filling">("recent");
 
   // Scroll to and highlight the lead from ?lead= (deep-link from email).
   useEffect(() => {
@@ -130,7 +131,8 @@ function MarketplacePage() {
   const searchedLeads = data.leads.filter((l) => {
     if (cityFilter !== "all" && (l.city ?? "") !== cityFilter) return false;
     if (serviceFilter !== "all" && (l.service ?? "") !== serviceFilter) return false;
-    if (ageMs > 0 && nowMs - new Date(l.published_at).getTime() > ageMs) return false;
+    const refTs = new Date(l.submitted_at ?? l.published_at).getTime();
+    if (ageMs > 0 && nowMs - refTs > ageMs) return false;
     if (q) {
       const hay = normalize(
         [l.city, l.service, l.legal_form, l.budget, l.summary, l.delai]
@@ -141,8 +143,15 @@ function MarketplacePage() {
     }
     return true;
   });
-  const availableLeads = searchedLeads.filter((l) => l.unlock_count < l.max_unlocks);
-  const fullLeads = searchedLeads.filter((l) => l.unlock_count >= l.max_unlocks);
+  const tsOf = (l: typeof searchedLeads[number]) =>
+    new Date(l.submitted_at ?? l.published_at).getTime();
+  const sortedLeads = [...searchedLeads].sort((a, b) => {
+    if (sortBy === "oldest") return tsOf(a) - tsOf(b);
+    if (sortBy === "filling") return b.unlock_count / b.max_unlocks - a.unlock_count / a.max_unlocks;
+    return tsOf(b) - tsOf(a);
+  });
+  const availableLeads = sortedLeads.filter((l) => l.unlock_count < l.max_unlocks);
+  const fullLeads = sortedLeads.filter((l) => l.unlock_count >= l.max_unlocks);
   const visibleLeads =
     filter === "available"
       ? availableLeads
