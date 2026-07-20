@@ -80,6 +80,7 @@ function MarketplacePage() {
   const [cityFilter, setCityFilter] = useState<string>("all");
   const [serviceFilter, setServiceFilter] = useState<string>("all");
   const [ageFilter, setAgeFilter] = useState<"all" | "24h" | "7d" | "30d">("all");
+  const [sortBy, setSortBy] = useState<"recent" | "oldest" | "filling">("recent");
 
   // Scroll to and highlight the lead from ?lead= (deep-link from email).
   useEffect(() => {
@@ -130,7 +131,8 @@ function MarketplacePage() {
   const searchedLeads = data.leads.filter((l) => {
     if (cityFilter !== "all" && (l.city ?? "") !== cityFilter) return false;
     if (serviceFilter !== "all" && (l.service ?? "") !== serviceFilter) return false;
-    if (ageMs > 0 && nowMs - new Date(l.published_at).getTime() > ageMs) return false;
+    const refTs = new Date(l.submitted_at ?? l.published_at).getTime();
+    if (ageMs > 0 && nowMs - refTs > ageMs) return false;
     if (q) {
       const hay = normalize(
         [l.city, l.service, l.legal_form, l.budget, l.summary, l.delai]
@@ -141,8 +143,15 @@ function MarketplacePage() {
     }
     return true;
   });
-  const availableLeads = searchedLeads.filter((l) => l.unlock_count < l.max_unlocks);
-  const fullLeads = searchedLeads.filter((l) => l.unlock_count >= l.max_unlocks);
+  const tsOf = (l: typeof searchedLeads[number]) =>
+    new Date(l.submitted_at ?? l.published_at).getTime();
+  const sortedLeads = [...searchedLeads].sort((a, b) => {
+    if (sortBy === "oldest") return tsOf(a) - tsOf(b);
+    if (sortBy === "filling") return b.unlock_count / b.max_unlocks - a.unlock_count / a.max_unlocks;
+    return tsOf(b) - tsOf(a);
+  });
+  const availableLeads = sortedLeads.filter((l) => l.unlock_count < l.max_unlocks);
+  const fullLeads = sortedLeads.filter((l) => l.unlock_count >= l.max_unlocks);
   const visibleLeads =
     filter === "available"
       ? availableLeads
@@ -378,10 +387,19 @@ function MarketplacePage() {
                 onChange={(e) => setAgeFilter(e.target.value as typeof ageFilter)}
                 className="h-9 rounded-md border border-input bg-background px-2 text-sm"
               >
-                <option value="all">Toutes dates</option>
-                <option value="24h">Dernières 24h</option>
-                <option value="7d">7 derniers jours</option>
-                <option value="30d">30 derniers jours</option>
+                <option value="all">Reçus : toutes dates</option>
+                <option value="24h">Reçus dernières 24h</option>
+                <option value="7d">Reçus 7 derniers jours</option>
+                <option value="30d">Reçus 30 derniers jours</option>
+              </select>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+                className="h-9 rounded-md border border-input bg-background px-2 text-sm"
+              >
+                <option value="recent">Plus récents d'abord</option>
+                <option value="oldest">Plus anciens d'abord</option>
+                <option value="filling">Bientôt complets</option>
               </select>
               {hasActiveFilters && (
                 <button
@@ -479,6 +497,7 @@ type Lead = {
   published_at: string;
   delai: string | null;
   premium_until: string | null;
+  submitted_at?: string | null;
 };
 
 function LeadCard({
@@ -547,10 +566,8 @@ function LeadCard({
   const mLeft = Math.floor((msLeft % 3_600_000) / 60_000);
   const countdown = hLeft > 0 ? `${hLeft}h ${mLeft.toString().padStart(2, "0")}min` : `${mLeft}min`;
 
-  const ageHours = Math.max(
-    0,
-    Math.floor((Date.now() - new Date(lead.published_at).getTime()) / 36e5),
-  );
+  const refDate = new Date(lead.submitted_at ?? lead.published_at);
+  const ageHours = Math.max(0, Math.floor((Date.now() - refDate.getTime()) / 36e5));
   const isFresh = ageHours < 48;
   const timeAgo =
     ageHours < 1
@@ -605,7 +622,7 @@ function LeadCard({
               </span>
             )}
             <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
-              <Clock className="h-3 w-3" /> Publié {timeAgo}
+              <Clock className="h-3 w-3" /> Reçu {timeAgo}
             </span>
           </div>
           <h3 className="text-lg font-bold leading-tight">

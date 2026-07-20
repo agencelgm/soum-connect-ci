@@ -52,10 +52,11 @@ export const listMarketplace = createServerFn({ method: "GET" })
     // Enrichir avec le délai souhaité (depuis prospects.raw_payload), non-PII.
     const prospectIds = Array.from(new Set((pubs ?? []).map((p) => p.prospect_id)));
     const delaiByProspect = new Map<string, string | null>();
+    const createdByProspect = new Map<string, string | null>();
     if (prospectIds.length > 0) {
       const { data: prospects } = await supabaseAdmin
         .from("prospects")
-        .select("id, raw_payload")
+        .select("id, raw_payload, created_at")
         .in("id", prospectIds);
       for (const p of prospects ?? []) {
         const rp =
@@ -64,12 +65,17 @@ export const listMarketplace = createServerFn({ method: "GET" })
             : {};
         const d = rp.delai;
         delaiByProspect.set(p.id, typeof d === "string" && d.trim() !== "" ? d : null);
+        createdByProspect.set(p.id, (p as { created_at?: string | null }).created_at ?? null);
       }
     }
 
     const leads = (pubs ?? []).map((p) => {
       const { prospect_id, ...rest } = p;
-      return { ...rest, delai: delaiByProspect.get(prospect_id) ?? null };
+      return {
+        ...rest,
+        delai: delaiByProspect.get(prospect_id) ?? null,
+        submitted_at: createdByProspect.get(prospect_id) ?? rest.published_at,
+      };
     });
 
     return {
