@@ -41,7 +41,8 @@ export async function notifyPartnersNewProspect(
     .from("partners")
     .select("id, email, contact_first_name, status, credits_balance, unlimited_until")
     .in("status", ["approved", "paused"])
-    .is("deleted_at", null);
+    .is("deleted_at", null)
+    .is("email_bounced_at", null);
   if (paErr) {
     console.error("[notifyPartnersNewProspect] partners fetch failed", paErr);
     return { notified: 0, skipped: 0 };
