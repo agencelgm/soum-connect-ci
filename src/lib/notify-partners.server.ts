@@ -1,6 +1,5 @@
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { sendTransactionalServer } from "@/lib/email/send.server";
-import { whatsappReactivationUrl } from "@/lib/contact";
 
 const SITE_ORIGIN = "https://www.soumissioncomptable.com";
 
@@ -149,6 +148,3 @@ export async function notifyPartnersNewProspect(
   });
   return { notified, skipped };
 }
-
-// Ré-export utilitaire (utilisé par le cron pour l'URL WhatsApp de réactivation)
-export { whatsappReactivationUrl };
