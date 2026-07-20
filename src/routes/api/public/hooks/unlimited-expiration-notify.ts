@@ -35,6 +35,7 @@ export const Route = createFileRoute("/api/public/hooks/unlimited-expiration-not
             .select("id, email, contact_first_name, unlimited_until")
             .eq("status", "approved")
             .is("deleted_at", null)
+            .is("email_bounced_at", null)
             .gte("unlimited_until", dayStart)
             .lt("unlimited_until", dayEnd);
 
