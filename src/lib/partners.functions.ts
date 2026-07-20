@@ -761,7 +761,7 @@ export const listProspects = createServerFn({ method: "GET" })
       .from("prospects")
       .select("*")
       .order("created_at", { ascending: false })
-      .limit(200);
+      .limit(1000);
     if (error) throw new Error(error.message);
     return { prospects: data ?? [] };
   });

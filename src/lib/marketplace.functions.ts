@@ -40,7 +40,7 @@ export const listMarketplace = createServerFn({ method: "GET" })
       )
       .eq("is_active", true)
       .order("published_at", { ascending: false })
-      .limit(100);
+      .limit(500);
     if (error) throw new Error(error.message);
 
     const { data: unlocks } = await supabaseAdmin
