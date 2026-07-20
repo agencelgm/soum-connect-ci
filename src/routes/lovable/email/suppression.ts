@@ -121,6 +121,23 @@ export const Route = createFileRoute("/lovable/email/suppression")({
           return Response.json({ error: 'Failed to write suppression' }, { status: 500 })
         }
 
+        // 1b. Flag matching partner so future selections skip them entirely.
+        if (payload.reason === 'bounce' || payload.reason === 'complaint') {
+          const { error: partnerFlagError } = await supabase
+            .from('partners')
+            .update({
+              email_bounced_at: new Date().toISOString(),
+              email_bounce_reason: payload.reason,
+            })
+            .ilike('email', normalizedEmail)
+            .is('email_bounced_at', null)
+          if (partnerFlagError) {
+            console.warn('Failed to flag partner email as bounced', {
+              error: partnerFlagError,
+            })
+          }
+        }
+
         // 2. Append a new log entry for the suppression event (never update existing rows)
         const sendLogStatus = mapReasonToStatus(payload.reason)
         const sendLogMessage = mapReasonToMessage(payload.reason)
