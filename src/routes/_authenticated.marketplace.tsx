@@ -566,10 +566,8 @@ function LeadCard({
   const mLeft = Math.floor((msLeft % 3_600_000) / 60_000);
   const countdown = hLeft > 0 ? `${hLeft}h ${mLeft.toString().padStart(2, "0")}min` : `${mLeft}min`;
 
-  const ageHours = Math.max(
-    0,
-    Math.floor((Date.now() - new Date(lead.published_at).getTime()) / 36e5),
-  );
+  const refDate = new Date(lead.submitted_at ?? lead.published_at);
+  const ageHours = Math.max(0, Math.floor((Date.now() - refDate.getTime()) / 36e5));
   const isFresh = ageHours < 48;
   const timeAgo =
     ageHours < 1
@@ -624,7 +622,7 @@ function LeadCard({
               </span>
             )}
             <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
-              <Clock className="h-3 w-3" /> Publié {timeAgo}
+              <Clock className="h-3 w-3" /> Reçu {timeAgo}
             </span>
           </div>
           <h3 className="text-lg font-bold leading-tight">
