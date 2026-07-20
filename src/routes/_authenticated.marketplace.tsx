@@ -337,10 +337,76 @@ function MarketplacePage() {
 
       {tab === "available" && (
         <div className="space-y-4">
+          <div className="rounded-xl border bg-card p-3 space-y-2">
+            <div className="flex flex-wrap gap-2 items-center">
+              <div className="relative flex-1 min-w-[200px]">
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <input
+                  type="search"
+                  value={searchQ}
+                  onChange={(e) => setSearchQ(e.target.value)}
+                  placeholder="Rechercher (ville, service, budget, résumé…)"
+                  className="h-9 w-full rounded-md border border-input bg-background pl-8 pr-2 text-sm"
+                />
+              </div>
+              <select
+                value={cityFilter}
+                onChange={(e) => setCityFilter(e.target.value)}
+                className="h-9 rounded-md border border-input bg-background px-2 text-sm max-w-[180px]"
+              >
+                <option value="all">Toutes les villes</option>
+                {cityOptions.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+              <select
+                value={serviceFilter}
+                onChange={(e) => setServiceFilter(e.target.value)}
+                className="h-9 rounded-md border border-input bg-background px-2 text-sm max-w-[220px]"
+              >
+                <option value="all">Tous les services</option>
+                {serviceOptions.map((s) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
+                ))}
+              </select>
+              <select
+                value={ageFilter}
+                onChange={(e) => setAgeFilter(e.target.value as typeof ageFilter)}
+                className="h-9 rounded-md border border-input bg-background px-2 text-sm"
+              >
+                <option value="all">Toutes dates</option>
+                <option value="24h">Dernières 24h</option>
+                <option value="7d">7 derniers jours</option>
+                <option value="30d">30 derniers jours</option>
+              </select>
+              {hasActiveFilters && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchQ("");
+                    setCityFilter("all");
+                    setServiceFilter("all");
+                    setAgeFilter("all");
+                  }}
+                  className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                >
+                  <X className="h-3 w-3" /> Réinitialiser
+                </button>
+              )}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {searchedLeads.length} lead{searchedLeads.length > 1 ? "s" : ""} affiché{searchedLeads.length > 1 ? "s" : ""} sur {data.leads.length} au total
+            </p>
+          </div>
+
           <div className="flex gap-2 flex-wrap">
             {(
               [
-                ["all", "Tous", data.leads.length],
+                ["all", "Tous", searchedLeads.length],
                 ["available", "Disponibles", availableLeads.length],
                 ["full", "Complets", fullLeads.length],
               ] as const
