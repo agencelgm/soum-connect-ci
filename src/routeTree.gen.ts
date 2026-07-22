@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ReinitialiserMotDePasseRouteImport } from './routes/reinitialiser-mot-de-passe'
+import { Route as RedactionBusinessPlanCoteDivoireRouteImport } from './routes/redaction-business-plan-cote-divoire'
 import { Route as OffreSiteInternetRouteImport } from './routes/offre-site-internet'
 import { Route as OffreLogoRouteImport } from './routes/offre-logo'
 import { Route as NousContacterRouteImport } from './routes/nous-contacter'
@@ -98,6 +99,12 @@ const ReinitialiserMotDePasseRoute = ReinitialiserMotDePasseRouteImport.update({
   path: '/reinitialiser-mot-de-passe',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RedactionBusinessPlanCoteDivoireRoute =
+  RedactionBusinessPlanCoteDivoireRouteImport.update({
+    id: '/redaction-business-plan-cote-divoire',
+    path: '/redaction-business-plan-cote-divoire',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const OffreSiteInternetRoute = OffreSiteInternetRouteImport.update({
   id: '/offre-site-internet',
   path: '/offre-site-internet',
@@ -501,6 +508,7 @@ export interface FileRoutesByFullPath {
   '/nous-contacter': typeof NousContacterRoute
   '/offre-logo': typeof OffreLogoRoute
   '/offre-site-internet': typeof OffreSiteInternetRoute
+  '/redaction-business-plan-cote-divoire': typeof RedactionBusinessPlanCoteDivoireRoute
   '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/unsubscribe': typeof UnsubscribeRoute
@@ -574,6 +582,7 @@ export interface FileRoutesByTo {
   '/nous-contacter': typeof NousContacterRoute
   '/offre-logo': typeof OffreLogoRoute
   '/offre-site-internet': typeof OffreSiteInternetRoute
+  '/redaction-business-plan-cote-divoire': typeof RedactionBusinessPlanCoteDivoireRoute
   '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/unsubscribe': typeof UnsubscribeRoute
@@ -650,6 +659,7 @@ export interface FileRoutesById {
   '/nous-contacter': typeof NousContacterRoute
   '/offre-logo': typeof OffreLogoRoute
   '/offre-site-internet': typeof OffreSiteInternetRoute
+  '/redaction-business-plan-cote-divoire': typeof RedactionBusinessPlanCoteDivoireRoute
   '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/unsubscribe': typeof UnsubscribeRoute
@@ -726,6 +736,7 @@ export interface FileRouteTypes {
     | '/nous-contacter'
     | '/offre-logo'
     | '/offre-site-internet'
+    | '/redaction-business-plan-cote-divoire'
     | '/reinitialiser-mot-de-passe'
     | '/sitemap.xml'
     | '/unsubscribe'
@@ -799,6 +810,7 @@ export interface FileRouteTypes {
     | '/nous-contacter'
     | '/offre-logo'
     | '/offre-site-internet'
+    | '/redaction-business-plan-cote-divoire'
     | '/reinitialiser-mot-de-passe'
     | '/sitemap.xml'
     | '/unsubscribe'
@@ -874,6 +886,7 @@ export interface FileRouteTypes {
     | '/nous-contacter'
     | '/offre-logo'
     | '/offre-site-internet'
+    | '/redaction-business-plan-cote-divoire'
     | '/reinitialiser-mot-de-passe'
     | '/sitemap.xml'
     | '/unsubscribe'
@@ -950,6 +963,7 @@ export interface RootRouteChildren {
   NousContacterRoute: typeof NousContacterRoute
   OffreLogoRoute: typeof OffreLogoRoute
   OffreSiteInternetRoute: typeof OffreSiteInternetRoute
+  RedactionBusinessPlanCoteDivoireRoute: typeof RedactionBusinessPlanCoteDivoireRoute
   ReinitialiserMotDePasseRoute: typeof ReinitialiserMotDePasseRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
@@ -1011,6 +1025,13 @@ declare module '@tanstack/react-router' {
       path: '/reinitialiser-mot-de-passe'
       fullPath: '/reinitialiser-mot-de-passe'
       preLoaderRoute: typeof ReinitialiserMotDePasseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/redaction-business-plan-cote-divoire': {
+      id: '/redaction-business-plan-cote-divoire'
+      path: '/redaction-business-plan-cote-divoire'
+      fullPath: '/redaction-business-plan-cote-divoire'
+      preLoaderRoute: typeof RedactionBusinessPlanCoteDivoireRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/offre-site-internet': {
@@ -1581,6 +1602,7 @@ const rootRouteChildren: RootRouteChildren = {
   NousContacterRoute: NousContacterRoute,
   OffreLogoRoute: OffreLogoRoute,
   OffreSiteInternetRoute: OffreSiteInternetRoute,
+  RedactionBusinessPlanCoteDivoireRoute: RedactionBusinessPlanCoteDivoireRoute,
   ReinitialiserMotDePasseRoute: ReinitialiserMotDePasseRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   UnsubscribeRoute: UnsubscribeRoute,
