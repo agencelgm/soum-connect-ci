@@ -17,6 +17,8 @@ import { Route as OffreSiteInternetRouteImport } from './routes/offre-site-inter
 import { Route as OffreLogoRouteImport } from './routes/offre-logo'
 import { Route as NousContacterRouteImport } from './routes/nous-contacter'
 import { Route as MotDePasseOublieRouteImport } from './routes/mot-de-passe-oublie'
+import { Route as MontageDossierCreditRouteImport } from './routes/montage-dossier-credit'
+import { Route as MerciDemandeFinancementRouteImport } from './routes/merci-demande-financement'
 import { Route as MerciDemandeBusinessPlanRouteImport } from './routes/merci-demande-business-plan'
 import { Route as MerciRouteImport } from './routes/merci'
 import { Route as McpRouteImport } from './routes/mcp'
@@ -66,6 +68,7 @@ import { Route as ApiPublicTestPartnerWebhookRouteImport } from './routes/api/pu
 import { Route as ApiPublicMetaCapiRouteImport } from './routes/api/public/meta-capi'
 import { Route as ApiPublicLeadUpsellRouteImport } from './routes/api/public/lead-upsell'
 import { Route as ApiPublicLeadRouteImport } from './routes/api/public/lead'
+import { Route as ApiPublicFinancingLeadRouteImport } from './routes/api/public/financing-lead'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
 import { Route as ApiPublicChariowWebhookRouteImport } from './routes/api/public/chariow-webhook'
 import { Route as ApiPublicBusinessPlanLeadRouteImport } from './routes/api/public/business-plan-lead'
@@ -124,6 +127,16 @@ const NousContacterRoute = NousContacterRouteImport.update({
 const MotDePasseOublieRoute = MotDePasseOublieRouteImport.update({
   id: '/mot-de-passe-oublie',
   path: '/mot-de-passe-oublie',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MontageDossierCreditRoute = MontageDossierCreditRouteImport.update({
+  id: '/montage-dossier-credit',
+  path: '/montage-dossier-credit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MerciDemandeFinancementRoute = MerciDemandeFinancementRouteImport.update({
+  id: '/merci-demande-financement',
+  path: '/merci-demande-financement',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MerciDemandeBusinessPlanRoute =
@@ -386,6 +399,11 @@ const ApiPublicLeadRoute = ApiPublicLeadRouteImport.update({
   path: '/api/public/lead',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicFinancingLeadRoute = ApiPublicFinancingLeadRouteImport.update({
+  id: '/api/public/financing-lead',
+  path: '/api/public/financing-lead',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicContactRoute = ApiPublicContactRouteImport.update({
   id: '/api/public/contact',
   path: '/api/public/contact',
@@ -512,6 +530,8 @@ export interface FileRoutesByFullPath {
   '/mcp': typeof McpRoute
   '/merci': typeof MerciRoute
   '/merci-demande-business-plan': typeof MerciDemandeBusinessPlanRoute
+  '/merci-demande-financement': typeof MerciDemandeFinancementRoute
+  '/montage-dossier-credit': typeof MontageDossierCreditRoute
   '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/nous-contacter': typeof NousContacterRoute
   '/offre-logo': typeof OffreLogoRoute
@@ -547,6 +567,7 @@ export interface FileRoutesByFullPath {
   '/api/public/business-plan-lead': typeof ApiPublicBusinessPlanLeadRoute
   '/api/public/chariow-webhook': typeof ApiPublicChariowWebhookRoute
   '/api/public/contact': typeof ApiPublicContactRoute
+  '/api/public/financing-lead': typeof ApiPublicFinancingLeadRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
   '/api/public/lead-upsell': typeof ApiPublicLeadUpsellRoute
   '/api/public/meta-capi': typeof ApiPublicMetaCapiRoute
@@ -587,6 +608,8 @@ export interface FileRoutesByTo {
   '/mcp': typeof McpRoute
   '/merci': typeof MerciRoute
   '/merci-demande-business-plan': typeof MerciDemandeBusinessPlanRoute
+  '/merci-demande-financement': typeof MerciDemandeFinancementRoute
+  '/montage-dossier-credit': typeof MontageDossierCreditRoute
   '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/nous-contacter': typeof NousContacterRoute
   '/offre-logo': typeof OffreLogoRoute
@@ -622,6 +645,7 @@ export interface FileRoutesByTo {
   '/api/public/business-plan-lead': typeof ApiPublicBusinessPlanLeadRoute
   '/api/public/chariow-webhook': typeof ApiPublicChariowWebhookRoute
   '/api/public/contact': typeof ApiPublicContactRoute
+  '/api/public/financing-lead': typeof ApiPublicFinancingLeadRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
   '/api/public/lead-upsell': typeof ApiPublicLeadUpsellRoute
   '/api/public/meta-capi': typeof ApiPublicMetaCapiRoute
@@ -665,6 +689,8 @@ export interface FileRoutesById {
   '/mcp': typeof McpRoute
   '/merci': typeof MerciRoute
   '/merci-demande-business-plan': typeof MerciDemandeBusinessPlanRoute
+  '/merci-demande-financement': typeof MerciDemandeFinancementRoute
+  '/montage-dossier-credit': typeof MontageDossierCreditRoute
   '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/nous-contacter': typeof NousContacterRoute
   '/offre-logo': typeof OffreLogoRoute
@@ -700,6 +726,7 @@ export interface FileRoutesById {
   '/api/public/business-plan-lead': typeof ApiPublicBusinessPlanLeadRoute
   '/api/public/chariow-webhook': typeof ApiPublicChariowWebhookRoute
   '/api/public/contact': typeof ApiPublicContactRoute
+  '/api/public/financing-lead': typeof ApiPublicFinancingLeadRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
   '/api/public/lead-upsell': typeof ApiPublicLeadUpsellRoute
   '/api/public/meta-capi': typeof ApiPublicMetaCapiRoute
@@ -743,6 +770,8 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/merci'
     | '/merci-demande-business-plan'
+    | '/merci-demande-financement'
+    | '/montage-dossier-credit'
     | '/mot-de-passe-oublie'
     | '/nous-contacter'
     | '/offre-logo'
@@ -778,6 +807,7 @@ export interface FileRouteTypes {
     | '/api/public/business-plan-lead'
     | '/api/public/chariow-webhook'
     | '/api/public/contact'
+    | '/api/public/financing-lead'
     | '/api/public/lead'
     | '/api/public/lead-upsell'
     | '/api/public/meta-capi'
@@ -818,6 +848,8 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/merci'
     | '/merci-demande-business-plan'
+    | '/merci-demande-financement'
+    | '/montage-dossier-credit'
     | '/mot-de-passe-oublie'
     | '/nous-contacter'
     | '/offre-logo'
@@ -853,6 +885,7 @@ export interface FileRouteTypes {
     | '/api/public/business-plan-lead'
     | '/api/public/chariow-webhook'
     | '/api/public/contact'
+    | '/api/public/financing-lead'
     | '/api/public/lead'
     | '/api/public/lead-upsell'
     | '/api/public/meta-capi'
@@ -895,6 +928,8 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/merci'
     | '/merci-demande-business-plan'
+    | '/merci-demande-financement'
+    | '/montage-dossier-credit'
     | '/mot-de-passe-oublie'
     | '/nous-contacter'
     | '/offre-logo'
@@ -930,6 +965,7 @@ export interface FileRouteTypes {
     | '/api/public/business-plan-lead'
     | '/api/public/chariow-webhook'
     | '/api/public/contact'
+    | '/api/public/financing-lead'
     | '/api/public/lead'
     | '/api/public/lead-upsell'
     | '/api/public/meta-capi'
@@ -973,6 +1009,8 @@ export interface RootRouteChildren {
   McpRoute: typeof McpRoute
   MerciRoute: typeof MerciRoute
   MerciDemandeBusinessPlanRoute: typeof MerciDemandeBusinessPlanRoute
+  MerciDemandeFinancementRoute: typeof MerciDemandeFinancementRoute
+  MontageDossierCreditRoute: typeof MontageDossierCreditRoute
   MotDePasseOublieRoute: typeof MotDePasseOublieRoute
   NousContacterRoute: typeof NousContacterRoute
   OffreLogoRoute: typeof OffreLogoRoute
@@ -999,6 +1037,7 @@ export interface RootRouteChildren {
   ApiPublicBusinessPlanLeadRoute: typeof ApiPublicBusinessPlanLeadRoute
   ApiPublicChariowWebhookRoute: typeof ApiPublicChariowWebhookRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
+  ApiPublicFinancingLeadRoute: typeof ApiPublicFinancingLeadRoute
   ApiPublicLeadRoute: typeof ApiPublicLeadRoute
   ApiPublicLeadUpsellRoute: typeof ApiPublicLeadUpsellRoute
   ApiPublicMetaCapiRoute: typeof ApiPublicMetaCapiRoute
@@ -1074,6 +1113,20 @@ declare module '@tanstack/react-router' {
       path: '/mot-de-passe-oublie'
       fullPath: '/mot-de-passe-oublie'
       preLoaderRoute: typeof MotDePasseOublieRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/montage-dossier-credit': {
+      id: '/montage-dossier-credit'
+      path: '/montage-dossier-credit'
+      fullPath: '/montage-dossier-credit'
+      preLoaderRoute: typeof MontageDossierCreditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/merci-demande-financement': {
+      id: '/merci-demande-financement'
+      path: '/merci-demande-financement'
+      fullPath: '/merci-demande-financement'
+      preLoaderRoute: typeof MerciDemandeFinancementRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/merci-demande-business-plan': {
@@ -1419,6 +1472,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicLeadRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/financing-lead': {
+      id: '/api/public/financing-lead'
+      path: '/api/public/financing-lead'
+      fullPath: '/api/public/financing-lead'
+      preLoaderRoute: typeof ApiPublicFinancingLeadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/contact': {
       id: '/api/public/contact'
       path: '/api/public/contact'
@@ -1620,6 +1680,8 @@ const rootRouteChildren: RootRouteChildren = {
   McpRoute: McpRoute,
   MerciRoute: MerciRoute,
   MerciDemandeBusinessPlanRoute: MerciDemandeBusinessPlanRoute,
+  MerciDemandeFinancementRoute: MerciDemandeFinancementRoute,
+  MontageDossierCreditRoute: MontageDossierCreditRoute,
   MotDePasseOublieRoute: MotDePasseOublieRoute,
   NousContacterRoute: NousContacterRoute,
   OffreLogoRoute: OffreLogoRoute,
@@ -1647,6 +1709,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicBusinessPlanLeadRoute: ApiPublicBusinessPlanLeadRoute,
   ApiPublicChariowWebhookRoute: ApiPublicChariowWebhookRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
+  ApiPublicFinancingLeadRoute: ApiPublicFinancingLeadRoute,
   ApiPublicLeadRoute: ApiPublicLeadRoute,
   ApiPublicLeadUpsellRoute: ApiPublicLeadUpsellRoute,
   ApiPublicMetaCapiRoute: ApiPublicMetaCapiRoute,
