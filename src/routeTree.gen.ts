@@ -17,6 +17,8 @@ import { Route as OffreSiteInternetRouteImport } from './routes/offre-site-inter
 import { Route as OffreLogoRouteImport } from './routes/offre-logo'
 import { Route as NousContacterRouteImport } from './routes/nous-contacter'
 import { Route as MotDePasseOublieRouteImport } from './routes/mot-de-passe-oublie'
+import { Route as MontageDossierCreditRouteImport } from './routes/montage-dossier-credit'
+import { Route as MerciDemandeFinancementRouteImport } from './routes/merci-demande-financement'
 import { Route as MerciDemandeBusinessPlanRouteImport } from './routes/merci-demande-business-plan'
 import { Route as MerciRouteImport } from './routes/merci'
 import { Route as McpRouteImport } from './routes/mcp'
@@ -125,6 +127,16 @@ const NousContacterRoute = NousContacterRouteImport.update({
 const MotDePasseOublieRoute = MotDePasseOublieRouteImport.update({
   id: '/mot-de-passe-oublie',
   path: '/mot-de-passe-oublie',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MontageDossierCreditRoute = MontageDossierCreditRouteImport.update({
+  id: '/montage-dossier-credit',
+  path: '/montage-dossier-credit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MerciDemandeFinancementRoute = MerciDemandeFinancementRouteImport.update({
+  id: '/merci-demande-financement',
+  path: '/merci-demande-financement',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MerciDemandeBusinessPlanRoute =
@@ -518,6 +530,8 @@ export interface FileRoutesByFullPath {
   '/mcp': typeof McpRoute
   '/merci': typeof MerciRoute
   '/merci-demande-business-plan': typeof MerciDemandeBusinessPlanRoute
+  '/merci-demande-financement': typeof MerciDemandeFinancementRoute
+  '/montage-dossier-credit': typeof MontageDossierCreditRoute
   '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/nous-contacter': typeof NousContacterRoute
   '/offre-logo': typeof OffreLogoRoute
@@ -594,6 +608,8 @@ export interface FileRoutesByTo {
   '/mcp': typeof McpRoute
   '/merci': typeof MerciRoute
   '/merci-demande-business-plan': typeof MerciDemandeBusinessPlanRoute
+  '/merci-demande-financement': typeof MerciDemandeFinancementRoute
+  '/montage-dossier-credit': typeof MontageDossierCreditRoute
   '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/nous-contacter': typeof NousContacterRoute
   '/offre-logo': typeof OffreLogoRoute
@@ -673,6 +689,8 @@ export interface FileRoutesById {
   '/mcp': typeof McpRoute
   '/merci': typeof MerciRoute
   '/merci-demande-business-plan': typeof MerciDemandeBusinessPlanRoute
+  '/merci-demande-financement': typeof MerciDemandeFinancementRoute
+  '/montage-dossier-credit': typeof MontageDossierCreditRoute
   '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/nous-contacter': typeof NousContacterRoute
   '/offre-logo': typeof OffreLogoRoute
@@ -752,6 +770,8 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/merci'
     | '/merci-demande-business-plan'
+    | '/merci-demande-financement'
+    | '/montage-dossier-credit'
     | '/mot-de-passe-oublie'
     | '/nous-contacter'
     | '/offre-logo'
@@ -828,6 +848,8 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/merci'
     | '/merci-demande-business-plan'
+    | '/merci-demande-financement'
+    | '/montage-dossier-credit'
     | '/mot-de-passe-oublie'
     | '/nous-contacter'
     | '/offre-logo'
@@ -906,6 +928,8 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/merci'
     | '/merci-demande-business-plan'
+    | '/merci-demande-financement'
+    | '/montage-dossier-credit'
     | '/mot-de-passe-oublie'
     | '/nous-contacter'
     | '/offre-logo'
@@ -985,6 +1009,8 @@ export interface RootRouteChildren {
   McpRoute: typeof McpRoute
   MerciRoute: typeof MerciRoute
   MerciDemandeBusinessPlanRoute: typeof MerciDemandeBusinessPlanRoute
+  MerciDemandeFinancementRoute: typeof MerciDemandeFinancementRoute
+  MontageDossierCreditRoute: typeof MontageDossierCreditRoute
   MotDePasseOublieRoute: typeof MotDePasseOublieRoute
   NousContacterRoute: typeof NousContacterRoute
   OffreLogoRoute: typeof OffreLogoRoute
@@ -1087,6 +1113,20 @@ declare module '@tanstack/react-router' {
       path: '/mot-de-passe-oublie'
       fullPath: '/mot-de-passe-oublie'
       preLoaderRoute: typeof MotDePasseOublieRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/montage-dossier-credit': {
+      id: '/montage-dossier-credit'
+      path: '/montage-dossier-credit'
+      fullPath: '/montage-dossier-credit'
+      preLoaderRoute: typeof MontageDossierCreditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/merci-demande-financement': {
+      id: '/merci-demande-financement'
+      path: '/merci-demande-financement'
+      fullPath: '/merci-demande-financement'
+      preLoaderRoute: typeof MerciDemandeFinancementRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/merci-demande-business-plan': {
@@ -1640,6 +1680,8 @@ const rootRouteChildren: RootRouteChildren = {
   McpRoute: McpRoute,
   MerciRoute: MerciRoute,
   MerciDemandeBusinessPlanRoute: MerciDemandeBusinessPlanRoute,
+  MerciDemandeFinancementRoute: MerciDemandeFinancementRoute,
+  MontageDossierCreditRoute: MontageDossierCreditRoute,
   MotDePasseOublieRoute: MotDePasseOublieRoute,
   NousContacterRoute: NousContacterRoute,
   OffreLogoRoute: OffreLogoRoute,

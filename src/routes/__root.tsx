@@ -164,7 +164,9 @@ function RootComponent() {
     pathname.startsWith("/espace-partenaire/") ||
     pathname === "/changer-mot-de-passe" ||
     pathname === "/redaction-business-plan-cote-divoire" ||
-    pathname === "/merci-demande-business-plan";
+    pathname === "/merci-demande-business-plan" ||
+    pathname === "/montage-dossier-credit" ||
+    pathname === "/merci-demande-financement";
 
   return (
     <QueryClientProvider client={queryClient}>
