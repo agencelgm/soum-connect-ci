@@ -12,10 +12,12 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ReinitialiserMotDePasseRouteImport } from './routes/reinitialiser-mot-de-passe'
+import { Route as RedactionBusinessPlanCoteDivoireRouteImport } from './routes/redaction-business-plan-cote-divoire'
 import { Route as OffreSiteInternetRouteImport } from './routes/offre-site-internet'
 import { Route as OffreLogoRouteImport } from './routes/offre-logo'
 import { Route as NousContacterRouteImport } from './routes/nous-contacter'
 import { Route as MotDePasseOublieRouteImport } from './routes/mot-de-passe-oublie'
+import { Route as MerciDemandeBusinessPlanRouteImport } from './routes/merci-demande-business-plan'
 import { Route as MerciRouteImport } from './routes/merci'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as InscriptionPartenaireRouteImport } from './routes/inscription-partenaire'
@@ -66,6 +68,7 @@ import { Route as ApiPublicLeadUpsellRouteImport } from './routes/api/public/lea
 import { Route as ApiPublicLeadRouteImport } from './routes/api/public/lead'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
 import { Route as ApiPublicChariowWebhookRouteImport } from './routes/api/public/chariow-webhook'
+import { Route as ApiPublicBusinessPlanLeadRouteImport } from './routes/api/public/business-plan-lead'
 import { Route as AcademieModuleSlugRouteImport } from './routes/academie.$module.$slug'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
@@ -97,6 +100,12 @@ const ReinitialiserMotDePasseRoute = ReinitialiserMotDePasseRouteImport.update({
   path: '/reinitialiser-mot-de-passe',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RedactionBusinessPlanCoteDivoireRoute =
+  RedactionBusinessPlanCoteDivoireRouteImport.update({
+    id: '/redaction-business-plan-cote-divoire',
+    path: '/redaction-business-plan-cote-divoire',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const OffreSiteInternetRoute = OffreSiteInternetRouteImport.update({
   id: '/offre-site-internet',
   path: '/offre-site-internet',
@@ -117,6 +126,12 @@ const MotDePasseOublieRoute = MotDePasseOublieRouteImport.update({
   path: '/mot-de-passe-oublie',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MerciDemandeBusinessPlanRoute =
+  MerciDemandeBusinessPlanRouteImport.update({
+    id: '/merci-demande-business-plan',
+    path: '/merci-demande-business-plan',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const MerciRoute = MerciRouteImport.update({
   id: '/merci',
   path: '/merci',
@@ -381,6 +396,12 @@ const ApiPublicChariowWebhookRoute = ApiPublicChariowWebhookRouteImport.update({
   path: '/api/public/chariow-webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicBusinessPlanLeadRoute =
+  ApiPublicBusinessPlanLeadRouteImport.update({
+    id: '/api/public/business-plan-lead',
+    path: '/api/public/business-plan-lead',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AcademieModuleSlugRoute = AcademieModuleSlugRouteImport.update({
   id: '/$module/$slug',
   path: '/$module/$slug',
@@ -490,10 +511,12 @@ export interface FileRoutesByFullPath {
   '/inscription-partenaire': typeof InscriptionPartenaireRoute
   '/mcp': typeof McpRoute
   '/merci': typeof MerciRoute
+  '/merci-demande-business-plan': typeof MerciDemandeBusinessPlanRoute
   '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/nous-contacter': typeof NousContacterRoute
   '/offre-logo': typeof OffreLogoRoute
   '/offre-site-internet': typeof OffreSiteInternetRoute
+  '/redaction-business-plan-cote-divoire': typeof RedactionBusinessPlanCoteDivoireRoute
   '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/unsubscribe': typeof UnsubscribeRoute
@@ -521,6 +544,7 @@ export interface FileRoutesByFullPath {
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/academie/$module/$slug': typeof AcademieModuleSlugRoute
+  '/api/public/business-plan-lead': typeof ApiPublicBusinessPlanLeadRoute
   '/api/public/chariow-webhook': typeof ApiPublicChariowWebhookRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
@@ -562,10 +586,12 @@ export interface FileRoutesByTo {
   '/inscription-partenaire': typeof InscriptionPartenaireRoute
   '/mcp': typeof McpRoute
   '/merci': typeof MerciRoute
+  '/merci-demande-business-plan': typeof MerciDemandeBusinessPlanRoute
   '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/nous-contacter': typeof NousContacterRoute
   '/offre-logo': typeof OffreLogoRoute
   '/offre-site-internet': typeof OffreSiteInternetRoute
+  '/redaction-business-plan-cote-divoire': typeof RedactionBusinessPlanCoteDivoireRoute
   '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/unsubscribe': typeof UnsubscribeRoute
@@ -593,6 +619,7 @@ export interface FileRoutesByTo {
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/academie/$module/$slug': typeof AcademieModuleSlugRoute
+  '/api/public/business-plan-lead': typeof ApiPublicBusinessPlanLeadRoute
   '/api/public/chariow-webhook': typeof ApiPublicChariowWebhookRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
@@ -637,10 +664,12 @@ export interface FileRoutesById {
   '/inscription-partenaire': typeof InscriptionPartenaireRoute
   '/mcp': typeof McpRoute
   '/merci': typeof MerciRoute
+  '/merci-demande-business-plan': typeof MerciDemandeBusinessPlanRoute
   '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/nous-contacter': typeof NousContacterRoute
   '/offre-logo': typeof OffreLogoRoute
   '/offre-site-internet': typeof OffreSiteInternetRoute
+  '/redaction-business-plan-cote-divoire': typeof RedactionBusinessPlanCoteDivoireRoute
   '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/unsubscribe': typeof UnsubscribeRoute
@@ -668,6 +697,7 @@ export interface FileRoutesById {
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/academie/$module/$slug': typeof AcademieModuleSlugRoute
+  '/api/public/business-plan-lead': typeof ApiPublicBusinessPlanLeadRoute
   '/api/public/chariow-webhook': typeof ApiPublicChariowWebhookRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
@@ -712,10 +742,12 @@ export interface FileRouteTypes {
     | '/inscription-partenaire'
     | '/mcp'
     | '/merci'
+    | '/merci-demande-business-plan'
     | '/mot-de-passe-oublie'
     | '/nous-contacter'
     | '/offre-logo'
     | '/offre-site-internet'
+    | '/redaction-business-plan-cote-divoire'
     | '/reinitialiser-mot-de-passe'
     | '/sitemap.xml'
     | '/unsubscribe'
@@ -743,6 +775,7 @@ export interface FileRouteTypes {
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/academie/$module/$slug'
+    | '/api/public/business-plan-lead'
     | '/api/public/chariow-webhook'
     | '/api/public/contact'
     | '/api/public/lead'
@@ -784,10 +817,12 @@ export interface FileRouteTypes {
     | '/inscription-partenaire'
     | '/mcp'
     | '/merci'
+    | '/merci-demande-business-plan'
     | '/mot-de-passe-oublie'
     | '/nous-contacter'
     | '/offre-logo'
     | '/offre-site-internet'
+    | '/redaction-business-plan-cote-divoire'
     | '/reinitialiser-mot-de-passe'
     | '/sitemap.xml'
     | '/unsubscribe'
@@ -815,6 +850,7 @@ export interface FileRouteTypes {
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/academie/$module/$slug'
+    | '/api/public/business-plan-lead'
     | '/api/public/chariow-webhook'
     | '/api/public/contact'
     | '/api/public/lead'
@@ -858,10 +894,12 @@ export interface FileRouteTypes {
     | '/inscription-partenaire'
     | '/mcp'
     | '/merci'
+    | '/merci-demande-business-plan'
     | '/mot-de-passe-oublie'
     | '/nous-contacter'
     | '/offre-logo'
     | '/offre-site-internet'
+    | '/redaction-business-plan-cote-divoire'
     | '/reinitialiser-mot-de-passe'
     | '/sitemap.xml'
     | '/unsubscribe'
@@ -889,6 +927,7 @@ export interface FileRouteTypes {
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/academie/$module/$slug'
+    | '/api/public/business-plan-lead'
     | '/api/public/chariow-webhook'
     | '/api/public/contact'
     | '/api/public/lead'
@@ -933,10 +972,12 @@ export interface RootRouteChildren {
   InscriptionPartenaireRoute: typeof InscriptionPartenaireRoute
   McpRoute: typeof McpRoute
   MerciRoute: typeof MerciRoute
+  MerciDemandeBusinessPlanRoute: typeof MerciDemandeBusinessPlanRoute
   MotDePasseOublieRoute: typeof MotDePasseOublieRoute
   NousContacterRoute: typeof NousContacterRoute
   OffreLogoRoute: typeof OffreLogoRoute
   OffreSiteInternetRoute: typeof OffreSiteInternetRoute
+  RedactionBusinessPlanCoteDivoireRoute: typeof RedactionBusinessPlanCoteDivoireRoute
   ReinitialiserMotDePasseRoute: typeof ReinitialiserMotDePasseRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
@@ -955,6 +996,7 @@ export interface RootRouteChildren {
   EnIndexRoute: typeof EnIndexRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
+  ApiPublicBusinessPlanLeadRoute: typeof ApiPublicBusinessPlanLeadRoute
   ApiPublicChariowWebhookRoute: typeof ApiPublicChariowWebhookRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
   ApiPublicLeadRoute: typeof ApiPublicLeadRoute
@@ -999,6 +1041,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReinitialiserMotDePasseRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/redaction-business-plan-cote-divoire': {
+      id: '/redaction-business-plan-cote-divoire'
+      path: '/redaction-business-plan-cote-divoire'
+      fullPath: '/redaction-business-plan-cote-divoire'
+      preLoaderRoute: typeof RedactionBusinessPlanCoteDivoireRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/offre-site-internet': {
       id: '/offre-site-internet'
       path: '/offre-site-internet'
@@ -1025,6 +1074,13 @@ declare module '@tanstack/react-router' {
       path: '/mot-de-passe-oublie'
       fullPath: '/mot-de-passe-oublie'
       preLoaderRoute: typeof MotDePasseOublieRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/merci-demande-business-plan': {
+      id: '/merci-demande-business-plan'
+      path: '/merci-demande-business-plan'
+      fullPath: '/merci-demande-business-plan'
+      preLoaderRoute: typeof MerciDemandeBusinessPlanRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/merci': {
@@ -1377,6 +1433,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicChariowWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/business-plan-lead': {
+      id: '/api/public/business-plan-lead'
+      path: '/api/public/business-plan-lead'
+      fullPath: '/api/public/business-plan-lead'
+      preLoaderRoute: typeof ApiPublicBusinessPlanLeadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/academie/$module/$slug': {
       id: '/academie/$module/$slug'
       path: '/$module/$slug'
@@ -1556,10 +1619,12 @@ const rootRouteChildren: RootRouteChildren = {
   InscriptionPartenaireRoute: InscriptionPartenaireRoute,
   McpRoute: McpRoute,
   MerciRoute: MerciRoute,
+  MerciDemandeBusinessPlanRoute: MerciDemandeBusinessPlanRoute,
   MotDePasseOublieRoute: MotDePasseOublieRoute,
   NousContacterRoute: NousContacterRoute,
   OffreLogoRoute: OffreLogoRoute,
   OffreSiteInternetRoute: OffreSiteInternetRoute,
+  RedactionBusinessPlanCoteDivoireRoute: RedactionBusinessPlanCoteDivoireRoute,
   ReinitialiserMotDePasseRoute: ReinitialiserMotDePasseRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   UnsubscribeRoute: UnsubscribeRoute,
@@ -1579,6 +1644,7 @@ const rootRouteChildren: RootRouteChildren = {
   EnIndexRoute: EnIndexRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
+  ApiPublicBusinessPlanLeadRoute: ApiPublicBusinessPlanLeadRoute,
   ApiPublicChariowWebhookRoute: ApiPublicChariowWebhookRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
   ApiPublicLeadRoute: ApiPublicLeadRoute,
