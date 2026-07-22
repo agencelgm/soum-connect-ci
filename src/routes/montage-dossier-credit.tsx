@@ -274,14 +274,6 @@ function Page() {
               Expliquez votre besoin en quelques minutes. Des professionnels pourront ensuite vous proposer
               un accompagnement adapté à votre projet.
             </p>
-            <div className="mt-8 hidden lg:block">
-              <img
-                src={HERO_IMAGE}
-                alt="Entrepreneur ivoirien préparant son dossier de financement avec l'aide d'un professionnel comptable"
-                loading="eager"
-                className="rounded-2xl shadow-md w-full h-56 object-cover"
-              />
-            </div>
           </div>
 
           <FinancingLeadForm />
