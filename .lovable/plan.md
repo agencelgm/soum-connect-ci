@@ -1,69 +1,62 @@
-## Cause
+## Objectif
 
-Le message « forbidden: cannot modify admin-controlled fields » vient du trigger `prevent_partner_privilege_escalation` sur `public.partners`. Il bloque toute modification des champs sensibles (dont `credits_balance`) sauf si :
-- `auth.uid() IS NULL` (appel service_role), OU
-- l'appelant a le rôle `admin` ou `agent`.
+Créer une landing page autonome dédiée au service "rédaction de business plan" à l'URL `/redaction-business-plan-cote-divoire`, non indexée (invisible depuis la nav, le footer, le sitemap et les moteurs), avec un formulaire 3 étapes dédié et une page de remerciement `/merci-demande-business-plan` pour le suivi de conversion.
 
-Mais notre RPC `public.unlock_lead` (SECURITY DEFINER) fait `UPDATE public.partners SET credits_balance = credits_balance - 1` pendant que `auth.uid()` reste l'ID du **partenaire** appelant (JWT du user). Résultat : le trigger considère cela comme une escalade et lève l'erreur.
+## Positionnement (règles éditoriales)
 
-Autrement dit : l'utilisateur voyait cette erreur en cliquant "Débloquer ce lead" (visible sur la capture) — pas au moment de l'approbation. Toute action qui passe par une RPC SECURITY DEFINER qui touche à un champ protégé de `partners` déclenche le même blocage (ce serait aussi le cas de futurs RPC de recharge, etc.).
+- Soumission Comptable = plateforme de mise en relation, jamais rédacteur.
+- Formulations autorisées uniquement : « Trouvez un professionnel… », « Recevez jusqu'à 5 propositions… », « Comparez… ».
+- Jamais de promesse de financement, de faux témoignages, de chiffres inventés, de logos de banques.
+- Vouvoiement, ton rassurant, contexte ivoirien, FCFA.
 
-## Correctif
+## Fichiers à créer
 
-Mettre à jour la fonction trigger `prevent_partner_privilege_escalation` pour autoriser également les appels provenant d'une fonction SECURITY DEFINER de confiance, sans affaiblir la protection contre les auto-modifications par un partenaire directement via PostgREST.
+1. `src/routes/redaction-business-plan-cote-divoire.tsx`
+   - Route publique mais `noindex,nofollow` dans le `head()` + exclue du sitemap.
+   - Structure exacte du brief : Header allégé → Hero + formulaire → bandeau réassurance → Problème → Agitation → Solution → 3 étapes → Contenu du BP → Profils → Comparer les offres → Questions à poser → Confiance → FAQ (accordéon `<details>` HTML statique, conforme aux règles projet) → CTA final → Footer allégé.
+   - Rendu autonome : n'utilise pas `Header`/`Footer`/`MobileCtaBar` globaux (retire les chromes via un flag `immersive` dans `__root.tsx`, comme déjà fait pour marketplace/recharger). Header/footer minimaux locaux (logo à gauche, bouton "Recevoir mes soumissions" à droite qui scrolle vers `#formulaire`).
+   - Bouton fixe mobile (`Recevoir mes propositions`) qui scrolle vers le formulaire, sans masquer les champs.
+   - Événements analytics via `trackEvent` : `landing_page_view` (mount), `form_start`, `form_step_1_complete`, `form_step_2_complete`, `form_submit`, `cta_click`, `phone_click`, `whatsapp_click`, et conversion `business_plan_lead`.
+   - Meta Pixel `Lead` déclenché à la soumission via `trackMetaConversion`.
 
-Migration (un seul `CREATE OR REPLACE FUNCTION`) :
+2. `src/components/business-plan/BusinessPlanLeadForm.tsx`
+   - Formulaire 3 étapes dédié (les champs ne correspondent pas au `MultiStepLeadForm` existant — objectifs BP, avancement, secteur, description, ville, délai, budget spécifique BP, coordonnées + moyen de contact préféré + consentement).
+   - Indicateur "Étape X sur 3", validation Zod côté client, envoi POST JSON vers `/api/public/business-plan-lead`.
+   - Après succès : `router.navigate({ to: "/merci-demande-business-plan" })`.
 
-```sql
-CREATE OR REPLACE FUNCTION public.prevent_partner_privilege_escalation()
-RETURNS trigger
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path TO 'public'
-AS $$
-BEGIN
-  -- Autorisé :
-  --  - service_role / pas de JWT : auth.uid() IS NULL
-  --  - admin / agent
-  --  - appel via une fonction SECURITY DEFINER (ex: unlock_lead) :
-  --    dans ce cas current_user (postgres, owner de la fonction) diffère
-  --    de session_user (authenticated). PostgREST en accès direct garde
-  --    current_user = session_user = 'authenticated', donc les updates
-  --    directs d'un partenaire restent bloqués.
-  IF auth.uid() IS NULL
-     OR current_user IS DISTINCT FROM session_user
-     OR public.has_role(auth.uid(), 'admin')
-     OR public.has_role(auth.uid(), 'agent') THEN
-    RETURN NEW;
-  END IF;
+3. `src/routes/api/public/business-plan-lead.ts`
+   - Endpoint public (calqué sur `contact.ts` / `lead.ts`) : Zod strict, `recordProspect({ form_type: "lead", service: "Rédaction business plan", audience: "creation", source: "landing-business-plan", ... })`.
+   - Forward vers `GHL_WEBHOOK_URL` si défini, avec `tag: "business-plan"` pour segmenter côté CRM.
+   - Aucune modification de schéma DB — on réutilise `prospects` tel quel (le détail spécifique BP part dans `raw_payload`).
 
-  IF NEW.status              IS DISTINCT FROM OLD.status
-  OR NEW.credits_balance     IS DISTINCT FROM OLD.credits_balance
-  OR NEW.tier                IS DISTINCT FROM OLD.tier
-  OR NEW.unlimited_until     IS DISTINCT FROM OLD.unlimited_until
-  OR NEW.approved_at         IS DISTINCT FROM OLD.approved_at
-  OR NEW.approved_by         IS DISTINCT FROM OLD.approved_by
-  OR NEW.paused_at           IS DISTINCT FROM OLD.paused_at
-  OR NEW.paused_by           IS DISTINCT FROM OLD.paused_by
-  OR NEW.pause_reason        IS DISTINCT FROM OLD.pause_reason
-  OR NEW.deleted_at          IS DISTINCT FROM OLD.deleted_at
-  OR NEW.profile_id          IS DISTINCT FROM OLD.profile_id
-  OR NEW.email_bounced_at    IS DISTINCT FROM OLD.email_bounced_at
-  OR NEW.email_bounce_reason IS DISTINCT FROM OLD.email_bounce_reason
-  OR NEW.docs_received_at    IS DISTINCT FROM OLD.docs_received_at
-  OR NEW.last_login_at       IS DISTINCT FROM OLD.last_login_at
-  THEN
-    RAISE EXCEPTION 'forbidden: cannot modify admin-controlled fields'
-      USING ERRCODE = '42501';
-  END IF;
+4. `src/routes/merci-demande-business-plan.tsx`
+   - Page de remerciement minimale, `noindex,nofollow`, message exact du brief, lien retour discret vers l'accueil. Sert de destination pour tracking conversion GA4/Ads/Pixel.
 
-  RETURN NEW;
-END;
-$$;
-```
+## Fichiers à modifier
 
-## Vérification
+- `src/routes/__root.tsx` : ajouter `/redaction-business-plan-cote-divoire` et `/merci-demande-business-plan` à la liste `immersiveAuth` (renommée mentalement en "immersive") pour masquer Header/Footer/MobileCtaBar globaux sur ces pages.
+- `src/routes/sitemap[.]xml.ts` : s'assurer que ces deux routes ne sont PAS listées (par défaut le sitemap est explicite — vérifier lors de l'implémentation, ne rien ajouter).
+- Aucune modification de `public/robots.txt` : le `noindex` dans `head()` suffit et évite de signaler l'URL.
 
-- Un partenaire clique "Débloquer ce lead" → RPC `unlock_lead` décrémente `credits_balance`, plus d'erreur.
-- Un partenaire tentant un `UPDATE public.partners SET credits_balance = 999 WHERE id = <soi>` en direct via PostgREST reste bloqué (current_user = session_user = 'authenticated').
-- L'approbation admin/agent (via `supabaseAdmin`, `auth.uid()` IS NULL) reste OK, comme avant.
+## Direction visuelle
+
+- Réutilisation stricte des tokens existants (`bg-background`, `text-primary`, `bg-primary`, ombres/rounded déjà en place). Aucune nouvelle couleur.
+- Typo actuelle (Poppins headings / Inter body déjà chargées dans `__root.tsx`).
+- Cartes arrondies, ombres discrètes, sections alternées blanc / gris très clair.
+
+## Images
+
+- Hero : 1 photo réaliste (entrepreneur ivoirien + professionnel autour d'un document) via Unsplash — pas d'IA (règle mémoire projet). URL Unsplash directe avec `loading="eager"` sur le hero, `loading="lazy"` sur le reste.
+- Alt du hero : « Entrepreneur ivoirien recherchant un professionnel pour la rédaction de son business plan en Côte d'Ivoire ».
+
+## SEO & tracking
+
+- `head()` : title « Business plan Côte d'Ivoire | Comparez 5 offres », meta description du brief, `<meta name="robots" content="noindex,nofollow">`, `og:title`/`og:description` cohérents, PAS de canonical (page cachée), PAS d'ajout au sitemap.
+- Schema JSON-LD FAQPage à partir de la FAQ (utile même si noindex, ne coûte rien) — optionnel, à confirmer si vous préférez zéro schema sur une page cachée.
+- Événements GA4 via `trackEvent` (helper existant `src/lib/analytics.ts`), Meta `Lead` via `trackMetaConversion` existant.
+
+## Ce qui n'est PAS fait (à me confirmer si besoin)
+
+- Aucune migration DB.
+- Aucune modification du `MultiStepLeadForm` existant (formulaire séparé pour ne pas polluer les autres pages).
+- Pas de lien vers cette landing depuis le site public (conforme à votre demande "ne doit pas apparaitre dans la vraie page").
