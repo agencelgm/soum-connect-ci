@@ -66,6 +66,7 @@ import { Route as ApiPublicTestPartnerWebhookRouteImport } from './routes/api/pu
 import { Route as ApiPublicMetaCapiRouteImport } from './routes/api/public/meta-capi'
 import { Route as ApiPublicLeadUpsellRouteImport } from './routes/api/public/lead-upsell'
 import { Route as ApiPublicLeadRouteImport } from './routes/api/public/lead'
+import { Route as ApiPublicFinancingLeadRouteImport } from './routes/api/public/financing-lead'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
 import { Route as ApiPublicChariowWebhookRouteImport } from './routes/api/public/chariow-webhook'
 import { Route as ApiPublicBusinessPlanLeadRouteImport } from './routes/api/public/business-plan-lead'
@@ -386,6 +387,11 @@ const ApiPublicLeadRoute = ApiPublicLeadRouteImport.update({
   path: '/api/public/lead',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicFinancingLeadRoute = ApiPublicFinancingLeadRouteImport.update({
+  id: '/api/public/financing-lead',
+  path: '/api/public/financing-lead',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicContactRoute = ApiPublicContactRouteImport.update({
   id: '/api/public/contact',
   path: '/api/public/contact',
@@ -547,6 +553,7 @@ export interface FileRoutesByFullPath {
   '/api/public/business-plan-lead': typeof ApiPublicBusinessPlanLeadRoute
   '/api/public/chariow-webhook': typeof ApiPublicChariowWebhookRoute
   '/api/public/contact': typeof ApiPublicContactRoute
+  '/api/public/financing-lead': typeof ApiPublicFinancingLeadRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
   '/api/public/lead-upsell': typeof ApiPublicLeadUpsellRoute
   '/api/public/meta-capi': typeof ApiPublicMetaCapiRoute
@@ -622,6 +629,7 @@ export interface FileRoutesByTo {
   '/api/public/business-plan-lead': typeof ApiPublicBusinessPlanLeadRoute
   '/api/public/chariow-webhook': typeof ApiPublicChariowWebhookRoute
   '/api/public/contact': typeof ApiPublicContactRoute
+  '/api/public/financing-lead': typeof ApiPublicFinancingLeadRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
   '/api/public/lead-upsell': typeof ApiPublicLeadUpsellRoute
   '/api/public/meta-capi': typeof ApiPublicMetaCapiRoute
@@ -700,6 +708,7 @@ export interface FileRoutesById {
   '/api/public/business-plan-lead': typeof ApiPublicBusinessPlanLeadRoute
   '/api/public/chariow-webhook': typeof ApiPublicChariowWebhookRoute
   '/api/public/contact': typeof ApiPublicContactRoute
+  '/api/public/financing-lead': typeof ApiPublicFinancingLeadRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
   '/api/public/lead-upsell': typeof ApiPublicLeadUpsellRoute
   '/api/public/meta-capi': typeof ApiPublicMetaCapiRoute
@@ -778,6 +787,7 @@ export interface FileRouteTypes {
     | '/api/public/business-plan-lead'
     | '/api/public/chariow-webhook'
     | '/api/public/contact'
+    | '/api/public/financing-lead'
     | '/api/public/lead'
     | '/api/public/lead-upsell'
     | '/api/public/meta-capi'
@@ -853,6 +863,7 @@ export interface FileRouteTypes {
     | '/api/public/business-plan-lead'
     | '/api/public/chariow-webhook'
     | '/api/public/contact'
+    | '/api/public/financing-lead'
     | '/api/public/lead'
     | '/api/public/lead-upsell'
     | '/api/public/meta-capi'
@@ -930,6 +941,7 @@ export interface FileRouteTypes {
     | '/api/public/business-plan-lead'
     | '/api/public/chariow-webhook'
     | '/api/public/contact'
+    | '/api/public/financing-lead'
     | '/api/public/lead'
     | '/api/public/lead-upsell'
     | '/api/public/meta-capi'
@@ -999,6 +1011,7 @@ export interface RootRouteChildren {
   ApiPublicBusinessPlanLeadRoute: typeof ApiPublicBusinessPlanLeadRoute
   ApiPublicChariowWebhookRoute: typeof ApiPublicChariowWebhookRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
+  ApiPublicFinancingLeadRoute: typeof ApiPublicFinancingLeadRoute
   ApiPublicLeadRoute: typeof ApiPublicLeadRoute
   ApiPublicLeadUpsellRoute: typeof ApiPublicLeadUpsellRoute
   ApiPublicMetaCapiRoute: typeof ApiPublicMetaCapiRoute
@@ -1419,6 +1432,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicLeadRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/financing-lead': {
+      id: '/api/public/financing-lead'
+      path: '/api/public/financing-lead'
+      fullPath: '/api/public/financing-lead'
+      preLoaderRoute: typeof ApiPublicFinancingLeadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/contact': {
       id: '/api/public/contact'
       path: '/api/public/contact'
@@ -1647,6 +1667,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicBusinessPlanLeadRoute: ApiPublicBusinessPlanLeadRoute,
   ApiPublicChariowWebhookRoute: ApiPublicChariowWebhookRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
+  ApiPublicFinancingLeadRoute: ApiPublicFinancingLeadRoute,
   ApiPublicLeadRoute: ApiPublicLeadRoute,
   ApiPublicLeadUpsellRoute: ApiPublicLeadUpsellRoute,
   ApiPublicMetaCapiRoute: ApiPublicMetaCapiRoute,
