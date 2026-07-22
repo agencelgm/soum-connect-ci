@@ -162,7 +162,9 @@ function RootComponent() {
     pathname.startsWith("/admin/") ||
     pathname === "/espace-partenaire" ||
     pathname.startsWith("/espace-partenaire/") ||
-    pathname === "/changer-mot-de-passe";
+    pathname === "/changer-mot-de-passe" ||
+    pathname === "/redaction-business-plan-cote-divoire" ||
+    pathname === "/merci-demande-business-plan";
 
   return (
     <QueryClientProvider client={queryClient}>

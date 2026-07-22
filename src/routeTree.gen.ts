@@ -17,6 +17,7 @@ import { Route as OffreSiteInternetRouteImport } from './routes/offre-site-inter
 import { Route as OffreLogoRouteImport } from './routes/offre-logo'
 import { Route as NousContacterRouteImport } from './routes/nous-contacter'
 import { Route as MotDePasseOublieRouteImport } from './routes/mot-de-passe-oublie'
+import { Route as MerciDemandeBusinessPlanRouteImport } from './routes/merci-demande-business-plan'
 import { Route as MerciRouteImport } from './routes/merci'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as InscriptionPartenaireRouteImport } from './routes/inscription-partenaire'
@@ -125,6 +126,12 @@ const MotDePasseOublieRoute = MotDePasseOublieRouteImport.update({
   path: '/mot-de-passe-oublie',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MerciDemandeBusinessPlanRoute =
+  MerciDemandeBusinessPlanRouteImport.update({
+    id: '/merci-demande-business-plan',
+    path: '/merci-demande-business-plan',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const MerciRoute = MerciRouteImport.update({
   id: '/merci',
   path: '/merci',
@@ -504,6 +511,7 @@ export interface FileRoutesByFullPath {
   '/inscription-partenaire': typeof InscriptionPartenaireRoute
   '/mcp': typeof McpRoute
   '/merci': typeof MerciRoute
+  '/merci-demande-business-plan': typeof MerciDemandeBusinessPlanRoute
   '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/nous-contacter': typeof NousContacterRoute
   '/offre-logo': typeof OffreLogoRoute
@@ -578,6 +586,7 @@ export interface FileRoutesByTo {
   '/inscription-partenaire': typeof InscriptionPartenaireRoute
   '/mcp': typeof McpRoute
   '/merci': typeof MerciRoute
+  '/merci-demande-business-plan': typeof MerciDemandeBusinessPlanRoute
   '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/nous-contacter': typeof NousContacterRoute
   '/offre-logo': typeof OffreLogoRoute
@@ -655,6 +664,7 @@ export interface FileRoutesById {
   '/inscription-partenaire': typeof InscriptionPartenaireRoute
   '/mcp': typeof McpRoute
   '/merci': typeof MerciRoute
+  '/merci-demande-business-plan': typeof MerciDemandeBusinessPlanRoute
   '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/nous-contacter': typeof NousContacterRoute
   '/offre-logo': typeof OffreLogoRoute
@@ -732,6 +742,7 @@ export interface FileRouteTypes {
     | '/inscription-partenaire'
     | '/mcp'
     | '/merci'
+    | '/merci-demande-business-plan'
     | '/mot-de-passe-oublie'
     | '/nous-contacter'
     | '/offre-logo'
@@ -806,6 +817,7 @@ export interface FileRouteTypes {
     | '/inscription-partenaire'
     | '/mcp'
     | '/merci'
+    | '/merci-demande-business-plan'
     | '/mot-de-passe-oublie'
     | '/nous-contacter'
     | '/offre-logo'
@@ -882,6 +894,7 @@ export interface FileRouteTypes {
     | '/inscription-partenaire'
     | '/mcp'
     | '/merci'
+    | '/merci-demande-business-plan'
     | '/mot-de-passe-oublie'
     | '/nous-contacter'
     | '/offre-logo'
@@ -959,6 +972,7 @@ export interface RootRouteChildren {
   InscriptionPartenaireRoute: typeof InscriptionPartenaireRoute
   McpRoute: typeof McpRoute
   MerciRoute: typeof MerciRoute
+  MerciDemandeBusinessPlanRoute: typeof MerciDemandeBusinessPlanRoute
   MotDePasseOublieRoute: typeof MotDePasseOublieRoute
   NousContacterRoute: typeof NousContacterRoute
   OffreLogoRoute: typeof OffreLogoRoute
@@ -1060,6 +1074,13 @@ declare module '@tanstack/react-router' {
       path: '/mot-de-passe-oublie'
       fullPath: '/mot-de-passe-oublie'
       preLoaderRoute: typeof MotDePasseOublieRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/merci-demande-business-plan': {
+      id: '/merci-demande-business-plan'
+      path: '/merci-demande-business-plan'
+      fullPath: '/merci-demande-business-plan'
+      preLoaderRoute: typeof MerciDemandeBusinessPlanRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/merci': {
@@ -1598,6 +1619,7 @@ const rootRouteChildren: RootRouteChildren = {
   InscriptionPartenaireRoute: InscriptionPartenaireRoute,
   McpRoute: McpRoute,
   MerciRoute: MerciRoute,
+  MerciDemandeBusinessPlanRoute: MerciDemandeBusinessPlanRoute,
   MotDePasseOublieRoute: MotDePasseOublieRoute,
   NousContacterRoute: NousContacterRoute,
   OffreLogoRoute: OffreLogoRoute,
