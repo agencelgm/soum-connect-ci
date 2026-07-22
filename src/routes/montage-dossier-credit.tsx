@@ -33,8 +33,6 @@ const TITLE = "Montage de dossier de crédit en Côte d'Ivoire | Soumission Comp
 const DESCRIPTION =
   "Trouvez un professionnel pour préparer votre dossier de crédit ou de financement. Recevez plusieurs propositions gratuitement et sans engagement.";
 
-const HERO_IMAGE =
-  "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=1200&q=80";
 
 export const Route = createFileRoute("/montage-dossier-credit")({
   head: () => ({
@@ -276,14 +274,6 @@ function Page() {
               Expliquez votre besoin en quelques minutes. Des professionnels pourront ensuite vous proposer
               un accompagnement adapté à votre projet.
             </p>
-            <div className="mt-8 hidden lg:block">
-              <img
-                src={HERO_IMAGE}
-                alt="Entrepreneur ivoirien préparant son dossier de financement avec l'aide d'un professionnel comptable"
-                loading="eager"
-                className="rounded-2xl shadow-md w-full h-56 object-cover"
-              />
-            </div>
           </div>
 
           <FinancingLeadForm />
