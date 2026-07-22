@@ -66,6 +66,7 @@ import { Route as ApiPublicLeadUpsellRouteImport } from './routes/api/public/lea
 import { Route as ApiPublicLeadRouteImport } from './routes/api/public/lead'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
 import { Route as ApiPublicChariowWebhookRouteImport } from './routes/api/public/chariow-webhook'
+import { Route as ApiPublicBusinessPlanLeadRouteImport } from './routes/api/public/business-plan-lead'
 import { Route as AcademieModuleSlugRouteImport } from './routes/academie.$module.$slug'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
@@ -381,6 +382,12 @@ const ApiPublicChariowWebhookRoute = ApiPublicChariowWebhookRouteImport.update({
   path: '/api/public/chariow-webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicBusinessPlanLeadRoute =
+  ApiPublicBusinessPlanLeadRouteImport.update({
+    id: '/api/public/business-plan-lead',
+    path: '/api/public/business-plan-lead',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AcademieModuleSlugRoute = AcademieModuleSlugRouteImport.update({
   id: '/$module/$slug',
   path: '/$module/$slug',
@@ -521,6 +528,7 @@ export interface FileRoutesByFullPath {
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/academie/$module/$slug': typeof AcademieModuleSlugRoute
+  '/api/public/business-plan-lead': typeof ApiPublicBusinessPlanLeadRoute
   '/api/public/chariow-webhook': typeof ApiPublicChariowWebhookRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
@@ -593,6 +601,7 @@ export interface FileRoutesByTo {
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/academie/$module/$slug': typeof AcademieModuleSlugRoute
+  '/api/public/business-plan-lead': typeof ApiPublicBusinessPlanLeadRoute
   '/api/public/chariow-webhook': typeof ApiPublicChariowWebhookRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
@@ -668,6 +677,7 @@ export interface FileRoutesById {
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/academie/$module/$slug': typeof AcademieModuleSlugRoute
+  '/api/public/business-plan-lead': typeof ApiPublicBusinessPlanLeadRoute
   '/api/public/chariow-webhook': typeof ApiPublicChariowWebhookRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
@@ -743,6 +753,7 @@ export interface FileRouteTypes {
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/academie/$module/$slug'
+    | '/api/public/business-plan-lead'
     | '/api/public/chariow-webhook'
     | '/api/public/contact'
     | '/api/public/lead'
@@ -815,6 +826,7 @@ export interface FileRouteTypes {
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/academie/$module/$slug'
+    | '/api/public/business-plan-lead'
     | '/api/public/chariow-webhook'
     | '/api/public/contact'
     | '/api/public/lead'
@@ -889,6 +901,7 @@ export interface FileRouteTypes {
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/academie/$module/$slug'
+    | '/api/public/business-plan-lead'
     | '/api/public/chariow-webhook'
     | '/api/public/contact'
     | '/api/public/lead'
@@ -955,6 +968,7 @@ export interface RootRouteChildren {
   EnIndexRoute: typeof EnIndexRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
+  ApiPublicBusinessPlanLeadRoute: typeof ApiPublicBusinessPlanLeadRoute
   ApiPublicChariowWebhookRoute: typeof ApiPublicChariowWebhookRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
   ApiPublicLeadRoute: typeof ApiPublicLeadRoute
@@ -1377,6 +1391,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicChariowWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/business-plan-lead': {
+      id: '/api/public/business-plan-lead'
+      path: '/api/public/business-plan-lead'
+      fullPath: '/api/public/business-plan-lead'
+      preLoaderRoute: typeof ApiPublicBusinessPlanLeadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/academie/$module/$slug': {
       id: '/academie/$module/$slug'
       path: '/$module/$slug'
@@ -1579,6 +1600,7 @@ const rootRouteChildren: RootRouteChildren = {
   EnIndexRoute: EnIndexRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
+  ApiPublicBusinessPlanLeadRoute: ApiPublicBusinessPlanLeadRoute,
   ApiPublicChariowWebhookRoute: ApiPublicChariowWebhookRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
   ApiPublicLeadRoute: ApiPublicLeadRoute,
