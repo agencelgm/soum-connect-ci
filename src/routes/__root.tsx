@@ -166,7 +166,10 @@ function RootComponent() {
     pathname === "/redaction-business-plan-cote-divoire" ||
     pathname === "/merci-demande-business-plan" ||
     pathname === "/montage-dossier-credit" ||
-    pathname === "/merci-demande-financement";
+    pathname === "/merci-demande-financement" ||
+    pathname === "/offre-logo" ||
+    pathname === "/offre-site-internet" ||
+    pathname === "/offre-gestion-marketing";
 
   return (
     <QueryClientProvider client={queryClient}>

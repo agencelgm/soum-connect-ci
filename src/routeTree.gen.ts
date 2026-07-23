@@ -15,6 +15,7 @@ import { Route as ReinitialiserMotDePasseRouteImport } from './routes/reinitiali
 import { Route as RedactionBusinessPlanCoteDivoireRouteImport } from './routes/redaction-business-plan-cote-divoire'
 import { Route as OffreSiteInternetRouteImport } from './routes/offre-site-internet'
 import { Route as OffreLogoRouteImport } from './routes/offre-logo'
+import { Route as OffreGestionMarketingRouteImport } from './routes/offre-gestion-marketing'
 import { Route as NousContacterRouteImport } from './routes/nous-contacter'
 import { Route as MotDePasseOublieRouteImport } from './routes/mot-de-passe-oublie'
 import { Route as MontageDossierCreditRouteImport } from './routes/montage-dossier-credit'
@@ -118,6 +119,11 @@ const OffreSiteInternetRoute = OffreSiteInternetRouteImport.update({
 const OffreLogoRoute = OffreLogoRouteImport.update({
   id: '/offre-logo',
   path: '/offre-logo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OffreGestionMarketingRoute = OffreGestionMarketingRouteImport.update({
+  id: '/offre-gestion-marketing',
+  path: '/offre-gestion-marketing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NousContacterRoute = NousContacterRouteImport.update({
@@ -541,6 +547,7 @@ export interface FileRoutesByFullPath {
   '/montage-dossier-credit': typeof MontageDossierCreditRoute
   '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/nous-contacter': typeof NousContacterRoute
+  '/offre-gestion-marketing': typeof OffreGestionMarketingRoute
   '/offre-logo': typeof OffreLogoRoute
   '/offre-site-internet': typeof OffreSiteInternetRoute
   '/redaction-business-plan-cote-divoire': typeof RedactionBusinessPlanCoteDivoireRoute
@@ -620,6 +627,7 @@ export interface FileRoutesByTo {
   '/montage-dossier-credit': typeof MontageDossierCreditRoute
   '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/nous-contacter': typeof NousContacterRoute
+  '/offre-gestion-marketing': typeof OffreGestionMarketingRoute
   '/offre-logo': typeof OffreLogoRoute
   '/offre-site-internet': typeof OffreSiteInternetRoute
   '/redaction-business-plan-cote-divoire': typeof RedactionBusinessPlanCoteDivoireRoute
@@ -702,6 +710,7 @@ export interface FileRoutesById {
   '/montage-dossier-credit': typeof MontageDossierCreditRoute
   '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/nous-contacter': typeof NousContacterRoute
+  '/offre-gestion-marketing': typeof OffreGestionMarketingRoute
   '/offre-logo': typeof OffreLogoRoute
   '/offre-site-internet': typeof OffreSiteInternetRoute
   '/redaction-business-plan-cote-divoire': typeof RedactionBusinessPlanCoteDivoireRoute
@@ -784,6 +793,7 @@ export interface FileRouteTypes {
     | '/montage-dossier-credit'
     | '/mot-de-passe-oublie'
     | '/nous-contacter'
+    | '/offre-gestion-marketing'
     | '/offre-logo'
     | '/offre-site-internet'
     | '/redaction-business-plan-cote-divoire'
@@ -863,6 +873,7 @@ export interface FileRouteTypes {
     | '/montage-dossier-credit'
     | '/mot-de-passe-oublie'
     | '/nous-contacter'
+    | '/offre-gestion-marketing'
     | '/offre-logo'
     | '/offre-site-internet'
     | '/redaction-business-plan-cote-divoire'
@@ -944,6 +955,7 @@ export interface FileRouteTypes {
     | '/montage-dossier-credit'
     | '/mot-de-passe-oublie'
     | '/nous-contacter'
+    | '/offre-gestion-marketing'
     | '/offre-logo'
     | '/offre-site-internet'
     | '/redaction-business-plan-cote-divoire'
@@ -1026,6 +1038,7 @@ export interface RootRouteChildren {
   MontageDossierCreditRoute: typeof MontageDossierCreditRoute
   MotDePasseOublieRoute: typeof MotDePasseOublieRoute
   NousContacterRoute: typeof NousContacterRoute
+  OffreGestionMarketingRoute: typeof OffreGestionMarketingRoute
   OffreLogoRoute: typeof OffreLogoRoute
   OffreSiteInternetRoute: typeof OffreSiteInternetRoute
   RedactionBusinessPlanCoteDivoireRoute: typeof RedactionBusinessPlanCoteDivoireRoute
@@ -1113,6 +1126,13 @@ declare module '@tanstack/react-router' {
       path: '/offre-logo'
       fullPath: '/offre-logo'
       preLoaderRoute: typeof OffreLogoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/offre-gestion-marketing': {
+      id: '/offre-gestion-marketing'
+      path: '/offre-gestion-marketing'
+      fullPath: '/offre-gestion-marketing'
+      preLoaderRoute: typeof OffreGestionMarketingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/nous-contacter': {
@@ -1705,6 +1725,7 @@ const rootRouteChildren: RootRouteChildren = {
   MontageDossierCreditRoute: MontageDossierCreditRoute,
   MotDePasseOublieRoute: MotDePasseOublieRoute,
   NousContacterRoute: NousContacterRoute,
+  OffreGestionMarketingRoute: OffreGestionMarketingRoute,
   OffreLogoRoute: OffreLogoRoute,
   OffreSiteInternetRoute: OffreSiteInternetRoute,
   RedactionBusinessPlanCoteDivoireRoute: RedactionBusinessPlanCoteDivoireRoute,

@@ -256,9 +256,9 @@ function Page() {
               Préparez un dossier de financement clair, crédible et professionnel
             </h1>
             <p className="mt-4 text-base md:text-lg text-muted-foreground leading-relaxed">
-              Vous recherchez un financement auprès d'une banque ou d'un investisseur ? Soumission
-              Comptable vous permet de recevoir plusieurs propositions de professionnels capables de vous
-              accompagner dans la préparation de votre dossier.
+              Vous cherchez à constituer un dossier d'investissement pour le présenter à une banque ou à
+              un investisseur ? Soumission Comptable vous permet de recevoir plusieurs propositions de
+              professionnels capables de vous accompagner dans la préparation de votre dossier.
             </p>
             <ul className="mt-5 space-y-2 text-sm md:text-base text-foreground">
               {["Demande gratuite", "Plusieurs propositions à comparer", "Aucun engagement"].map((t) => (

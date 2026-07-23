@@ -15,7 +15,7 @@ const Schema = z.object({
   description: z.string().trim().min(10).max(2000),
   ville: z.string().trim().min(2).max(120),
   delai: z.string().min(1).max(120),
-  budget: z.string().max(120).optional().default(""),
+  budget: z.string().min(1).max(120),
   // Étape 3
   nom: z.string().trim().min(2).max(120),
   mobile: z.string().trim().min(6).max(32).regex(/^[+0-9 ]+$/),

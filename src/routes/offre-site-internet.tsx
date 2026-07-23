@@ -22,15 +22,15 @@ function SiteOfferPage() {
     <OfferPage
       language="fr"
       offer="site"
-      nextPath="/merci"
+      nextPath="/offre-gestion-marketing"
       badge="Offre exclusive !!"
       title="Conception de SITE INTERNET professionnel"
       price="à partir de 165 000 FCFA"
       description="Donnez à votre entreprise une présence en ligne crédible : site vitrine moderne, responsive, optimisé SEO. Mise en ligne rapide et accompagnement inclus."
       yesLabel="Oui, je suis intéressé(e)"
       noLabel="Non, merci, je ne suis pas intéressé(e)"
-      progressLabel="Étape 2 sur 2 — Offres complémentaires"
-      progressPercent={100}
+      progressLabel="Étape 2 sur 3 — Offres complémentaires"
+      progressPercent={66}
     />
   );
 }
