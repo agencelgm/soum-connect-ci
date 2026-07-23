@@ -83,6 +83,7 @@ import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/em
 import { Route as ApiPublicHooksUnlimitedExpirationNotifyRouteImport } from './routes/api/public/hooks/unlimited-expiration-notify'
 import { Route as ApiPublicHooksSendLeadDigestsRouteImport } from './routes/api/public/hooks/send-lead-digests'
 import { Route as ApiPublicHooksSendGrowthEmailsRouteImport } from './routes/api/public/hooks/send-growth-emails'
+import { Route as ApiPublicHooksPromoWinbackDispatchRouteImport } from './routes/api/public/hooks/promo-winback-dispatch'
 import { Route as ApiPublicHooksPendingDocsReminderRouteImport } from './routes/api/public/hooks/pending-docs-reminder'
 import { Route as ApiPublicHooksGenerateGrowthEmailsRouteImport } from './routes/api/public/hooks/generate-growth-emails'
 import { Route as ApiPublicHooksEmailHealthAlertRouteImport } from './routes/api/public/hooks/email-health-alert'
@@ -482,6 +483,12 @@ const ApiPublicHooksSendGrowthEmailsRoute =
     path: '/api/public/hooks/send-growth-emails',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksPromoWinbackDispatchRoute =
+  ApiPublicHooksPromoWinbackDispatchRouteImport.update({
+    id: '/api/public/hooks/promo-winback-dispatch',
+    path: '/api/public/hooks/promo-winback-dispatch',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksPendingDocsReminderRoute =
   ApiPublicHooksPendingDocsReminderRouteImport.update({
     id: '/api/public/hooks/pending-docs-reminder',
@@ -577,6 +584,7 @@ export interface FileRoutesByFullPath {
   '/api/public/hooks/email-health-alert': typeof ApiPublicHooksEmailHealthAlertRoute
   '/api/public/hooks/generate-growth-emails': typeof ApiPublicHooksGenerateGrowthEmailsRoute
   '/api/public/hooks/pending-docs-reminder': typeof ApiPublicHooksPendingDocsReminderRoute
+  '/api/public/hooks/promo-winback-dispatch': typeof ApiPublicHooksPromoWinbackDispatchRoute
   '/api/public/hooks/send-growth-emails': typeof ApiPublicHooksSendGrowthEmailsRoute
   '/api/public/hooks/send-lead-digests': typeof ApiPublicHooksSendLeadDigestsRoute
   '/api/public/hooks/unlimited-expiration-notify': typeof ApiPublicHooksUnlimitedExpirationNotifyRoute
@@ -655,6 +663,7 @@ export interface FileRoutesByTo {
   '/api/public/hooks/email-health-alert': typeof ApiPublicHooksEmailHealthAlertRoute
   '/api/public/hooks/generate-growth-emails': typeof ApiPublicHooksGenerateGrowthEmailsRoute
   '/api/public/hooks/pending-docs-reminder': typeof ApiPublicHooksPendingDocsReminderRoute
+  '/api/public/hooks/promo-winback-dispatch': typeof ApiPublicHooksPromoWinbackDispatchRoute
   '/api/public/hooks/send-growth-emails': typeof ApiPublicHooksSendGrowthEmailsRoute
   '/api/public/hooks/send-lead-digests': typeof ApiPublicHooksSendLeadDigestsRoute
   '/api/public/hooks/unlimited-expiration-notify': typeof ApiPublicHooksUnlimitedExpirationNotifyRoute
@@ -736,6 +745,7 @@ export interface FileRoutesById {
   '/api/public/hooks/email-health-alert': typeof ApiPublicHooksEmailHealthAlertRoute
   '/api/public/hooks/generate-growth-emails': typeof ApiPublicHooksGenerateGrowthEmailsRoute
   '/api/public/hooks/pending-docs-reminder': typeof ApiPublicHooksPendingDocsReminderRoute
+  '/api/public/hooks/promo-winback-dispatch': typeof ApiPublicHooksPromoWinbackDispatchRoute
   '/api/public/hooks/send-growth-emails': typeof ApiPublicHooksSendGrowthEmailsRoute
   '/api/public/hooks/send-lead-digests': typeof ApiPublicHooksSendLeadDigestsRoute
   '/api/public/hooks/unlimited-expiration-notify': typeof ApiPublicHooksUnlimitedExpirationNotifyRoute
@@ -817,6 +827,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/email-health-alert'
     | '/api/public/hooks/generate-growth-emails'
     | '/api/public/hooks/pending-docs-reminder'
+    | '/api/public/hooks/promo-winback-dispatch'
     | '/api/public/hooks/send-growth-emails'
     | '/api/public/hooks/send-lead-digests'
     | '/api/public/hooks/unlimited-expiration-notify'
@@ -895,6 +906,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/email-health-alert'
     | '/api/public/hooks/generate-growth-emails'
     | '/api/public/hooks/pending-docs-reminder'
+    | '/api/public/hooks/promo-winback-dispatch'
     | '/api/public/hooks/send-growth-emails'
     | '/api/public/hooks/send-lead-digests'
     | '/api/public/hooks/unlimited-expiration-notify'
@@ -975,6 +987,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/email-health-alert'
     | '/api/public/hooks/generate-growth-emails'
     | '/api/public/hooks/pending-docs-reminder'
+    | '/api/public/hooks/promo-winback-dispatch'
     | '/api/public/hooks/send-growth-emails'
     | '/api/public/hooks/send-lead-digests'
     | '/api/public/hooks/unlimited-expiration-notify'
@@ -1047,6 +1060,7 @@ export interface RootRouteChildren {
   ApiPublicHooksEmailHealthAlertRoute: typeof ApiPublicHooksEmailHealthAlertRoute
   ApiPublicHooksGenerateGrowthEmailsRoute: typeof ApiPublicHooksGenerateGrowthEmailsRoute
   ApiPublicHooksPendingDocsReminderRoute: typeof ApiPublicHooksPendingDocsReminderRoute
+  ApiPublicHooksPromoWinbackDispatchRoute: typeof ApiPublicHooksPromoWinbackDispatchRoute
   ApiPublicHooksSendGrowthEmailsRoute: typeof ApiPublicHooksSendGrowthEmailsRoute
   ApiPublicHooksSendLeadDigestsRoute: typeof ApiPublicHooksSendLeadDigestsRoute
   ApiPublicHooksUnlimitedExpirationNotifyRoute: typeof ApiPublicHooksUnlimitedExpirationNotifyRoute
@@ -1577,6 +1591,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksSendGrowthEmailsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/promo-winback-dispatch': {
+      id: '/api/public/hooks/promo-winback-dispatch'
+      path: '/api/public/hooks/promo-winback-dispatch'
+      fullPath: '/api/public/hooks/promo-winback-dispatch'
+      preLoaderRoute: typeof ApiPublicHooksPromoWinbackDispatchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/pending-docs-reminder': {
       id: '/api/public/hooks/pending-docs-reminder'
       path: '/api/public/hooks/pending-docs-reminder'
@@ -1721,6 +1742,8 @@ const rootRouteChildren: RootRouteChildren = {
     ApiPublicHooksGenerateGrowthEmailsRoute,
   ApiPublicHooksPendingDocsReminderRoute:
     ApiPublicHooksPendingDocsReminderRoute,
+  ApiPublicHooksPromoWinbackDispatchRoute:
+    ApiPublicHooksPromoWinbackDispatchRoute,
   ApiPublicHooksSendGrowthEmailsRoute: ApiPublicHooksSendGrowthEmailsRoute,
   ApiPublicHooksSendLeadDigestsRoute: ApiPublicHooksSendLeadDigestsRoute,
   ApiPublicHooksUnlimitedExpirationNotifyRoute:
