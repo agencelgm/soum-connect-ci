@@ -247,9 +247,28 @@ export const Route = createFileRoute("/api/public/chariow-webhook")({
         let newBalance = currentBalance;
         let newUnlimitedUntil: string | null = current?.unlimited_until ?? null;
 
+        // Promotion active (non consommée et non expirée) : applique le multiplicateur.
+        const { data: activePromo } = await supabaseAdmin
+          .from("partner_promotions")
+          .select("id, kind, credit_multiplier, unlimited_days, ab_variant, expires_at")
+          .eq("partner_id", partner.id)
+          .is("used_at", null)
+          .gt("expires_at", new Date().toISOString())
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        const creditMultiplier = activePromo?.credit_multiplier ?? 1;
+        const promoUnlimitedDays = activePromo?.unlimited_days ?? null;
+        const effectiveCredits = pack.credits * creditMultiplier;
+        const effectiveUnlimitedDays =
+          pack.unlimited && pack.unlimitedDays
+            ? (promoUnlimitedDays ?? pack.unlimitedDays)
+            : pack.unlimitedDays ?? null;
+
         let balErr: { message: string } | null = null;
-        if (pack.unlimited && pack.unlimitedDays) {
-          const stack = stackUnlimitedUntil(currentUnlimitedUntil, pack.unlimitedDays);
+        if (pack.unlimited && effectiveUnlimitedDays) {
+          const stack = stackUnlimitedUntil(currentUnlimitedUntil, effectiveUnlimitedDays);
           newUnlimitedUntil = stack.newUntil.toISOString();
           console.log("[chariow-webhook] unlimited stack", {
             partner_id: partner.id,
@@ -258,7 +277,8 @@ export const Route = createFileRoute("/api/public/chariow-webhook")({
             previous_unlimited_until: currentUnlimitedUntil?.toISOString() ?? null,
             stacked: stack.stacked,
             base_used: stack.baseUsed.toISOString(),
-            days_added: pack.unlimitedDays,
+            days_added: effectiveUnlimitedDays,
+            promo_applied: activePromo?.id ?? null,
             new_unlimited_until: newUnlimitedUntil,
           });
           const { error } = await supabaseAdmin
@@ -267,13 +287,15 @@ export const Route = createFileRoute("/api/public/chariow-webhook")({
             .eq("id", partner.id);
           balErr = error;
         } else {
-          newBalance = currentBalance + pack.credits;
+          newBalance = currentBalance + effectiveCredits;
           console.log("[chariow-webhook] credit purchase", {
             partner_id: partner.id,
             license_code: licenseCode,
             product_id: productId,
             previous_balance: currentBalance,
-            credits_added: pack.credits,
+            credits_added: effectiveCredits,
+            promo_multiplier: creditMultiplier,
+            promo_applied: activePromo?.id ?? null,
             new_balance: newBalance,
           });
           const { error } = await supabaseAdmin
@@ -292,13 +314,13 @@ export const Route = createFileRoute("/api/public/chariow-webhook")({
 
         await supabaseAdmin.from("credit_transactions").insert({
           partner_id: partner.id,
-          amount: pack.unlimited ? 0 : pack.credits,
+          amount: pack.unlimited ? 0 : effectiveCredits,
           balance_after: newBalance,
           tx_type: pack.unlimited ? "chariow_unlimited" : "chariow_purchase",
           reference_id: payment.id,
           note: pack.unlimited
-            ? `Achat Chariow — Accès illimité ${pack.unlimitedDays} jours (${pack.price}) — licence ${licenseCode}`
-            : `Achat Chariow (${pack.price}) — licence ${licenseCode}`,
+            ? `Achat Chariow — Accès illimité ${effectiveUnlimitedDays} jours (${pack.price}) — licence ${licenseCode}${activePromo ? " — PROMO" : ""}`
+            : `Achat Chariow ${effectiveCredits} prospects (${pack.price}) — licence ${licenseCode}${activePromo ? ` — PROMO ×${creditMultiplier}` : ""}`,
           created_by: null,
         });
 
@@ -307,10 +329,18 @@ export const Route = createFileRoute("/api/public/chariow-webhook")({
           .update({
             status: "credited",
             partner_id: partner.id,
-            credits_granted: pack.unlimited ? 0 : pack.credits,
+            credits_granted: pack.unlimited ? 0 : effectiveCredits,
             processed_at: new Date().toISOString(),
           })
           .eq("id", payment.id);
+
+        // Consomme la promotion (une seule utilisation).
+        if (activePromo) {
+          await supabaseAdmin
+            .from("partner_promotions")
+            .update({ used_at: new Date().toISOString(), used_payment_id: payment.id })
+            .eq("id", activePromo.id);
+        }
 
         if (consumedIntentId) {
           await supabaseAdmin
