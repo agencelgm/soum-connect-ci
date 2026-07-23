@@ -127,7 +127,12 @@ export function FinancingLeadForm() {
         { content_name: "Montage dossier financement", content_category: "financement" },
         { em: email, ph: mobile, fn: nom, ct: ville },
       );
-      await navigate({ to: "/merci-demande-financement" });
+      try {
+        if (json.leadId) sessionStorage.setItem("leadId", json.leadId);
+        sessionStorage.setItem("leadSource", "financement");
+        sessionStorage.setItem("finalThankYouPath", "/merci-demande-financement");
+      } catch {}
+      await navigate({ to: "/offre-logo" });
     } catch {
       toast.error("Impossible d'envoyer votre demande. Réessayez dans un instant.");
       setSubmitting(false);

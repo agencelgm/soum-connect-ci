@@ -29,8 +29,8 @@ function LogoOfferPage() {
       description="Boostez l'image de votre entreprise avec un logo unique, conçu sur mesure par nos designers partenaires. Livraison rapide, fichiers prêts à l'emploi."
       yesLabel="Oui, je suis intéressé(e)"
       noLabel="Non, merci, je ne suis pas intéressé(e)"
-      progressLabel="Étape 1 sur 2 — Offres complémentaires"
-      progressPercent={50}
+      progressLabel="Étape 1 sur 3 — Offres complémentaires"
+      progressPercent={33}
     />
   );
 }
