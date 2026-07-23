@@ -33,11 +33,10 @@ const DELAIS = [
 ];
 
 const BUDGETS = [
-  "Moins de 100 000 FCFA",
-  "Entre 100 000 et 250 000 FCFA",
-  "Entre 250 000 et 500 000 FCFA",
-  "Plus de 500 000 FCFA",
-  "Je souhaite d'abord recevoir des propositions",
+  "100 000 – 200 000 FCFA",
+  "300 000 – 500 000 FCFA",
+  "500 000 FCFA et plus",
+  "Je ne sais pas encore",
 ];
 
 const CONTACTS: Array<{ id: "telephone" | "whatsapp" | "email"; label: string }> = [
@@ -81,7 +80,7 @@ export function BusinessPlanLeadForm() {
   }
 
   function goStep3() {
-    if (!secteur.trim() || description.trim().length < 10 || !ville.trim() || !delai) {
+    if (!secteur.trim() || description.trim().length < 10 || !ville.trim() || !delai || !budget) {
       toast.error("Merci de compléter tous les champs obligatoires.");
       return;
     }
@@ -130,7 +129,12 @@ export function BusinessPlanLeadForm() {
         { content_name: "Business Plan", content_category: "business_plan" },
         { em: email, ph: mobile, fn: nom, ct: ville },
       );
-      await navigate({ to: "/merci-demande-business-plan" });
+      try {
+        if (json.leadId) sessionStorage.setItem("leadId", json.leadId);
+        sessionStorage.setItem("leadSource", "business-plan");
+        sessionStorage.setItem("finalThankYouPath", "/merci-demande-business-plan");
+      } catch {}
+      await navigate({ to: "/offre-logo" });
     } catch {
       toast.error("Impossible d'envoyer votre demande. Réessayez dans un instant.");
       setSubmitting(false);
@@ -247,14 +251,14 @@ export function BusinessPlanLeadForm() {
             </div>
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">
-                Budget indicatif <span className="text-muted-foreground font-normal">(facultatif)</span>
+                Combien êtes-vous prêt à payer votre prestataire pour la rédaction de votre business plan ?
               </label>
               <select
                 value={budget}
                 onChange={(e) => setBudget(e.target.value)}
                 className="w-full min-h-11 rounded-md border border-input bg-white px-3 py-2 text-sm"
               >
-                <option value="">Non précisé</option>
+                <option value="">Sélectionnez une option</option>
                 {BUDGETS.map((r) => (
                   <option key={r} value={r}>{r}</option>
                 ))}
