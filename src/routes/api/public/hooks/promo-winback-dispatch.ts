@@ -125,7 +125,7 @@ export const Route = createFileRoute("/api/public/hooks/promo-winback-dispatch")
           // Idempotence : un seul envoi par (promotion, slot, jour).
           const { error: seErr } = await supabaseAdmin
             .from("promo_email_sends")
-            .insert({ promotion_id: promotionId, slot, day });
+            .insert({ promotion_id: promotionId, slot_key: `${day}:${slot}`, template_name: template });
           if (seErr) {
             // Doublon (unique) -> déjà envoyé aujourd'hui pour ce slot.
             skipped += 1;
