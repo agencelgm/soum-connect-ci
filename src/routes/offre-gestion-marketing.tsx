@@ -17,7 +17,7 @@ export const Route = createFileRoute("/offre-gestion-marketing")({
       path: "/offre-gestion-marketing",
       title: "Offre exclusive — Consultation en gestion marketing | SoumissionComptable.com",
       description:
-        "Premier rendez-vous gratuit avec un spécialiste marketing pour développer votre entreprise.",
+        "Rendez-vous gratuit avec un spécialiste marketing pour développer votre entreprise.",
     });
     head.meta.push({ name: "robots", content: "noindex, nofollow" });
     return head;
@@ -98,7 +98,7 @@ function MarketingOfferPage() {
             </p>
 
             <p className="mt-4 text-3xl md:text-4xl font-extrabold text-secondary">
-              Premier rendez-vous gratuit
+              Rendez-vous gratuit
             </p>
 
             <p className="mt-4 text-base text-foreground leading-relaxed">
