@@ -512,6 +512,60 @@ export type Database = {
         }
         Relationships: []
       }
+      partner_promotions: {
+        Row: {
+          ab_variant: string
+          created_at: string
+          credit_multiplier: number
+          expires_at: string
+          id: string
+          kind: string
+          partner_id: string
+          unlimited_days: number
+          used_at: string | null
+          used_payment_id: string | null
+        }
+        Insert: {
+          ab_variant?: string
+          created_at?: string
+          credit_multiplier?: number
+          expires_at: string
+          id?: string
+          kind: string
+          partner_id: string
+          unlimited_days?: number
+          used_at?: string | null
+          used_payment_id?: string | null
+        }
+        Update: {
+          ab_variant?: string
+          created_at?: string
+          credit_multiplier?: number
+          expires_at?: string
+          id?: string
+          kind?: string
+          partner_id?: string
+          unlimited_days?: number
+          used_at?: string | null
+          used_payment_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_promotions_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partners"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "partner_promotions_used_payment_id_fkey"
+            columns: ["used_payment_id"]
+            isOneToOne: false
+            referencedRelation: "chariow_payments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       partner_video_progress: {
         Row: {
           completed_at: string | null
@@ -742,6 +796,38 @@ export type Database = {
         }
         Relationships: []
       }
+      promo_email_sends: {
+        Row: {
+          id: string
+          promotion_id: string
+          sent_at: string
+          slot_key: string
+          template_name: string
+        }
+        Insert: {
+          id?: string
+          promotion_id: string
+          sent_at?: string
+          slot_key: string
+          template_name: string
+        }
+        Update: {
+          id?: string
+          promotion_id?: string
+          sent_at?: string
+          slot_key?: string
+          template_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "promo_email_sends_promotion_id_fkey"
+            columns: ["promotion_id"]
+            isOneToOne: false
+            referencedRelation: "partner_promotions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       prospects: {
         Row: {
           audience: Database["public"]["Enums"]["audience_type"]
@@ -911,6 +997,14 @@ export type Database = {
       is_partner_team: {
         Args: { _partner_id: string; _user_id: string }
         Returns: boolean
+      }
+      maybe_grant_50pct_promo: {
+        Args: { _partner_id: string }
+        Returns: {
+          ab_variant: string
+          granted: boolean
+          promotion_id: string
+        }[]
       }
       move_to_dlq: {
         Args: {

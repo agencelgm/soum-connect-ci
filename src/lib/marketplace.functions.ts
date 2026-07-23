@@ -122,6 +122,38 @@ export const unlockLead = createServerFn({ method: "POST" })
         await emitPartnerEvent(partner, balance === 0 ? "zero_credits" : "low_credits");
       }
     }
+
+    // Vérifie si le partenaire déclenche la promo "50% des crédits offerts consommés"
+    // Une seule promo active à la fois (unique index). Ignore silencieusement les erreurs.
+    try {
+      const callerPartner = await getCallerPartner(context.userId);
+      if (callerPartner) {
+        const { data: promoRes, error: promoErr } = await supabaseAdmin.rpc("maybe_grant_50pct_promo", {
+          _partner_id: callerPartner.id,
+        });
+        if (promoErr) {
+          console.warn("[unlockLead] maybe_grant_50pct_promo failed", promoErr.message);
+        } else if (Array.isArray(promoRes) && promoRes[0]?.granted) {
+          const variant = (promoRes[0] as { ab_variant: string }).ab_variant;
+          const templateName =
+            variant === "B_price_per_lead" ? "promo-50pct-variant-b" : "promo-50pct-variant-a";
+          const { sendTransactionalServer } = await import("@/lib/email/send.server");
+          await sendTransactionalServer({
+            templateName,
+            recipientEmail: callerPartner.email,
+            idempotencyKey: `promo-50pct-${(promoRes[0] as { promotion_id: string }).promotion_id}`,
+            templateData: {
+              partnerFirstName: callerPartner.contact_first_name ?? "Partenaire",
+              expiresLabel: "dans 4 jours",
+              rechargeUrl: "https://www.soumissioncomptable.com/recharger",
+            },
+          }).catch((e) => console.warn("[unlockLead] promo email failed", e));
+        }
+      }
+    } catch (e) {
+      console.warn("[unlockLead] promo trigger error", e);
+    }
+
     const r = result as {
       already_unlocked: boolean;
       credits_balance: number;

@@ -17,6 +17,11 @@ import { template as academyDrip } from './academy-drip'
 import { template as emailHealthAlert } from './email-health-alert'
 import { template as newProspectsDigest } from './new-prospects-digest'
 import { template as growthSalesEmail } from './growth-sales-email'
+import { template as promo50pctVariantA } from './promo-50pct-variant-a'
+import { template as promo50pctVariantB } from './promo-50pct-variant-b'
+import { template as promoWinbackMorning } from './promo-winback-morning'
+import { template as promoWinbackAfternoon } from './promo-winback-afternoon'
+import { template as promoWinbackEvening } from './promo-winback-evening'
 
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'new-prospect': newProspect,
@@ -27,4 +32,9 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'email-health-alert': emailHealthAlert,
   'new-prospects-digest': newProspectsDigest,
   'growth-sales-email': growthSalesEmail,
+  'promo-50pct-variant-a': promo50pctVariantA,
+  'promo-50pct-variant-b': promo50pctVariantB,
+  'promo-winback-morning': promoWinbackMorning,
+  'promo-winback-afternoon': promoWinbackAfternoon,
+  'promo-winback-evening': promoWinbackEvening,
 }
