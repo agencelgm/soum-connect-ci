@@ -133,6 +133,7 @@ export function BusinessPlanLeadForm() {
         if (json.leadId) sessionStorage.setItem("leadId", json.leadId);
         sessionStorage.setItem("leadSource", "business-plan");
         sessionStorage.setItem("finalThankYouPath", "/merci-demande-business-plan");
+        sessionStorage.setItem("leadUser", JSON.stringify({ em: email, ph: mobile, fn: nom, ct: ville }));
       } catch {}
       await navigate({ to: "/offre-logo" });
     } catch {
