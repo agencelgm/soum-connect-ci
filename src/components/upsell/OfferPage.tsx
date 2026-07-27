@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getTrackingFields } from "@/lib/lead-tracking";
+import { trackMetaConversion, type MetaUserData } from "@/lib/meta-pixel";
 
 type OfferPageProps = {
   language: "fr" | "en";
@@ -40,6 +41,11 @@ export function OfferPage({
     try {
       leadId = sessionStorage.getItem("leadId") ?? undefined;
     } catch {}
+    let leadUser: MetaUserData = {};
+    try {
+      const raw = sessionStorage.getItem("leadUser");
+      if (raw) leadUser = JSON.parse(raw) as MetaUserData;
+    } catch {}
     try {
       const source =
         (offer === "logo" ? "upsell-logo" : "upsell-site-internet") +
@@ -58,6 +64,16 @@ export function OfferPage({
       });
     } catch (err) {
       console.error("[upsell] submit failed", err);
+    }
+    if (interested) {
+      trackMetaConversion(
+        "Lead",
+        {
+          content_name: offer === "logo" ? "Upsell Logo" : "Upsell Site Internet",
+          content_category: offer === "logo" ? "upsell_logo" : "upsell_site",
+        },
+        leadUser,
+      );
     }
     navigate({ to: nextPath as never });
   };
