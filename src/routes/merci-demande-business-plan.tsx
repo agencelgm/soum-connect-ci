@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { CheckCircle2 } from "lucide-react";
 import logo from "@/assets/brand/logo-soumissions-comptables.jpg";
 import { trackEvent } from "@/lib/analytics";
+import { trackMetaConversion, type MetaUserData } from "@/lib/meta-pixel";
 
 const TITLE = "Demande reçue — Business plan | SoumissionComptable.com";
 const DESCRIPTION =
@@ -25,6 +26,22 @@ export const Route = createFileRoute("/merci-demande-business-plan")({
 function Page() {
   useEffect(() => {
     trackEvent("business_plan_lead_confirmed", { page: "merci-business-plan" });
+    try {
+      const flagKey = "meta_lead_fired_merci_bp";
+      if (!sessionStorage.getItem(flagKey)) {
+        let leadUser: MetaUserData = {};
+        try {
+          const raw = sessionStorage.getItem("leadUser");
+          if (raw) leadUser = JSON.parse(raw) as MetaUserData;
+        } catch {}
+        trackMetaConversion(
+          "Lead",
+          { content_name: "Business Plan Confirm", content_category: "business_plan_confirm" },
+          leadUser,
+        );
+        sessionStorage.setItem(flagKey, "1");
+      }
+    } catch {}
   }, []);
 
   return (

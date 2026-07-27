@@ -2,7 +2,7 @@ import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import { Search, Crown } from "lucide-react";
 import { computeDuplicates, normalizeText, type DuplicateInfo } from "@/lib/duplicates";
 
 // Filters for upsell interest (logo / website) and age of the record.
@@ -728,6 +728,15 @@ function PartnerCard({
           {partner.tier === "premium" && (
             <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-amber-100 text-amber-800 text-[10px] font-semibold px-2 py-0.5 align-middle">
               ★ Premium
+            </span>
+          )}
+          {partner.unlimited_until && new Date(partner.unlimited_until) > new Date() && (
+            <span
+              title={`Illimité jusqu'au ${new Date(partner.unlimited_until).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" })}`}
+              className="ml-2 inline-flex items-center gap-1 rounded-full border border-amber-600 bg-gradient-to-r from-amber-400 to-yellow-500 text-amber-950 text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 align-middle shadow-sm"
+            >
+              <Crown className="w-3 h-3" />
+              Illimité
             </span>
           )}
           {partner.status === "pending_review" && (

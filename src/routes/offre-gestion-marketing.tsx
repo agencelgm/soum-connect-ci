@@ -4,6 +4,7 @@ import { Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { buildPageHead } from "@/lib/seo";
 import { getTrackingFields } from "@/lib/lead-tracking";
+import { trackMetaConversion, type MetaUserData } from "@/lib/meta-pixel";
 
 const WHATSAPP_URL =
   "https://wa.me/2250798172339?text=" +
@@ -43,6 +44,11 @@ function MarketingOfferPage() {
     try {
       leadId = sessionStorage.getItem("leadId") ?? undefined;
     } catch {}
+    let leadUser: MetaUserData = {};
+    try {
+      const raw = sessionStorage.getItem("leadUser");
+      if (raw) leadUser = JSON.parse(raw) as MetaUserData;
+    } catch {}
     try {
       await fetch("/api/public/lead-upsell", {
         method: "POST",
@@ -58,6 +64,14 @@ function MarketingOfferPage() {
       });
     } catch (err) {
       console.error("[upsell marketing] submit failed", err);
+    }
+
+    if (interested) {
+      trackMetaConversion(
+        "Lead",
+        { content_name: "RDV Marketing", content_category: "upsell_marketing" },
+        leadUser,
+      );
     }
 
     const finalPath = getFinalPath();

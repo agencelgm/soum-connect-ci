@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { CheckCircle2 } from "lucide-react";
 import logo from "@/assets/brand/logo-soumissions-comptables.jpg";
 import { trackEvent } from "@/lib/analytics";
+import { trackMetaConversion, type MetaUserData } from "@/lib/meta-pixel";
 
 const TITLE = "Demande reçue — Montage dossier de financement | SoumissionComptable.com";
 const DESCRIPTION =
@@ -25,6 +26,22 @@ export const Route = createFileRoute("/merci-demande-financement")({
 function Page() {
   useEffect(() => {
     trackEvent("financing_lead_confirmed", { page: "merci-financement" });
+    try {
+      const flagKey = "meta_lead_fired_merci_fin";
+      if (!sessionStorage.getItem(flagKey)) {
+        let leadUser: MetaUserData = {};
+        try {
+          const raw = sessionStorage.getItem("leadUser");
+          if (raw) leadUser = JSON.parse(raw) as MetaUserData;
+        } catch {}
+        trackMetaConversion(
+          "Lead",
+          { content_name: "Financement Confirm", content_category: "financement_confirm" },
+          leadUser,
+        );
+        sessionStorage.setItem(flagKey, "1");
+      }
+    } catch {}
   }, []);
 
   return (
