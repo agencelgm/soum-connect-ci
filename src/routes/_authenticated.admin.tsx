@@ -2,7 +2,7 @@ import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import { Search, Crown } from "lucide-react";
 import { computeDuplicates, normalizeText, type DuplicateInfo } from "@/lib/duplicates";
 
 // Filters for upsell interest (logo / website) and age of the record.
