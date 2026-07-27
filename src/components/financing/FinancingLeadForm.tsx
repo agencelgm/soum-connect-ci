@@ -131,6 +131,7 @@ export function FinancingLeadForm() {
         if (json.leadId) sessionStorage.setItem("leadId", json.leadId);
         sessionStorage.setItem("leadSource", "financement");
         sessionStorage.setItem("finalThankYouPath", "/merci-demande-financement");
+        sessionStorage.setItem("leadUser", JSON.stringify({ em: email, ph: mobile, fn: nom, ct: ville }));
       } catch {}
       await navigate({ to: "/offre-logo" });
     } catch {
