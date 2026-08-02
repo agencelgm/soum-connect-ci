@@ -51,7 +51,6 @@ function InscriptionPage() {
     zones: "",
   });
   const [wantsWebsite, setWantsWebsite] = useState<boolean | null>(null);
-  const [wantsLogo, setWantsLogo] = useState<boolean | null>(null);
 
   function up<K extends keyof typeof form>(k: K, v: string) {
     setForm((f) => ({ ...f, [k]: v }));
@@ -76,10 +75,6 @@ function InscriptionPage() {
     }
     if (wantsWebsite === null) {
       toast.error("Indiquez si vous voulez un site internet.");
-      return;
-    }
-    if (wantsLogo === null) {
-      toast.error("Indiquez si vous voulez un logo.");
       return;
     }
     setSubmitting(true);
@@ -120,7 +115,6 @@ function InscriptionPage() {
           services: servicesList,
           zones: zonesList,
           wants_website: wantsWebsite,
-          wants_logo: wantsLogo,
         },
       });
 
@@ -267,13 +261,6 @@ function InscriptionPage() {
             value={wantsWebsite}
             onChange={setWantsWebsite}
             name="wants_website"
-          />
-          <UpsellQuestion
-            label="Voulez-vous un logo professionnel ? *"
-            hint="À partir de 50 000 FCFA"
-            value={wantsLogo}
-            onChange={setWantsLogo}
-            name="wants_logo"
           />
         </div>
         <Button type="submit" disabled={submitting} className="w-full">
