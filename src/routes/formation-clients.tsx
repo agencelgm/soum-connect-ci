@@ -118,7 +118,7 @@ function FormationPage() {
             ref={videoRef}
             src={videoAsset.url}
             className="aspect-video w-full"
-            controls
+            controls={started}
             playsInline
             preload="metadata"
             controlsList="nodownload"
