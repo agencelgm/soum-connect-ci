@@ -72,6 +72,7 @@ import { Route as ApiPublicFunnelTrackRouteImport } from './routes/api/public/fu
 import { Route as ApiPublicFinancingLeadRouteImport } from './routes/api/public/financing-lead'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
 import { Route as ApiPublicChariowWebhookRouteImport } from './routes/api/public/chariow-webhook'
+import { Route as ApiPublicChariowFormationRouteImport } from './routes/api/public/chariow-formation'
 import { Route as ApiPublicBusinessPlanLeadRouteImport } from './routes/api/public/business-plan-lead'
 import { Route as AcademieModuleSlugRouteImport } from './routes/academie.$module.$slug'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
@@ -421,6 +422,12 @@ const ApiPublicChariowWebhookRoute = ApiPublicChariowWebhookRouteImport.update({
   path: '/api/public/chariow-webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicChariowFormationRoute =
+  ApiPublicChariowFormationRouteImport.update({
+    id: '/api/public/chariow-formation',
+    path: '/api/public/chariow-formation',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicBusinessPlanLeadRoute =
   ApiPublicBusinessPlanLeadRouteImport.update({
     id: '/api/public/business-plan-lead',
@@ -578,6 +585,7 @@ export interface FileRoutesByFullPath {
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/academie/$module/$slug': typeof AcademieModuleSlugRoute
   '/api/public/business-plan-lead': typeof ApiPublicBusinessPlanLeadRoute
+  '/api/public/chariow-formation': typeof ApiPublicChariowFormationRoute
   '/api/public/chariow-webhook': typeof ApiPublicChariowWebhookRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/financing-lead': typeof ApiPublicFinancingLeadRoute
@@ -658,6 +666,7 @@ export interface FileRoutesByTo {
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/academie/$module/$slug': typeof AcademieModuleSlugRoute
   '/api/public/business-plan-lead': typeof ApiPublicBusinessPlanLeadRoute
+  '/api/public/chariow-formation': typeof ApiPublicChariowFormationRoute
   '/api/public/chariow-webhook': typeof ApiPublicChariowWebhookRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/financing-lead': typeof ApiPublicFinancingLeadRoute
@@ -741,6 +750,7 @@ export interface FileRoutesById {
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/academie/$module/$slug': typeof AcademieModuleSlugRoute
   '/api/public/business-plan-lead': typeof ApiPublicBusinessPlanLeadRoute
+  '/api/public/chariow-formation': typeof ApiPublicChariowFormationRoute
   '/api/public/chariow-webhook': typeof ApiPublicChariowWebhookRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/financing-lead': typeof ApiPublicFinancingLeadRoute
@@ -824,6 +834,7 @@ export interface FileRouteTypes {
     | '/.mcp/invoke-tool/$tool'
     | '/academie/$module/$slug'
     | '/api/public/business-plan-lead'
+    | '/api/public/chariow-formation'
     | '/api/public/chariow-webhook'
     | '/api/public/contact'
     | '/api/public/financing-lead'
@@ -904,6 +915,7 @@ export interface FileRouteTypes {
     | '/.mcp/invoke-tool/$tool'
     | '/academie/$module/$slug'
     | '/api/public/business-plan-lead'
+    | '/api/public/chariow-formation'
     | '/api/public/chariow-webhook'
     | '/api/public/contact'
     | '/api/public/financing-lead'
@@ -986,6 +998,7 @@ export interface FileRouteTypes {
     | '/.mcp/invoke-tool/$tool'
     | '/academie/$module/$slug'
     | '/api/public/business-plan-lead'
+    | '/api/public/chariow-formation'
     | '/api/public/chariow-webhook'
     | '/api/public/contact'
     | '/api/public/financing-lead'
@@ -1060,6 +1073,7 @@ export interface RootRouteChildren {
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ApiPublicBusinessPlanLeadRoute: typeof ApiPublicBusinessPlanLeadRoute
+  ApiPublicChariowFormationRoute: typeof ApiPublicChariowFormationRoute
   ApiPublicChariowWebhookRoute: typeof ApiPublicChariowWebhookRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
   ApiPublicFinancingLeadRoute: typeof ApiPublicFinancingLeadRoute
@@ -1527,6 +1541,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicChariowWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/chariow-formation': {
+      id: '/api/public/chariow-formation'
+      path: '/api/public/chariow-formation'
+      fullPath: '/api/public/chariow-formation'
+      preLoaderRoute: typeof ApiPublicChariowFormationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/business-plan-lead': {
       id: '/api/public/business-plan-lead'
       path: '/api/public/business-plan-lead'
@@ -1748,6 +1769,7 @@ const rootRouteChildren: RootRouteChildren = {
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ApiPublicBusinessPlanLeadRoute: ApiPublicBusinessPlanLeadRoute,
+  ApiPublicChariowFormationRoute: ApiPublicChariowFormationRoute,
   ApiPublicChariowWebhookRoute: ApiPublicChariowWebhookRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
   ApiPublicFinancingLeadRoute: ApiPublicFinancingLeadRoute,
