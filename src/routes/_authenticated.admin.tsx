@@ -2279,6 +2279,10 @@ const PROSPECT_FIELD_LABELS: Record<string, string> = {
   upsell_logo_at: "Offre logo — répondu le",
   upsell_site: "Offre site internet — intéressé ?",
   upsell_site_at: "Offre site internet — répondu le",
+  upsell_marketing: "RDV marketing — intéressé ?",
+  upsell_marketing_at: "RDV marketing — répondu le",
+  upsell_formation: "Formation clients — intéressé ?",
+  upsell_formation_at: "Formation clients — répondu le",
 };
 
 const PROSPECT_TECHNICAL_KEYS = new Set([
