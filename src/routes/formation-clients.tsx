@@ -81,6 +81,8 @@ function FormationPage() {
         },
         leadUser,
       );
+      window.location.href = TRAINING_CHECKOUT_URL;
+      return;
     }
 
     await navigate({ to: getFinalPath() as never });
