@@ -133,7 +133,7 @@ export function FinancingLeadForm() {
         sessionStorage.setItem("finalThankYouPath", "/merci-demande-financement");
         sessionStorage.setItem("leadUser", JSON.stringify({ em: email, ph: mobile, fn: nom, ct: ville }));
       } catch {}
-      await navigate({ to: "/offre-logo" });
+      await navigate({ to: "/offre-site-internet" });
     } catch {
       toast.error("Impossible d'envoyer votre demande. Réessayez dans un instant.");
       setSubmitting(false);
