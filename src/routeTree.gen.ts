@@ -68,6 +68,7 @@ import { Route as ApiPublicTestPartnerWebhookRouteImport } from './routes/api/pu
 import { Route as ApiPublicMetaCapiRouteImport } from './routes/api/public/meta-capi'
 import { Route as ApiPublicLeadUpsellRouteImport } from './routes/api/public/lead-upsell'
 import { Route as ApiPublicLeadRouteImport } from './routes/api/public/lead'
+import { Route as ApiPublicFunnelTrackRouteImport } from './routes/api/public/funnel-track'
 import { Route as ApiPublicFinancingLeadRouteImport } from './routes/api/public/financing-lead'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
 import { Route as ApiPublicChariowWebhookRouteImport } from './routes/api/public/chariow-webhook'
@@ -400,6 +401,11 @@ const ApiPublicLeadRoute = ApiPublicLeadRouteImport.update({
   path: '/api/public/lead',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicFunnelTrackRoute = ApiPublicFunnelTrackRouteImport.update({
+  id: '/api/public/funnel-track',
+  path: '/api/public/funnel-track',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicFinancingLeadRoute = ApiPublicFinancingLeadRouteImport.update({
   id: '/api/public/financing-lead',
   path: '/api/public/financing-lead',
@@ -575,6 +581,7 @@ export interface FileRoutesByFullPath {
   '/api/public/chariow-webhook': typeof ApiPublicChariowWebhookRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/financing-lead': typeof ApiPublicFinancingLeadRoute
+  '/api/public/funnel-track': typeof ApiPublicFunnelTrackRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
   '/api/public/lead-upsell': typeof ApiPublicLeadUpsellRoute
   '/api/public/meta-capi': typeof ApiPublicMetaCapiRoute
@@ -654,6 +661,7 @@ export interface FileRoutesByTo {
   '/api/public/chariow-webhook': typeof ApiPublicChariowWebhookRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/financing-lead': typeof ApiPublicFinancingLeadRoute
+  '/api/public/funnel-track': typeof ApiPublicFunnelTrackRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
   '/api/public/lead-upsell': typeof ApiPublicLeadUpsellRoute
   '/api/public/meta-capi': typeof ApiPublicMetaCapiRoute
@@ -736,6 +744,7 @@ export interface FileRoutesById {
   '/api/public/chariow-webhook': typeof ApiPublicChariowWebhookRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/financing-lead': typeof ApiPublicFinancingLeadRoute
+  '/api/public/funnel-track': typeof ApiPublicFunnelTrackRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
   '/api/public/lead-upsell': typeof ApiPublicLeadUpsellRoute
   '/api/public/meta-capi': typeof ApiPublicMetaCapiRoute
@@ -818,6 +827,7 @@ export interface FileRouteTypes {
     | '/api/public/chariow-webhook'
     | '/api/public/contact'
     | '/api/public/financing-lead'
+    | '/api/public/funnel-track'
     | '/api/public/lead'
     | '/api/public/lead-upsell'
     | '/api/public/meta-capi'
@@ -897,6 +907,7 @@ export interface FileRouteTypes {
     | '/api/public/chariow-webhook'
     | '/api/public/contact'
     | '/api/public/financing-lead'
+    | '/api/public/funnel-track'
     | '/api/public/lead'
     | '/api/public/lead-upsell'
     | '/api/public/meta-capi'
@@ -978,6 +989,7 @@ export interface FileRouteTypes {
     | '/api/public/chariow-webhook'
     | '/api/public/contact'
     | '/api/public/financing-lead'
+    | '/api/public/funnel-track'
     | '/api/public/lead'
     | '/api/public/lead-upsell'
     | '/api/public/meta-capi'
@@ -1051,6 +1063,7 @@ export interface RootRouteChildren {
   ApiPublicChariowWebhookRoute: typeof ApiPublicChariowWebhookRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
   ApiPublicFinancingLeadRoute: typeof ApiPublicFinancingLeadRoute
+  ApiPublicFunnelTrackRoute: typeof ApiPublicFunnelTrackRoute
   ApiPublicLeadRoute: typeof ApiPublicLeadRoute
   ApiPublicLeadUpsellRoute: typeof ApiPublicLeadUpsellRoute
   ApiPublicMetaCapiRoute: typeof ApiPublicMetaCapiRoute
@@ -1486,6 +1499,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicLeadRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/funnel-track': {
+      id: '/api/public/funnel-track'
+      path: '/api/public/funnel-track'
+      fullPath: '/api/public/funnel-track'
+      preLoaderRoute: typeof ApiPublicFunnelTrackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/financing-lead': {
       id: '/api/public/financing-lead'
       path: '/api/public/financing-lead'
@@ -1731,6 +1751,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicChariowWebhookRoute: ApiPublicChariowWebhookRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
   ApiPublicFinancingLeadRoute: ApiPublicFinancingLeadRoute,
+  ApiPublicFunnelTrackRoute: ApiPublicFunnelTrackRoute,
   ApiPublicLeadRoute: ApiPublicLeadRoute,
   ApiPublicLeadUpsellRoute: ApiPublicLeadUpsellRoute,
   ApiPublicMetaCapiRoute: ApiPublicMetaCapiRoute,
