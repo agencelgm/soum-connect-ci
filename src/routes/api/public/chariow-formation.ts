@@ -45,6 +45,12 @@ export const Route = createFileRoute("/api/public/chariow-formation")({
   server: {
     handlers: {
       OPTIONS: async () => new Response(null, { status: 204, headers: CORS }),
+      // Certains services testent l'URL en GET avant de l'accepter.
+      GET: async () =>
+        new Response(JSON.stringify({ ok: true, endpoint: "chariow-formation" }), {
+          status: 200,
+          headers: { "Content-Type": "application/json", ...CORS },
+        }),
       POST: async ({ request }) => {
         const rawBody = await request.text();
 
