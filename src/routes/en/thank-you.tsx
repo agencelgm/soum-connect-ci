@@ -1,3 +1,4 @@
+import { useFormationGate } from "@/hooks/useFormationGate";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/en/thank-you")({
 });
 
 function ThankYouPage() {
+  useFormationGate("/en/thank-you");
   return (
     <main className="bg-[#F8FAFC] min-h-screen flex items-center">
       <section className="container-app py-16 md:py-24 w-full">

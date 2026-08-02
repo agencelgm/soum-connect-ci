@@ -23,7 +23,7 @@ function SiteOfferEnPage() {
     <OfferPage
       language="en"
       offer="site"
-      nextPath="/en/thank-you"
+      nextPath="/offre-gestion-marketing"
       badge="Exclusive offer !!"
       title="Professional WEBSITE design"
       price="70,000 FCFA"
@@ -33,8 +33,8 @@ function SiteOfferEnPage() {
       description="Give your business a credible online presence: modern, responsive, SEO-optimised website. Fast launch and full support included."
       yesLabel="Yes, I'm interested"
       noLabel="No thanks, I'm not interested"
-      progressLabel="Step 1 of 1 — Additional offers"
-      progressPercent={100}
+      progressLabel="Step 1 of 2 — Additional offers"
+      progressPercent={50}
     />
   );
 }

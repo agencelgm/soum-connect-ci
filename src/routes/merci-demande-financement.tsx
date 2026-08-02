@@ -1,3 +1,4 @@
+import { useFormationGate } from "@/hooks/useFormationGate";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect } from "react";
 import logo from "@/assets/brand/logo-soumissions-comptables.jpg";
@@ -24,6 +25,7 @@ export const Route = createFileRoute("/merci-demande-financement")({
 });
 
 function Page() {
+  useFormationGate("/merci-demande-financement");
   useEffect(() => {
     trackEvent("financing_lead_confirmed", { page: "merci-financement" });
     try {

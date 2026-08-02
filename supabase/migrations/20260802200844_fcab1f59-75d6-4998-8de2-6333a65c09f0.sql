@@ -1,0 +1,1 @@
+DELETE FROM public.funnel_events WHERE email IN ('a@b.com','test@x.com');
