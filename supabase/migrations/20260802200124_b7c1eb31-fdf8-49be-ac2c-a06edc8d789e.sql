@@ -1,0 +1,1 @@
+DELETE FROM public.funnel_events WHERE email = 'test@x.com' OR session_id LIKE 'test-sess%' OR session_id = 'bb61d3fb-8ef8-43ee-8ed8-8720fb854a11';
