@@ -8,7 +8,7 @@ export const Route = createFileRoute("/en/website-offer")({
       path: "/en/website-offer",
       title: "Exclusive offer — Website design | SoumissionComptable.com",
       description:
-        "Exclusive offer: professional website design starting from 165,000 FCFA.",
+        "Exclusive offer: professional website design at 70,000 FCFA instead of 165,000 FCFA, until Friday 5:00 PM.",
       lang: "en",
       altPath: "/offre-site-internet",
     });
@@ -26,11 +26,14 @@ function SiteOfferEnPage() {
       nextPath="/en/thank-you"
       badge="Exclusive offer !!"
       title="Professional WEBSITE design"
-      price="from 165,000 FCFA"
+      price="70,000 FCFA"
+      oldPrice="165,000 FCFA"
+      promoLabel="Promotion — this week only"
+      showCountdown
       description="Give your business a credible online presence: modern, responsive, SEO-optimised website. Fast launch and full support included."
       yesLabel="Yes, I'm interested"
       noLabel="No thanks, I'm not interested"
-      progressLabel="Step 2 of 2 — Additional offers"
+      progressLabel="Step 1 of 1 — Additional offers"
       progressPercent={100}
     />
   );
