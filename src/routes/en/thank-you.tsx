@@ -1,3 +1,4 @@
+import { useFormationGate } from "@/hooks/useFormationGate";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";

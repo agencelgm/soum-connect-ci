@@ -1,3 +1,4 @@
+import { useFormationGate } from "@/hooks/useFormationGate";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect } from "react";
 import logo from "@/assets/brand/logo-soumissions-comptables.jpg";
