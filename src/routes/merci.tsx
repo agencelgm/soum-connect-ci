@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { buildPageHead } from "@/lib/seo";
 import { FinalThankYouCard } from "@/components/upsell/FinalThankYouCard";
+import { useFormationGate } from "@/hooks/useFormationGate";
 
 export const Route = createFileRoute("/merci")({
   head: () => {
@@ -22,6 +23,7 @@ export const Route = createFileRoute("/merci")({
 });
 
 function MerciPage() {
+  useFormationGate("/merci");
   return (
     <main className="bg-[#F8FAFC] min-h-screen flex items-center">
       <section className="container-app py-16 md:py-24 w-full">
