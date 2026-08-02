@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import { PlayCircle } from "lucide-react";
+import { useRef, useState } from "react";
+import { PlayCircle, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getTrackingFields } from "@/lib/lead-tracking";
 import { trackMetaConversion, type MetaUserData } from "@/lib/meta-pixel";
@@ -36,6 +36,15 @@ function getFinalPath(): string {
 function FormationPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState<null | "yes" | "no">(null);
+  const [started, setStarted] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  function startVideo() {
+    setStarted(true);
+    requestAnimationFrame(() => {
+      void videoRef.current?.play().catch(() => {});
+    });
+  }
 
   async function handleClick(interested: boolean) {
     setLoading(interested ? "yes" : "no");
@@ -89,21 +98,24 @@ function FormationPage() {
   }
 
   return (
-    <main className="min-h-screen bg-primary text-primary-foreground">
-      <section className="mx-auto w-full max-w-[900px] px-5 py-10 md:py-14">
+    <main className="flex min-h-[100svh] flex-col bg-primary text-primary-foreground">
+      <section className="mx-auto flex w-full max-w-[900px] flex-1 flex-col justify-center gap-6 px-5 py-8 md:gap-8 md:py-12">
         <p className="text-center text-xs md:text-sm font-bold uppercase tracking-[0.2em] text-accent">
           Étape finale — important
         </p>
 
-        <h1 className="mt-4 text-center font-heading text-3xl md:text-5xl font-extrabold leading-tight">
-          Ne quittez pas cette page
-        </h1>
-        <p className="mt-4 text-center text-lg md:text-2xl font-semibold text-primary-foreground/90">
-          Regardez cette vidéo pour savoir quoi faire maintenant et quelle est la suite des choses.
-        </p>
+        <div className="space-y-3">
+          <h1 className="text-center font-heading text-3xl md:text-5xl font-extrabold leading-tight">
+            Ne quittez pas cette page
+          </h1>
+          <p className="text-center text-base md:text-2xl font-semibold text-primary-foreground/90">
+            Regardez cette vidéo pour savoir quoi faire maintenant et quelle est la suite des choses.
+          </p>
+        </div>
 
-        <div className="mt-8 overflow-hidden rounded-2xl border border-white/15 bg-black shadow-2xl">
+        <div className="relative overflow-hidden rounded-2xl border border-white/15 bg-black shadow-2xl">
           <video
+            ref={videoRef}
             src={videoAsset.url}
             className="aspect-video w-full"
             controls
@@ -111,14 +123,32 @@ function FormationPage() {
             preload="metadata"
             controlsList="nodownload"
           />
+          {!started && (
+            <button
+              type="button"
+              onClick={startVideo}
+              aria-label="Cliquez ici pour regarder la vidéo"
+              className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[radial-gradient(circle_at_50%_35%,color-mix(in_oklab,var(--color-primary)_75%,transparent),color-mix(in_oklab,black_88%,transparent))] px-5 text-center"
+            >
+              <span className="grid h-16 w-16 place-items-center rounded-full bg-accent text-accent-foreground shadow-xl md:h-20 md:w-20">
+                <Play className="h-7 w-7 md:h-9 md:w-9 fill-current" />
+              </span>
+              <span className="font-heading text-lg md:text-3xl font-extrabold leading-tight text-primary-foreground">
+                Cliquez ici pour regarder la vidéo
+              </span>
+              <span className="text-xs md:text-base font-semibold uppercase tracking-[0.15em] text-accent">
+                Quoi faire maintenant — la suite des choses
+              </span>
+            </button>
+          )}
         </div>
 
-        <p className="mt-4 flex items-center justify-center gap-2 text-sm text-primary-foreground/70">
-          <PlayCircle className="h-4 w-4" />
+        <p className="flex items-center justify-center gap-2 text-center text-xs md:text-sm text-primary-foreground/70">
+          <PlayCircle className="h-4 w-4 shrink-0" />
           Regardez la vidéo en entier avant de choisir ci-dessous.
         </p>
 
-        <div className="mx-auto mt-8 flex max-w-[620px] flex-col gap-3">
+        <div className="mx-auto flex w-full max-w-[620px] flex-col gap-3">
           <Button
             type="button"
             onClick={() => handleClick(true)}
