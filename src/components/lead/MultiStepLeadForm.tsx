@@ -475,6 +475,20 @@ export function MultiStepLeadForm({
       try {
         const json = (await res.json()) as { leadId?: string };
         if (json?.leadId) sessionStorage.setItem("leadId", json.leadId);
+        sessionStorage.setItem("leadSource", "soumissions");
+        sessionStorage.setItem(
+          "finalThankYouPath",
+          language === "en" ? "/en/thank-you" : "/merci",
+        );
+        sessionStorage.setItem(
+          "leadUser",
+          JSON.stringify({
+            em: values.email,
+            ph: values.mobile,
+            fn: values.nom,
+            ct: values.localisation,
+          }),
+        );
       } catch {}
       trackMetaConversion(
         "Lead",
@@ -501,7 +515,9 @@ export function MultiStepLeadForm({
         language,
         source,
       });
-      navigate({ to: language === "en" ? "/en/logo-offer" : "/offre-logo" });
+      navigate({
+        to: language === "en" ? "/en/website-offer" : "/offre-site-internet",
+      });
     } catch (err) {
       console.error("Lead submission failed", err);
       toast.error(

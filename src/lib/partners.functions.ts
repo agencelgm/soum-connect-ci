@@ -42,7 +42,7 @@ const PartnerInfoSchema = z.object({
   services: z.array(z.string().min(1).max(100)).min(1).max(20),
   zones: z.array(z.string().min(1).max(100)).min(1).max(40),
   wants_website: z.boolean(),
-  wants_logo: z.boolean(),
+  wants_logo: z.boolean().optional(),
   contact_role: z.string().trim().min(1).max(100),
 });
 
@@ -691,7 +691,7 @@ export const createPartnerManually = createServerFn({ method: "POST" })
         services: data.services,
         zones: data.zones,
         wants_website: data.wants_website,
-        wants_logo: data.wants_logo,
+        wants_logo: null,
         status: "approved",
         credits_balance: 0,
         approved_at: new Date().toISOString(),

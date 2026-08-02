@@ -1,36 +1,46 @@
-## 1) Badge "Illimité" dans le panneau admin
+## Objectif
 
-Fichier : `src/routes/_authenticated.admin.tsx` (onglet Partenaires).
+Transformer la fin de parcours (business plan, financement, demande de soumissions) en tunnel de vente : offre site internet en promo, puis une sales page vidéo pour la formation, puis une page de confirmation avec le canal WhatsApp.
 
-- Sur chaque ligne partenaire, afficher un badge « Illimité » quand `partners.unlimited_until > now()`.
-- Style Or/Premium : dégradé ambre `from-amber-400 to-yellow-500`, texte `text-amber-950`, bordure `border-amber-600`, icône `Crown` (lucide-react), pastille compacte `rounded-full`, à côté du nom du cabinet.
-- Title tooltip natif : « Illimité jusqu'au {date FR} ».
-- Aucun changement en base ni sur l'espace partenaire.
+## 1. Suppression de l'offre logo
 
-## 2) Événements Lead Facebook sur les nouvelles pages
+- Suppression des pages `/offre-logo` et `/en/logo-offer`.
+- Les 3 formulaires (business plan, financement, demande de soumissions) redirigent désormais directement vers `/offre-site-internet` (`/en/website-offer` en anglais).
+- Retrait des entrées logo du sitemap et de la table de correspondance FR/EN.
+- Note : la question « voulez-vous un logo ? » du formulaire d'inscription **partenaire** (cabinets) on doit retirer toutes les questions en lien avec le logo. On ne fait plus de logo donc on ne pose plus la question : « Est-ce que vous avez besoin de logo ou pas ? » On enlève tout ça, que ce soit pour les partenaires que pour les prospectus.
 
-Constat après lecture du code :
-- `BusinessPlanLeadForm` et `FinancingLeadForm` appellent déjà `trackMetaConversion("Lead", …)` (Pixel navigateur + CAPI serveur avec `eventID` déduplication).
-- Les 3 pages du tunnel upsell (`/offre-logo`, `/offre-site-internet`, `/offre-gestion-marketing`) et les 2 pages de merci (`/merci-demande-business-plan`, `/merci-demande-financement`) ne déclenchent aucun événement Meta.
+## 2. Offre site internet à 70 000 FCFA
 
-Actions :
+- Prix affiché : **165 000 FCFA barré → 70 000 FCFA**, badge « Promotion ».
+- **Compte à rebours en direct** jusqu'au vendredi 17:00 (heure d'Abidjan), avec la date exacte affichée (« Offre valable jusqu'au vendredi 7 août à 17h00 »).
+- Le calcul est automatique et hebdomadaire : dès que le vendredi 17:00 est passé, le compteur repart sur le vendredi suivant. Aucun renouvellement manuel nécessaire.
+- Version anglaise alignée (mêmes prix, même minuterie).
 
-a. **Vérifier le signal existant** — reproduire une soumission Business Plan et Financement, contrôler dans les logs réseau : appel `fbq('track','Lead')` + POST `/api/public/meta-capi` renvoyant `ok`. Si `META_CAPI_ACCESS_TOKEN` ou le pixel ID ne sont pas configurés côté serveur, corriger le handler `src/routes/api/public/meta-capi.ts`. C'est probablement la cause du « Lead pas reçu » côté Facebook.
+## 3. Nouvelle sales page formation `/formation-clients`
 
-b. **Ajouter les événements manquants sur le tunnel upsell**. Chaque étape est une intention forte, donc on envoie un événement `Lead` supplémentaire avec `content_category` distinct pour segmenter dans Ads Manager :
-   - `/offre-logo` : au clic sur « Oui, je veux mon logo » → `Lead` `{ content_name: "Upsell Logo", content_category: "upsell_logo" }`.
-   - `/offre-site-internet` : au clic sur « Oui, je veux mon site » → `Lead` `{ content_name: "Upsell Site", content_category: "upsell_site" }`.
-   - `/offre-gestion-marketing` : au clic sur le CTA WhatsApp « Prendre mon rendez-vous gratuit » → `Lead` `{ content_name: "RDV Marketing", content_category: "upsell_marketing" }`.
-   - Récupérer `email`, `mobile`, `nom`, `ville` depuis `sessionStorage` (déjà posés par les formulaires) pour renseigner `user_data` (améliore le matching CAPI).
+Après l'étape « gestion marketing », le prospect arrive sur cette page (sans menu, sans footer, plein écran) :
 
-c. **Événements de confirmation sur les pages merci** (une seule fois par visite via un `useEffect` + garde `sessionStorage`) :
-   - `/merci-demande-business-plan` : `Lead` `{ content_category: "business_plan_confirm" }`.
-   - `/merci-demande-financement` : `Lead` `{ content_category: "financement_confirm" }`.
-   - Garde `sessionStorage.setItem("meta_lead_fired_" + path, "1")` pour éviter les doublons si l'utilisateur recharge.
+- Titre très visible : **« Ne quittez pas cette page »** + sous-titre « Regardez cette vidéo pour savoir quoi faire maintenant ».
+- La vidéo que vous venez d'envoyer (2 min 15), lecteur intégré, mise en avant.
+- Deux boutons sous la vidéo :
+  - **« Oui, je veux la formation — je veux savoir comment avoir des clients »** (bouton principal)
+  - **« Non merci, je n'ai pas besoin de savoir comment avoir des clients »** (bouton secondaire, discret)
+- Alors quand les gens choisissent « oui je veux la formation », envoie un événement « add to cart » à Facebook.
+- Le bouton « Oui » ouvrira le lien de paiement Chariow. En attendant que vous me le donniez, il redirige vers la page de confirmation avec un message « nous vous envoyons le lien » — je le branche dès que vous me transmettez l'URL.
 
-d. **Vérification finale** : ouvrir chaque page, soumettre, contrôler dans l'onglet Réseau que `fbq` et `/api/public/meta-capi` répondent 200, et dans Meta Events Manager (Test Events) que les événements apparaissent avec la bonne `content_category`.
+## 4. Page de confirmation finale
 
-## Hors périmètre
-- Pas de changement au Pixel de tracking des partenaires (`CompleteRegistration`).
-- Pas de nouveaux événements standard type `Purchase` (les upsells sont des intentions, pas des achats).
-- Aucune modification de logique métier ni de base de données.
+Les pages `/merci-demande-business-plan`, `/merci-demande-financement` et `/merci` sont refondues avec le même bloc :
+
+- « D'accord, nous avons bien reçu votre demande. »
+- Explication : notre équipe vous appellera pour **valider votre demande** avant que les cabinets comptables ne vous contactent. Bureau ouvert du **lundi au vendredi, de 9h00 à 17h00**.
+- Un seul bouton WhatsApp : **« Rejoindre le canal WhatsApp gratuit »** → [https://whatsapp.com/channel/0029Va5QvIu6BIEdk2Gbcq0U](https://whatsapp.com/channel/0029Va5QvIu6BIEdk2Gbcq0U) (astuces et vidéos gratuites).
+- Pour ceux qui ont refusé la formation : rappel discret « Vous avez changé d'avis ? Découvrir la formation ».
+- Plus aucun autre lien WhatsApp de support sur ces pages.
+
+## Détails techniques
+
+- Vidéo uploadée sur le CDN Lovable via `lovable-assets` (pointeur `.asset.json`), pas de binaire dans le dépôt.
+- Nouvelle route `src/routes/formation-clients.tsx` + ajout à la liste des pages immersives dans `__root.tsx`, en `noindex, nofollow`, hors sitemap.
+- Réponse formation persistée via `/api/public/lead-upsell` (nouveau type d'offre `formation`) dans `raw_payload` du prospect.
+- Le minuteur est calculé côté client à partir de l'heure courante (fuseau UTC = heure d'Abidjan), pas de valeur codée en dur.

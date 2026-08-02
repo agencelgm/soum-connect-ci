@@ -41,7 +41,6 @@ export const Route = createFileRoute("/sitemap.xml")({
           // About
           { path: "/a-propos", changefreq: "monthly", priority: "0.5", lastmod: today },
           // Offer pages
-          { path: "/offre-logo", changefreq: "monthly", priority: "0.4", lastmod: today },
           { path: "/offre-site-internet", changefreq: "monthly", priority: "0.4", lastmod: today },
           // Académie LGM
           { path: "/academie", changefreq: "weekly", priority: "0.6", lastmod: today },
@@ -68,7 +67,6 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/en/accounting-firm-abidjan", changefreq: "monthly", priority: "0.6", lastmod: today },
           { path: "/en/about", changefreq: "monthly", priority: "0.5", lastmod: today },
           { path: "/en/contact-us", changefreq: "monthly", priority: "0.5", lastmod: today },
-          { path: "/en/logo-offer", changefreq: "monthly", priority: "0.4", lastmod: today },
           { path: "/en/website-offer", changefreq: "monthly", priority: "0.4", lastmod: today },
         ];
 

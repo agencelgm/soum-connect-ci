@@ -26,14 +26,6 @@ export const Route = createFileRoute("/offre-gestion-marketing")({
   component: MarketingOfferPage,
 });
 
-function getFinalPath(): string {
-  try {
-    return sessionStorage.getItem("finalThankYouPath") || "/merci-demande-business-plan";
-  } catch {
-    return "/merci-demande-business-plan";
-  }
-}
-
 function MarketingOfferPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState<null | "yes" | "no">(null);
@@ -74,13 +66,12 @@ function MarketingOfferPage() {
       );
     }
 
-    const finalPath = getFinalPath();
     if (interested) {
       try {
         window.open(WHATSAPP_URL, "_blank", "noopener,noreferrer");
       } catch {}
     }
-    await navigate({ to: finalPath as never });
+    await navigate({ to: "/formation-clients" });
   }
 
   return (
@@ -89,7 +80,7 @@ function MarketingOfferPage() {
         <div className="mx-auto max-w-[640px]">
           <div className="mb-4">
             <div className="flex items-center justify-between text-sm font-medium text-muted-foreground mb-2">
-              <span>Étape 3 sur 3 — Offres complémentaires</span>
+              <span>Étape 2 sur 2 — Offres complémentaires</span>
               <span>100%</span>
             </div>
             <div className="h-2 w-full rounded-full bg-muted overflow-hidden">

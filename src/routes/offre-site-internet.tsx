@@ -8,7 +8,7 @@ export const Route = createFileRoute("/offre-site-internet")({
       path: "/offre-site-internet",
       title: "Offre exclusive — Conception de site internet | SoumissionComptable.com",
       description:
-        "Offre exclusive : conception de site internet professionnel à partir de 165 000 FCFA.",
+        "Offre exclusive : conception de site internet professionnel à 70 000 FCFA au lieu de 165 000 FCFA, jusqu'à vendredi 17h00.",
       altPath: "/en/website-offer",
     });
     head.meta.push({ name: "robots", content: "noindex, nofollow" });
@@ -25,12 +25,15 @@ function SiteOfferPage() {
       nextPath="/offre-gestion-marketing"
       badge="Offre exclusive !!"
       title="Conception de SITE INTERNET professionnel"
-      price="à partir de 165 000 FCFA"
+      price="70 000 FCFA"
+      oldPrice="165 000 FCFA"
+      promoLabel="Promotion — cette semaine seulement"
+      showCountdown
       description="Donnez à votre entreprise une présence en ligne crédible : site vitrine moderne, responsive, optimisé SEO. Mise en ligne rapide et accompagnement inclus."
       yesLabel="Oui, je suis intéressé(e)"
       noLabel="Non, merci, je ne suis pas intéressé(e)"
-      progressLabel="Étape 2 sur 3 — Offres complémentaires"
-      progressPercent={66}
+      progressLabel="Étape 1 sur 2 — Offres complémentaires"
+      progressPercent={50}
     />
   );
 }

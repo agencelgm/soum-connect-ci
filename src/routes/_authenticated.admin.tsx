@@ -476,7 +476,6 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
   const [tierFilter, setTierFilter] = useState<"all" | "premium" | "regular">("all");
   const [duplicatesOnly, setDuplicatesOnly] = useState(false);
   const [siteFilter, setSiteFilter] = useState<"all" | "yes" | "no" | "unknown">("all");
-  const [logoFilter, setLogoFilter] = useState<"all" | "yes" | "no" | "unknown">("all");
   const [ageFilter, setAgeFilter] = useState<"all" | "new" | "recent" | "old">("all");
 
   const duplicates = useMemo(
@@ -505,7 +504,6 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
       if (t !== tierFilter) return false;
     }
     if (!matchBoolFilter(p.wants_website, siteFilter)) return false;
-    if (!matchBoolFilter(p.wants_logo, logoFilter)) return false;
     if (!matchAgeFilter(p.created_at, ageFilter)) return false;
     if (searchQ.trim()) {
       const q = normalizeText(searchQ);
@@ -572,7 +570,6 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
             {services.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
           <UpsellSelect label="Site" value={siteFilter} onChange={setSiteFilter} />
-          <UpsellSelect label="Logo" value={logoFilter} onChange={setLogoFilter} />
           <AgeSelect value={ageFilter} onChange={setAgeFilter} />
           <div className="flex gap-1">
             {(["all", "premium", "regular"] as const).map((k) => (
@@ -604,10 +601,10 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
           >
             ⚠ Doublons ({duplicatesCount})
           </button>
-          {(searchQ || cityFilter !== "all" || serviceFilter !== "all" || tierFilter !== "all" || duplicatesOnly || siteFilter !== "all" || logoFilter !== "all" || ageFilter !== "all") && (
+          {(searchQ || cityFilter !== "all" || serviceFilter !== "all" || tierFilter !== "all" || duplicatesOnly || siteFilter !== "all" || ageFilter !== "all") && (
             <button
               type="button"
-              onClick={() => { setSearchQ(""); setCityFilter("all"); setServiceFilter("all"); setTierFilter("all"); setDuplicatesOnly(false); setSiteFilter("all"); setLogoFilter("all"); setAgeFilter("all"); }}
+              onClick={() => { setSearchQ(""); setCityFilter("all"); setServiceFilter("all"); setTierFilter("all"); setDuplicatesOnly(false); setSiteFilter("all"); setAgeFilter("all"); }}
               className="text-xs text-muted-foreground underline"
             >
               Réinitialiser
@@ -1236,7 +1233,7 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
   // New filters (search + upsell + age + duplicates)
   const [searchQ, setSearchQ] = useState("");
   const [siteFilter, setSiteFilter] = useState<BoolFilter>("all");
-  const [logoFilter, setLogoFilter] = useState<BoolFilter>("all");
+  const [formationFilter, setFormationFilter] = useState<BoolFilter>("all");
   const [ageFilter, setAgeFilter] = useState<AgeFilter>("all");
   const [duplicatesOnly, setDuplicatesOnly] = useState(false);
 
@@ -1281,26 +1278,26 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
           ? (prospect.raw_payload as Record<string, unknown>)
           : {};
       if (!matchBoolFilter(rp.upsell_site, siteFilter)) return false;
-      if (!matchBoolFilter(rp.upsell_logo, logoFilter)) return false;
+      if (!matchBoolFilter(rp.upsell_formation, formationFilter)) return false;
       // Age
       if (!matchAgeFilter(prospect.created_at, ageFilter)) return false;
       // Duplicates
       if (duplicatesOnly && !duplicates.has(prospect.id)) return false;
       return true;
     });
-  }, [all, filter, searchQ, siteFilter, logoFilter, ageFilter, duplicatesOnly, duplicates]);
+  }, [all, filter, searchQ, siteFilter, formationFilter, ageFilter, duplicatesOnly, duplicates]);
 
   function resetFilters() {
     setSearchQ("");
     setSiteFilter("all");
-    setLogoFilter("all");
+    setFormationFilter("all");
     setAgeFilter("all");
     setDuplicatesOnly(false);
   }
   const hasActiveFilters =
     searchQ !== "" ||
     siteFilter !== "all" ||
-    logoFilter !== "all" ||
+    formationFilter !== "all" ||
     ageFilter !== "all" ||
     duplicatesOnly;
 
@@ -1406,7 +1403,7 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
             </div>
             <div className="flex flex-wrap gap-2">
               <UpsellSelect label="Site" value={siteFilter} onChange={setSiteFilter} />
-              <UpsellSelect label="Logo" value={logoFilter} onChange={setLogoFilter} />
+              <UpsellSelect label="Formation" value={formationFilter} onChange={setFormationFilter} />
               <AgeSelect value={ageFilter} onChange={setAgeFilter} />
             </div>
             <div className="flex items-center justify-between text-xs">
@@ -1725,7 +1722,6 @@ function CreatePartnerPanel() {
     zones: "",
   });
   const [wantsWebsite, setWantsWebsite] = useState(false);
-  const [wantsLogo, setWantsLogo] = useState(false);
   function up<K extends keyof typeof form>(k: K, v: string) {
     setForm((f) => ({ ...f, [k]: v }));
   }
@@ -1754,7 +1750,6 @@ function CreatePartnerPanel() {
           services: servicesList,
           zones: zonesList,
           wants_website: wantsWebsite,
-          wants_logo: wantsLogo,
         },
       });
       toast.success("Partenaire créé (30 crédits attribués)");
@@ -1773,7 +1768,6 @@ function CreatePartnerPanel() {
         zones: "",
       });
       setWantsWebsite(false);
-      setWantsLogo(false);
       qc.invalidateQueries({ queryKey: ["partners"] });
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Erreur");
@@ -1818,8 +1812,8 @@ function CreatePartnerPanel() {
             Champs obligatoires avant création
           </p>
           <p className="text-sm text-muted-foreground">
-            Ces informations sont obligatoires : rôle, site internet, logo, services et zones
-            d’intervention. Site internet et logo sont sur Non par défaut.
+            Ces informations sont obligatoires : rôle, site internet, services et zones
+            d’intervention. Site internet est sur Non par défaut.
           </p>
         </div>
 
@@ -1839,14 +1833,6 @@ function CreatePartnerPanel() {
               label="Site internet souhaité ? * À partir de 165 000 FCFA"
               value={wantsWebsite}
               onChange={setWantsWebsite}
-            />
-          </div>
-
-          <div className="rounded-md border border-primary/30 bg-background p-4">
-            <YesNoRow
-              label="Logo professionnel souhaité ? * À partir de 50 000 FCFA"
-              value={wantsLogo}
-              onChange={setWantsLogo}
             />
           </div>
 
@@ -2293,6 +2279,10 @@ const PROSPECT_FIELD_LABELS: Record<string, string> = {
   upsell_logo_at: "Offre logo — répondu le",
   upsell_site: "Offre site internet — intéressé ?",
   upsell_site_at: "Offre site internet — répondu le",
+  upsell_marketing: "RDV marketing — intéressé ?",
+  upsell_marketing_at: "RDV marketing — répondu le",
+  upsell_formation: "Formation clients — intéressé ?",
+  upsell_formation_at: "Formation clients — répondu le",
 };
 
 const PROSPECT_TECHNICAL_KEYS = new Set([
@@ -2612,12 +2602,10 @@ function PartnerDetailsDialog({
             }
           />
           <DetailRow
-            label="Intéressé par un logo"
+            label="Membre depuis"
             value={
-              partner.wants_logo === true
-                ? "Oui"
-                : partner.wants_logo === false
-                ? "Non"
+              partner.created_at
+                ? new Date(partner.created_at).toLocaleDateString("fr-FR")
                 : "—"
             }
           />

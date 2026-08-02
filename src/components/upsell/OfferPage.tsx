@@ -4,6 +4,7 @@ import { Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getTrackingFields } from "@/lib/lead-tracking";
 import { trackMetaConversion, type MetaUserData } from "@/lib/meta-pixel";
+import { PromoCountdown } from "@/components/upsell/PromoCountdown";
 
 type OfferPageProps = {
   language: "fr" | "en";
@@ -12,6 +13,9 @@ type OfferPageProps = {
   badge: string;
   title: string;
   price: string;
+  oldPrice?: string;
+  promoLabel?: string;
+  showCountdown?: boolean;
   description: string;
   yesLabel: string;
   noLabel: string;
@@ -26,6 +30,9 @@ export function OfferPage({
   badge,
   title,
   price,
+  oldPrice,
+  promoLabel,
+  showCountdown = false,
   description,
   yesLabel,
   noLabel,
@@ -105,9 +112,29 @@ export function OfferPage({
               {title}
             </h1>
 
-            <p className="mt-4 text-3xl md:text-4xl font-extrabold text-secondary">
-              {price}
-            </p>
+            {oldPrice ? (
+              <div className="mt-4 flex flex-col items-center gap-1">
+                {promoLabel && (
+                  <span className="rounded-full bg-red-600 px-3 py-1 text-xs font-bold uppercase tracking-wide text-white">
+                    {promoLabel}
+                  </span>
+                )}
+                <div className="flex items-baseline justify-center gap-3">
+                  <span className="text-xl md:text-2xl font-semibold text-muted-foreground line-through">
+                    {oldPrice}
+                  </span>
+                  <span className="text-3xl md:text-4xl font-extrabold text-secondary">
+                    {price}
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <p className="mt-4 text-3xl md:text-4xl font-extrabold text-secondary">
+                {price}
+              </p>
+            )}
+
+            {showCountdown && <PromoCountdown language={language} />}
 
             <p className="mt-4 text-base text-foreground leading-relaxed">
               {description}
