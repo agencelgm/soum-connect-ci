@@ -98,7 +98,7 @@ export const Route = createFileRoute("/api/public/chariow-formation")({
           event: mapEvent(eventName),
           email: email ? email.toLowerCase() : null,
           amount_label: amount,
-          metadata: { chariow_event: eventName, payload },
+          metadata: { chariow_event: eventName, payload } as unknown as Record<string, never>,
         });
         if (error) console.error("[chariow-formation] insert failed", error.message);
 
