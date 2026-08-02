@@ -18,7 +18,6 @@ export const ROUTE_PAIRS: Array<{ fr: string; en: string }> = [
   { fr: "/demande-soumissions", en: "/en/get-quotes" },
   { fr: "/a-propos", en: "/en/about" },
   { fr: "/merci", en: "/en/thank-you" },
-  { fr: "/offre-logo", en: "/en/logo-offer" },
   { fr: "/offre-site-internet", en: "/en/website-offer" },
   { fr: "/nous-contacter", en: "/en/contact-us" },
 ];

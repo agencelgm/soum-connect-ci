@@ -6,7 +6,7 @@ import { META_PIXEL_ID } from "@/lib/meta-pixel";
 const PIXEL_ID = META_PIXEL_ID;
 
 const Schema = z.object({
-  event_name: z.enum(["Lead", "CompleteRegistration"]),
+  event_name: z.enum(["Lead", "CompleteRegistration", "AddToCart"]),
   event_id: z.string().min(8).max(80),
   event_source_url: z.string().url().max(2000),
   custom_data: z.record(z.string().max(80), z.union([z.string().max(500), z.number(), z.boolean()])).optional(),

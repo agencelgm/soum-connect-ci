@@ -167,9 +167,11 @@ function RootComponent() {
     pathname === "/merci-demande-business-plan" ||
     pathname === "/montage-dossier-credit" ||
     pathname === "/merci-demande-financement" ||
-    pathname === "/offre-logo" ||
     pathname === "/offre-site-internet" ||
-    pathname === "/offre-gestion-marketing";
+    pathname === "/offre-gestion-marketing" ||
+    pathname === "/formation-clients" ||
+    pathname === "/merci" ||
+    pathname === "/en/website-offer";
 
   return (
     <QueryClientProvider client={queryClient}>
