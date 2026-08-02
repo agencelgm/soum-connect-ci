@@ -14,7 +14,6 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ReinitialiserMotDePasseRouteImport } from './routes/reinitialiser-mot-de-passe'
 import { Route as RedactionBusinessPlanCoteDivoireRouteImport } from './routes/redaction-business-plan-cote-divoire'
 import { Route as OffreSiteInternetRouteImport } from './routes/offre-site-internet'
-import { Route as OffreLogoRouteImport } from './routes/offre-logo'
 import { Route as OffreGestionMarketingRouteImport } from './routes/offre-gestion-marketing'
 import { Route as NousContacterRouteImport } from './routes/nous-contacter'
 import { Route as MotDePasseOublieRouteImport } from './routes/mot-de-passe-oublie'
@@ -49,7 +48,6 @@ import { Route as GuidesSlugRouteImport } from './routes/guides.$slug'
 import { Route as EnWebsiteOfferRouteImport } from './routes/en/website-offer'
 import { Route as EnThankYouRouteImport } from './routes/en/thank-you'
 import { Route as EnStartABusinessIvoryCoastRouteImport } from './routes/en/start-a-business-ivory-coast'
-import { Route as EnLogoOfferRouteImport } from './routes/en/logo-offer'
 import { Route as EnGetQuotesRouteImport } from './routes/en/get-quotes'
 import { Route as EnContactUsRouteImport } from './routes/en/contact-us'
 import { Route as EnCompanyRegistrationIvoryCoastRouteImport } from './routes/en/company-registration-ivory-coast'
@@ -114,11 +112,6 @@ const RedactionBusinessPlanCoteDivoireRoute =
 const OffreSiteInternetRoute = OffreSiteInternetRouteImport.update({
   id: '/offre-site-internet',
   path: '/offre-site-internet',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OffreLogoRoute = OffreLogoRouteImport.update({
-  id: '/offre-logo',
-  path: '/offre-logo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OffreGestionMarketingRoute = OffreGestionMarketingRouteImport.update({
@@ -299,11 +292,6 @@ const EnStartABusinessIvoryCoastRoute =
     path: '/en/start-a-business-ivory-coast',
     getParentRoute: () => rootRouteImport,
   } as any)
-const EnLogoOfferRoute = EnLogoOfferRouteImport.update({
-  id: '/en/logo-offer',
-  path: '/en/logo-offer',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const EnGetQuotesRoute = EnGetQuotesRouteImport.update({
   id: '/en/get-quotes',
   path: '/en/get-quotes',
@@ -548,7 +536,6 @@ export interface FileRoutesByFullPath {
   '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/nous-contacter': typeof NousContacterRoute
   '/offre-gestion-marketing': typeof OffreGestionMarketingRoute
-  '/offre-logo': typeof OffreLogoRoute
   '/offre-site-internet': typeof OffreSiteInternetRoute
   '/redaction-business-plan-cote-divoire': typeof RedactionBusinessPlanCoteDivoireRoute
   '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
@@ -568,7 +555,6 @@ export interface FileRoutesByFullPath {
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
   '/en/contact-us': typeof EnContactUsRoute
   '/en/get-quotes': typeof EnGetQuotesRoute
-  '/en/logo-offer': typeof EnLogoOfferRoute
   '/en/start-a-business-ivory-coast': typeof EnStartABusinessIvoryCoastRoute
   '/en/thank-you': typeof EnThankYouRoute
   '/en/website-offer': typeof EnWebsiteOfferRoute
@@ -628,7 +614,6 @@ export interface FileRoutesByTo {
   '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/nous-contacter': typeof NousContacterRoute
   '/offre-gestion-marketing': typeof OffreGestionMarketingRoute
-  '/offre-logo': typeof OffreLogoRoute
   '/offre-site-internet': typeof OffreSiteInternetRoute
   '/redaction-business-plan-cote-divoire': typeof RedactionBusinessPlanCoteDivoireRoute
   '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
@@ -648,7 +633,6 @@ export interface FileRoutesByTo {
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
   '/en/contact-us': typeof EnContactUsRoute
   '/en/get-quotes': typeof EnGetQuotesRoute
-  '/en/logo-offer': typeof EnLogoOfferRoute
   '/en/start-a-business-ivory-coast': typeof EnStartABusinessIvoryCoastRoute
   '/en/thank-you': typeof EnThankYouRoute
   '/en/website-offer': typeof EnWebsiteOfferRoute
@@ -711,7 +695,6 @@ export interface FileRoutesById {
   '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/nous-contacter': typeof NousContacterRoute
   '/offre-gestion-marketing': typeof OffreGestionMarketingRoute
-  '/offre-logo': typeof OffreLogoRoute
   '/offre-site-internet': typeof OffreSiteInternetRoute
   '/redaction-business-plan-cote-divoire': typeof RedactionBusinessPlanCoteDivoireRoute
   '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
@@ -731,7 +714,6 @@ export interface FileRoutesById {
   '/en/company-registration-ivory-coast': typeof EnCompanyRegistrationIvoryCoastRoute
   '/en/contact-us': typeof EnContactUsRoute
   '/en/get-quotes': typeof EnGetQuotesRoute
-  '/en/logo-offer': typeof EnLogoOfferRoute
   '/en/start-a-business-ivory-coast': typeof EnStartABusinessIvoryCoastRoute
   '/en/thank-you': typeof EnThankYouRoute
   '/en/website-offer': typeof EnWebsiteOfferRoute
@@ -794,7 +776,6 @@ export interface FileRouteTypes {
     | '/mot-de-passe-oublie'
     | '/nous-contacter'
     | '/offre-gestion-marketing'
-    | '/offre-logo'
     | '/offre-site-internet'
     | '/redaction-business-plan-cote-divoire'
     | '/reinitialiser-mot-de-passe'
@@ -814,7 +795,6 @@ export interface FileRouteTypes {
     | '/en/company-registration-ivory-coast'
     | '/en/contact-us'
     | '/en/get-quotes'
-    | '/en/logo-offer'
     | '/en/start-a-business-ivory-coast'
     | '/en/thank-you'
     | '/en/website-offer'
@@ -874,7 +854,6 @@ export interface FileRouteTypes {
     | '/mot-de-passe-oublie'
     | '/nous-contacter'
     | '/offre-gestion-marketing'
-    | '/offre-logo'
     | '/offre-site-internet'
     | '/redaction-business-plan-cote-divoire'
     | '/reinitialiser-mot-de-passe'
@@ -894,7 +873,6 @@ export interface FileRouteTypes {
     | '/en/company-registration-ivory-coast'
     | '/en/contact-us'
     | '/en/get-quotes'
-    | '/en/logo-offer'
     | '/en/start-a-business-ivory-coast'
     | '/en/thank-you'
     | '/en/website-offer'
@@ -956,7 +934,6 @@ export interface FileRouteTypes {
     | '/mot-de-passe-oublie'
     | '/nous-contacter'
     | '/offre-gestion-marketing'
-    | '/offre-logo'
     | '/offre-site-internet'
     | '/redaction-business-plan-cote-divoire'
     | '/reinitialiser-mot-de-passe'
@@ -976,7 +953,6 @@ export interface FileRouteTypes {
     | '/en/company-registration-ivory-coast'
     | '/en/contact-us'
     | '/en/get-quotes'
-    | '/en/logo-offer'
     | '/en/start-a-business-ivory-coast'
     | '/en/thank-you'
     | '/en/website-offer'
@@ -1039,7 +1015,6 @@ export interface RootRouteChildren {
   MotDePasseOublieRoute: typeof MotDePasseOublieRoute
   NousContacterRoute: typeof NousContacterRoute
   OffreGestionMarketingRoute: typeof OffreGestionMarketingRoute
-  OffreLogoRoute: typeof OffreLogoRoute
   OffreSiteInternetRoute: typeof OffreSiteInternetRoute
   RedactionBusinessPlanCoteDivoireRoute: typeof RedactionBusinessPlanCoteDivoireRoute
   ReinitialiserMotDePasseRoute: typeof ReinitialiserMotDePasseRoute
@@ -1053,7 +1028,6 @@ export interface RootRouteChildren {
   EnCompanyRegistrationIvoryCoastRoute: typeof EnCompanyRegistrationIvoryCoastRoute
   EnContactUsRoute: typeof EnContactUsRoute
   EnGetQuotesRoute: typeof EnGetQuotesRoute
-  EnLogoOfferRoute: typeof EnLogoOfferRoute
   EnStartABusinessIvoryCoastRoute: typeof EnStartABusinessIvoryCoastRoute
   EnThankYouRoute: typeof EnThankYouRoute
   EnWebsiteOfferRoute: typeof EnWebsiteOfferRoute
@@ -1119,13 +1093,6 @@ declare module '@tanstack/react-router' {
       path: '/offre-site-internet'
       fullPath: '/offre-site-internet'
       preLoaderRoute: typeof OffreSiteInternetRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/offre-logo': {
-      id: '/offre-logo'
-      path: '/offre-logo'
-      fullPath: '/offre-logo'
-      preLoaderRoute: typeof OffreLogoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/offre-gestion-marketing': {
@@ -1364,13 +1331,6 @@ declare module '@tanstack/react-router' {
       path: '/en/start-a-business-ivory-coast'
       fullPath: '/en/start-a-business-ivory-coast'
       preLoaderRoute: typeof EnStartABusinessIvoryCoastRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/en/logo-offer': {
-      id: '/en/logo-offer'
-      path: '/en/logo-offer'
-      fullPath: '/en/logo-offer'
-      preLoaderRoute: typeof EnLogoOfferRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/en/get-quotes': {
@@ -1726,7 +1686,6 @@ const rootRouteChildren: RootRouteChildren = {
   MotDePasseOublieRoute: MotDePasseOublieRoute,
   NousContacterRoute: NousContacterRoute,
   OffreGestionMarketingRoute: OffreGestionMarketingRoute,
-  OffreLogoRoute: OffreLogoRoute,
   OffreSiteInternetRoute: OffreSiteInternetRoute,
   RedactionBusinessPlanCoteDivoireRoute: RedactionBusinessPlanCoteDivoireRoute,
   ReinitialiserMotDePasseRoute: ReinitialiserMotDePasseRoute,
@@ -1741,7 +1700,6 @@ const rootRouteChildren: RootRouteChildren = {
   EnCompanyRegistrationIvoryCoastRoute: EnCompanyRegistrationIvoryCoastRoute,
   EnContactUsRoute: EnContactUsRoute,
   EnGetQuotesRoute: EnGetQuotesRoute,
-  EnLogoOfferRoute: EnLogoOfferRoute,
   EnStartABusinessIvoryCoastRoute: EnStartABusinessIvoryCoastRoute,
   EnThankYouRoute: EnThankYouRoute,
   EnWebsiteOfferRoute: EnWebsiteOfferRoute,
