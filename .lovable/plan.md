@@ -1,46 +1,54 @@
 ## Objectif
 
-Transformer la fin de parcours (business plan, financement, demande de soumissions) en tunnel de vente : offre site internet en promo, puis une sales page vidéo pour la formation, puis une page de confirmation avec le canal WhatsApp.
+Savoir, côté admin :
 
-## 1. Suppression de l'offre logo
+1. Pour chaque prospect publié : quelles agences ont débloqué ses coordonnées (jusqu'à 5), et à quelle heure.
+2. Quelles agences sont les plus actives sur une période (7 derniers jours, hier, 30 jours, ou dates personnalisées).
+3. Combien de crédits chaque agence a consommés sur cette période, et sa fréquence de déblocage.
 
-- Suppression des pages `/offre-logo` et `/en/logo-offer`.
-- Les 3 formulaires (business plan, financement, demande de soumissions) redirigent désormais directement vers `/offre-site-internet` (`/en/website-offer` en anglais).
-- Retrait des entrées logo du sitemap et de la table de correspondance FR/EN.
-- Note : la question « voulez-vous un logo ? » du formulaire d'inscription **partenaire** (cabinets) on doit retirer toutes les questions en lien avec le logo. On ne fait plus de logo donc on ne pose plus la question : « Est-ce que vous avez besoin de logo ou pas ? » On enlève tout ça, que ce soit pour les partenaires que pour les prospectus.
+Les données existent déjà (chaque déblocage est enregistré avec l'agence, la publication et les crédits dépensés) — il manque uniquement la lecture et l'affichage. Aucune modification du schéma n'est nécessaire.
 
-## 2. Offre site internet à 70 000 FCFA
+## Ce qui sera construit
 
-- Prix affiché : **165 000 FCFA barré → 70 000 FCFA**, badge « Promotion ».
-- **Compte à rebours en direct** jusqu'au vendredi 17:00 (heure d'Abidjan), avec la date exacte affichée (« Offre valable jusqu'au vendredi 7 août à 17h00 »).
-- Le calcul est automatique et hebdomadaire : dès que le vendredi 17:00 est passé, le compteur repart sur le vendredi suivant. Aucun renouvellement manuel nécessaire.
-- Version anglaise alignée (mêmes prix, même minuterie).
+### 1. Nouvel onglet « Activité » dans l'espace admin
 
-## 3. Nouvelle sales page formation `/formation-clients`
+Ajouté à la barre latérale staff, à côté de « Prospects » et « Partenaires ».
 
-Après l'étape « gestion marketing », le prospect arrive sur cette page (sans menu, sans footer, plein écran) :
+Sélecteur de période en haut : Aujourd'hui / Hier / 7 derniers jours / 30 derniers jours / Personnalisé (deux dates).
 
-- Titre très visible : **« Ne quittez pas cette page »** + sous-titre « Regardez cette vidéo pour savoir quoi faire maintenant ».
-- La vidéo que vous venez d'envoyer (2 min 15), lecteur intégré, mise en avant.
-- Deux boutons sous la vidéo :
-  - **« Oui, je veux la formation — je veux savoir comment avoir des clients »** (bouton principal)
-  - **« Non merci, je n'ai pas besoin de savoir comment avoir des clients »** (bouton secondaire, discret)
-- Alors quand les gens choisissent « oui je veux la formation », envoie un événement « add to cart » à Facebook.
-- Le bouton « Oui » ouvrira le lien de paiement Chariow. En attendant que vous me le donniez, il redirige vers la page de confirmation avec un message « nous vous envoyons le lien » — je le branche dès que vous me transmettez l'URL.
+**Bandeau de synthèse** : nombre de déblocages, nombre d'agences actives, crédits consommés, nombre de prospects publiés sur la période, moyenne de déblocages par prospect.
 
-## 4. Page de confirmation finale
+**Classement des agences** (trié par déblocages, colonnes triables) :
 
-Les pages `/merci-demande-business-plan`, `/merci-demande-financement` et `/merci` sont refondues avec le même bloc :
+- Cabinet, ville, statut, niveau (Régulier / Premium / Illimité)
+- Déblocages sur la période
+- Crédits consommés sur la période (0 pour un déblocage en illimité, affiché comme tel)
+- Fréquence : moyenne de déblocages par jour actif + nombre de jours actifs
+- Dernier déblocage (date relative), solde de crédits actuel
+- Export CSV du classement
 
-- « D'accord, nous avons bien reçu votre demande. »
-- Explication : notre équipe vous appellera pour **valider votre demande** avant que les cabinets comptables ne vous contactent. Bureau ouvert du **lundi au vendredi, de 9h00 à 17h00**.
-- Un seul bouton WhatsApp : **« Rejoindre le canal WhatsApp gratuit »** → [https://whatsapp.com/channel/0029Va5QvIu6BIEdk2Gbcq0U](https://whatsapp.com/channel/0029Va5QvIu6BIEdk2Gbcq0U) (astuces et vidéos gratuites).
-- Pour ceux qui ont refusé la formation : rappel discret « Vous avez changé d'avis ? Découvrir la formation ».
-- Plus aucun autre lien WhatsApp de support sur ces pages.
+**Agences inactives** : liste des partenaires approuvés avec 0 déblocage sur la période (utile pour la relance).
+
+### 2. Vue « qui a contacté ce prospect »
+
+Dans l'onglet Prospects, chaque prospect publié affiche un compteur « X / 5 agences » cliquable qui ouvre un panneau détaillé :
+
+- Liste des agences ayant débloqué, dans l'ordre chronologique (1er, 2e, …)
+- Cabinet, contact, téléphone/email de l'agence, ville, niveau
+- Heure exacte du déblocage + délai écoulé depuis la publication
+- Crédits dépensés par ce déblocage
+- Places restantes et indication si la fenêtre premium de 3 h est encore active
+- Ajoute aussi une vue qui permet de voir dans la catégorie partenaire tous les prospects qu'ils ont débloqués. 
+
+La même vue est accessible depuis la ligne d'une agence dans l'onglet Activité (liste de ses derniers prospects débloqués).
 
 ## Détails techniques
 
-- Vidéo uploadée sur le CDN Lovable via `lovable-assets` (pointeur `.asset.json`), pas de binaire dans le dépôt.
-- Nouvelle route `src/routes/formation-clients.tsx` + ajout à la liste des pages immersives dans `__root.tsx`, en `noindex, nofollow`, hors sitemap.
-- Réponse formation persistée via `/api/public/lead-upsell` (nouveau type d'offre `formation`) dans `raw_payload` du prospect.
-- Le minuteur est calculé côté client à partir de l'heure courante (fuseau UTC = heure d'Abidjan), pas de valeur codée en dur.
+- Nouveau fichier `src/lib/partner-activity.functions.ts` avec des server functions protégées (vérification staff comme dans `marketplace.functions.ts`) :
+  - `getPartnerActivityStats({ from, to })` — agrégation des `lead_unlocks` jointe à `partners`, plus la liste des partenaires approuvés sans activité.
+  - `getPublicationUnlocks({ prospect_id })` — déblocages détaillés d'un prospect, joints aux infos agence.
+- Nouveaux composants sous `src/components/admin/` : `PartnerActivityPanel.tsx` (onglet) et `ProspectUnlockersDialog.tsx` (panneau détaillé), pour ne pas alourdir `_authenticated.admin.tsx` (déjà ~2 660 lignes).
+- Onglet `activite` ajouté au schéma de recherche de `_authenticated.admin.tsx` et à `NAV_STAFF` dans `AppShell.tsx`.
+- Agrégation faite côté serveur ; l'export CSV est généré côté client à partir des données déjà chargées.
+- Les coordonnées des agences (partenaires, pas des prospects) sont visibles par le staff uniquement — routes déjà sous `_authenticated` avec contrôle de rôle.
+- Ajoute aussi une vue qui permet de voir dans la catégorie partenaire tous les prospects qu'ils ont débloqués. 
