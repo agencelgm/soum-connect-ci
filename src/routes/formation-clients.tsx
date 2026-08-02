@@ -99,7 +99,7 @@ function FormationPage() {
 
   return (
     <main className="flex min-h-[100svh] flex-col bg-primary text-primary-foreground">
-      <section className="mx-auto flex w-full max-w-[900px] flex-1 flex-col justify-center gap-6 px-5 py-8 md:gap-8 md:py-12">
+      <section className="mx-auto flex w-full max-w-[900px] flex-1 flex-col justify-center gap-7 px-5 py-8 sm:gap-8 md:py-12">
         <p className="text-center text-xs md:text-sm font-bold uppercase tracking-[0.2em] text-accent">
           Étape finale — important
         </p>
@@ -128,7 +128,7 @@ function FormationPage() {
               type="button"
               onClick={startVideo}
               aria-label="Cliquez ici pour regarder la vidéo"
-              className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[radial-gradient(circle_at_50%_35%,color-mix(in_oklab,var(--color-primary)_75%,transparent),color-mix(in_oklab,black_88%,transparent))] px-5 text-center"
+              className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-[radial-gradient(circle_at_50%_35%,color-mix(in_oklab,var(--color-primary)_90%,transparent),black)] px-5 text-center"
             >
               <span className="grid h-16 w-16 place-items-center rounded-full bg-accent text-accent-foreground shadow-xl md:h-20 md:w-20">
                 <Play className="h-7 w-7 md:h-9 md:w-9 fill-current" />
