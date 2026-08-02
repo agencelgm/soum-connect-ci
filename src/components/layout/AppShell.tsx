@@ -65,6 +65,7 @@ const NAV_STAFF: NavItem[] = [
   { to: "/admin", label: "Tableau de bord", icon: LayoutDashboard, exact: true },
   { to: "/admin", search: { tab: "prospects" }, label: "Prospects", icon: Inbox },
   { to: "/admin", search: { tab: "partners" }, label: "Partenaires", icon: Users },
+  { to: "/admin", search: { tab: "activite" }, label: "Activité partenaires", icon: BarChart3 },
   { to: "/admin", search: { tab: "create" }, label: "Nouveau partenaire", icon: UserPlus },
   { to: "/admin", search: { tab: "paiements" }, label: "Paiements crédits", icon: Coins },
   { to: "/admin", search: { tab: "emails" }, label: "Emails", icon: Mail, adminOnly: true },
