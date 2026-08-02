@@ -476,7 +476,6 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
   const [tierFilter, setTierFilter] = useState<"all" | "premium" | "regular">("all");
   const [duplicatesOnly, setDuplicatesOnly] = useState(false);
   const [siteFilter, setSiteFilter] = useState<"all" | "yes" | "no" | "unknown">("all");
-  const [logoFilter, setLogoFilter] = useState<"all" | "yes" | "no" | "unknown">("all");
   const [ageFilter, setAgeFilter] = useState<"all" | "new" | "recent" | "old">("all");
 
   const duplicates = useMemo(
@@ -505,7 +504,6 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
       if (t !== tierFilter) return false;
     }
     if (!matchBoolFilter(p.wants_website, siteFilter)) return false;
-    if (!matchBoolFilter(p.wants_logo, logoFilter)) return false;
     if (!matchAgeFilter(p.created_at, ageFilter)) return false;
     if (searchQ.trim()) {
       const q = normalizeText(searchQ);
@@ -1236,7 +1234,6 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
   // New filters (search + upsell + age + duplicates)
   const [searchQ, setSearchQ] = useState("");
   const [siteFilter, setSiteFilter] = useState<BoolFilter>("all");
-  const [logoFilter, setLogoFilter] = useState<BoolFilter>("all");
   const [ageFilter, setAgeFilter] = useState<AgeFilter>("all");
   const [duplicatesOnly, setDuplicatesOnly] = useState(false);
 
@@ -1281,19 +1278,19 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
           ? (prospect.raw_payload as Record<string, unknown>)
           : {};
       if (!matchBoolFilter(rp.upsell_site, siteFilter)) return false;
-      if (!matchBoolFilter(rp.upsell_logo, logoFilter)) return false;
+      if (!matchBoolFilter(rp.upsell_formation, formationFilter)) return false;
       // Age
       if (!matchAgeFilter(prospect.created_at, ageFilter)) return false;
       // Duplicates
       if (duplicatesOnly && !duplicates.has(prospect.id)) return false;
       return true;
     });
-  }, [all, filter, searchQ, siteFilter, logoFilter, ageFilter, duplicatesOnly, duplicates]);
+  }, [all, filter, searchQ, siteFilter, formationFilter, ageFilter, duplicatesOnly, duplicates]);
 
   function resetFilters() {
     setSearchQ("");
     setSiteFilter("all");
-    setLogoFilter("all");
+    setFormationFilter("all");
     setAgeFilter("all");
     setDuplicatesOnly(false);
   }
@@ -2601,12 +2598,10 @@ function PartnerDetailsDialog({
             }
           />
           <DetailRow
-            label="Intéressé par un logo"
+            label="Membre depuis"
             value={
-              partner.wants_logo === true
-                ? "Oui"
-                : partner.wants_logo === false
-                ? "Non"
+              partner.created_at
+                ? new Date(partner.created_at).toLocaleDateString("fr-FR")
                 : "—"
             }
           />
