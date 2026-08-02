@@ -30,7 +30,7 @@ function genId(): string {
  * avec le même event_id pour déduplication automatique par Meta (fenêtre 48h).
  */
 export function trackMetaConversion(
-  eventName: "Lead" | "CompleteRegistration",
+  eventName: "Lead" | "CompleteRegistration" | "AddToCart",
   params: FbqParams = {},
   userData: MetaUserData = {},
 ): void {
