@@ -20,7 +20,7 @@ import {
   GraduationCap,
   Mail,
 } from "lucide-react";
-import { Ban } from "lucide-react";
+import { Ban, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import logo from "@/assets/brand/logo-soumissions-comptables.jpg";
@@ -33,7 +33,8 @@ type NavItem = {
     | "/espace-partenaire"
     | "/admin"
     | "/tutoriel-partenaire"
-    | "/academie";
+    | "/academie"
+    | "/stats-formation";
   search?: Record<string, string>;
   label: string;
   icon: typeof Briefcase;
@@ -69,6 +70,7 @@ const NAV_STAFF: NavItem[] = [
   { to: "/admin", search: { tab: "emails" }, label: "Emails", icon: Mail, adminOnly: true },
   { to: "/admin", search: { tab: "suppression" }, label: "Liste d'exclusion", icon: Ban, adminOnly: true },
   { to: "/admin", search: { tab: "team" }, label: "Équipe LGM", icon: Users2, adminOnly: true },
+  { to: "/stats-formation", label: "Stats formation", icon: BarChart3 },
   { to: "/espace-partenaire", label: "Mon compte", icon: UserCircle2 },
 ];
 

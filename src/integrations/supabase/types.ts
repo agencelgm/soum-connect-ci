@@ -294,6 +294,42 @@ export type Database = {
         }
         Relationships: []
       }
+      funnel_events: {
+        Row: {
+          amount_label: string | null
+          created_at: string
+          email: string | null
+          event: string
+          id: string
+          lead_id: string | null
+          metadata: Json
+          page: string
+          session_id: string | null
+        }
+        Insert: {
+          amount_label?: string | null
+          created_at?: string
+          email?: string | null
+          event: string
+          id?: string
+          lead_id?: string | null
+          metadata?: Json
+          page: string
+          session_id?: string | null
+        }
+        Update: {
+          amount_label?: string | null
+          created_at?: string
+          email?: string | null
+          event?: string
+          id?: string
+          lead_id?: string | null
+          metadata?: Json
+          page?: string
+          session_id?: string | null
+        }
+        Relationships: []
+      }
       growth_email_batches: {
         Row: {
           body_markdown: string

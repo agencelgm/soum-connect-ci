@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PlayCircle, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getTrackingFields } from "@/lib/lead-tracking";
@@ -33,14 +33,55 @@ function getFinalPath(): string {
   }
 }
 
+function getSessionId(): string {
+  try {
+    let sid = sessionStorage.getItem("funnelSessionId");
+    if (!sid) {
+      sid = crypto.randomUUID();
+      sessionStorage.setItem("funnelSessionId", sid);
+    }
+    return sid;
+  } catch {
+    return "anonymous";
+  }
+}
+
+function trackFunnel(event: string) {
+  let email: string | undefined;
+  let leadId: string | undefined;
+  try {
+    leadId = sessionStorage.getItem("leadId") ?? undefined;
+    const raw = sessionStorage.getItem("leadUser");
+    if (raw) email = (JSON.parse(raw) as { email?: string }).email;
+  } catch {}
+  void fetch("/api/public/funnel-track", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    keepalive: true,
+    body: JSON.stringify({
+      page: "formation-clients",
+      event,
+      sessionId: getSessionId(),
+      leadId,
+      email,
+      referrer: typeof document !== "undefined" ? document.referrer : undefined,
+    }),
+  }).catch(() => {});
+}
+
 function FormationPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState<null | "yes" | "no">(null);
   const [started, setStarted] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  useEffect(() => {
+    trackFunnel("page_view");
+  }, []);
+
   function startVideo() {
     setStarted(true);
+    trackFunnel("video_play");
     requestAnimationFrame(() => {
       void videoRef.current?.play().catch(() => {});
     });
@@ -48,6 +89,7 @@ function FormationPage() {
 
   async function handleClick(interested: boolean) {
     setLoading(interested ? "yes" : "no");
+    trackFunnel(interested ? "choice_yes" : "choice_no");
 
     let leadId: string | undefined;
     try {
@@ -122,6 +164,7 @@ function FormationPage() {
             playsInline
             preload="metadata"
             controlsList="nodownload"
+            onEnded={() => trackFunnel("video_complete")}
           />
           {!started && (
             <button

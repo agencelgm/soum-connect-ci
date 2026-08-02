@@ -56,6 +56,7 @@ import { Route as EnAccountingFirmAbidjanRouteImport } from './routes/en/account
 import { Route as EnAboutRouteImport } from './routes/en/about'
 import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
 import { Route as AuthenticatedTutorielPartenaireRouteImport } from './routes/_authenticated.tutoriel-partenaire'
+import { Route as AuthenticatedStatsFormationRouteImport } from './routes/_authenticated.stats-formation'
 import { Route as AuthenticatedRechargerRouteImport } from './routes/_authenticated.recharger'
 import { Route as AuthenticatedMarketplaceRouteImport } from './routes/_authenticated.marketplace'
 import { Route as AuthenticatedHistoriqueRouteImport } from './routes/_authenticated.historique'
@@ -68,9 +69,11 @@ import { Route as ApiPublicTestPartnerWebhookRouteImport } from './routes/api/pu
 import { Route as ApiPublicMetaCapiRouteImport } from './routes/api/public/meta-capi'
 import { Route as ApiPublicLeadUpsellRouteImport } from './routes/api/public/lead-upsell'
 import { Route as ApiPublicLeadRouteImport } from './routes/api/public/lead'
+import { Route as ApiPublicFunnelTrackRouteImport } from './routes/api/public/funnel-track'
 import { Route as ApiPublicFinancingLeadRouteImport } from './routes/api/public/financing-lead'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
 import { Route as ApiPublicChariowWebhookRouteImport } from './routes/api/public/chariow-webhook'
+import { Route as ApiPublicChariowFormationRouteImport } from './routes/api/public/chariow-formation'
 import { Route as ApiPublicBusinessPlanLeadRouteImport } from './routes/api/public/business-plan-lead'
 import { Route as AcademieModuleSlugRouteImport } from './routes/academie.$module.$slug'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
@@ -335,6 +338,12 @@ const AuthenticatedTutorielPartenaireRoute =
     path: '/tutoriel-partenaire',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedStatsFormationRoute =
+  AuthenticatedStatsFormationRouteImport.update({
+    id: '/stats-formation',
+    path: '/stats-formation',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedRechargerRoute = AuthenticatedRechargerRouteImport.update({
   id: '/recharger',
   path: '/recharger',
@@ -400,6 +409,11 @@ const ApiPublicLeadRoute = ApiPublicLeadRouteImport.update({
   path: '/api/public/lead',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicFunnelTrackRoute = ApiPublicFunnelTrackRouteImport.update({
+  id: '/api/public/funnel-track',
+  path: '/api/public/funnel-track',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicFinancingLeadRoute = ApiPublicFinancingLeadRouteImport.update({
   id: '/api/public/financing-lead',
   path: '/api/public/financing-lead',
@@ -415,6 +429,12 @@ const ApiPublicChariowWebhookRoute = ApiPublicChariowWebhookRouteImport.update({
   path: '/api/public/chariow-webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicChariowFormationRoute =
+  ApiPublicChariowFormationRouteImport.update({
+    id: '/api/public/chariow-formation',
+    path: '/api/public/chariow-formation',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicBusinessPlanLeadRoute =
   ApiPublicBusinessPlanLeadRouteImport.update({
     id: '/api/public/business-plan-lead',
@@ -555,6 +575,7 @@ export interface FileRoutesByFullPath {
   '/historique': typeof AuthenticatedHistoriqueRoute
   '/marketplace': typeof AuthenticatedMarketplaceRoute
   '/recharger': typeof AuthenticatedRechargerRoute
+  '/stats-formation': typeof AuthenticatedStatsFormationRoute
   '/tutoriel-partenaire': typeof AuthenticatedTutorielPartenaireRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/en/about': typeof EnAboutRoute
@@ -572,9 +593,11 @@ export interface FileRoutesByFullPath {
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/academie/$module/$slug': typeof AcademieModuleSlugRoute
   '/api/public/business-plan-lead': typeof ApiPublicBusinessPlanLeadRoute
+  '/api/public/chariow-formation': typeof ApiPublicChariowFormationRoute
   '/api/public/chariow-webhook': typeof ApiPublicChariowWebhookRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/financing-lead': typeof ApiPublicFinancingLeadRoute
+  '/api/public/funnel-track': typeof ApiPublicFunnelTrackRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
   '/api/public/lead-upsell': typeof ApiPublicLeadUpsellRoute
   '/api/public/meta-capi': typeof ApiPublicMetaCapiRoute
@@ -634,6 +657,7 @@ export interface FileRoutesByTo {
   '/historique': typeof AuthenticatedHistoriqueRoute
   '/marketplace': typeof AuthenticatedMarketplaceRoute
   '/recharger': typeof AuthenticatedRechargerRoute
+  '/stats-formation': typeof AuthenticatedStatsFormationRoute
   '/tutoriel-partenaire': typeof AuthenticatedTutorielPartenaireRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/en/about': typeof EnAboutRoute
@@ -651,9 +675,11 @@ export interface FileRoutesByTo {
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/academie/$module/$slug': typeof AcademieModuleSlugRoute
   '/api/public/business-plan-lead': typeof ApiPublicBusinessPlanLeadRoute
+  '/api/public/chariow-formation': typeof ApiPublicChariowFormationRoute
   '/api/public/chariow-webhook': typeof ApiPublicChariowWebhookRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/financing-lead': typeof ApiPublicFinancingLeadRoute
+  '/api/public/funnel-track': typeof ApiPublicFunnelTrackRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
   '/api/public/lead-upsell': typeof ApiPublicLeadUpsellRoute
   '/api/public/meta-capi': typeof ApiPublicMetaCapiRoute
@@ -716,6 +742,7 @@ export interface FileRoutesById {
   '/_authenticated/historique': typeof AuthenticatedHistoriqueRoute
   '/_authenticated/marketplace': typeof AuthenticatedMarketplaceRoute
   '/_authenticated/recharger': typeof AuthenticatedRechargerRoute
+  '/_authenticated/stats-formation': typeof AuthenticatedStatsFormationRoute
   '/_authenticated/tutoriel-partenaire': typeof AuthenticatedTutorielPartenaireRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/en/about': typeof EnAboutRoute
@@ -733,9 +760,11 @@ export interface FileRoutesById {
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/academie/$module/$slug': typeof AcademieModuleSlugRoute
   '/api/public/business-plan-lead': typeof ApiPublicBusinessPlanLeadRoute
+  '/api/public/chariow-formation': typeof ApiPublicChariowFormationRoute
   '/api/public/chariow-webhook': typeof ApiPublicChariowWebhookRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/financing-lead': typeof ApiPublicFinancingLeadRoute
+  '/api/public/funnel-track': typeof ApiPublicFunnelTrackRoute
   '/api/public/lead': typeof ApiPublicLeadRoute
   '/api/public/lead-upsell': typeof ApiPublicLeadUpsellRoute
   '/api/public/meta-capi': typeof ApiPublicMetaCapiRoute
@@ -798,6 +827,7 @@ export interface FileRouteTypes {
     | '/historique'
     | '/marketplace'
     | '/recharger'
+    | '/stats-formation'
     | '/tutoriel-partenaire'
     | '/email/unsubscribe'
     | '/en/about'
@@ -815,9 +845,11 @@ export interface FileRouteTypes {
     | '/.mcp/invoke-tool/$tool'
     | '/academie/$module/$slug'
     | '/api/public/business-plan-lead'
+    | '/api/public/chariow-formation'
     | '/api/public/chariow-webhook'
     | '/api/public/contact'
     | '/api/public/financing-lead'
+    | '/api/public/funnel-track'
     | '/api/public/lead'
     | '/api/public/lead-upsell'
     | '/api/public/meta-capi'
@@ -877,6 +909,7 @@ export interface FileRouteTypes {
     | '/historique'
     | '/marketplace'
     | '/recharger'
+    | '/stats-formation'
     | '/tutoriel-partenaire'
     | '/email/unsubscribe'
     | '/en/about'
@@ -894,9 +927,11 @@ export interface FileRouteTypes {
     | '/.mcp/invoke-tool/$tool'
     | '/academie/$module/$slug'
     | '/api/public/business-plan-lead'
+    | '/api/public/chariow-formation'
     | '/api/public/chariow-webhook'
     | '/api/public/contact'
     | '/api/public/financing-lead'
+    | '/api/public/funnel-track'
     | '/api/public/lead'
     | '/api/public/lead-upsell'
     | '/api/public/meta-capi'
@@ -958,6 +993,7 @@ export interface FileRouteTypes {
     | '/_authenticated/historique'
     | '/_authenticated/marketplace'
     | '/_authenticated/recharger'
+    | '/_authenticated/stats-formation'
     | '/_authenticated/tutoriel-partenaire'
     | '/email/unsubscribe'
     | '/en/about'
@@ -975,9 +1011,11 @@ export interface FileRouteTypes {
     | '/.mcp/invoke-tool/$tool'
     | '/academie/$module/$slug'
     | '/api/public/business-plan-lead'
+    | '/api/public/chariow-formation'
     | '/api/public/chariow-webhook'
     | '/api/public/contact'
     | '/api/public/financing-lead'
+    | '/api/public/funnel-track'
     | '/api/public/lead'
     | '/api/public/lead-upsell'
     | '/api/public/meta-capi'
@@ -1048,9 +1086,11 @@ export interface RootRouteChildren {
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ApiPublicBusinessPlanLeadRoute: typeof ApiPublicBusinessPlanLeadRoute
+  ApiPublicChariowFormationRoute: typeof ApiPublicChariowFormationRoute
   ApiPublicChariowWebhookRoute: typeof ApiPublicChariowWebhookRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
   ApiPublicFinancingLeadRoute: typeof ApiPublicFinancingLeadRoute
+  ApiPublicFunnelTrackRoute: typeof ApiPublicFunnelTrackRoute
   ApiPublicLeadRoute: typeof ApiPublicLeadRoute
   ApiPublicLeadUpsellRoute: typeof ApiPublicLeadUpsellRoute
   ApiPublicMetaCapiRoute: typeof ApiPublicMetaCapiRoute
@@ -1402,6 +1442,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTutorielPartenaireRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/stats-formation': {
+      id: '/_authenticated/stats-formation'
+      path: '/stats-formation'
+      fullPath: '/stats-formation'
+      preLoaderRoute: typeof AuthenticatedStatsFormationRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/recharger': {
       id: '/_authenticated/recharger'
       path: '/recharger'
@@ -1486,6 +1533,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicLeadRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/funnel-track': {
+      id: '/api/public/funnel-track'
+      path: '/api/public/funnel-track'
+      fullPath: '/api/public/funnel-track'
+      preLoaderRoute: typeof ApiPublicFunnelTrackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/financing-lead': {
       id: '/api/public/financing-lead'
       path: '/api/public/financing-lead'
@@ -1505,6 +1559,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/chariow-webhook'
       fullPath: '/api/public/chariow-webhook'
       preLoaderRoute: typeof ApiPublicChariowWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/chariow-formation': {
+      id: '/api/public/chariow-formation'
+      path: '/api/public/chariow-formation'
+      fullPath: '/api/public/chariow-formation'
+      preLoaderRoute: typeof ApiPublicChariowFormationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/business-plan-lead': {
@@ -1635,6 +1696,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedHistoriqueRoute: typeof AuthenticatedHistoriqueRoute
   AuthenticatedMarketplaceRoute: typeof AuthenticatedMarketplaceRoute
   AuthenticatedRechargerRoute: typeof AuthenticatedRechargerRoute
+  AuthenticatedStatsFormationRoute: typeof AuthenticatedStatsFormationRoute
   AuthenticatedTutorielPartenaireRoute: typeof AuthenticatedTutorielPartenaireRoute
 }
 
@@ -1644,6 +1706,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedHistoriqueRoute: AuthenticatedHistoriqueRoute,
   AuthenticatedMarketplaceRoute: AuthenticatedMarketplaceRoute,
   AuthenticatedRechargerRoute: AuthenticatedRechargerRoute,
+  AuthenticatedStatsFormationRoute: AuthenticatedStatsFormationRoute,
   AuthenticatedTutorielPartenaireRoute: AuthenticatedTutorielPartenaireRoute,
 }
 
@@ -1728,9 +1791,11 @@ const rootRouteChildren: RootRouteChildren = {
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ApiPublicBusinessPlanLeadRoute: ApiPublicBusinessPlanLeadRoute,
+  ApiPublicChariowFormationRoute: ApiPublicChariowFormationRoute,
   ApiPublicChariowWebhookRoute: ApiPublicChariowWebhookRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
   ApiPublicFinancingLeadRoute: ApiPublicFinancingLeadRoute,
+  ApiPublicFunnelTrackRoute: ApiPublicFunnelTrackRoute,
   ApiPublicLeadRoute: ApiPublicLeadRoute,
   ApiPublicLeadUpsellRoute: ApiPublicLeadUpsellRoute,
   ApiPublicMetaCapiRoute: ApiPublicMetaCapiRoute,
