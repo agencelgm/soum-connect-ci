@@ -1527,6 +1527,12 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
               </div>
             </div>
 
+            {isPublishedProspect(selected.status) && (
+              <div className="border-b p-5">
+                <ProspectUnlockersPanel prospectId={selected.id} />
+              </div>
+            )}
+
             <div className="grid gap-6 p-5 lg:grid-cols-[1fr_280px]">
               <div className="space-y-6">
                 <FormSection title="Contact">
