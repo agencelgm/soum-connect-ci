@@ -704,6 +704,7 @@ function PartnerCard({
   const docsFn = useServerFn(markPartnerDocsReceived);
   const [busy, setBusy] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+  const [showUnlocks, setShowUnlocks] = useState(false);
   const [tempPwd, setTempPwd] = useState<{ email: string; pwd: string } | null>(null);
 
   async function run(fn: () => Promise<unknown>) {
@@ -773,6 +774,17 @@ function PartnerCard({
           <Button size="sm" variant="ghost" onClick={() => setShowDetails(true)}>
             Voir détails
           </Button>
+          <Button size="sm" variant="ghost" onClick={() => setShowUnlocks(true)}>
+            Prospects débloqués
+          </Button>
+          {showUnlocks && (
+            <PartnerUnlocksDialog
+              partnerId={partner.id}
+              cabinetName={partner.cabinet_name}
+              open
+              onClose={() => setShowUnlocks(false)}
+            />
+          )}
           {partner.status === "pending_review" && (
             <>
               <Button
