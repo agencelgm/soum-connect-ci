@@ -179,14 +179,17 @@ import { UnauthorizedScreen } from "@/components/auth/UnauthorizedScreen";
 import { cn } from "@/lib/utils";
 import { EmailsPanel } from "@/components/admin/EmailsPanel";
 import { SuppressionPanel } from "@/components/admin/SuppressionPanel";
+import { PartnerActivityPanel } from "@/components/admin/PartnerActivityPanel";
+import { ProspectUnlockersPanel } from "@/components/admin/ProspectUnlockersPanel";
+import { PartnerUnlocksDialog } from "@/components/admin/PartnerUnlocksDialog";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({ meta: [{ title: "Admin" }, { name: "robots", content: "noindex,nofollow" }] }),
   validateSearch: (search: Record<string, unknown>) => ({
     tab:
       typeof search.tab === "string" &&
-      ["partners", "prospects", "create", "team", "paiements", "emails", "suppression"].includes(search.tab)
-        ? (search.tab as "partners" | "prospects" | "create" | "team" | "paiements" | "emails" | "suppression")
+      ["partners", "prospects", "activite", "create", "team", "paiements", "emails", "suppression"].includes(search.tab)
+        ? (search.tab as "partners" | "prospects" | "activite" | "create" | "team" | "paiements" | "emails" | "suppression")
         : undefined,
   }),
   component: AdminPage,
@@ -269,6 +272,7 @@ function AdminPageInner({ roles }: { roles: string[] }) {
           {activeTab === "prospects" && (
             <ProspectQualificationPanel isAdmin={roles.includes("admin")} />
           )}
+          {activeTab === "activite" && <PartnerActivityPanel />}
           {activeTab === "create" && <CreatePartnerPanel key={FORM_VERSION} />}
           {activeTab === "paiements" && <PaymentsPanel />}
           {activeTab === "team" && roles.includes("admin") && <TeamPanel />}
@@ -287,7 +291,7 @@ function SectionHeader({
   pendingPartners,
   pendingProspects,
 }: {
-  tab: "partners" | "prospects" | "create" | "team" | "paiements" | "emails" | "suppression";
+  tab: "partners" | "prospects" | "activite" | "create" | "team" | "paiements" | "emails" | "suppression";
   pendingPartners: number;
   pendingProspects: number;
 }) {
@@ -303,6 +307,10 @@ function SectionHeader({
       subtitle: pendingProspects
         ? `${pendingProspects} prospect${pendingProspects > 1 ? "s" : ""} à qualifier`
         : "Aucun prospect en attente.",
+    },
+    activite: {
+      title: "Activité partenaires",
+      subtitle: "Qui débloque quoi, à quelle fréquence, et combien de crédits consommés.",
     },
     create: {
       title: "Nouveau partenaire",
