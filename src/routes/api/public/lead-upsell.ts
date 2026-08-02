@@ -4,7 +4,7 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 const UpsellSchema = z.object({
   leadId: z.string().min(1).max(64).optional(),
-  offer: z.enum(["logo", "site", "marketing"]),
+  offer: z.enum(["logo", "site", "marketing", "formation"]),
   interested: z.boolean(),
   language: z.enum(["fr", "en"]).default("fr"),
   source: z.string().min(1).max(64).optional(),
@@ -53,18 +53,8 @@ export const Route = createFileRoute("/api/public/lead-upsell")({
               console.error("[lead-upsell] lookup failed", findErr);
             } else if (rows && rows.length > 0) {
               const row = rows[0];
-              const field =
-                parsed.data.offer === "logo"
-                  ? "upsell_logo"
-                  : parsed.data.offer === "site"
-                    ? "upsell_site"
-                    : "upsell_marketing";
-              const ts =
-                parsed.data.offer === "logo"
-                  ? "upsell_logo_at"
-                  : parsed.data.offer === "site"
-                    ? "upsell_site_at"
-                    : "upsell_marketing_at";
+              const field = `upsell_${parsed.data.offer}`;
+              const ts = `upsell_${parsed.data.offer}_at`;
               const base = (row.raw_payload && typeof row.raw_payload === "object" && !Array.isArray(row.raw_payload))
                 ? (row.raw_payload as Record<string, string | number | boolean | null>)
                 : {};

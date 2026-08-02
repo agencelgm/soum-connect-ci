@@ -24,6 +24,7 @@ import { Route as MerciRouteImport } from './routes/merci'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as InscriptionPartenaireRouteImport } from './routes/inscription-partenaire'
 import { Route as GuidesRouteImport } from './routes/guides'
+import { Route as FormationClientsRouteImport } from './routes/formation-clients'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as DomiciliationEntrepriseAbidjanRouteImport } from './routes/domiciliation-entreprise-abidjan'
 import { Route as DemandeSoumissionsRouteImport } from './routes/demande-soumissions'
@@ -163,6 +164,11 @@ const InscriptionPartenaireRoute = InscriptionPartenaireRouteImport.update({
 const GuidesRoute = GuidesRouteImport.update({
   id: '/guides',
   path: '/guides',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FormationClientsRoute = FormationClientsRouteImport.update({
+  id: '/formation-clients',
+  path: '/formation-clients',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FaqRoute = FaqRouteImport.update({
@@ -526,6 +532,7 @@ export interface FileRoutesByFullPath {
   '/demande-soumissions': typeof DemandeSoumissionsRoute
   '/domiciliation-entreprise-abidjan': typeof DomiciliationEntrepriseAbidjanRoute
   '/faq': typeof FaqRoute
+  '/formation-clients': typeof FormationClientsRoute
   '/guides': typeof GuidesRouteWithChildren
   '/inscription-partenaire': typeof InscriptionPartenaireRoute
   '/mcp': typeof McpRoute
@@ -604,6 +611,7 @@ export interface FileRoutesByTo {
   '/demande-soumissions': typeof DemandeSoumissionsRoute
   '/domiciliation-entreprise-abidjan': typeof DomiciliationEntrepriseAbidjanRoute
   '/faq': typeof FaqRoute
+  '/formation-clients': typeof FormationClientsRoute
   '/guides': typeof GuidesRouteWithChildren
   '/inscription-partenaire': typeof InscriptionPartenaireRoute
   '/mcp': typeof McpRoute
@@ -685,6 +693,7 @@ export interface FileRoutesById {
   '/demande-soumissions': typeof DemandeSoumissionsRoute
   '/domiciliation-entreprise-abidjan': typeof DomiciliationEntrepriseAbidjanRoute
   '/faq': typeof FaqRoute
+  '/formation-clients': typeof FormationClientsRoute
   '/guides': typeof GuidesRouteWithChildren
   '/inscription-partenaire': typeof InscriptionPartenaireRoute
   '/mcp': typeof McpRoute
@@ -766,6 +775,7 @@ export interface FileRouteTypes {
     | '/demande-soumissions'
     | '/domiciliation-entreprise-abidjan'
     | '/faq'
+    | '/formation-clients'
     | '/guides'
     | '/inscription-partenaire'
     | '/mcp'
@@ -844,6 +854,7 @@ export interface FileRouteTypes {
     | '/demande-soumissions'
     | '/domiciliation-entreprise-abidjan'
     | '/faq'
+    | '/formation-clients'
     | '/guides'
     | '/inscription-partenaire'
     | '/mcp'
@@ -924,6 +935,7 @@ export interface FileRouteTypes {
     | '/demande-soumissions'
     | '/domiciliation-entreprise-abidjan'
     | '/faq'
+    | '/formation-clients'
     | '/guides'
     | '/inscription-partenaire'
     | '/mcp'
@@ -1005,6 +1017,7 @@ export interface RootRouteChildren {
   DemandeSoumissionsRoute: typeof DemandeSoumissionsRoute
   DomiciliationEntrepriseAbidjanRoute: typeof DomiciliationEntrepriseAbidjanRoute
   FaqRoute: typeof FaqRoute
+  FormationClientsRoute: typeof FormationClientsRoute
   GuidesRoute: typeof GuidesRouteWithChildren
   InscriptionPartenaireRoute: typeof InscriptionPartenaireRoute
   McpRoute: typeof McpRoute
@@ -1163,6 +1176,13 @@ declare module '@tanstack/react-router' {
       path: '/guides'
       fullPath: '/guides'
       preLoaderRoute: typeof GuidesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/formation-clients': {
+      id: '/formation-clients'
+      path: '/formation-clients'
+      fullPath: '/formation-clients'
+      preLoaderRoute: typeof FormationClientsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/faq': {
@@ -1676,6 +1696,7 @@ const rootRouteChildren: RootRouteChildren = {
   DemandeSoumissionsRoute: DemandeSoumissionsRoute,
   DomiciliationEntrepriseAbidjanRoute: DomiciliationEntrepriseAbidjanRoute,
   FaqRoute: FaqRoute,
+  FormationClientsRoute: FormationClientsRoute,
   GuidesRoute: GuidesRouteWithChildren,
   InscriptionPartenaireRoute: InscriptionPartenaireRoute,
   McpRoute: McpRoute,

@@ -26,14 +26,6 @@ export const Route = createFileRoute("/offre-gestion-marketing")({
   component: MarketingOfferPage,
 });
 
-function getFinalPath(): string {
-  try {
-    return sessionStorage.getItem("finalThankYouPath") || "/merci-demande-business-plan";
-  } catch {
-    return "/merci-demande-business-plan";
-  }
-}
-
 function MarketingOfferPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState<null | "yes" | "no">(null);
@@ -74,13 +66,12 @@ function MarketingOfferPage() {
       );
     }
 
-    const finalPath = getFinalPath();
     if (interested) {
       try {
         window.open(WHATSAPP_URL, "_blank", "noopener,noreferrer");
       } catch {}
     }
-    await navigate({ to: finalPath as never });
+    await navigate({ to: "/formation-clients" });
   }
 
   return (
