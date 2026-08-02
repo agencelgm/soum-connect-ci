@@ -570,7 +570,6 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
             {services.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
           <UpsellSelect label="Site" value={siteFilter} onChange={setSiteFilter} />
-          <UpsellSelect label="Logo" value={logoFilter} onChange={setLogoFilter} />
           <AgeSelect value={ageFilter} onChange={setAgeFilter} />
           <div className="flex gap-1">
             {(["all", "premium", "regular"] as const).map((k) => (
@@ -602,10 +601,10 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
           >
             ⚠ Doublons ({duplicatesCount})
           </button>
-          {(searchQ || cityFilter !== "all" || serviceFilter !== "all" || tierFilter !== "all" || duplicatesOnly || siteFilter !== "all" || logoFilter !== "all" || ageFilter !== "all") && (
+          {(searchQ || cityFilter !== "all" || serviceFilter !== "all" || tierFilter !== "all" || duplicatesOnly || siteFilter !== "all" || ageFilter !== "all") && (
             <button
               type="button"
-              onClick={() => { setSearchQ(""); setCityFilter("all"); setServiceFilter("all"); setTierFilter("all"); setDuplicatesOnly(false); setSiteFilter("all"); setLogoFilter("all"); setAgeFilter("all"); }}
+              onClick={() => { setSearchQ(""); setCityFilter("all"); setServiceFilter("all"); setTierFilter("all"); setDuplicatesOnly(false); setSiteFilter("all"); setAgeFilter("all"); }}
               className="text-xs text-muted-foreground underline"
             >
               Réinitialiser
@@ -1234,6 +1233,7 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
   // New filters (search + upsell + age + duplicates)
   const [searchQ, setSearchQ] = useState("");
   const [siteFilter, setSiteFilter] = useState<BoolFilter>("all");
+  const [formationFilter, setFormationFilter] = useState<BoolFilter>("all");
   const [ageFilter, setAgeFilter] = useState<AgeFilter>("all");
   const [duplicatesOnly, setDuplicatesOnly] = useState(false);
 
@@ -1297,7 +1297,7 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
   const hasActiveFilters =
     searchQ !== "" ||
     siteFilter !== "all" ||
-    logoFilter !== "all" ||
+    formationFilter !== "all" ||
     ageFilter !== "all" ||
     duplicatesOnly;
 
@@ -1403,7 +1403,7 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
             </div>
             <div className="flex flex-wrap gap-2">
               <UpsellSelect label="Site" value={siteFilter} onChange={setSiteFilter} />
-              <UpsellSelect label="Logo" value={logoFilter} onChange={setLogoFilter} />
+              <UpsellSelect label="Formation" value={formationFilter} onChange={setFormationFilter} />
               <AgeSelect value={ageFilter} onChange={setAgeFilter} />
             </div>
             <div className="flex items-center justify-between text-xs">
