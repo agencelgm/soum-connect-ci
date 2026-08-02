@@ -736,15 +736,25 @@ function PartnerCard({
               ★ Premium
             </span>
           )}
-          {partner.unlimited_until && new Date(partner.unlimited_until) > new Date() && (
-            <span
-              title={`Illimité jusqu'au ${new Date(partner.unlimited_until).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" })}`}
-              className="ml-2 inline-flex items-center gap-1 rounded-full border border-amber-600 bg-gradient-to-r from-amber-400 to-yellow-500 text-amber-950 text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 align-middle shadow-sm"
-            >
-              <Crown className="w-3 h-3" />
-              Illimité
-            </span>
-          )}
+          {partner.unlimited_until && new Date(partner.unlimited_until) > new Date() && (() => {
+            const end = new Date(partner.unlimited_until);
+            const daysLeft = Math.max(0, Math.ceil((end.getTime() - Date.now()) / 86400000));
+            const dateLabel = end.toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" });
+            return (
+              <>
+                <span
+                  title={`Illimité jusqu'au ${dateLabel}`}
+                  className="ml-2 inline-flex items-center gap-1 rounded-full border border-amber-600 bg-gradient-to-r from-amber-400 to-yellow-500 text-amber-950 text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 align-middle shadow-sm"
+                >
+                  <Crown className="w-3 h-3" />
+                  Illimité
+                </span>
+                <span className="ml-2 inline-flex items-center rounded-full border border-amber-300 bg-amber-50 text-amber-900 text-[10px] font-medium px-2 py-0.5 align-middle">
+                  Renouvellement le {dateLabel} · J-{daysLeft}
+                </span>
+              </>
+            );
+          })()}
           {partner.status === "pending_review" && (
             <TutorialBadge
               watchedAt={partner.tutorial_watched_at}
