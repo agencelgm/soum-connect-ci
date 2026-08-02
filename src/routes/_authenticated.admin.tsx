@@ -1771,7 +1771,6 @@ function CreatePartnerPanel() {
         zones: "",
       });
       setWantsWebsite(false);
-      setWantsLogo(false);
       qc.invalidateQueries({ queryKey: ["partners"] });
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Erreur");
