@@ -1725,7 +1725,6 @@ function CreatePartnerPanel() {
     zones: "",
   });
   const [wantsWebsite, setWantsWebsite] = useState(false);
-  const [wantsLogo, setWantsLogo] = useState(false);
   function up<K extends keyof typeof form>(k: K, v: string) {
     setForm((f) => ({ ...f, [k]: v }));
   }
@@ -1754,7 +1753,6 @@ function CreatePartnerPanel() {
           services: servicesList,
           zones: zonesList,
           wants_website: wantsWebsite,
-          wants_logo: wantsLogo,
         },
       });
       toast.success("Partenaire créé (30 crédits attribués)");
@@ -1818,8 +1816,8 @@ function CreatePartnerPanel() {
             Champs obligatoires avant création
           </p>
           <p className="text-sm text-muted-foreground">
-            Ces informations sont obligatoires : rôle, site internet, logo, services et zones
-            d’intervention. Site internet et logo sont sur Non par défaut.
+            Ces informations sont obligatoires : rôle, site internet, services et zones
+            d’intervention. Site internet est sur Non par défaut.
           </p>
         </div>
 
@@ -1839,14 +1837,6 @@ function CreatePartnerPanel() {
               label="Site internet souhaité ? * À partir de 165 000 FCFA"
               value={wantsWebsite}
               onChange={setWantsWebsite}
-            />
-          </div>
-
-          <div className="rounded-md border border-primary/30 bg-background p-4">
-            <YesNoRow
-              label="Logo professionnel souhaité ? * À partir de 50 000 FCFA"
-              value={wantsLogo}
-              onChange={setWantsLogo}
             />
           </div>
 
