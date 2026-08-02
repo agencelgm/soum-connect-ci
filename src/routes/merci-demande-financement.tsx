@@ -24,6 +24,7 @@ export const Route = createFileRoute("/merci-demande-financement")({
 });
 
 function Page() {
+  useFormationGate("/merci-demande-financement");
   useEffect(() => {
     trackEvent("financing_lead_confirmed", { page: "merci-financement" });
     try {

@@ -21,6 +21,7 @@ export const Route = createFileRoute("/en/thank-you")({
 });
 
 function ThankYouPage() {
+  useFormationGate("/en/thank-you");
   return (
     <main className="bg-[#F8FAFC] min-h-screen flex items-center">
       <section className="container-app py-16 md:py-24 w-full">

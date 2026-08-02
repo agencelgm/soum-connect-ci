@@ -24,6 +24,7 @@ export const Route = createFileRoute("/merci-demande-business-plan")({
 });
 
 function Page() {
+  useFormationGate("/merci-demande-business-plan");
   useEffect(() => {
     trackEvent("business_plan_lead_confirmed", { page: "merci-business-plan" });
     try {
