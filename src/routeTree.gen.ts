@@ -56,6 +56,7 @@ import { Route as EnAccountingFirmAbidjanRouteImport } from './routes/en/account
 import { Route as EnAboutRouteImport } from './routes/en/about'
 import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
 import { Route as AuthenticatedTutorielPartenaireRouteImport } from './routes/_authenticated.tutoriel-partenaire'
+import { Route as AuthenticatedStatsFormationRouteImport } from './routes/_authenticated.stats-formation'
 import { Route as AuthenticatedRechargerRouteImport } from './routes/_authenticated.recharger'
 import { Route as AuthenticatedMarketplaceRouteImport } from './routes/_authenticated.marketplace'
 import { Route as AuthenticatedHistoriqueRouteImport } from './routes/_authenticated.historique'
@@ -337,6 +338,12 @@ const AuthenticatedTutorielPartenaireRoute =
     path: '/tutoriel-partenaire',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedStatsFormationRoute =
+  AuthenticatedStatsFormationRouteImport.update({
+    id: '/stats-formation',
+    path: '/stats-formation',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedRechargerRoute = AuthenticatedRechargerRouteImport.update({
   id: '/recharger',
   path: '/recharger',
@@ -568,6 +575,7 @@ export interface FileRoutesByFullPath {
   '/historique': typeof AuthenticatedHistoriqueRoute
   '/marketplace': typeof AuthenticatedMarketplaceRoute
   '/recharger': typeof AuthenticatedRechargerRoute
+  '/stats-formation': typeof AuthenticatedStatsFormationRoute
   '/tutoriel-partenaire': typeof AuthenticatedTutorielPartenaireRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/en/about': typeof EnAboutRoute
@@ -649,6 +657,7 @@ export interface FileRoutesByTo {
   '/historique': typeof AuthenticatedHistoriqueRoute
   '/marketplace': typeof AuthenticatedMarketplaceRoute
   '/recharger': typeof AuthenticatedRechargerRoute
+  '/stats-formation': typeof AuthenticatedStatsFormationRoute
   '/tutoriel-partenaire': typeof AuthenticatedTutorielPartenaireRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/en/about': typeof EnAboutRoute
@@ -733,6 +742,7 @@ export interface FileRoutesById {
   '/_authenticated/historique': typeof AuthenticatedHistoriqueRoute
   '/_authenticated/marketplace': typeof AuthenticatedMarketplaceRoute
   '/_authenticated/recharger': typeof AuthenticatedRechargerRoute
+  '/_authenticated/stats-formation': typeof AuthenticatedStatsFormationRoute
   '/_authenticated/tutoriel-partenaire': typeof AuthenticatedTutorielPartenaireRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/en/about': typeof EnAboutRoute
@@ -817,6 +827,7 @@ export interface FileRouteTypes {
     | '/historique'
     | '/marketplace'
     | '/recharger'
+    | '/stats-formation'
     | '/tutoriel-partenaire'
     | '/email/unsubscribe'
     | '/en/about'
@@ -898,6 +909,7 @@ export interface FileRouteTypes {
     | '/historique'
     | '/marketplace'
     | '/recharger'
+    | '/stats-formation'
     | '/tutoriel-partenaire'
     | '/email/unsubscribe'
     | '/en/about'
@@ -981,6 +993,7 @@ export interface FileRouteTypes {
     | '/_authenticated/historique'
     | '/_authenticated/marketplace'
     | '/_authenticated/recharger'
+    | '/_authenticated/stats-formation'
     | '/_authenticated/tutoriel-partenaire'
     | '/email/unsubscribe'
     | '/en/about'
@@ -1429,6 +1442,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTutorielPartenaireRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/stats-formation': {
+      id: '/_authenticated/stats-formation'
+      path: '/stats-formation'
+      fullPath: '/stats-formation'
+      preLoaderRoute: typeof AuthenticatedStatsFormationRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/recharger': {
       id: '/_authenticated/recharger'
       path: '/recharger'
@@ -1676,6 +1696,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedHistoriqueRoute: typeof AuthenticatedHistoriqueRoute
   AuthenticatedMarketplaceRoute: typeof AuthenticatedMarketplaceRoute
   AuthenticatedRechargerRoute: typeof AuthenticatedRechargerRoute
+  AuthenticatedStatsFormationRoute: typeof AuthenticatedStatsFormationRoute
   AuthenticatedTutorielPartenaireRoute: typeof AuthenticatedTutorielPartenaireRoute
 }
 
@@ -1685,6 +1706,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedHistoriqueRoute: AuthenticatedHistoriqueRoute,
   AuthenticatedMarketplaceRoute: AuthenticatedMarketplaceRoute,
   AuthenticatedRechargerRoute: AuthenticatedRechargerRoute,
+  AuthenticatedStatsFormationRoute: AuthenticatedStatsFormationRoute,
   AuthenticatedTutorielPartenaireRoute: AuthenticatedTutorielPartenaireRoute,
 }
 
