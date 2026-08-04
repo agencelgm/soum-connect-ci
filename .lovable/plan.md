@@ -1,54 +1,44 @@
-## Objectif
+# Nouveau tarif Illimité : 100 000 FCFA (promo 50 000)
 
-Savoir, côté admin :
+## Ce qui change
 
-1. Pour chaque prospect publié : quelles agences ont débloqué ses coordonnées (jusqu'à 5), et à quelle heure.
-2. Quelles agences sont les plus actives sur une période (7 derniers jours, hier, 30 jours, ou dates personnalisées).
-3. Combien de crédits chaque agence a consommés sur cette période, et sa fréquence de déblocage.
+L'accès illimité passe à **100 000 FCFA pour 30 jours** en prix public. La promotion « 2 mois pour 50 000 » est supprimée partout. La nouvelle offre promotionnelle devient **1 mois à 50 000 FCFA au lieu de 100 000** (–50 %).
 
-Les données existent déjà (chaque déblocage est enregistré avec l'agence, la publication et les crédits dépensés) — il manque uniquement la lecture et l'affichage. Aucune modification du schéma n'est nécessaire.
+## 1. Tarification
 
-## Ce qui sera construit
+- Pack Illimité : prix affiché **100 000 FCFA**, durée **30 jours** (inchangée).
+- Le webhook Chariow accorde toujours 30 jours, avec empilement si l'accès est encore actif.
+- Plus aucun cas où un achat accorde 60 jours.
 
-### 1. Nouvel onglet « Activité » dans l'espace admin
+## 2. Page /recharger
 
-Ajouté à la barre latérale staff, à côté de « Prospects » et « Partenaires ».
+- Le pack Illimité affiche 100 000 FCFA par défaut.
+- Pour un partenaire ayant une **promotion active**, le prix s'affiche `100 000 FCFA` barré → **50 000 FCFA**, avec un badge « Offre exclusive » et le compte à rebours d'expiration de la promo.
+- Sans promo active, aucun tarif à 50 000 n'est visible.
+- Correction au passage du tableau comparatif : il annonce encore « 200 FCFA / prospect » alors que le tarif est revenu à 1 000 FCFA/crédit — remis à jour.
 
-Sélecteur de période en haut : Aujourd'hui / Hier / 7 derniers jours / 30 derniers jours / Personnalisé (deux dates).
+## 3. Emails promotionnels
 
-**Bandeau de synthèse** : nombre de déblocages, nombre d'agences actives, crédits consommés, nombre de prospects publiés sur la période, moyenne de déblocages par prospect.
+Les envois continuent, mais l'offre est réécrite :
 
-**Classement des agences** (trié par déblocages, colonnes triables) :
+- Variantes A et B (promo 50 % consommé) : le bloc « 50 000 → Illimité 2 mois » devient « Illimité 1 mois : ~~100 000~~ **50 000 FCFA** ».
+- Winback matin / après-midi / soir : même correction ; plus aucune mention de 2 mois ou 60 jours.
+- Le multiplicateur ×5 sur les packs Starter/Pro est conservé dans les emails et dans le webhook.
 
-- Cabinet, ville, statut, niveau (Régulier / Premium / Illimité)
-- Déblocages sur la période
-- Crédits consommés sur la période (0 pour un déblocage en illimité, affiché comme tel)
-- Fréquence : moyenne de déblocages par jour actif + nombre de jours actifs
-- Dernier déblocage (date relative), solde de crédits actuel
-- Export CSV du classement
+## 4. Logique promotions
 
-**Agences inactives** : liste des partenaires approuvés avec 0 déblocage sur la période (utile pour la relance).
-
-### 2. Vue « qui a contacté ce prospect »
-
-Dans l'onglet Prospects, chaque prospect publié affiche un compteur « X / 5 agences » cliquable qui ouvre un panneau détaillé :
-
-- Liste des agences ayant débloqué, dans l'ordre chronologique (1er, 2e, …)
-- Cabinet, contact, téléphone/email de l'agence, ville, niveau
-- Heure exacte du déblocage + délai écoulé depuis la publication
-- Crédits dépensés par ce déblocage
-- Places restantes et indication si la fenêtre premium de 3 h est encore active
-- Ajoute aussi une vue qui permet de voir dans la catégorie partenaire tous les prospects qu'ils ont débloqués. 
-
-La même vue est accessible depuis la ligne d'une agence dans l'onglet Activité (liste de ses derniers prospects débloqués).
+- Les promotions créées (promo 50 % consommé et winback) passent de `unlimited_days = 60` à `30`, et servent désormais à débloquer le **prix réduit**, pas des jours supplémentaires.
+- Les promotions déjà en base avec 60 jours sont ramenées à 30 jours pour ne plus accorder l'ancien avantage.
 
 ## Détails techniques
 
-- Nouveau fichier `src/lib/partner-activity.functions.ts` avec des server functions protégées (vérification staff comme dans `marketplace.functions.ts`) :
-  - `getPartnerActivityStats({ from, to })` — agrégation des `lead_unlocks` jointe à `partners`, plus la liste des partenaires approuvés sans activité.
-  - `getPublicationUnlocks({ prospect_id })` — déblocages détaillés d'un prospect, joints aux infos agence.
-- Nouveaux composants sous `src/components/admin/` : `PartnerActivityPanel.tsx` (onglet) et `ProspectUnlockersDialog.tsx` (panneau détaillé), pour ne pas alourdir `_authenticated.admin.tsx` (déjà ~2 660 lignes).
-- Onglet `activite` ajouté au schéma de recherche de `_authenticated.admin.tsx` et à `NAV_STAFF` dans `AppShell.tsx`.
-- Agrégation faite côté serveur ; l'export CSV est généré côté client à partir des données déjà chargées.
-- Les coordonnées des agences (partenaires, pas des prospects) sont visibles par le staff uniquement — routes déjà sous `_authenticated` avec contrôle de rôle.
-- Ajoute aussi une vue qui permet de voir dans la catégorie partenaire tous les prospects qu'ils ont débloqués. 
+- `src/lib/credit-packs.ts` : pack illimité → `price: "100 000 FCFA"`, `unlimitedDays: 30`, ajout d'un `promoPrice: "50 000 FCFA"` et d'un `promoProductId` (même produit Chariow tant qu'un second produit n'est pas créé côté Chariow).
+- `src/routes/_authenticated.recharger.tsx` : lecture de la promo active du partenaire pour afficher le prix barré et le bouton Chariow correspondant.
+- `src/routes/api/public/chariow-webhook.ts` : `effectiveUnlimitedDays` ne prend plus `promoUnlimitedDays` pour l'illimité (toujours `pack.unlimitedDays`) ; le multiplicateur crédits reste actif.
+- `src/routes/api/public/hooks/promo-winback-dispatch.ts` : `unlimited_days: 30`.
+- `maybe_grant_50pct_promo` (fonction base de données) : `unlimited_days` 60 → 30, plus mise à jour des lignes existantes non consommées.
+- Templates modifiés : `promo-50pct-variant-a.tsx`, `promo-50pct-variant-b.tsx`, `promo-winback-morning.tsx`, `promo-winback-afternoon.tsx`, `promo-winback-evening.tsx`.
+
+## À faire de ton côté
+
+Sur Chariow, mettre le produit illimité à **100 000 FCFA**. Si tu veux un bouton distinct à 50 000 pour les promos, crée un second produit et envoie-moi son ID : je le brancherai sur l'affichage promo.
