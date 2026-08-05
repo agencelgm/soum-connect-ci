@@ -78,34 +78,85 @@ function FormationPage() {
   const [watchedRatio, setWatchedRatio] = useState(0);
   const [unlocked, setUnlocked] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const watchedRef = useRef(0);
-  const lastTimeRef = useRef(0);
   const unlockedRef = useRef(false);
+  // Couverture par tranches de 1 s : une tranche ne compte qu'une seule fois,
+  // les sauts sur la barre de progression ne remplissent aucune tranche, et la
+  // progression survit à une pause ou à un rechargement de page.
+  const bucketsRef = useRef<Set<number>>(new Set());
+  const lastTimeRef = useRef(0);
+  const durationRef = useRef(0);
 
   useEffect(() => {
     trackFunnel("page_view");
+    // Restauration après rechargement de page.
+    try {
+      const raw = sessionStorage.getItem(PROGRESS_KEY);
+      if (raw) {
+        const saved = JSON.parse(raw) as { buckets?: number[]; duration?: number };
+        if (Array.isArray(saved.buckets)) bucketsRef.current = new Set(saved.buckets);
+        if (typeof saved.duration === "number") durationRef.current = saved.duration;
+        applyProgress();
+      }
+    } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function handleTimeUpdate() {
-    const video = videoRef.current;
-    if (!video) return;
-    const duration = video.duration;
-    const current = video.currentTime;
-    const delta = current - lastTimeRef.current;
-    // On ne compte que la lecture réelle : un saut en avant sur la barre
-    // de progression ne débloque pas les boutons.
-    if (delta > 0 && delta < 1.5) {
-      watchedRef.current += delta;
-    }
-    lastTimeRef.current = current;
-    if (!duration || !Number.isFinite(duration)) return;
-    const ratio = Math.min(1, watchedRef.current / duration);
+  function persistProgress() {
+    try {
+      sessionStorage.setItem(
+        PROGRESS_KEY,
+        JSON.stringify({
+          buckets: Array.from(bucketsRef.current),
+          duration: durationRef.current,
+        }),
+      );
+    } catch {}
+  }
+
+  function applyProgress() {
+    const duration = durationRef.current;
+    if (!duration || !Number.isFinite(duration) || duration <= 0) return;
+    const needed = Math.max(1, Math.floor(duration * THRESHOLD));
+    const seen = bucketsRef.current.size;
+    const ratio = Math.min(1, seen / needed);
     setWatchedRatio(ratio);
-    if (ratio >= 0.75 && !unlockedRef.current) {
+    if (seen >= needed && !unlockedRef.current) {
       unlockedRef.current = true;
       setUnlocked(true);
       trackFunnel("video_75");
     }
+  }
+
+  function handleLoadedMetadata() {
+    const video = videoRef.current;
+    if (!video || !Number.isFinite(video.duration)) return;
+    durationRef.current = video.duration;
+    lastTimeRef.current = video.currentTime;
+    applyProgress();
+    persistProgress();
+  }
+
+  function handleTimeUpdate() {
+    const video = videoRef.current;
+    if (!video) return;
+    if (video.paused || video.seeking) return;
+    if (Number.isFinite(video.duration)) durationRef.current = video.duration;
+
+    const current = video.currentTime;
+    const previous = lastTimeRef.current;
+    const delta = current - previous;
+    lastTimeRef.current = current;
+
+    // Saut (avant ou arrière) : on n'accorde aucune tranche.
+    // La marge tient compte de l'intervalle naturel entre deux timeupdate,
+    // même à vitesse de lecture accélérée (bornée à 2x plus bas).
+    if (delta <= 0 || delta > 2.5) return;
+
+    for (let t = Math.floor(previous); t <= Math.floor(current); t += 1) {
+      bucketsRef.current.add(t);
+    }
+    applyProgress();
+    persistProgress();
   }
 
   function startVideo() {
