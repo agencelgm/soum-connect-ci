@@ -32,7 +32,7 @@ const Email = ({
         <div style={offerBox}>
           <p style={offerRow}>10 000 FCFA → <strong>50 prospects</strong></p>
           <p style={offerRow}>25 000 FCFA → <strong>125 prospects</strong></p>
-          <p style={offerRow}>50 000 FCFA → <strong>Illimité 2 mois</strong></p>
+          <p style={offerRow}>Illimité 1 mois → <strong>50 000 FCFA</strong> au lieu de 100 000</p>
         </div>
         <Text style={text}>
           Cette offre expire <strong>dimanche à minuit</strong> — soit dans {daysLeft} jour{daysLeft > 1 ? 's' : ''}.
