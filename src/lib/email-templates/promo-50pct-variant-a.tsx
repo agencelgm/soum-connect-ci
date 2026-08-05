@@ -27,7 +27,7 @@ const Email = ({
         <div style={offerBox}>
           <p style={offerRow}><strong>10 000 FCFA →</strong> <span style={hot}>50 prospects</span> <span style={strike}>au lieu de 10</span></p>
           <p style={offerRow}><strong>25 000 FCFA →</strong> <span style={hot}>125 prospects</span> <span style={strike}>au lieu de 25</span></p>
-          <p style={offerRow}><strong>50 000 FCFA →</strong> <span style={hot}>Illimité 2 mois</span> <span style={strike}>au lieu d'1 mois</span></p>
+          <p style={offerRow}><strong>Illimité 1 mois →</strong> <span style={hot}>50 000 FCFA</span> <span style={strike}>100 000 FCFA</span></p>
         </div>
         <Text style={text}>
           Soit <strong>5 fois plus de prospects</strong> pour le même prix. Une seule condition :
