@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { PlayCircle, Play } from "lucide-react";
+import { PlayCircle, Play, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getTrackingFields } from "@/lib/lead-tracking";
 import { trackMetaConversion, type MetaUserData } from "@/lib/meta-pixel";
