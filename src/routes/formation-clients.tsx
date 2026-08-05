@@ -172,7 +172,7 @@ function FormationPage() {
     <main className="flex min-h-[100svh] flex-col bg-primary text-primary-foreground">
       <section className="mx-auto flex w-full max-w-[900px] flex-1 flex-col justify-center gap-7 px-5 py-8 sm:gap-8 md:py-12">
         <p className="text-center text-xs md:text-sm font-bold uppercase tracking-[0.2em] text-accent">
-          Étape finale — important
+          Étape 1 sur 3 — important
         </p>
 
         <div className="space-y-3">
