@@ -105,7 +105,6 @@ function RechargerPage() {
     retry: false,
   });
   const partner = data?.partner;
-  useChariowLoader([CREDIT_PACKS.length, partner?.id ?? ""]);
 
   const queryClient = useQueryClient();
   const claimFn = useServerFn(claimChariowPayment);
@@ -140,6 +139,32 @@ function RechargerPage() {
   const unlimitedDaysLeft = isUnlimitedActive && unlimitedUntil
     ? Math.max(0, Math.ceil((unlimitedUntil.getTime() - Date.now()) / (24 * 60 * 60 * 1000)))
     : 0;
+
+  // Promotion active du partenaire : débloque le tarif réduit sur l'illimité
+  // et le multiplicateur de crédits sur les packs Starter / Pro.
+  const { data: activePromo } = useQuery({
+    queryKey: ["my-active-promo", partner?.id ?? ""],
+    enabled: !!partner?.id,
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("partner_promotions")
+        .select("id, credit_multiplier, expires_at")
+        .eq("partner_id", partner!.id)
+        .is("used_at", null)
+        .gt("expires_at", new Date().toISOString())
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      return data ?? null;
+    },
+    retry: false,
+  });
+  const hasPromo = !!activePromo;
+  const promoExpiresLabel = activePromo?.expires_at
+    ? new Date(activePromo.expires_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })
+    : null;
+
+  useChariowLoader([CREDIT_PACKS.length, partner?.id ?? "", hasPromo]);
 
   return (
     <div className="min-h-full flex flex-col justify-center -my-6 lg:-my-8 py-10 lg:py-14 bg-gradient-to-b from-background via-background to-muted/40">
@@ -238,7 +263,7 @@ function RechargerPage() {
                 <tr>
                   <td className="px-4 py-3 font-semibold">Starter</td>
                   <td className="px-4 py-3">10 000 FCFA</td>
-                  <td className="px-4 py-3">50 prospects débloquables (200 FCFA / prospect)</td>
+                  <td className="px-4 py-3">10 prospects débloquables (1 000 FCFA / prospect)</td>
                   <td className="px-4 py-3 text-muted-foreground">–1 crédit par déblocage</td>
                 </tr>
                 <tr className="bg-primary/5">
@@ -246,14 +271,23 @@ function RechargerPage() {
                     Pro <span className="ml-1 rounded-full bg-primary text-primary-foreground px-2 py-0.5 text-[10px] uppercase font-bold">Populaire</span>
                   </td>
                   <td className="px-4 py-3">25 000 FCFA</td>
-                  <td className="px-4 py-3">125 prospects débloquables (200 FCFA / prospect)</td>
+                  <td className="px-4 py-3">25 prospects débloquables (1 000 FCFA / prospect)</td>
                   <td className="px-4 py-3 text-muted-foreground">–1 crédit par déblocage</td>
                 </tr>
                 <tr className="bg-amber-50/60">
                   <td className="px-4 py-3 font-semibold text-amber-900">
                     Illimité <Crown className="inline h-3.5 w-3.5 text-amber-600 ml-0.5" />
                   </td>
-                  <td className="px-4 py-3">50 000 FCFA</td>
+                  <td className="px-4 py-3">
+                    {hasPromo ? (
+                      <>
+                        <span className="line-through text-muted-foreground">100 000 FCFA</span>{" "}
+                        <strong className="text-amber-900">50 000 FCFA</strong>
+                      </>
+                    ) : (
+                      "100 000 FCFA"
+                    )}
+                  </td>
                   <td className="px-4 py-3">
                     <strong>Prospects illimités</strong> pendant <strong>30 jours</strong>
                     <span className="block text-xs text-amber-800 mt-0.5">+ 3 h d'avance sur chaque nouveau lead (avantage Premium inclus)</span>
@@ -274,6 +308,9 @@ function RechargerPage() {
             const priceNum = parseInt(pack.price.replace(/\D/g, ""), 10);
             const pricePerCredit = pack.unlimited ? 0 : Math.round(priceNum / pack.credits);
             const isUnlimitedPack = !!pack.unlimited;
+            const showPromoPrice = isUnlimitedPack && hasPromo && !!pack.promoPrice;
+            const displayedPrice = showPromoPrice ? pack.promoPrice! : pack.price;
+            const checkoutProductId = showPromoPrice ? (pack.promoProductId ?? pack.productId) : pack.productId;
             return (
               <div
                 key={pack.productId}
@@ -293,7 +330,7 @@ function RechargerPage() {
                 )}
                 {isUnlimitedPack && (
                   <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 text-white px-4 py-1 text-[11px] font-bold uppercase tracking-wider shadow-md">
-                    Meilleure valeur
+                    {showPromoPrice ? "Offre exclusive −50 %" : "Meilleure valeur"}
                   </span>
                 )}
 
@@ -313,12 +350,22 @@ function RechargerPage() {
                 </div>
 
                 <div className="mt-5 pb-5 border-b">
-                  <div className="text-3xl font-bold">{pack.price}</div>
+                  <div className="flex items-baseline gap-2">
+                    {showPromoPrice && (
+                      <span className="text-lg font-medium text-muted-foreground line-through">{pack.price}</span>
+                    )}
+                    <div className={cn("text-3xl font-bold", showPromoPrice && "text-amber-900")}>{displayedPrice}</div>
+                  </div>
                   <div className="text-xs text-muted-foreground mt-1">
                     {isUnlimitedPack
                       ? `Pour ${pack.unlimitedDays} jours calendaires`
                       : `soit ${pricePerCredit.toLocaleString("fr-FR")} FCFA / crédit`}
                   </div>
+                  {showPromoPrice && promoExpiresLabel && (
+                    <div className="text-xs font-medium text-amber-800 mt-1">
+                      Tarif réservé, valable jusqu'au {promoExpiresLabel}
+                    </div>
+                  )}
                 </div>
 
                 <ul className="mt-5 space-y-2.5 text-sm flex-1">
@@ -365,7 +412,7 @@ function RechargerPage() {
 
                 <div className="mt-6">
                   <ChariowButton
-                    productId={pack.productId}
+                    productId={checkoutProductId}
                     ctaText={isUnlimitedPack
                       ? (isUnlimitedActive ? "Prolonger de 30 jours" : "Activer l'illimité")
                       : `Recharger ${pack.credits} crédits`}

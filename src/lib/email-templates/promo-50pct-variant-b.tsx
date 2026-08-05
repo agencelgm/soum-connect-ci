@@ -31,7 +31,7 @@ const Email = ({
           <hr style={sep} />
           <p style={offerRow}>10 000 FCFA = <strong>50 prospects</strong></p>
           <p style={offerRow}>25 000 FCFA = <strong>125 prospects</strong></p>
-          <p style={offerRow}>50 000 FCFA = <strong>Illimité 60 jours</strong></p>
+          <p style={offerRow}>Illimité 30 jours = <strong>50 000 FCFA</strong> (au lieu de 100 000)</p>
         </div>
         <Text style={text}>
           À titre de comparaison, un lead comptable qualifié coûte entre 3 000 et

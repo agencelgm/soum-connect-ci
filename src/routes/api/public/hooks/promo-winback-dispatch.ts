@@ -109,7 +109,7 @@ export const Route = createFileRoute("/api/public/hooks/promo-winback-dispatch")
                 partner_id: partner.id,
                 kind: "zero_credit_winback",
                 credit_multiplier: 5,
-                unlimited_days: 60,
+                unlimited_days: 30,
                 ab_variant: "B_price_per_lead",
                 expires_at: deadline.toISOString(),
               })

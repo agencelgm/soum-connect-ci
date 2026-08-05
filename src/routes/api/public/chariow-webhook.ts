@@ -259,12 +259,10 @@ export const Route = createFileRoute("/api/public/chariow-webhook")({
           .maybeSingle();
 
         const creditMultiplier = activePromo?.credit_multiplier ?? 1;
-        const promoUnlimitedDays = activePromo?.unlimited_days ?? null;
         const effectiveCredits = pack.credits * creditMultiplier;
-        const effectiveUnlimitedDays =
-          pack.unlimited && pack.unlimitedDays
-            ? (promoUnlimitedDays ?? pack.unlimitedDays)
-            : pack.unlimitedDays ?? null;
+        // La promotion illimité porte désormais sur le PRIX (50 000 au lieu de
+        // 100 000), plus sur la durée : toujours 30 jours.
+        const effectiveUnlimitedDays = pack.unlimitedDays ?? null;
 
         let balErr: { message: string } | null = null;
         if (pack.unlimited && effectiveUnlimitedDays) {
