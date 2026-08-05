@@ -131,9 +131,11 @@ export function FinancingLeadForm() {
         if (json.leadId) sessionStorage.setItem("leadId", json.leadId);
         sessionStorage.setItem("leadSource", "financement");
         sessionStorage.setItem("finalThankYouPath", "/merci-demande-financement");
+        sessionStorage.setItem("leadLanguage", "fr");
+        sessionStorage.removeItem("formationChoice");
         sessionStorage.setItem("leadUser", JSON.stringify({ em: email, ph: mobile, fn: nom, ct: ville }));
       } catch {}
-      await navigate({ to: "/offre-site-internet" });
+      await navigate({ to: "/formation-clients" });
     } catch {
       toast.error("Impossible d'envoyer votre demande. Réessayez dans un instant.");
       setSubmitting(false);

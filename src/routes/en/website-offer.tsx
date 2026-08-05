@@ -2,6 +2,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import { buildPageHead } from "@/lib/seo";
 import { OfferPage } from "@/components/upsell/OfferPage";
 
+const WEBSITE_WHATSAPP_URL =
+  "https://wa.me/2250798172339?text=" +
+  encodeURIComponent(
+    "Hello. I come from your website and I would like a professional website for 70,000 FCFA. Please contact me.",
+  );
+
 export const Route = createFileRoute("/en/website-offer")({
   head: () => {
     const head = buildPageHead({
@@ -24,6 +30,7 @@ function SiteOfferEnPage() {
       language="en"
       offer="site"
       nextPath="/offre-gestion-marketing"
+      whatsappUrl={WEBSITE_WHATSAPP_URL}
       badge="Exclusive offer !!"
       title="Professional WEBSITE design"
       price="70,000 FCFA"
@@ -33,8 +40,8 @@ function SiteOfferEnPage() {
       description="Give your business a credible online presence: modern, responsive, SEO-optimised website. Fast launch and full support included."
       yesLabel="Yes, I'm interested"
       noLabel="No thanks, I'm not interested"
-      progressLabel="Step 1 of 2 — Additional offers"
-      progressPercent={50}
+      progressLabel="Step 2 of 3 — Additional offers"
+      progressPercent={66}
     />
   );
 }

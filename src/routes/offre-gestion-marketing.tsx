@@ -71,7 +71,11 @@ function MarketingOfferPage() {
         window.open(WHATSAPP_URL, "_blank", "noopener,noreferrer");
       } catch {}
     }
-    await navigate({ to: "/formation-clients" });
+    let finalPath = "/merci";
+    try {
+      finalPath = sessionStorage.getItem("finalThankYouPath") || "/merci";
+    } catch {}
+    await navigate({ to: finalPath as never });
   }
 
   return (
@@ -80,7 +84,7 @@ function MarketingOfferPage() {
         <div className="mx-auto max-w-[640px]">
           <div className="mb-4">
             <div className="flex items-center justify-between text-sm font-medium text-muted-foreground mb-2">
-              <span>Étape 2 sur 2 — Offres complémentaires</span>
+              <span>Étape 3 sur 3 — Offres complémentaires</span>
               <span>100%</span>
             </div>
             <div className="h-2 w-full rounded-full bg-muted overflow-hidden">

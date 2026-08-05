@@ -2,6 +2,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import { buildPageHead } from "@/lib/seo";
 import { OfferPage } from "@/components/upsell/OfferPage";
 
+const WEBSITE_WHATSAPP_URL =
+  "https://wa.me/2250798172339?text=" +
+  encodeURIComponent(
+    "Bonjour. Je viens de votre site web et j'aimerais avoir un site internet professionnel à 70 000 FCFA. Veuillez me contacter.",
+  );
+
 export const Route = createFileRoute("/offre-site-internet")({
   head: () => {
     const head = buildPageHead({
@@ -23,6 +29,7 @@ function SiteOfferPage() {
       language="fr"
       offer="site"
       nextPath="/offre-gestion-marketing"
+      whatsappUrl={WEBSITE_WHATSAPP_URL}
       badge="Offre exclusive !!"
       title="Conception de SITE INTERNET professionnel"
       price="70 000 FCFA"
@@ -32,8 +39,8 @@ function SiteOfferPage() {
       description="Donnez à votre entreprise une présence en ligne crédible : site vitrine moderne, responsive, optimisé SEO. Mise en ligne rapide et accompagnement inclus."
       yesLabel="Oui, je suis intéressé(e)"
       noLabel="Non, merci, je ne suis pas intéressé(e)"
-      progressLabel="Étape 1 sur 2 — Offres complémentaires"
-      progressPercent={50}
+      progressLabel="Étape 2 sur 3 — Offres complémentaires"
+      progressPercent={66}
     />
   );
 }

@@ -480,6 +480,8 @@ export function MultiStepLeadForm({
           "finalThankYouPath",
           language === "en" ? "/en/thank-you" : "/merci",
         );
+        sessionStorage.setItem("leadLanguage", language);
+        sessionStorage.removeItem("formationChoice");
         sessionStorage.setItem(
           "leadUser",
           JSON.stringify({
@@ -516,7 +518,7 @@ export function MultiStepLeadForm({
         source,
       });
       navigate({
-        to: language === "en" ? "/en/website-offer" : "/offre-site-internet",
+        to: "/formation-clients",
       });
     } catch (err) {
       console.error("Lead submission failed", err);

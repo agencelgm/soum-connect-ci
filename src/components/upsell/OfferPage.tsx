@@ -10,6 +10,7 @@ type OfferPageProps = {
   language: "fr" | "en";
   offer: "logo" | "site";
   nextPath: string;
+  whatsappUrl?: string;
   badge: string;
   title: string;
   price: string;
@@ -27,6 +28,7 @@ export function OfferPage({
   language,
   offer,
   nextPath,
+  whatsappUrl,
   badge,
   title,
   price,
@@ -81,6 +83,11 @@ export function OfferPage({
         },
         leadUser,
       );
+      if (whatsappUrl) {
+        try {
+          window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+        } catch {}
+      }
     }
     navigate({ to: nextPath as never });
   };
