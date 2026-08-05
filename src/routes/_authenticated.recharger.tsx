@@ -262,7 +262,7 @@ function RechargerPage() {
                 <tr>
                   <td className="px-4 py-3 font-semibold">Starter</td>
                   <td className="px-4 py-3">10 000 FCFA</td>
-                  <td className="px-4 py-3">50 prospects débloquables (200 FCFA / prospect)</td>
+                  <td className="px-4 py-3">10 prospects débloquables (1 000 FCFA / prospect)</td>
                   <td className="px-4 py-3 text-muted-foreground">–1 crédit par déblocage</td>
                 </tr>
                 <tr className="bg-primary/5">
@@ -270,14 +270,23 @@ function RechargerPage() {
                     Pro <span className="ml-1 rounded-full bg-primary text-primary-foreground px-2 py-0.5 text-[10px] uppercase font-bold">Populaire</span>
                   </td>
                   <td className="px-4 py-3">25 000 FCFA</td>
-                  <td className="px-4 py-3">125 prospects débloquables (200 FCFA / prospect)</td>
+                  <td className="px-4 py-3">25 prospects débloquables (1 000 FCFA / prospect)</td>
                   <td className="px-4 py-3 text-muted-foreground">–1 crédit par déblocage</td>
                 </tr>
                 <tr className="bg-amber-50/60">
                   <td className="px-4 py-3 font-semibold text-amber-900">
                     Illimité <Crown className="inline h-3.5 w-3.5 text-amber-600 ml-0.5" />
                   </td>
-                  <td className="px-4 py-3">50 000 FCFA</td>
+                  <td className="px-4 py-3">
+                    {hasPromo ? (
+                      <>
+                        <span className="line-through text-muted-foreground">100 000 FCFA</span>{" "}
+                        <strong className="text-amber-900">50 000 FCFA</strong>
+                      </>
+                    ) : (
+                      "100 000 FCFA"
+                    )}
+                  </td>
                   <td className="px-4 py-3">
                     <strong>Prospects illimités</strong> pendant <strong>30 jours</strong>
                     <span className="block text-xs text-amber-800 mt-0.5">+ 3 h d'avance sur chaque nouveau lead (avantage Premium inclus)</span>
