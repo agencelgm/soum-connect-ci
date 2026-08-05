@@ -7,6 +7,9 @@ import { trackMetaConversion, type MetaUserData } from "@/lib/meta-pixel";
 import videoAsset from "@/assets/formation-clients.mp4.asset.json";
 
 const TRAINING_CHECKOUT_URL = "https://academielgm.com/prd_p987fb31";
+const PROGRESS_KEY = "formationVideoProgress";
+const THRESHOLD = 0.75;
+const MAX_RATE = 2;
 const TITLE = "Ne quittez pas cette page — Formation clients | SoumissionComptable.com";
 const DESCRIPTION =
   "Regardez cette courte vidéo pour savoir comment obtenir des clients pour votre entreprise.";
