@@ -105,7 +105,6 @@ function RechargerPage() {
     retry: false,
   });
   const partner = data?.partner;
-  useChariowLoader([CREDIT_PACKS.length, partner?.id ?? ""]);
 
   const queryClient = useQueryClient();
   const claimFn = useServerFn(claimChariowPayment);
