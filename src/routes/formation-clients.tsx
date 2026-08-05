@@ -247,11 +247,30 @@ function FormationPage() {
             playsInline
             preload="metadata"
             controlsList="nodownload"
+            onLoadedMetadata={handleLoadedMetadata}
+            onPlay={() => {
+              if (videoRef.current) lastTimeRef.current = videoRef.current.currentTime;
+              setStarted(true);
+            }}
+            onPause={() => {
+              if (videoRef.current) lastTimeRef.current = videoRef.current.currentTime;
+              persistProgress();
+            }}
+            onRateChange={() => {
+              const v = videoRef.current;
+              if (v && v.playbackRate > MAX_RATE) v.playbackRate = MAX_RATE;
+            }}
+            onSeeking={() => {
+              if (videoRef.current) lastTimeRef.current = videoRef.current.currentTime;
+            }}
             onSeeked={() => {
               if (videoRef.current) lastTimeRef.current = videoRef.current.currentTime;
             }}
             onTimeUpdate={handleTimeUpdate}
-            onEnded={() => trackFunnel("video_complete")}
+            onEnded={() => {
+              persistProgress();
+              trackFunnel("video_complete");
+            }}
           />
           {!started && (
             <button
