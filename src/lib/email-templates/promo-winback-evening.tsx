@@ -30,7 +30,7 @@ const Email = ({
           </p>
           <p style={offerRow}>50 prospects pour 10 000 FCFA</p>
           <p style={offerRow}>125 prospects pour 25 000 FCFA</p>
-          <p style={offerRow}>Illimité 2 mois pour 50 000 FCFA</p>
+          <p style={offerRow}>Illimité 1 mois pour 50 000 FCFA (au lieu de 100 000)</p>
         </div>
         <Button style={button} href={rechargeUrl}>Profiter avant qu'il ne soit trop tard</Button>
         <Text style={ps}>
