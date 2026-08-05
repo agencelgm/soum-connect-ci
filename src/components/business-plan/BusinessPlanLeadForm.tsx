@@ -135,6 +135,7 @@ export function BusinessPlanLeadForm() {
         sessionStorage.setItem("finalThankYouPath", "/merci-demande-business-plan");
         sessionStorage.setItem("leadLanguage", "fr");
         sessionStorage.removeItem("formationChoice");
+        sessionStorage.removeItem("formationVideoProgress");
         sessionStorage.setItem("leadUser", JSON.stringify({ em: email, ph: mobile, fn: nom, ct: ville }));
       } catch {}
       await navigate({ to: "/formation-clients" });

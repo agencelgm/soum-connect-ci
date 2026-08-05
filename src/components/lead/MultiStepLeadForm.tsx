@@ -482,6 +482,7 @@ export function MultiStepLeadForm({
         );
         sessionStorage.setItem("leadLanguage", language);
         sessionStorage.removeItem("formationChoice");
+        sessionStorage.removeItem("formationVideoProgress");
         sessionStorage.setItem(
           "leadUser",
           JSON.stringify({

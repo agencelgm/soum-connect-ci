@@ -133,6 +133,7 @@ export function FinancingLeadForm() {
         sessionStorage.setItem("finalThankYouPath", "/merci-demande-financement");
         sessionStorage.setItem("leadLanguage", "fr");
         sessionStorage.removeItem("formationChoice");
+        sessionStorage.removeItem("formationVideoProgress");
         sessionStorage.setItem("leadUser", JSON.stringify({ em: email, ph: mobile, fn: nom, ct: ville }));
       } catch {}
       await navigate({ to: "/formation-clients" });
