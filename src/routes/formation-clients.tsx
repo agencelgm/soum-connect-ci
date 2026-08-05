@@ -25,11 +25,13 @@ export const Route = createFileRoute("/formation-clients")({
   component: FormationPage,
 });
 
-function getFinalPath(): string {
+function getNextOfferPath(): string {
   try {
-    return sessionStorage.getItem("finalThankYouPath") || "/merci";
+    return sessionStorage.getItem("leadLanguage") === "en"
+      ? "/en/website-offer"
+      : "/offre-site-internet";
   } catch {
-    return "/merci";
+    return "/offre-site-internet";
   }
 }
 
@@ -73,11 +75,38 @@ function FormationPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState<null | "yes" | "no">(null);
   const [started, setStarted] = useState(false);
+  const [watchedRatio, setWatchedRatio] = useState(0);
+  const [unlocked, setUnlocked] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const watchedRef = useRef(0);
+  const lastTimeRef = useRef(0);
+  const unlockedRef = useRef(false);
 
   useEffect(() => {
     trackFunnel("page_view");
   }, []);
+
+  function handleTimeUpdate() {
+    const video = videoRef.current;
+    if (!video) return;
+    const duration = video.duration;
+    const current = video.currentTime;
+    const delta = current - lastTimeRef.current;
+    // On ne compte que la lecture réelle : un saut en avant sur la barre
+    // de progression ne débloque pas les boutons.
+    if (delta > 0 && delta < 1.5) {
+      watchedRef.current += delta;
+    }
+    lastTimeRef.current = current;
+    if (!duration || !Number.isFinite(duration)) return;
+    const ratio = Math.min(1, watchedRef.current / duration);
+    setWatchedRatio(ratio);
+    if (ratio >= 0.75 && !unlockedRef.current) {
+      unlockedRef.current = true;
+      setUnlocked(true);
+      trackFunnel("video_75");
+    }
+  }
 
   function startVideo() {
     setStarted(true);
@@ -136,7 +165,7 @@ function FormationPage() {
       return;
     }
 
-    await navigate({ to: getFinalPath() as never });
+    await navigate({ to: getNextOfferPath() as never });
   }
 
   return (
@@ -164,6 +193,10 @@ function FormationPage() {
             playsInline
             preload="metadata"
             controlsList="nodownload"
+            onSeeked={() => {
+              if (videoRef.current) lastTimeRef.current = videoRef.current.currentTime;
+            }}
+            onTimeUpdate={handleTimeUpdate}
             onEnded={() => trackFunnel("video_complete")}
           />
           {!started && (
@@ -186,12 +219,25 @@ function FormationPage() {
           )}
         </div>
 
-        <p className="flex items-center justify-center gap-2 text-center text-xs md:text-sm text-primary-foreground/70">
-          <PlayCircle className="h-4 w-4 shrink-0" />
-          Regardez la vidéo en entier avant de choisir ci-dessous.
-        </p>
-
+        {!unlocked ? (
+          <div className="mx-auto flex w-full max-w-[620px] flex-col gap-3">
+            <p className="flex items-center justify-center gap-2 text-center text-xs md:text-sm text-primary-foreground/70">
+              <Lock className="h-4 w-4 shrink-0" />
+              Vos options apparaîtront pendant la vidéo. Continuez à regarder.
+            </p>
+            <div className="h-2 w-full overflow-hidden rounded-full bg-white/15">
+              <div
+                className="h-full rounded-full bg-accent transition-all duration-300"
+                style={{ width: `${Math.min(100, Math.round((watchedRatio / 0.75) * 100))}%` }}
+              />
+            </div>
+          </div>
+        ) : (
         <div className="mx-auto flex w-full max-w-[620px] flex-col gap-3">
+          <p className="flex items-center justify-center gap-2 text-center text-xs md:text-sm text-primary-foreground/70">
+            <PlayCircle className="h-4 w-4 shrink-0" />
+            Choisissez ci-dessous pour continuer.
+          </p>
           <Button
             type="button"
             onClick={() => handleClick(true)}
@@ -214,6 +260,7 @@ function FormationPage() {
               : "Non merci, je n'ai pas besoin de savoir comment avoir des clients"}
           </Button>
         </div>
+        )}
       </section>
     </main>
   );
