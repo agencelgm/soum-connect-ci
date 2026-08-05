@@ -301,7 +301,7 @@ function FormationPage() {
             <div className="h-2 w-full overflow-hidden rounded-full bg-white/15">
               <div
                 className="h-full rounded-full bg-accent transition-all duration-300"
-                style={{ width: `${Math.min(100, Math.round((watchedRatio / 0.75) * 100))}%` }}
+                style={{ width: `${Math.min(100, Math.round(watchedRatio * 100))}%` }}
               />
             </div>
           </div>
