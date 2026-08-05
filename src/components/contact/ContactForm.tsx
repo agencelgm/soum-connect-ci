@@ -229,8 +229,28 @@ export function ContactForm({ language }: { language: Lang }) {
         }),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      try {
+        const json = (await res.clone().json().catch(() => ({}))) as {
+          leadId?: string;
+          id?: string;
+        };
+        const id = json.leadId ?? json.id;
+        sessionStorage.setItem("leadId", id ?? `contact-${Date.now()}`);
+        sessionStorage.setItem("leadSource", "contact");
+        sessionStorage.setItem(
+          "finalThankYouPath",
+          language === "en" ? "/en/thank-you" : "/merci",
+        );
+        sessionStorage.setItem("leadLanguage", language);
+        sessionStorage.removeItem("formationChoice");
+        sessionStorage.removeItem("formationVideoProgress");
+        sessionStorage.setItem(
+          "leadUser",
+          JSON.stringify({ em: values.email, ph: mobile, fn: values.fullName }),
+        );
+      } catch {}
       toast.success(t.success);
-      navigate({ to: language === "en" ? "/en/thank-you" : "/merci" });
+      navigate({ to: "/formation-clients" });
     } catch (err) {
       console.error("Contact form submission failed", err);
       toast.error(t.errSubmit);
