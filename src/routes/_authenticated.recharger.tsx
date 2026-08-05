@@ -141,6 +141,30 @@ function RechargerPage() {
     ? Math.max(0, Math.ceil((unlimitedUntil.getTime() - Date.now()) / (24 * 60 * 60 * 1000)))
     : 0;
 
+  // Promotion active du partenaire : débloque le tarif réduit sur l'illimité
+  // et le multiplicateur de crédits sur les packs Starter / Pro.
+  const { data: activePromo } = useQuery({
+    queryKey: ["my-active-promo", partner?.id ?? ""],
+    enabled: !!partner?.id,
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("partner_promotions")
+        .select("id, credit_multiplier, expires_at")
+        .eq("partner_id", partner!.id)
+        .is("used_at", null)
+        .gt("expires_at", new Date().toISOString())
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      return data ?? null;
+    },
+    retry: false,
+  });
+  const hasPromo = !!activePromo;
+  const promoExpiresLabel = activePromo?.expires_at
+    ? new Date(activePromo.expires_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })
+    : null;
+
   return (
     <div className="min-h-full flex flex-col justify-center -my-6 lg:-my-8 py-10 lg:py-14 bg-gradient-to-b from-background via-background to-muted/40">
       <div className="w-full max-w-6xl mx-auto px-2">
