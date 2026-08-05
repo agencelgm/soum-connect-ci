@@ -164,6 +164,8 @@ function RechargerPage() {
     ? new Date(activePromo.expires_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })
     : null;
 
+  useChariowLoader([CREDIT_PACKS.length, partner?.id ?? "", hasPromo]);
+
   return (
     <div className="min-h-full flex flex-col justify-center -my-6 lg:-my-8 py-10 lg:py-14 bg-gradient-to-b from-background via-background to-muted/40">
       <div className="w-full max-w-6xl mx-auto px-2">
