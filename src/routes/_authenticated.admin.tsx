@@ -185,7 +185,7 @@ import { PartnerUnlocksDialog } from "@/components/admin/PartnerUnlocksDialog";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({ meta: [{ title: "Admin" }, { name: "robots", content: "noindex,nofollow" }] }),
-  validateSearch: (search: Record<string, unknown>) => ({
+  validateSearch: (search: Record<string, unknown>): { tab?: "partners" | "prospects" | "activite" | "create" | "team" | "paiements" | "emails" | "suppression" } => ({
     tab:
       typeof search.tab === "string" &&
       ["partners", "prospects", "activite", "create", "team", "paiements", "emails", "suppression"].includes(search.tab)

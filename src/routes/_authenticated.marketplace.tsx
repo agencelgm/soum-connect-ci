@@ -41,7 +41,7 @@ export const Route = createFileRoute("/_authenticated/marketplace")({
   head: () => ({
     meta: [{ title: "Marketplace de leads" }, { name: "robots", content: "noindex,nofollow" }],
   }),
-  validateSearch: (s: Record<string, unknown>) => ({
+  validateSearch: (s: Record<string, unknown>): { lead?: string } => ({
     lead: typeof s.lead === "string" && s.lead.length > 0 && s.lead.length < 100 ? s.lead : undefined,
   }),
   component: MarketplacePage,
