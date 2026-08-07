@@ -135,6 +135,38 @@ function StatsFormationPage() {
         ))}
       </div>
 
+      <section className="space-y-4">
+        <h2 className="font-heading text-lg font-bold">Test A/B — destination du bouton « Oui »</h2>
+        <div className="grid gap-3 md:grid-cols-2">
+          {data.variants.map((v) => (
+            <Card key={v.variant} className="p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                {v.label}
+              </p>
+              <p className="mt-2 text-3xl font-extrabold">{v.yes}</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                clics « Oui » sur {v.sessions} prospects — {pct(v.yes, v.sessions)} · {v.purchases} achat(s)
+                confirmé(s)
+              </p>
+            </Card>
+          ))}
+        </div>
+        {data.variants.map((v) => {
+          const rows = data.people.filter((p) => p.variant === v.variant);
+          return (
+            <div key={v.variant} className="space-y-2">
+              <div className="flex items-center justify-between gap-3">
+                <h3 className="font-semibold">Envoyés en version {v.variant}</h3>
+                <Button size="sm" variant="outline" onClick={() => exportCsv(rows, v.variant)}>
+                  Export CSV
+                </Button>
+              </div>
+              <PeopleTable rows={rows} />
+            </div>
+          );
+        })}
+      </section>
+
       <section>
         <h2 className="mb-3 font-heading text-lg font-bold">30 derniers jours</h2>
         <div className="overflow-x-auto rounded-lg border">
