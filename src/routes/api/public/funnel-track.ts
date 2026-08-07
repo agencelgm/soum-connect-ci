@@ -7,6 +7,7 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 const ALLOWED_EVENTS = new Set([
   "page_view",
   "video_play",
+  "video_75",
   "video_complete",
   "choice_yes",
   "choice_no",
@@ -48,6 +49,10 @@ export const Route = createFileRoute("/api/public/funnel-track")({
         const leadId =
           typeof body.leadId === "string" && /^[0-9a-f-]{36}$/i.test(body.leadId) ? body.leadId : null;
 
+        const variant = body.variant === "A" || body.variant === "B" ? body.variant : null;
+        const name = typeof body.name === "string" ? body.name.trim().slice(0, 160) || null : null;
+        const phone = typeof body.phone === "string" ? body.phone.trim().slice(0, 40) || null : null;
+
         const { error } = await supabaseAdmin.from("funnel_events").insert({
           page,
           event,
@@ -57,6 +62,9 @@ export const Route = createFileRoute("/api/public/funnel-track")({
           metadata: {
             source: typeof body.source === "string" ? body.source.slice(0, 120) : null,
             referrer: typeof body.referrer === "string" ? body.referrer.slice(0, 300) : null,
+            variant,
+            name,
+            phone,
           },
         });
 

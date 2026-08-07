@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { getFormationFunnelStats } from "@/lib/funnel-stats.functions";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import type { FunnelStats } from "@/lib/funnel-stats.functions";
 
 export const Route = createFileRoute("/_authenticated/stats-formation")({
   head: () => ({
@@ -17,6 +19,66 @@ export const Route = createFileRoute("/_authenticated/stats-formation")({
 function pct(a: number, b: number) {
   if (!b) return "0 %";
   return `${((a / b) * 100).toFixed(1)} %`;
+}
+
+function exportCsv(rows: FunnelStats["people"], variant: string) {
+  const header = ["Nom", "Email", "Téléphone", "Variante", "Choix", "Achat", "Date"];
+  const body = rows.map((p) => [
+    p.name ?? "",
+    p.email ?? "",
+    p.phone ?? "",
+    p.variant,
+    p.choice ?? "",
+    p.purchased ? "oui" : "non",
+    new Date(p.created_at).toLocaleString("fr-FR"),
+  ]);
+  const csv = [header, ...body]
+    .map((line) => line.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(";"))
+    .join("\n");
+  const url = URL.createObjectURL(new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" }));
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `formation-variante-${variant}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function PeopleTable({ rows }: { rows: FunnelStats["people"] }) {
+  return (
+    <div className="overflow-x-auto rounded-lg border">
+      <table className="w-full min-w-[640px] text-sm">
+        <thead className="bg-muted/50 text-left">
+          <tr>
+            <th className="p-2">Nom</th>
+            <th className="p-2">Email</th>
+            <th className="p-2">Téléphone</th>
+            <th className="p-2">Choix</th>
+            <th className="p-2">Achat</th>
+            <th className="p-2">Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((p, i) => (
+            <tr key={`${p.created_at}-${i}`} className="border-t">
+              <td className="p-2">{p.name ?? "—"}</td>
+              <td className="p-2">{p.email ?? "—"}</td>
+              <td className="p-2">{p.phone ?? "—"}</td>
+              <td className="p-2">{p.choice === "oui" ? "Oui" : p.choice === "non" ? "Non" : "—"}</td>
+              <td className="p-2 font-semibold">{p.purchased ? "Acheté" : "—"}</td>
+              <td className="p-2 whitespace-nowrap">{new Date(p.created_at).toLocaleString("fr-FR")}</td>
+            </tr>
+          ))}
+          {rows.length === 0 && (
+            <tr>
+              <td colSpan={6} className="p-4 text-center text-muted-foreground">
+                Aucun prospect pour le moment.
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
 }
 
 function StatsFormationPage() {
@@ -72,6 +134,38 @@ function StatsFormationPage() {
           </Card>
         ))}
       </div>
+
+      <section className="space-y-4">
+        <h2 className="font-heading text-lg font-bold">Test A/B — destination du bouton « Oui »</h2>
+        <div className="grid gap-3 md:grid-cols-2">
+          {data.variants.map((v) => (
+            <Card key={v.variant} className="p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                {v.label}
+              </p>
+              <p className="mt-2 text-3xl font-extrabold">{v.yes}</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                clics « Oui » sur {v.sessions} prospects — {pct(v.yes, v.sessions)} · {v.purchases} achat(s)
+                confirmé(s)
+              </p>
+            </Card>
+          ))}
+        </div>
+        {data.variants.map((v) => {
+          const rows = data.people.filter((p) => p.variant === v.variant);
+          return (
+            <div key={v.variant} className="space-y-2">
+              <div className="flex items-center justify-between gap-3">
+                <h3 className="font-semibold">Envoyés en version {v.variant}</h3>
+                <Button size="sm" variant="outline" onClick={() => exportCsv(rows, v.variant)}>
+                  Export CSV
+                </Button>
+              </div>
+              <PeopleTable rows={rows} />
+            </div>
+          );
+        })}
+      </section>
 
       <section>
         <h2 className="mb-3 font-heading text-lg font-bold">30 derniers jours</h2>
