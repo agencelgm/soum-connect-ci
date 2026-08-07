@@ -75,8 +75,14 @@ function trackFunnel(event: string) {
     leadId = sessionStorage.getItem("leadId") ?? undefined;
     const raw = sessionStorage.getItem("leadUser");
     if (raw) {
-      const u = JSON.parse(raw) as { email?: string; fn?: string; ln?: string; ph?: string };
-      email = u.email;
+      const u = JSON.parse(raw) as {
+        em?: string;
+        email?: string;
+        fn?: string;
+        ln?: string;
+        ph?: string;
+      };
+      email = u.em ?? u.email;
       phone = u.ph;
       name = [u.fn, u.ln].filter(Boolean).join(" ") || undefined;
     }
