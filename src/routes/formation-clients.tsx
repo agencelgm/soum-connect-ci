@@ -6,7 +6,9 @@ import { getTrackingFields } from "@/lib/lead-tracking";
 import { trackMetaConversion, type MetaUserData } from "@/lib/meta-pixel";
 import videoAsset from "@/assets/formation-clients.mp4.asset.json";
 
-const TRAINING_CHECKOUT_URL = "https://academielgm.com/prd_p987fb31";
+const VARIANT_A_URL = "https://academielgm.com/prd_p987fb31";
+const VARIANT_B_URL = "https://clientsurdemande.com/methode-10-etapes";
+const VARIANT_KEY = "formationVariant";
 const PROGRESS_KEY = "formationVideoProgress";
 const THRESHOLD = 0.75;
 const MAX_RATE = 2;
@@ -51,13 +53,33 @@ function getSessionId(): string {
   }
 }
 
+/** Attribution A/B 50/50, stable pour toute la session. */
+function getVariant(): "A" | "B" {
+  try {
+    const saved = sessionStorage.getItem(VARIANT_KEY);
+    if (saved === "A" || saved === "B") return saved;
+    const v: "A" | "B" = Math.random() < 0.5 ? "A" : "B";
+    sessionStorage.setItem(VARIANT_KEY, v);
+    return v;
+  } catch {
+    return Math.random() < 0.5 ? "A" : "B";
+  }
+}
+
 function trackFunnel(event: string) {
   let email: string | undefined;
   let leadId: string | undefined;
+  let name: string | undefined;
+  let phone: string | undefined;
   try {
     leadId = sessionStorage.getItem("leadId") ?? undefined;
     const raw = sessionStorage.getItem("leadUser");
-    if (raw) email = (JSON.parse(raw) as { email?: string }).email;
+    if (raw) {
+      const u = JSON.parse(raw) as { email?: string; fn?: string; ln?: string; ph?: string };
+      email = u.email;
+      phone = u.ph;
+      name = [u.fn, u.ln].filter(Boolean).join(" ") || undefined;
+    }
   } catch {}
   void fetch("/api/public/funnel-track", {
     method: "POST",
@@ -69,6 +91,9 @@ function trackFunnel(event: string) {
       sessionId: getSessionId(),
       leadId,
       email,
+      name,
+      phone,
+      variant: getVariant(),
       referrer: typeof document !== "undefined" ? document.referrer : undefined,
     }),
   }).catch(() => {});
@@ -206,16 +231,17 @@ function FormationPage() {
     } catch {}
 
     if (interested) {
+      const variant = getVariant();
       trackMetaConversion(
         "AddToCart",
         {
           content_name: "Formation Clients",
-          content_category: "upsell_formation",
+          content_category: `upsell_formation_${variant}`,
           currency: "XOF",
         },
         leadUser,
       );
-      window.location.href = TRAINING_CHECKOUT_URL;
+      window.location.href = variant === "B" ? VARIANT_B_URL : VARIANT_A_URL;
       return;
     }
 
