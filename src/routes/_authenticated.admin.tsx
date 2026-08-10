@@ -140,6 +140,8 @@ import {
   getAdminDashboardStats,
   listChariowPayments,
   setPartnerTier,
+  setPartnerUnlimited,
+  revokePartnerUnlimited,
   resetPartnerPassword,
   markPartnerDocsReceived,
 } from "@/lib/partners.functions";
