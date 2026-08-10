@@ -648,6 +648,94 @@ export const setPartnerTier = createServerFn({ method: "POST" })
 
 // ---------------------- Manual creation (admin/agent) ----------------------
 
+// ---------------------- Accès illimité manuel (paiement hors ligne) ----------------------
+
+export const setPartnerUnlimited = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) =>
+    z
+      .object({
+        partner_id: z.string().uuid(),
+        paid_at: z.string().min(4),
+        days: z.number().int().min(1).max(365),
+        stack: z.boolean().default(true),
+        note: z.string().trim().max(300).optional(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    await assertStaff(context.userId);
+    const { stackUnlimitedUntil } = await import("./credit-packs");
+
+    const { data: partner, error: fetchErr } = await supabaseAdmin
+      .from("partners")
+      .select("id, unlimited_until, credits_balance")
+      .eq("id", data.partner_id)
+      .maybeSingle();
+    if (fetchErr) throw new Error(fetchErr.message);
+    if (!partner) throw new Error("Partenaire introuvable");
+
+    const paidAt = new Date(data.paid_at);
+    if (Number.isNaN(paidAt.getTime())) throw new Error("Date de paiement invalide");
+
+    const { newUntil, stacked } = stackUnlimitedUntil(
+      data.stack ? partner.unlimited_until : null,
+      data.days,
+      paidAt,
+    );
+
+    const { error } = await supabaseAdmin
+      .from("partners")
+      .update({ unlimited_until: newUntil.toISOString(), updated_at: new Date().toISOString() })
+      .eq("id", data.partner_id);
+    if (error) throw new Error(error.message);
+
+    await supabaseAdmin.from("credit_transactions").insert({
+      partner_id: data.partner_id,
+      amount: 0,
+      balance_after: partner.credits_balance ?? 0,
+      tx_type: "chariow_unlimited",
+      created_by: context.userId,
+      note:
+        `Accès illimité accordé manuellement (${data.days} j${stacked ? ", empilé" : ""}) — ` +
+        `jusqu'au ${newUntil.toISOString()}` +
+        (data.note ? ` — ${data.note}` : ""),
+    });
+
+    return { ok: true, unlimited_until: newUntil.toISOString(), stacked };
+  });
+
+export const revokePartnerUnlimited = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) => z.object({ partner_id: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    await assertStaff(context.userId);
+    const { data: partner, error: fetchErr } = await supabaseAdmin
+      .from("partners")
+      .select("id, credits_balance")
+      .eq("id", data.partner_id)
+      .maybeSingle();
+    if (fetchErr) throw new Error(fetchErr.message);
+    if (!partner) throw new Error("Partenaire introuvable");
+
+    const { error } = await supabaseAdmin
+      .from("partners")
+      .update({ unlimited_until: null, updated_at: new Date().toISOString() })
+      .eq("id", data.partner_id);
+    if (error) throw new Error(error.message);
+
+    await supabaseAdmin.from("credit_transactions").insert({
+      partner_id: data.partner_id,
+      amount: 0,
+      balance_after: partner.credits_balance ?? 0,
+      tx_type: "chariow_unlimited",
+      created_by: context.userId,
+      note: "Accès illimité retiré manuellement",
+    });
+
+    return { ok: true };
+  });
+
 const ManualCreateSchema = PartnerInfoSchema.extend({
   password: z.string().min(8).max(72),
 });

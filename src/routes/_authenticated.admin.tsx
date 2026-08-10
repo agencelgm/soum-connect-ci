@@ -140,6 +140,8 @@ import {
   getAdminDashboardStats,
   listChariowPayments,
   setPartnerTier,
+  setPartnerUnlimited,
+  revokePartnerUnlimited,
   resetPartnerPassword,
   markPartnerDocsReceived,
 } from "@/lib/partners.functions";
@@ -889,6 +891,9 @@ function PartnerCard({
               {partner.tier === "premium" ? "Retirer Premium" : "Passer Premium"}
             </Button>
           )}
+          {isAdmin && (partner.status === "approved" || partner.status === "paused") && (
+            <UnlimitedButton partner={partner} disabled={busy} onDone={onChange} />
+          )}
           {isAdmin && (
             <Button
               size="sm"
@@ -1005,6 +1010,156 @@ function RejectButton({
         ×
       </Button>
     </div>
+  );
+}
+
+function UnlimitedButton({
+  partner,
+  disabled,
+  onDone,
+}: {
+  partner: any;
+  disabled?: boolean;
+  onDone: () => void;
+}) {
+  const setFn = useServerFn(setPartnerUnlimited);
+  const revokeFn = useServerFn(revokePartnerUnlimited);
+  const [open, setOpen] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const active = partner.unlimited_until && new Date(partner.unlimited_until) > new Date();
+  const [paidAt, setPaidAt] = useState(() => new Date().toISOString().slice(0, 10));
+  const [days, setDays] = useState(30);
+  const [stack, setStack] = useState<boolean>(!!active);
+  const [note, setNote] = useState("");
+
+  const preview = (() => {
+    const base =
+      stack && active ? new Date(partner.unlimited_until) : new Date(`${paidAt}T00:00:00`);
+    if (Number.isNaN(base.getTime())) return null;
+    const d = new Date(base.getTime() + (days || 0) * 86400000);
+    return d.toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" });
+  })();
+
+  async function run(fn: () => Promise<unknown>, msg: string) {
+    setBusy(true);
+    try {
+      await fn();
+      toast.success(msg);
+      setOpen(false);
+      onDone();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Erreur");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <>
+      <Button size="sm" variant={active ? "secondary" : "outline"} disabled={disabled} onClick={() => setOpen(true)}>
+        {active ? "Gérer l'illimité" : "Ajouter illimité"}
+      </Button>
+      <Dialog open={open} onOpenChange={(o) => !o && setOpen(false)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Accès illimité — {partner.cabinet_name}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            {active && (
+              <p className="text-sm text-muted-foreground">
+                Accès actif jusqu'au{" "}
+                <strong>
+                  {new Date(partner.unlimited_until).toLocaleDateString("fr-FR", {
+                    day: "2-digit",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </strong>
+              </p>
+            )}
+            <div>
+              <Label htmlFor="paid-at">Date de paiement</Label>
+              <Input id="paid-at" type="date" value={paidAt} onChange={(e) => setPaidAt(e.target.value)} />
+            </div>
+            <div>
+              <Label htmlFor="days">Durée (jours)</Label>
+              <div className="flex gap-2 items-center">
+                <Input
+                  id="days"
+                  type="number"
+                  min={1}
+                  max={365}
+                  value={days}
+                  onChange={(e) => setDays(Number(e.target.value))}
+                  className="w-28"
+                />
+                {[30, 60, 90].map((d) => (
+                  <Button key={d} type="button" size="sm" variant="ghost" onClick={() => setDays(d)}>
+                    {d} j
+                  </Button>
+                ))}
+              </div>
+            </div>
+            {active && (
+              <label className="flex items-center gap-2 text-sm">
+                <input type="checkbox" checked={stack} onChange={(e) => setStack(e.target.checked)} />
+                Empiler sur l'accès en cours
+              </label>
+            )}
+            <div>
+              <Label htmlFor="unl-note">Note (facultatif)</Label>
+              <Input
+                id="unl-note"
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                placeholder="Paiement espèces 100 000 FCFA — reçu n°12"
+              />
+            </div>
+            {preview && (
+              <p className="text-sm">
+                Renouvellement le <strong>{preview}</strong>
+              </p>
+            )}
+          </div>
+          <DialogFooter className="gap-2">
+            {active && (
+              <Button
+                variant="destructive"
+                disabled={busy}
+                onClick={() =>
+                  run(() => revokeFn({ data: { partner_id: partner.id } }), "Accès illimité retiré")
+                }
+              >
+                Retirer l'illimité
+              </Button>
+            )}
+            <Button variant="ghost" disabled={busy} onClick={() => setOpen(false)}>
+              Annuler
+            </Button>
+            <Button
+              disabled={busy || !days || days < 1}
+              onClick={() =>
+                run(
+                  () =>
+                    setFn({
+                      data: {
+                        partner_id: partner.id,
+                        paid_at: new Date(`${paidAt}T12:00:00`).toISOString(),
+                        days,
+                        stack: !!active && stack,
+                        note: note || undefined,
+                      },
+                    }),
+                  "Accès illimité enregistré",
+                )
+              }
+            >
+              Enregistrer
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 
