@@ -891,6 +891,9 @@ function PartnerCard({
               {partner.tier === "premium" ? "Retirer Premium" : "Passer Premium"}
             </Button>
           )}
+          {isAdmin && (partner.status === "approved" || partner.status === "paused") && (
+            <UnlimitedButton partner={partner} disabled={busy} onDone={onChange} />
+          )}
           {isAdmin && (
             <Button
               size="sm"
