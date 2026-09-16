@@ -65,10 +65,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "robots", content: "index,follow" },
-      { httpEquiv: "Cache-Control", content: "no-cache, no-store, must-revalidate" },
-      { httpEquiv: "Pragma", content: "no-cache" },
-      { httpEquiv: "Expires", content: "0" },
-      { property: "og:site_name", content: "SoumissionsComptables.ci" },
+      { property: "og:site_name", content: "SoumissionComptable.com" },
       { property: "og:locale", content: "fr_CI" },
       { property: "og:type", content: "website" },
     ];
@@ -96,6 +93,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       meta,
       links: [
         { rel: "stylesheet", href: appCss },
+        { rel: "icon", href: "/favicon.ico", sizes: "any" },
+        { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+        { rel: "apple-touch-icon", href: "/favicon.svg" },
         { rel: "preconnect", href: "https://fonts.googleapis.com" },
         {
           rel: "preconnect",

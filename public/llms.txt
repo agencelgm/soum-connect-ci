@@ -49,7 +49,7 @@ SoumissionComptable.com est un service de mise en relation 100 % gratuit qui aid
 - [Comment ça marche](/comment-ca-marche) : processus de mise en relation
 - [FAQ](/faq) : questions fréquentes sur la comptabilité et la création en CI
 - [Guides](/guides) : bibliothèque de guides pratiques
-- [Blog](/blog) : actualités, conseils et analyses
+- [Académie LGM](/academie) : formations vidéo vente et prospection pour cabinets comptables
 - [À propos](/a-propos) : présentation de la plateforme
 - [Nous contacter](/nous-contacter) : formulaire de contact
 - [Cabinets partenaires](/cabinets-comptables-partenaires) : réseau de cabinets comptables agréés
@@ -77,6 +77,10 @@ SoumissionComptable.com est un service de mise en relation 100 % gratuit qui aid
 - [Coût création entreprise CI](/guides/cout-creation-entreprise-cote-divoire) : frais CEPICI, notaire, capital
 - [RCCM Côte d'Ivoire](/guides/rccm-cote-divoire) : inscription, renouvellement, coûts
 - [Aides création entreprise](/guides/aides-creation-entreprise-ci) : CEPICI, FDFP, BEI, incubateurs
+- [CEPICI Côte d'Ivoire](/guides/cepici-cote-divoire) : rôle du guichet unique, services et démarches
+- [Créer une SA en Côte d'Ivoire](/guides/creer-sa-cote-divoire) : capital, organes, formalités CEPICI
+- [Cabinet comptable Cocody](/guides/cabinet-comptable-cocody-abidjan) : choisir un cabinet à Cocody
+- [Cabinet comptable Angré](/guides/cabinet-comptable-angre-abidjan) : choisir un cabinet à Angré
 
 ## Optional
 
