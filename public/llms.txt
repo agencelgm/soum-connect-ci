@@ -49,7 +49,7 @@ SoumissionComptable.com est un service de mise en relation 100 % gratuit qui aid
 - [Comment ça marche](/comment-ca-marche) : processus de mise en relation
 - [FAQ](/faq) : questions fréquentes sur la comptabilité et la création en CI
 - [Guides](/guides) : bibliothèque de guides pratiques
-- [Blog](/blog) : actualités, conseils et analyses
+- [Académie LGM](/academie) : formations vidéo vente et prospection pour cabinets comptables
 - [À propos](/a-propos) : présentation de la plateforme
 - [Nous contacter](/nous-contacter) : formulaire de contact
 - [Cabinets partenaires](/cabinets-comptables-partenaires) : réseau de cabinets comptables agréés
