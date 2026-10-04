@@ -411,11 +411,13 @@ export type Database = {
       lead_publications: {
         Row: {
           audience: Database["public"]["Enums"]["audience_type"]
+          boost_count: number
           budget: string | null
           city: string | null
           created_at: string
           id: string
           is_active: boolean
+          last_boosted_at: string | null
           legal_form: string | null
           max_unlocks: number
           premium_until: string | null
@@ -429,11 +431,13 @@ export type Database = {
         }
         Insert: {
           audience?: Database["public"]["Enums"]["audience_type"]
+          boost_count?: number
           budget?: string | null
           city?: string | null
           created_at?: string
           id?: string
           is_active?: boolean
+          last_boosted_at?: string | null
           legal_form?: string | null
           max_unlocks?: number
           premium_until?: string | null
@@ -447,11 +451,13 @@ export type Database = {
         }
         Update: {
           audience?: Database["public"]["Enums"]["audience_type"]
+          boost_count?: number
           budget?: string | null
           city?: string | null
           created_at?: string
           id?: string
           is_active?: boolean
+          last_boosted_at?: string | null
           legal_form?: string | null
           max_unlocks?: number
           premium_until?: string | null
@@ -864,6 +870,47 @@ export type Database = {
           },
         ]
       }
+      prospect_assignments: {
+        Row: {
+          commercial_id: string
+          commercial_name: string | null
+          decided_at: string | null
+          decision: string | null
+          id: string
+          note: string | null
+          prospect_id: string
+          unlocked_at: string
+        }
+        Insert: {
+          commercial_id: string
+          commercial_name?: string | null
+          decided_at?: string | null
+          decision?: string | null
+          id?: string
+          note?: string | null
+          prospect_id: string
+          unlocked_at?: string
+        }
+        Update: {
+          commercial_id?: string
+          commercial_name?: string | null
+          decided_at?: string | null
+          decision?: string | null
+          id?: string
+          note?: string | null
+          prospect_id?: string
+          unlocked_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prospect_assignments_prospect_id_fkey"
+            columns: ["prospect_id"]
+            isOneToOne: true
+            referencedRelation: "prospects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       prospects: {
         Row: {
           audience: Database["public"]["Enums"]["audience_type"]
@@ -1014,6 +1061,14 @@ export type Database = {
     }
     Functions: {
       auto_pause_inactive_partners: { Args: never; Returns: number }
+      commercial_close_prospect: {
+        Args: { _decision: string; _note: string; _prospect_id: string }
+        Returns: undefined
+      }
+      commercial_unlock_prospect: {
+        Args: { _prospect_id: string }
+        Returns: Json
+      }
       delete_email: {
         Args: { message_id: number; queue_name: string }
         Returns: boolean
@@ -1064,10 +1119,14 @@ export type Database = {
           read_ct: number
         }[]
       }
+      reboost_publication: {
+        Args: { _publication_id: string }
+        Returns: undefined
+      }
       unlock_lead: { Args: { _publication_id: string }; Returns: Json }
     }
     Enums: {
-      app_role: "admin" | "agent" | "partner"
+      app_role: "admin" | "agent" | "partner" | "commercial"
       audience_type: "creation" | "gestion" | "unknown"
       credit_tx_type:
         | "signup_bonus"
@@ -1211,7 +1270,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "agent", "partner"],
+      app_role: ["admin", "agent", "partner", "commercial"],
       audience_type: ["creation", "gestion", "unknown"],
       credit_tx_type: [
         "signup_bonus",
