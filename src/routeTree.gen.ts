@@ -9,232 +9,118 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as ReinitialiserMotDePasseRouteImport } from './routes/reinitialiser-mot-de-passe'
-import { Route as RedactionBusinessPlanCoteDivoireRouteImport } from './routes/redaction-business-plan-cote-divoire'
-import { Route as OffreSiteInternetRouteImport } from './routes/offre-site-internet'
-import { Route as OffreGestionMarketingRouteImport } from './routes/offre-gestion-marketing'
-import { Route as NousContacterRouteImport } from './routes/nous-contacter'
-import { Route as MotDePasseOublieRouteImport } from './routes/mot-de-passe-oublie'
-import { Route as MontageDossierCreditRouteImport } from './routes/montage-dossier-credit'
-import { Route as MerciDemandeFinancementRouteImport } from './routes/merci-demande-financement'
-import { Route as MerciDemandeBusinessPlanRouteImport } from './routes/merci-demande-business-plan'
-import { Route as MerciRouteImport } from './routes/merci'
-import { Route as McpRouteImport } from './routes/mcp'
-import { Route as InscriptionPartenaireRouteImport } from './routes/inscription-partenaire'
-import { Route as GuidesRouteImport } from './routes/guides'
-import { Route as FormationClientsRouteImport } from './routes/formation-clients'
-import { Route as FaqRouteImport } from './routes/faq'
-import { Route as DomiciliationEntrepriseAbidjanRouteImport } from './routes/domiciliation-entreprise-abidjan'
-import { Route as DemandeSoumissionsRouteImport } from './routes/demande-soumissions'
-import { Route as DeclarationFiscaleCoteDivoireRouteImport } from './routes/declaration-fiscale-cote-divoire'
-import { Route as CreerSonEntrepriseCoteDivoireRouteImport } from './routes/creer-son-entreprise-cote-divoire'
-import { Route as CreationEntrepriseDiasporaIvoirienneRouteImport } from './routes/creation-entreprise-diaspora-ivoirienne'
-import { Route as CreationEntrepriseCoteDivoireRouteImport } from './routes/creation-entreprise-cote-divoire'
-import { Route as ConnexionRouteImport } from './routes/connexion'
-import { Route as ComptabiliteEntrepriseAbidjanRouteImport } from './routes/comptabilite-entreprise-abidjan'
-import { Route as CommentCaMarcheRouteImport } from './routes/comment-ca-marche'
-import { Route as ChangerMotDePasseRouteImport } from './routes/changer-mot-de-passe'
-import { Route as CabinetsComptablesPartenairesRouteImport } from './routes/cabinets-comptables-partenaires'
-import { Route as CabinetComptableAbidjanRouteImport } from './routes/cabinet-comptable-abidjan'
-import { Route as BlogRouteImport } from './routes/blog'
-import { Route as AcademieRouteImport } from './routes/academie'
-import { Route as AProposRouteImport } from './routes/a-propos'
-import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as EnIndexRouteImport } from './routes/en/index'
-import { Route as AcademieIndexRouteImport } from './routes/academie.index'
-import { Route as GuidesSlugRouteImport } from './routes/guides.$slug'
-import { Route as EnWebsiteOfferRouteImport } from './routes/en/website-offer'
-import { Route as EnThankYouRouteImport } from './routes/en/thank-you'
-import { Route as EnStartABusinessIvoryCoastRouteImport } from './routes/en/start-a-business-ivory-coast'
-import { Route as EnGetQuotesRouteImport } from './routes/en/get-quotes'
-import { Route as EnContactUsRouteImport } from './routes/en/contact-us'
-import { Route as EnCompanyRegistrationIvoryCoastRouteImport } from './routes/en/company-registration-ivory-coast'
-import { Route as EnAccountingFirmAbidjanRouteImport } from './routes/en/accounting-firm-abidjan'
-import { Route as EnAboutRouteImport } from './routes/en/about'
-import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
-import { Route as AuthenticatedTutorielPartenaireRouteImport } from './routes/_authenticated.tutoriel-partenaire'
-import { Route as AuthenticatedStatsFormationRouteImport } from './routes/_authenticated.stats-formation'
-import { Route as AuthenticatedRechargerRouteImport } from './routes/_authenticated.recharger'
-import { Route as AuthenticatedMarketplaceRouteImport } from './routes/_authenticated.marketplace'
-import { Route as AuthenticatedHistoriqueRouteImport } from './routes/_authenticated.historique'
-import { Route as AuthenticatedEspacePartenaireRouteImport } from './routes/_authenticated.espace-partenaire'
-import { Route as AuthenticatedCommercialRouteImport } from './routes/_authenticated.commercial'
-import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated.admin'
-import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
+import { Route as AProposRouteImport } from './routes/a-propos'
+import { Route as AcademieRouteImport } from './routes/academie'
+import { Route as BlogRouteImport } from './routes/blog'
+import { Route as CabinetComptableAbidjanRouteImport } from './routes/cabinet-comptable-abidjan'
+import { Route as CabinetsComptablesPartenairesRouteImport } from './routes/cabinets-comptables-partenaires'
+import { Route as ChangerMotDePasseRouteImport } from './routes/changer-mot-de-passe'
+import { Route as CommentCaMarcheRouteImport } from './routes/comment-ca-marche'
+import { Route as ComptabiliteEntrepriseAbidjanRouteImport } from './routes/comptabilite-entreprise-abidjan'
+import { Route as ConnexionRouteImport } from './routes/connexion'
+import { Route as CreationEntrepriseCoteDivoireRouteImport } from './routes/creation-entreprise-cote-divoire'
+import { Route as CreationEntrepriseDiasporaIvoirienneRouteImport } from './routes/creation-entreprise-diaspora-ivoirienne'
+import { Route as CreerSonEntrepriseCoteDivoireRouteImport } from './routes/creer-son-entreprise-cote-divoire'
+import { Route as DeclarationFiscaleCoteDivoireRouteImport } from './routes/declaration-fiscale-cote-divoire'
+import { Route as DemandeSoumissionsRouteImport } from './routes/demande-soumissions'
+import { Route as DomiciliationEntrepriseAbidjanRouteImport } from './routes/domiciliation-entreprise-abidjan'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as FormationClientsRouteImport } from './routes/formation-clients'
+import { Route as GuidesRouteImport } from './routes/guides'
+import { Route as InscriptionPartenaireRouteImport } from './routes/inscription-partenaire'
+import { Route as McpRouteImport } from './routes/mcp'
+import { Route as MerciRouteImport } from './routes/merci'
+import { Route as MerciDemandeBusinessPlanRouteImport } from './routes/merci-demande-business-plan'
+import { Route as MerciDemandeFinancementRouteImport } from './routes/merci-demande-financement'
+import { Route as MontageDossierCreditRouteImport } from './routes/montage-dossier-credit'
+import { Route as MotDePasseOublieRouteImport } from './routes/mot-de-passe-oublie'
+import { Route as NousContacterRouteImport } from './routes/nous-contacter'
+import { Route as OffreGestionMarketingRouteImport } from './routes/offre-gestion-marketing'
+import { Route as OffreSiteInternetRouteImport } from './routes/offre-site-internet'
+import { Route as RedactionBusinessPlanCoteDivoireRouteImport } from './routes/redaction-business-plan-cote-divoire'
+import { Route as ReinitialiserMotDePasseRouteImport } from './routes/reinitialiser-mot-de-passe'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
-import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
-import { Route as ApiPublicTestPartnerWebhookRouteImport } from './routes/api/public/test-partner-webhook'
-import { Route as ApiPublicMetaCapiRouteImport } from './routes/api/public/meta-capi'
-import { Route as ApiPublicLeadUpsellRouteImport } from './routes/api/public/lead-upsell'
-import { Route as ApiPublicLeadRouteImport } from './routes/api/public/lead'
-import { Route as ApiPublicFunnelTrackRouteImport } from './routes/api/public/funnel-track'
-import { Route as ApiPublicFinancingLeadRouteImport } from './routes/api/public/financing-lead'
-import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
-import { Route as ApiPublicChariowWebhookRouteImport } from './routes/api/public/chariow-webhook'
-import { Route as ApiPublicChariowFormationRouteImport } from './routes/api/public/chariow-formation'
-import { Route as ApiPublicBusinessPlanLeadRouteImport } from './routes/api/public/business-plan-lead'
-import { Route as AcademieModuleSlugRouteImport } from './routes/academie.$module.$slug'
-import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated.admin'
+import { Route as AuthenticatedCommercialRouteImport } from './routes/_authenticated.commercial'
+import { Route as AuthenticatedEspacePartenaireRouteImport } from './routes/_authenticated.espace-partenaire'
+import { Route as AuthenticatedHistoriqueRouteImport } from './routes/_authenticated.historique'
+import { Route as AuthenticatedMarketplaceRouteImport } from './routes/_authenticated.marketplace'
+import { Route as AuthenticatedRechargerRouteImport } from './routes/_authenticated.recharger'
+import { Route as AuthenticatedStatsFormationRouteImport } from './routes/_authenticated.stats-formation'
+import { Route as AuthenticatedTutorielPartenaireRouteImport } from './routes/_authenticated.tutoriel-partenaire'
+import { Route as AcademieIndexRouteImport } from './routes/academie.index'
+import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
+import { Route as EnIndexRouteImport } from './routes/en/index'
+import { Route as EnAboutRouteImport } from './routes/en/about'
+import { Route as EnAccountingFirmAbidjanRouteImport } from './routes/en/accounting-firm-abidjan'
+import { Route as EnCompanyRegistrationIvoryCoastRouteImport } from './routes/en/company-registration-ivory-coast'
+import { Route as EnContactUsRouteImport } from './routes/en/contact-us'
+import { Route as EnGetQuotesRouteImport } from './routes/en/get-quotes'
+import { Route as EnStartABusinessIvoryCoastRouteImport } from './routes/en/start-a-business-ivory-coast'
+import { Route as EnThankYouRouteImport } from './routes/en/thank-you'
+import { Route as EnWebsiteOfferRouteImport } from './routes/en/website-offer'
+import { Route as GuidesSlugRouteImport } from './routes/guides.$slug'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
-import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
-import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
-import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
-import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
-import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
-import { Route as ApiPublicHooksUnlimitedExpirationNotifyRouteImport } from './routes/api/public/hooks/unlimited-expiration-notify'
-import { Route as ApiPublicHooksSendLeadDigestsRouteImport } from './routes/api/public/hooks/send-lead-digests'
-import { Route as ApiPublicHooksSendGrowthEmailsRouteImport } from './routes/api/public/hooks/send-growth-emails'
-import { Route as ApiPublicHooksPromoWinbackDispatchRouteImport } from './routes/api/public/hooks/promo-winback-dispatch'
-import { Route as ApiPublicHooksPendingDocsReminderRouteImport } from './routes/api/public/hooks/pending-docs-reminder'
-import { Route as ApiPublicHooksGenerateGrowthEmailsRouteImport } from './routes/api/public/hooks/generate-growth-emails'
-import { Route as ApiPublicHooksEmailHealthAlertRouteImport } from './routes/api/public/hooks/email-health-alert'
-import { Route as ApiPublicHooksAutoReboostRouteImport } from './routes/api/public/hooks/auto-reboost'
+import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
+import { Route as AcademieModuleSlugRouteImport } from './routes/academie.$module.$slug'
+import { Route as ApiPublicBusinessPlanLeadRouteImport } from './routes/api/public/business-plan-lead'
+import { Route as ApiPublicChariowFormationRouteImport } from './routes/api/public/chariow-formation'
+import { Route as ApiPublicChariowWebhookRouteImport } from './routes/api/public/chariow-webhook'
+import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
+import { Route as ApiPublicFinancingLeadRouteImport } from './routes/api/public/financing-lead'
+import { Route as ApiPublicFunnelTrackRouteImport } from './routes/api/public/funnel-track'
+import { Route as ApiPublicLeadRouteImport } from './routes/api/public/lead'
+import { Route as ApiPublicLeadUpsellRouteImport } from './routes/api/public/lead-upsell'
+import { Route as ApiPublicMetaCapiRouteImport } from './routes/api/public/meta-capi'
+import { Route as ApiPublicTestPartnerWebhookRouteImport } from './routes/api/public/test-partner-webhook'
+import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as ApiPublicHooksAcademyDripRouteImport } from './routes/api/public/hooks/academy-drip'
+import { Route as ApiPublicHooksAutoReboostRouteImport } from './routes/api/public/hooks/auto-reboost'
+import { Route as ApiPublicHooksEmailHealthAlertRouteImport } from './routes/api/public/hooks/email-health-alert'
+import { Route as ApiPublicHooksGenerateGrowthEmailsRouteImport } from './routes/api/public/hooks/generate-growth-emails'
+import { Route as ApiPublicHooksPendingDocsReminderRouteImport } from './routes/api/public/hooks/pending-docs-reminder'
+import { Route as ApiPublicHooksPromoWinbackDispatchRouteImport } from './routes/api/public/hooks/promo-winback-dispatch'
+import { Route as ApiPublicHooksSendGrowthEmailsRouteImport } from './routes/api/public/hooks/send-growth-emails'
+import { Route as ApiPublicHooksSendLeadDigestsRouteImport } from './routes/api/public/hooks/send-lead-digests'
+import { Route as ApiPublicHooksUnlimitedExpirationNotifyRouteImport } from './routes/api/public/hooks/unlimited-expiration-notify'
+import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
+import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
+import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
+import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
+import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
 
-const UnsubscribeRoute = UnsubscribeRouteImport.update({
-  id: '/unsubscribe',
-  path: '/unsubscribe',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ReinitialiserMotDePasseRoute = ReinitialiserMotDePasseRouteImport.update({
-  id: '/reinitialiser-mot-de-passe',
-  path: '/reinitialiser-mot-de-passe',
+const AProposRoute = AProposRouteImport.update({
+  id: '/a-propos',
+  path: '/a-propos',
   getParentRoute: () => rootRouteImport,
 } as any)
-const RedactionBusinessPlanCoteDivoireRoute =
-  RedactionBusinessPlanCoteDivoireRouteImport.update({
-    id: '/redaction-business-plan-cote-divoire',
-    path: '/redaction-business-plan-cote-divoire',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const OffreSiteInternetRoute = OffreSiteInternetRouteImport.update({
-  id: '/offre-site-internet',
-  path: '/offre-site-internet',
+const AcademieRoute = AcademieRouteImport.update({
+  id: '/academie',
+  path: '/academie',
   getParentRoute: () => rootRouteImport,
 } as any)
-const OffreGestionMarketingRoute = OffreGestionMarketingRouteImport.update({
-  id: '/offre-gestion-marketing',
-  path: '/offre-gestion-marketing',
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
-const NousContacterRoute = NousContacterRouteImport.update({
-  id: '/nous-contacter',
-  path: '/nous-contacter',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MotDePasseOublieRoute = MotDePasseOublieRouteImport.update({
-  id: '/mot-de-passe-oublie',
-  path: '/mot-de-passe-oublie',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MontageDossierCreditRoute = MontageDossierCreditRouteImport.update({
-  id: '/montage-dossier-credit',
-  path: '/montage-dossier-credit',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MerciDemandeFinancementRoute = MerciDemandeFinancementRouteImport.update({
-  id: '/merci-demande-financement',
-  path: '/merci-demande-financement',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MerciDemandeBusinessPlanRoute =
-  MerciDemandeBusinessPlanRouteImport.update({
-    id: '/merci-demande-business-plan',
-    path: '/merci-demande-business-plan',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const MerciRoute = MerciRouteImport.update({
-  id: '/merci',
-  path: '/merci',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const McpRoute = McpRouteImport.update({
-  id: '/mcp',
-  path: '/mcp',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const InscriptionPartenaireRoute = InscriptionPartenaireRouteImport.update({
-  id: '/inscription-partenaire',
-  path: '/inscription-partenaire',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GuidesRoute = GuidesRouteImport.update({
-  id: '/guides',
-  path: '/guides',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FormationClientsRoute = FormationClientsRouteImport.update({
-  id: '/formation-clients',
-  path: '/formation-clients',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FaqRoute = FaqRouteImport.update({
-  id: '/faq',
-  path: '/faq',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DomiciliationEntrepriseAbidjanRoute =
-  DomiciliationEntrepriseAbidjanRouteImport.update({
-    id: '/domiciliation-entreprise-abidjan',
-    path: '/domiciliation-entreprise-abidjan',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const DemandeSoumissionsRoute = DemandeSoumissionsRouteImport.update({
-  id: '/demande-soumissions',
-  path: '/demande-soumissions',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DeclarationFiscaleCoteDivoireRoute =
-  DeclarationFiscaleCoteDivoireRouteImport.update({
-    id: '/declaration-fiscale-cote-divoire',
-    path: '/declaration-fiscale-cote-divoire',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const CreerSonEntrepriseCoteDivoireRoute =
-  CreerSonEntrepriseCoteDivoireRouteImport.update({
-    id: '/creer-son-entreprise-cote-divoire',
-    path: '/creer-son-entreprise-cote-divoire',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const CreationEntrepriseDiasporaIvoirienneRoute =
-  CreationEntrepriseDiasporaIvoirienneRouteImport.update({
-    id: '/creation-entreprise-diaspora-ivoirienne',
-    path: '/creation-entreprise-diaspora-ivoirienne',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const CreationEntrepriseCoteDivoireRoute =
-  CreationEntrepriseCoteDivoireRouteImport.update({
-    id: '/creation-entreprise-cote-divoire',
-    path: '/creation-entreprise-cote-divoire',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ConnexionRoute = ConnexionRouteImport.update({
-  id: '/connexion',
-  path: '/connexion',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ComptabiliteEntrepriseAbidjanRoute =
-  ComptabiliteEntrepriseAbidjanRouteImport.update({
-    id: '/comptabilite-entreprise-abidjan',
-    path: '/comptabilite-entreprise-abidjan',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const CommentCaMarcheRoute = CommentCaMarcheRouteImport.update({
-  id: '/comment-ca-marche',
-  path: '/comment-ca-marche',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ChangerMotDePasseRoute = ChangerMotDePasseRouteImport.update({
-  id: '/changer-mot-de-passe',
-  path: '/changer-mot-de-passe',
+const CabinetComptableAbidjanRoute = CabinetComptableAbidjanRouteImport.update({
+  id: '/cabinet-comptable-abidjan',
+  path: '/cabinet-comptable-abidjan',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CabinetsComptablesPartenairesRoute =
@@ -243,123 +129,169 @@ const CabinetsComptablesPartenairesRoute =
     path: '/cabinets-comptables-partenaires',
     getParentRoute: () => rootRouteImport,
   } as any)
-const CabinetComptableAbidjanRoute = CabinetComptableAbidjanRouteImport.update({
-  id: '/cabinet-comptable-abidjan',
-  path: '/cabinet-comptable-abidjan',
+const ChangerMotDePasseRoute = ChangerMotDePasseRouteImport.update({
+  id: '/changer-mot-de-passe',
+  path: '/changer-mot-de-passe',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BlogRoute = BlogRouteImport.update({
-  id: '/blog',
-  path: '/blog',
+const CommentCaMarcheRoute = CommentCaMarcheRouteImport.update({
+  id: '/comment-ca-marche',
+  path: '/comment-ca-marche',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AcademieRoute = AcademieRouteImport.update({
-  id: '/academie',
-  path: '/academie',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AProposRoute = AProposRouteImport.update({
-  id: '/a-propos',
-  path: '/a-propos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedRoute = AuthenticatedRouteImport.update({
-  id: '/_authenticated',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EnIndexRoute = EnIndexRouteImport.update({
-  id: '/en/',
-  path: '/en/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AcademieIndexRoute = AcademieIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AcademieRoute,
-} as any)
-const GuidesSlugRoute = GuidesSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => GuidesRoute,
-} as any)
-const EnWebsiteOfferRoute = EnWebsiteOfferRouteImport.update({
-  id: '/en/website-offer',
-  path: '/en/website-offer',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EnThankYouRoute = EnThankYouRouteImport.update({
-  id: '/en/thank-you',
-  path: '/en/thank-you',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EnStartABusinessIvoryCoastRoute =
-  EnStartABusinessIvoryCoastRouteImport.update({
-    id: '/en/start-a-business-ivory-coast',
-    path: '/en/start-a-business-ivory-coast',
+const ComptabiliteEntrepriseAbidjanRoute =
+  ComptabiliteEntrepriseAbidjanRouteImport.update({
+    id: '/comptabilite-entreprise-abidjan',
+    path: '/comptabilite-entreprise-abidjan',
     getParentRoute: () => rootRouteImport,
   } as any)
-const EnGetQuotesRoute = EnGetQuotesRouteImport.update({
-  id: '/en/get-quotes',
-  path: '/en/get-quotes',
+const ConnexionRoute = ConnexionRouteImport.update({
+  id: '/connexion',
+  path: '/connexion',
   getParentRoute: () => rootRouteImport,
 } as any)
-const EnContactUsRoute = EnContactUsRouteImport.update({
-  id: '/en/contact-us',
-  path: '/en/contact-us',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EnCompanyRegistrationIvoryCoastRoute =
-  EnCompanyRegistrationIvoryCoastRouteImport.update({
-    id: '/en/company-registration-ivory-coast',
-    path: '/en/company-registration-ivory-coast',
+const CreationEntrepriseCoteDivoireRoute =
+  CreationEntrepriseCoteDivoireRouteImport.update({
+    id: '/creation-entreprise-cote-divoire',
+    path: '/creation-entreprise-cote-divoire',
     getParentRoute: () => rootRouteImport,
   } as any)
-const EnAccountingFirmAbidjanRoute = EnAccountingFirmAbidjanRouteImport.update({
-  id: '/en/accounting-firm-abidjan',
-  path: '/en/accounting-firm-abidjan',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EnAboutRoute = EnAboutRouteImport.update({
-  id: '/en/about',
-  path: '/en/about',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
-  id: '/email/unsubscribe',
-  path: '/email/unsubscribe',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedTutorielPartenaireRoute =
-  AuthenticatedTutorielPartenaireRouteImport.update({
-    id: '/tutoriel-partenaire',
-    path: '/tutoriel-partenaire',
-    getParentRoute: () => AuthenticatedRoute,
+const CreationEntrepriseDiasporaIvoirienneRoute =
+  CreationEntrepriseDiasporaIvoirienneRouteImport.update({
+    id: '/creation-entreprise-diaspora-ivoirienne',
+    path: '/creation-entreprise-diaspora-ivoirienne',
+    getParentRoute: () => rootRouteImport,
   } as any)
-const AuthenticatedStatsFormationRoute =
-  AuthenticatedStatsFormationRouteImport.update({
-    id: '/stats-formation',
-    path: '/stats-formation',
-    getParentRoute: () => AuthenticatedRoute,
+const CreerSonEntrepriseCoteDivoireRoute =
+  CreerSonEntrepriseCoteDivoireRouteImport.update({
+    id: '/creer-son-entreprise-cote-divoire',
+    path: '/creer-son-entreprise-cote-divoire',
+    getParentRoute: () => rootRouteImport,
   } as any)
-const AuthenticatedRechargerRoute = AuthenticatedRechargerRouteImport.update({
-  id: '/recharger',
-  path: '/recharger',
+const DeclarationFiscaleCoteDivoireRoute =
+  DeclarationFiscaleCoteDivoireRouteImport.update({
+    id: '/declaration-fiscale-cote-divoire',
+    path: '/declaration-fiscale-cote-divoire',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DemandeSoumissionsRoute = DemandeSoumissionsRouteImport.update({
+  id: '/demande-soumissions',
+  path: '/demande-soumissions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DomiciliationEntrepriseAbidjanRoute =
+  DomiciliationEntrepriseAbidjanRouteImport.update({
+    id: '/domiciliation-entreprise-abidjan',
+    path: '/domiciliation-entreprise-abidjan',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FormationClientsRoute = FormationClientsRouteImport.update({
+  id: '/formation-clients',
+  path: '/formation-clients',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuidesRoute = GuidesRouteImport.update({
+  id: '/guides',
+  path: '/guides',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InscriptionPartenaireRoute = InscriptionPartenaireRouteImport.update({
+  id: '/inscription-partenaire',
+  path: '/inscription-partenaire',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MerciRoute = MerciRouteImport.update({
+  id: '/merci',
+  path: '/merci',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MerciDemandeBusinessPlanRoute =
+  MerciDemandeBusinessPlanRouteImport.update({
+    id: '/merci-demande-business-plan',
+    path: '/merci-demande-business-plan',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const MerciDemandeFinancementRoute = MerciDemandeFinancementRouteImport.update({
+  id: '/merci-demande-financement',
+  path: '/merci-demande-financement',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MontageDossierCreditRoute = MontageDossierCreditRouteImport.update({
+  id: '/montage-dossier-credit',
+  path: '/montage-dossier-credit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MotDePasseOublieRoute = MotDePasseOublieRouteImport.update({
+  id: '/mot-de-passe-oublie',
+  path: '/mot-de-passe-oublie',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NousContacterRoute = NousContacterRouteImport.update({
+  id: '/nous-contacter',
+  path: '/nous-contacter',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OffreGestionMarketingRoute = OffreGestionMarketingRouteImport.update({
+  id: '/offre-gestion-marketing',
+  path: '/offre-gestion-marketing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OffreSiteInternetRoute = OffreSiteInternetRouteImport.update({
+  id: '/offre-site-internet',
+  path: '/offre-site-internet',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RedactionBusinessPlanCoteDivoireRoute =
+  RedactionBusinessPlanCoteDivoireRouteImport.update({
+    id: '/redaction-business-plan-cote-divoire',
+    path: '/redaction-business-plan-cote-divoire',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ReinitialiserMotDePasseRoute = ReinitialiserMotDePasseRouteImport.update({
+  id: '/reinitialiser-mot-de-passe',
+  path: '/reinitialiser-mot-de-passe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UnsubscribeRoute = UnsubscribeRouteImport.update({
+  id: '/unsubscribe',
+  path: '/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Char91DotmcpChar93ListToolsRoute =
+  Char91DotmcpChar93ListToolsRouteImport.update({
+    id: '/.mcp/list-tools',
+    path: '/.mcp/list-tools',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedMarketplaceRoute =
-  AuthenticatedMarketplaceRouteImport.update({
-    id: '/marketplace',
-    path: '/marketplace',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedHistoriqueRoute = AuthenticatedHistoriqueRouteImport.update({
-  id: '/historique',
-  path: '/historique',
+const AuthenticatedCommercialRoute = AuthenticatedCommercialRouteImport.update({
+  id: '/commercial',
+  path: '/commercial',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedEspacePartenaireRoute =
@@ -368,31 +300,157 @@ const AuthenticatedEspacePartenaireRoute =
     path: '/espace-partenaire',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedCommercialRoute = AuthenticatedCommercialRouteImport.update({
-  id: '/commercial',
-  path: '/commercial',
+const AuthenticatedHistoriqueRoute = AuthenticatedHistoriqueRouteImport.update({
+  id: '/historique',
+  path: '/historique',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
+const AuthenticatedMarketplaceRoute =
+  AuthenticatedMarketplaceRouteImport.update({
+    id: '/marketplace',
+    path: '/marketplace',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedRechargerRoute = AuthenticatedRechargerRouteImport.update({
+  id: '/recharger',
+  path: '/recharger',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const Char91DotwellKnownChar93OauthProtectedResourceRoute =
-  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
-    id: '/.well-known/oauth-protected-resource',
-    path: '/.well-known/oauth-protected-resource',
+const AuthenticatedStatsFormationRoute =
+  AuthenticatedStatsFormationRouteImport.update({
+    id: '/stats-formation',
+    path: '/stats-formation',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedTutorielPartenaireRoute =
+  AuthenticatedTutorielPartenaireRouteImport.update({
+    id: '/tutoriel-partenaire',
+    path: '/tutoriel-partenaire',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AcademieIndexRoute = AcademieIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AcademieRoute,
+} as any)
+const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
+  id: '/email/unsubscribe',
+  path: '/email/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EnIndexRoute = EnIndexRouteImport.update({
+  id: '/en/',
+  path: '/en/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EnAboutRoute = EnAboutRouteImport.update({
+  id: '/en/about',
+  path: '/en/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EnAccountingFirmAbidjanRoute = EnAccountingFirmAbidjanRouteImport.update({
+  id: '/en/accounting-firm-abidjan',
+  path: '/en/accounting-firm-abidjan',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EnCompanyRegistrationIvoryCoastRoute =
+  EnCompanyRegistrationIvoryCoastRouteImport.update({
+    id: '/en/company-registration-ivory-coast',
+    path: '/en/company-registration-ivory-coast',
     getParentRoute: () => rootRouteImport,
   } as any)
-const Char91DotmcpChar93ListToolsRoute =
-  Char91DotmcpChar93ListToolsRouteImport.update({
-    id: '/.mcp/list-tools',
-    path: '/.mcp/list-tools',
+const EnContactUsRoute = EnContactUsRouteImport.update({
+  id: '/en/contact-us',
+  path: '/en/contact-us',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EnGetQuotesRoute = EnGetQuotesRouteImport.update({
+  id: '/en/get-quotes',
+  path: '/en/get-quotes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EnStartABusinessIvoryCoastRoute =
+  EnStartABusinessIvoryCoastRouteImport.update({
+    id: '/en/start-a-business-ivory-coast',
+    path: '/en/start-a-business-ivory-coast',
     getParentRoute: () => rootRouteImport,
   } as any)
-const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
-  id: '/lovable/email/suppression',
-  path: '/lovable/email/suppression',
+const EnThankYouRoute = EnThankYouRouteImport.update({
+  id: '/en/thank-you',
+  path: '/en/thank-you',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EnWebsiteOfferRoute = EnWebsiteOfferRouteImport.update({
+  id: '/en/website-offer',
+  path: '/en/website-offer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuidesSlugRoute = GuidesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => GuidesRoute,
+} as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Char91DotmcpChar93InvokeToolToolRoute =
+  Char91DotmcpChar93InvokeToolToolRouteImport.update({
+    id: '/.mcp/invoke-tool/$tool',
+    path: '/.mcp/invoke-tool/$tool',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AcademieModuleSlugRoute = AcademieModuleSlugRouteImport.update({
+  id: '/$module/$slug',
+  path: '/$module/$slug',
+  getParentRoute: () => AcademieRoute,
+} as any)
+const ApiPublicBusinessPlanLeadRoute =
+  ApiPublicBusinessPlanLeadRouteImport.update({
+    id: '/api/public/business-plan-lead',
+    path: '/api/public/business-plan-lead',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicChariowFormationRoute =
+  ApiPublicChariowFormationRouteImport.update({
+    id: '/api/public/chariow-formation',
+    path: '/api/public/chariow-formation',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicChariowWebhookRoute = ApiPublicChariowWebhookRouteImport.update({
+  id: '/api/public/chariow-webhook',
+  path: '/api/public/chariow-webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicContactRoute = ApiPublicContactRouteImport.update({
+  id: '/api/public/contact',
+  path: '/api/public/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicFinancingLeadRoute = ApiPublicFinancingLeadRouteImport.update({
+  id: '/api/public/financing-lead',
+  path: '/api/public/financing-lead',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicFunnelTrackRoute = ApiPublicFunnelTrackRouteImport.update({
+  id: '/api/public/funnel-track',
+  path: '/api/public/funnel-track',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicLeadRoute = ApiPublicLeadRouteImport.update({
+  id: '/api/public/lead',
+  path: '/api/public/lead',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicLeadUpsellRoute = ApiPublicLeadUpsellRouteImport.update({
+  id: '/api/public/lead-upsell',
+  path: '/api/public/lead-upsell',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicMetaCapiRoute = ApiPublicMetaCapiRouteImport.update({
+  id: '/api/public/meta-capi',
+  path: '/api/public/meta-capi',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicTestPartnerWebhookRoute =
@@ -401,137 +459,15 @@ const ApiPublicTestPartnerWebhookRoute =
     path: '/api/public/test-partner-webhook',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiPublicMetaCapiRoute = ApiPublicMetaCapiRouteImport.update({
-  id: '/api/public/meta-capi',
-  path: '/api/public/meta-capi',
+const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
+  id: '/lovable/email/suppression',
+  path: '/lovable/email/suppression',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicLeadUpsellRoute = ApiPublicLeadUpsellRouteImport.update({
-  id: '/api/public/lead-upsell',
-  path: '/api/public/lead-upsell',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicLeadRoute = ApiPublicLeadRouteImport.update({
-  id: '/api/public/lead',
-  path: '/api/public/lead',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicFunnelTrackRoute = ApiPublicFunnelTrackRouteImport.update({
-  id: '/api/public/funnel-track',
-  path: '/api/public/funnel-track',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicFinancingLeadRoute = ApiPublicFinancingLeadRouteImport.update({
-  id: '/api/public/financing-lead',
-  path: '/api/public/financing-lead',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicContactRoute = ApiPublicContactRouteImport.update({
-  id: '/api/public/contact',
-  path: '/api/public/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicChariowWebhookRoute = ApiPublicChariowWebhookRouteImport.update({
-  id: '/api/public/chariow-webhook',
-  path: '/api/public/chariow-webhook',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicChariowFormationRoute =
-  ApiPublicChariowFormationRouteImport.update({
-    id: '/api/public/chariow-formation',
-    path: '/api/public/chariow-formation',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicBusinessPlanLeadRoute =
-  ApiPublicBusinessPlanLeadRouteImport.update({
-    id: '/api/public/business-plan-lead',
-    path: '/api/public/business-plan-lead',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const AcademieModuleSlugRoute = AcademieModuleSlugRouteImport.update({
-  id: '/$module/$slug',
-  path: '/$module/$slug',
-  getParentRoute: () => AcademieRoute,
-} as any)
-const Char91DotmcpChar93InvokeToolToolRoute =
-  Char91DotmcpChar93InvokeToolToolRouteImport.update({
-    id: '/.mcp/invoke-tool/$tool',
-    path: '/.mcp/invoke-tool/$tool',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
-  id: '/.lovable/oauth/consent',
-  path: '/.lovable/oauth/consent',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LovableEmailTransactionalSendRoute =
-  LovableEmailTransactionalSendRouteImport.update({
-    id: '/lovable/email/transactional/send',
-    path: '/lovable/email/transactional/send',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const LovableEmailTransactionalPreviewRoute =
-  LovableEmailTransactionalPreviewRouteImport.update({
-    id: '/lovable/email/transactional/preview',
-    path: '/lovable/email/transactional/preview',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const LovableEmailQueueProcessRoute =
-  LovableEmailQueueProcessRouteImport.update({
-    id: '/lovable/email/queue/process',
-    path: '/lovable/email/queue/process',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const LovableEmailAuthWebhookRoute = LovableEmailAuthWebhookRouteImport.update({
-  id: '/lovable/email/auth/webhook',
-  path: '/lovable/email/auth/webhook',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
-  id: '/lovable/email/auth/preview',
-  path: '/lovable/email/auth/preview',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicHooksUnlimitedExpirationNotifyRoute =
-  ApiPublicHooksUnlimitedExpirationNotifyRouteImport.update({
-    id: '/api/public/hooks/unlimited-expiration-notify',
-    path: '/api/public/hooks/unlimited-expiration-notify',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicHooksSendLeadDigestsRoute =
-  ApiPublicHooksSendLeadDigestsRouteImport.update({
-    id: '/api/public/hooks/send-lead-digests',
-    path: '/api/public/hooks/send-lead-digests',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicHooksSendGrowthEmailsRoute =
-  ApiPublicHooksSendGrowthEmailsRouteImport.update({
-    id: '/api/public/hooks/send-growth-emails',
-    path: '/api/public/hooks/send-growth-emails',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicHooksPromoWinbackDispatchRoute =
-  ApiPublicHooksPromoWinbackDispatchRouteImport.update({
-    id: '/api/public/hooks/promo-winback-dispatch',
-    path: '/api/public/hooks/promo-winback-dispatch',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicHooksPendingDocsReminderRoute =
-  ApiPublicHooksPendingDocsReminderRouteImport.update({
-    id: '/api/public/hooks/pending-docs-reminder',
-    path: '/api/public/hooks/pending-docs-reminder',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicHooksGenerateGrowthEmailsRoute =
-  ApiPublicHooksGenerateGrowthEmailsRouteImport.update({
-    id: '/api/public/hooks/generate-growth-emails',
-    path: '/api/public/hooks/generate-growth-emails',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicHooksEmailHealthAlertRoute =
-  ApiPublicHooksEmailHealthAlertRouteImport.update({
-    id: '/api/public/hooks/email-health-alert',
-    path: '/api/public/hooks/email-health-alert',
+const ApiPublicHooksAcademyDripRoute =
+  ApiPublicHooksAcademyDripRouteImport.update({
+    id: '/api/public/hooks/academy-drip',
+    path: '/api/public/hooks/academy-drip',
     getParentRoute: () => rootRouteImport,
   } as any)
 const ApiPublicHooksAutoReboostRoute =
@@ -540,10 +476,74 @@ const ApiPublicHooksAutoReboostRoute =
     path: '/api/public/hooks/auto-reboost',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiPublicHooksAcademyDripRoute =
-  ApiPublicHooksAcademyDripRouteImport.update({
-    id: '/api/public/hooks/academy-drip',
-    path: '/api/public/hooks/academy-drip',
+const ApiPublicHooksEmailHealthAlertRoute =
+  ApiPublicHooksEmailHealthAlertRouteImport.update({
+    id: '/api/public/hooks/email-health-alert',
+    path: '/api/public/hooks/email-health-alert',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksGenerateGrowthEmailsRoute =
+  ApiPublicHooksGenerateGrowthEmailsRouteImport.update({
+    id: '/api/public/hooks/generate-growth-emails',
+    path: '/api/public/hooks/generate-growth-emails',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksPendingDocsReminderRoute =
+  ApiPublicHooksPendingDocsReminderRouteImport.update({
+    id: '/api/public/hooks/pending-docs-reminder',
+    path: '/api/public/hooks/pending-docs-reminder',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksPromoWinbackDispatchRoute =
+  ApiPublicHooksPromoWinbackDispatchRouteImport.update({
+    id: '/api/public/hooks/promo-winback-dispatch',
+    path: '/api/public/hooks/promo-winback-dispatch',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksSendGrowthEmailsRoute =
+  ApiPublicHooksSendGrowthEmailsRouteImport.update({
+    id: '/api/public/hooks/send-growth-emails',
+    path: '/api/public/hooks/send-growth-emails',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksSendLeadDigestsRoute =
+  ApiPublicHooksSendLeadDigestsRouteImport.update({
+    id: '/api/public/hooks/send-lead-digests',
+    path: '/api/public/hooks/send-lead-digests',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksUnlimitedExpirationNotifyRoute =
+  ApiPublicHooksUnlimitedExpirationNotifyRouteImport.update({
+    id: '/api/public/hooks/unlimited-expiration-notify',
+    path: '/api/public/hooks/unlimited-expiration-notify',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
+  id: '/lovable/email/auth/preview',
+  path: '/lovable/email/auth/preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LovableEmailAuthWebhookRoute = LovableEmailAuthWebhookRouteImport.update({
+  id: '/lovable/email/auth/webhook',
+  path: '/lovable/email/auth/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LovableEmailQueueProcessRoute =
+  LovableEmailQueueProcessRouteImport.update({
+    id: '/lovable/email/queue/process',
+    path: '/lovable/email/queue/process',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const LovableEmailTransactionalPreviewRoute =
+  LovableEmailTransactionalPreviewRouteImport.update({
+    id: '/lovable/email/transactional/preview',
+    path: '/lovable/email/transactional/preview',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const LovableEmailTransactionalSendRoute =
+  LovableEmailTransactionalSendRouteImport.update({
+    id: '/lovable/email/transactional/send',
+    path: '/lovable/email/transactional/send',
     getParentRoute: () => rootRouteImport,
   } as any)
 
@@ -1139,228 +1139,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/unsubscribe': {
-      id: '/unsubscribe'
-      path: '/unsubscribe'
-      fullPath: '/unsubscribe'
-      preLoaderRoute: typeof UnsubscribeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reinitialiser-mot-de-passe': {
-      id: '/reinitialiser-mot-de-passe'
-      path: '/reinitialiser-mot-de-passe'
-      fullPath: '/reinitialiser-mot-de-passe'
-      preLoaderRoute: typeof ReinitialiserMotDePasseRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/redaction-business-plan-cote-divoire': {
-      id: '/redaction-business-plan-cote-divoire'
-      path: '/redaction-business-plan-cote-divoire'
-      fullPath: '/redaction-business-plan-cote-divoire'
-      preLoaderRoute: typeof RedactionBusinessPlanCoteDivoireRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/offre-site-internet': {
-      id: '/offre-site-internet'
-      path: '/offre-site-internet'
-      fullPath: '/offre-site-internet'
-      preLoaderRoute: typeof OffreSiteInternetRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/offre-gestion-marketing': {
-      id: '/offre-gestion-marketing'
-      path: '/offre-gestion-marketing'
-      fullPath: '/offre-gestion-marketing'
-      preLoaderRoute: typeof OffreGestionMarketingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/nous-contacter': {
-      id: '/nous-contacter'
-      path: '/nous-contacter'
-      fullPath: '/nous-contacter'
-      preLoaderRoute: typeof NousContacterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mot-de-passe-oublie': {
-      id: '/mot-de-passe-oublie'
-      path: '/mot-de-passe-oublie'
-      fullPath: '/mot-de-passe-oublie'
-      preLoaderRoute: typeof MotDePasseOublieRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/montage-dossier-credit': {
-      id: '/montage-dossier-credit'
-      path: '/montage-dossier-credit'
-      fullPath: '/montage-dossier-credit'
-      preLoaderRoute: typeof MontageDossierCreditRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/merci-demande-financement': {
-      id: '/merci-demande-financement'
-      path: '/merci-demande-financement'
-      fullPath: '/merci-demande-financement'
-      preLoaderRoute: typeof MerciDemandeFinancementRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/merci-demande-business-plan': {
-      id: '/merci-demande-business-plan'
-      path: '/merci-demande-business-plan'
-      fullPath: '/merci-demande-business-plan'
-      preLoaderRoute: typeof MerciDemandeBusinessPlanRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/merci': {
-      id: '/merci'
-      path: '/merci'
-      fullPath: '/merci'
-      preLoaderRoute: typeof MerciRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mcp': {
-      id: '/mcp'
-      path: '/mcp'
-      fullPath: '/mcp'
-      preLoaderRoute: typeof McpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/inscription-partenaire': {
-      id: '/inscription-partenaire'
-      path: '/inscription-partenaire'
-      fullPath: '/inscription-partenaire'
-      preLoaderRoute: typeof InscriptionPartenaireRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/guides': {
-      id: '/guides'
-      path: '/guides'
-      fullPath: '/guides'
-      preLoaderRoute: typeof GuidesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/formation-clients': {
-      id: '/formation-clients'
-      path: '/formation-clients'
-      fullPath: '/formation-clients'
-      preLoaderRoute: typeof FormationClientsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/faq': {
-      id: '/faq'
-      path: '/faq'
-      fullPath: '/faq'
-      preLoaderRoute: typeof FaqRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/domiciliation-entreprise-abidjan': {
-      id: '/domiciliation-entreprise-abidjan'
-      path: '/domiciliation-entreprise-abidjan'
-      fullPath: '/domiciliation-entreprise-abidjan'
-      preLoaderRoute: typeof DomiciliationEntrepriseAbidjanRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demande-soumissions': {
-      id: '/demande-soumissions'
-      path: '/demande-soumissions'
-      fullPath: '/demande-soumissions'
-      preLoaderRoute: typeof DemandeSoumissionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/declaration-fiscale-cote-divoire': {
-      id: '/declaration-fiscale-cote-divoire'
-      path: '/declaration-fiscale-cote-divoire'
-      fullPath: '/declaration-fiscale-cote-divoire'
-      preLoaderRoute: typeof DeclarationFiscaleCoteDivoireRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/creer-son-entreprise-cote-divoire': {
-      id: '/creer-son-entreprise-cote-divoire'
-      path: '/creer-son-entreprise-cote-divoire'
-      fullPath: '/creer-son-entreprise-cote-divoire'
-      preLoaderRoute: typeof CreerSonEntrepriseCoteDivoireRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/creation-entreprise-diaspora-ivoirienne': {
-      id: '/creation-entreprise-diaspora-ivoirienne'
-      path: '/creation-entreprise-diaspora-ivoirienne'
-      fullPath: '/creation-entreprise-diaspora-ivoirienne'
-      preLoaderRoute: typeof CreationEntrepriseDiasporaIvoirienneRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/creation-entreprise-cote-divoire': {
-      id: '/creation-entreprise-cote-divoire'
-      path: '/creation-entreprise-cote-divoire'
-      fullPath: '/creation-entreprise-cote-divoire'
-      preLoaderRoute: typeof CreationEntrepriseCoteDivoireRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/connexion': {
-      id: '/connexion'
-      path: '/connexion'
-      fullPath: '/connexion'
-      preLoaderRoute: typeof ConnexionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/comptabilite-entreprise-abidjan': {
-      id: '/comptabilite-entreprise-abidjan'
-      path: '/comptabilite-entreprise-abidjan'
-      fullPath: '/comptabilite-entreprise-abidjan'
-      preLoaderRoute: typeof ComptabiliteEntrepriseAbidjanRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/comment-ca-marche': {
-      id: '/comment-ca-marche'
-      path: '/comment-ca-marche'
-      fullPath: '/comment-ca-marche'
-      preLoaderRoute: typeof CommentCaMarcheRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/changer-mot-de-passe': {
-      id: '/changer-mot-de-passe'
-      path: '/changer-mot-de-passe'
-      fullPath: '/changer-mot-de-passe'
-      preLoaderRoute: typeof ChangerMotDePasseRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/cabinets-comptables-partenaires': {
-      id: '/cabinets-comptables-partenaires'
-      path: '/cabinets-comptables-partenaires'
-      fullPath: '/cabinets-comptables-partenaires'
-      preLoaderRoute: typeof CabinetsComptablesPartenairesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/cabinet-comptable-abidjan': {
-      id: '/cabinet-comptable-abidjan'
-      path: '/cabinet-comptable-abidjan'
-      fullPath: '/cabinet-comptable-abidjan'
-      preLoaderRoute: typeof CabinetComptableAbidjanRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/blog': {
-      id: '/blog'
-      path: '/blog'
-      fullPath: '/blog'
-      preLoaderRoute: typeof BlogRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/academie': {
-      id: '/academie'
-      path: '/academie'
-      fullPath: '/academie'
-      preLoaderRoute: typeof AcademieRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/a-propos': {
-      id: '/a-propos'
-      path: '/a-propos'
-      fullPath: '/a-propos'
-      preLoaderRoute: typeof AProposRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -1370,158 +1153,228 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/a-propos': {
+      id: '/a-propos'
+      path: '/a-propos'
+      fullPath: '/a-propos'
+      preLoaderRoute: typeof AProposRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/en/': {
-      id: '/en/'
-      path: '/en'
-      fullPath: '/en/'
-      preLoaderRoute: typeof EnIndexRouteImport
+    '/academie': {
+      id: '/academie'
+      path: '/academie'
+      fullPath: '/academie'
+      preLoaderRoute: typeof AcademieRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/academie/': {
-      id: '/academie/'
-      path: '/'
-      fullPath: '/academie/'
-      preLoaderRoute: typeof AcademieIndexRouteImport
-      parentRoute: typeof AcademieRoute
-    }
-    '/guides/$slug': {
-      id: '/guides/$slug'
-      path: '/$slug'
-      fullPath: '/guides/$slug'
-      preLoaderRoute: typeof GuidesSlugRouteImport
-      parentRoute: typeof GuidesRoute
-    }
-    '/en/website-offer': {
-      id: '/en/website-offer'
-      path: '/en/website-offer'
-      fullPath: '/en/website-offer'
-      preLoaderRoute: typeof EnWebsiteOfferRouteImport
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/en/thank-you': {
-      id: '/en/thank-you'
-      path: '/en/thank-you'
-      fullPath: '/en/thank-you'
-      preLoaderRoute: typeof EnThankYouRouteImport
+    '/cabinet-comptable-abidjan': {
+      id: '/cabinet-comptable-abidjan'
+      path: '/cabinet-comptable-abidjan'
+      fullPath: '/cabinet-comptable-abidjan'
+      preLoaderRoute: typeof CabinetComptableAbidjanRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/en/start-a-business-ivory-coast': {
-      id: '/en/start-a-business-ivory-coast'
-      path: '/en/start-a-business-ivory-coast'
-      fullPath: '/en/start-a-business-ivory-coast'
-      preLoaderRoute: typeof EnStartABusinessIvoryCoastRouteImport
+    '/cabinets-comptables-partenaires': {
+      id: '/cabinets-comptables-partenaires'
+      path: '/cabinets-comptables-partenaires'
+      fullPath: '/cabinets-comptables-partenaires'
+      preLoaderRoute: typeof CabinetsComptablesPartenairesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/en/get-quotes': {
-      id: '/en/get-quotes'
-      path: '/en/get-quotes'
-      fullPath: '/en/get-quotes'
-      preLoaderRoute: typeof EnGetQuotesRouteImport
+    '/changer-mot-de-passe': {
+      id: '/changer-mot-de-passe'
+      path: '/changer-mot-de-passe'
+      fullPath: '/changer-mot-de-passe'
+      preLoaderRoute: typeof ChangerMotDePasseRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/en/contact-us': {
-      id: '/en/contact-us'
-      path: '/en/contact-us'
-      fullPath: '/en/contact-us'
-      preLoaderRoute: typeof EnContactUsRouteImport
+    '/comment-ca-marche': {
+      id: '/comment-ca-marche'
+      path: '/comment-ca-marche'
+      fullPath: '/comment-ca-marche'
+      preLoaderRoute: typeof CommentCaMarcheRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/en/company-registration-ivory-coast': {
-      id: '/en/company-registration-ivory-coast'
-      path: '/en/company-registration-ivory-coast'
-      fullPath: '/en/company-registration-ivory-coast'
-      preLoaderRoute: typeof EnCompanyRegistrationIvoryCoastRouteImport
+    '/comptabilite-entreprise-abidjan': {
+      id: '/comptabilite-entreprise-abidjan'
+      path: '/comptabilite-entreprise-abidjan'
+      fullPath: '/comptabilite-entreprise-abidjan'
+      preLoaderRoute: typeof ComptabiliteEntrepriseAbidjanRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/en/accounting-firm-abidjan': {
-      id: '/en/accounting-firm-abidjan'
-      path: '/en/accounting-firm-abidjan'
-      fullPath: '/en/accounting-firm-abidjan'
-      preLoaderRoute: typeof EnAccountingFirmAbidjanRouteImport
+    '/connexion': {
+      id: '/connexion'
+      path: '/connexion'
+      fullPath: '/connexion'
+      preLoaderRoute: typeof ConnexionRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/en/about': {
-      id: '/en/about'
-      path: '/en/about'
-      fullPath: '/en/about'
-      preLoaderRoute: typeof EnAboutRouteImport
+    '/creation-entreprise-cote-divoire': {
+      id: '/creation-entreprise-cote-divoire'
+      path: '/creation-entreprise-cote-divoire'
+      fullPath: '/creation-entreprise-cote-divoire'
+      preLoaderRoute: typeof CreationEntrepriseCoteDivoireRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/email/unsubscribe': {
-      id: '/email/unsubscribe'
-      path: '/email/unsubscribe'
-      fullPath: '/email/unsubscribe'
-      preLoaderRoute: typeof EmailUnsubscribeRouteImport
+    '/creation-entreprise-diaspora-ivoirienne': {
+      id: '/creation-entreprise-diaspora-ivoirienne'
+      path: '/creation-entreprise-diaspora-ivoirienne'
+      fullPath: '/creation-entreprise-diaspora-ivoirienne'
+      preLoaderRoute: typeof CreationEntrepriseDiasporaIvoirienneRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/tutoriel-partenaire': {
-      id: '/_authenticated/tutoriel-partenaire'
-      path: '/tutoriel-partenaire'
-      fullPath: '/tutoriel-partenaire'
-      preLoaderRoute: typeof AuthenticatedTutorielPartenaireRouteImport
-      parentRoute: typeof AuthenticatedRoute
+    '/creer-son-entreprise-cote-divoire': {
+      id: '/creer-son-entreprise-cote-divoire'
+      path: '/creer-son-entreprise-cote-divoire'
+      fullPath: '/creer-son-entreprise-cote-divoire'
+      preLoaderRoute: typeof CreerSonEntrepriseCoteDivoireRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/stats-formation': {
-      id: '/_authenticated/stats-formation'
-      path: '/stats-formation'
-      fullPath: '/stats-formation'
-      preLoaderRoute: typeof AuthenticatedStatsFormationRouteImport
-      parentRoute: typeof AuthenticatedRoute
+    '/declaration-fiscale-cote-divoire': {
+      id: '/declaration-fiscale-cote-divoire'
+      path: '/declaration-fiscale-cote-divoire'
+      fullPath: '/declaration-fiscale-cote-divoire'
+      preLoaderRoute: typeof DeclarationFiscaleCoteDivoireRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/recharger': {
-      id: '/_authenticated/recharger'
-      path: '/recharger'
-      fullPath: '/recharger'
-      preLoaderRoute: typeof AuthenticatedRechargerRouteImport
-      parentRoute: typeof AuthenticatedRoute
+    '/demande-soumissions': {
+      id: '/demande-soumissions'
+      path: '/demande-soumissions'
+      fullPath: '/demande-soumissions'
+      preLoaderRoute: typeof DemandeSoumissionsRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/marketplace': {
-      id: '/_authenticated/marketplace'
-      path: '/marketplace'
-      fullPath: '/marketplace'
-      preLoaderRoute: typeof AuthenticatedMarketplaceRouteImport
-      parentRoute: typeof AuthenticatedRoute
+    '/domiciliation-entreprise-abidjan': {
+      id: '/domiciliation-entreprise-abidjan'
+      path: '/domiciliation-entreprise-abidjan'
+      fullPath: '/domiciliation-entreprise-abidjan'
+      preLoaderRoute: typeof DomiciliationEntrepriseAbidjanRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/historique': {
-      id: '/_authenticated/historique'
-      path: '/historique'
-      fullPath: '/historique'
-      preLoaderRoute: typeof AuthenticatedHistoriqueRouteImport
-      parentRoute: typeof AuthenticatedRoute
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/espace-partenaire': {
-      id: '/_authenticated/espace-partenaire'
-      path: '/espace-partenaire'
-      fullPath: '/espace-partenaire'
-      preLoaderRoute: typeof AuthenticatedEspacePartenaireRouteImport
-      parentRoute: typeof AuthenticatedRoute
+    '/formation-clients': {
+      id: '/formation-clients'
+      path: '/formation-clients'
+      fullPath: '/formation-clients'
+      preLoaderRoute: typeof FormationClientsRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/commercial': {
-      id: '/_authenticated/commercial'
-      path: '/commercial'
-      fullPath: '/commercial'
-      preLoaderRoute: typeof AuthenticatedCommercialRouteImport
-      parentRoute: typeof AuthenticatedRoute
+    '/guides': {
+      id: '/guides'
+      path: '/guides'
+      fullPath: '/guides'
+      preLoaderRoute: typeof GuidesRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/admin': {
-      id: '/_authenticated/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AuthenticatedAdminRouteImport
-      parentRoute: typeof AuthenticatedRoute
+    '/inscription-partenaire': {
+      id: '/inscription-partenaire'
+      path: '/inscription-partenaire'
+      fullPath: '/inscription-partenaire'
+      preLoaderRoute: typeof InscriptionPartenaireRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/.well-known/oauth-protected-resource': {
-      id: '/.well-known/oauth-protected-resource'
-      path: '/.well-known/oauth-protected-resource'
-      fullPath: '/.well-known/oauth-protected-resource'
-      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/merci': {
+      id: '/merci'
+      path: '/merci'
+      fullPath: '/merci'
+      preLoaderRoute: typeof MerciRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/merci-demande-business-plan': {
+      id: '/merci-demande-business-plan'
+      path: '/merci-demande-business-plan'
+      fullPath: '/merci-demande-business-plan'
+      preLoaderRoute: typeof MerciDemandeBusinessPlanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/merci-demande-financement': {
+      id: '/merci-demande-financement'
+      path: '/merci-demande-financement'
+      fullPath: '/merci-demande-financement'
+      preLoaderRoute: typeof MerciDemandeFinancementRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/montage-dossier-credit': {
+      id: '/montage-dossier-credit'
+      path: '/montage-dossier-credit'
+      fullPath: '/montage-dossier-credit'
+      preLoaderRoute: typeof MontageDossierCreditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mot-de-passe-oublie': {
+      id: '/mot-de-passe-oublie'
+      path: '/mot-de-passe-oublie'
+      fullPath: '/mot-de-passe-oublie'
+      preLoaderRoute: typeof MotDePasseOublieRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/nous-contacter': {
+      id: '/nous-contacter'
+      path: '/nous-contacter'
+      fullPath: '/nous-contacter'
+      preLoaderRoute: typeof NousContacterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/offre-gestion-marketing': {
+      id: '/offre-gestion-marketing'
+      path: '/offre-gestion-marketing'
+      fullPath: '/offre-gestion-marketing'
+      preLoaderRoute: typeof OffreGestionMarketingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/offre-site-internet': {
+      id: '/offre-site-internet'
+      path: '/offre-site-internet'
+      fullPath: '/offre-site-internet'
+      preLoaderRoute: typeof OffreSiteInternetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/redaction-business-plan-cote-divoire': {
+      id: '/redaction-business-plan-cote-divoire'
+      path: '/redaction-business-plan-cote-divoire'
+      fullPath: '/redaction-business-plan-cote-divoire'
+      preLoaderRoute: typeof RedactionBusinessPlanCoteDivoireRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reinitialiser-mot-de-passe': {
+      id: '/reinitialiser-mot-de-passe'
+      path: '/reinitialiser-mot-de-passe'
+      fullPath: '/reinitialiser-mot-de-passe'
+      preLoaderRoute: typeof ReinitialiserMotDePasseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/unsubscribe': {
+      id: '/unsubscribe'
+      path: '/unsubscribe'
+      fullPath: '/unsubscribe'
+      preLoaderRoute: typeof UnsubscribeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/.mcp/list-tools': {
@@ -1531,81 +1384,165 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/lovable/email/suppression': {
-      id: '/lovable/email/suppression'
-      path: '/lovable/email/suppression'
-      fullPath: '/lovable/email/suppression'
-      preLoaderRoute: typeof LovableEmailSuppressionRouteImport
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/test-partner-webhook': {
-      id: '/api/public/test-partner-webhook'
-      path: '/api/public/test-partner-webhook'
-      fullPath: '/api/public/test-partner-webhook'
-      preLoaderRoute: typeof ApiPublicTestPartnerWebhookRouteImport
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/commercial': {
+      id: '/_authenticated/commercial'
+      path: '/commercial'
+      fullPath: '/commercial'
+      preLoaderRoute: typeof AuthenticatedCommercialRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/espace-partenaire': {
+      id: '/_authenticated/espace-partenaire'
+      path: '/espace-partenaire'
+      fullPath: '/espace-partenaire'
+      preLoaderRoute: typeof AuthenticatedEspacePartenaireRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/historique': {
+      id: '/_authenticated/historique'
+      path: '/historique'
+      fullPath: '/historique'
+      preLoaderRoute: typeof AuthenticatedHistoriqueRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/marketplace': {
+      id: '/_authenticated/marketplace'
+      path: '/marketplace'
+      fullPath: '/marketplace'
+      preLoaderRoute: typeof AuthenticatedMarketplaceRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/recharger': {
+      id: '/_authenticated/recharger'
+      path: '/recharger'
+      fullPath: '/recharger'
+      preLoaderRoute: typeof AuthenticatedRechargerRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/stats-formation': {
+      id: '/_authenticated/stats-formation'
+      path: '/stats-formation'
+      fullPath: '/stats-formation'
+      preLoaderRoute: typeof AuthenticatedStatsFormationRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/tutoriel-partenaire': {
+      id: '/_authenticated/tutoriel-partenaire'
+      path: '/tutoriel-partenaire'
+      fullPath: '/tutoriel-partenaire'
+      preLoaderRoute: typeof AuthenticatedTutorielPartenaireRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/academie/': {
+      id: '/academie/'
+      path: '/'
+      fullPath: '/academie/'
+      preLoaderRoute: typeof AcademieIndexRouteImport
+      parentRoute: typeof AcademieRoute
+    }
+    '/email/unsubscribe': {
+      id: '/email/unsubscribe'
+      path: '/email/unsubscribe'
+      fullPath: '/email/unsubscribe'
+      preLoaderRoute: typeof EmailUnsubscribeRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/meta-capi': {
-      id: '/api/public/meta-capi'
-      path: '/api/public/meta-capi'
-      fullPath: '/api/public/meta-capi'
-      preLoaderRoute: typeof ApiPublicMetaCapiRouteImport
+    '/en/': {
+      id: '/en/'
+      path: '/en'
+      fullPath: '/en/'
+      preLoaderRoute: typeof EnIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/lead-upsell': {
-      id: '/api/public/lead-upsell'
-      path: '/api/public/lead-upsell'
-      fullPath: '/api/public/lead-upsell'
-      preLoaderRoute: typeof ApiPublicLeadUpsellRouteImport
+    '/en/about': {
+      id: '/en/about'
+      path: '/en/about'
+      fullPath: '/en/about'
+      preLoaderRoute: typeof EnAboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/lead': {
-      id: '/api/public/lead'
-      path: '/api/public/lead'
-      fullPath: '/api/public/lead'
-      preLoaderRoute: typeof ApiPublicLeadRouteImport
+    '/en/accounting-firm-abidjan': {
+      id: '/en/accounting-firm-abidjan'
+      path: '/en/accounting-firm-abidjan'
+      fullPath: '/en/accounting-firm-abidjan'
+      preLoaderRoute: typeof EnAccountingFirmAbidjanRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/funnel-track': {
-      id: '/api/public/funnel-track'
-      path: '/api/public/funnel-track'
-      fullPath: '/api/public/funnel-track'
-      preLoaderRoute: typeof ApiPublicFunnelTrackRouteImport
+    '/en/company-registration-ivory-coast': {
+      id: '/en/company-registration-ivory-coast'
+      path: '/en/company-registration-ivory-coast'
+      fullPath: '/en/company-registration-ivory-coast'
+      preLoaderRoute: typeof EnCompanyRegistrationIvoryCoastRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/financing-lead': {
-      id: '/api/public/financing-lead'
-      path: '/api/public/financing-lead'
-      fullPath: '/api/public/financing-lead'
-      preLoaderRoute: typeof ApiPublicFinancingLeadRouteImport
+    '/en/contact-us': {
+      id: '/en/contact-us'
+      path: '/en/contact-us'
+      fullPath: '/en/contact-us'
+      preLoaderRoute: typeof EnContactUsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/contact': {
-      id: '/api/public/contact'
-      path: '/api/public/contact'
-      fullPath: '/api/public/contact'
-      preLoaderRoute: typeof ApiPublicContactRouteImport
+    '/en/get-quotes': {
+      id: '/en/get-quotes'
+      path: '/en/get-quotes'
+      fullPath: '/en/get-quotes'
+      preLoaderRoute: typeof EnGetQuotesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/chariow-webhook': {
-      id: '/api/public/chariow-webhook'
-      path: '/api/public/chariow-webhook'
-      fullPath: '/api/public/chariow-webhook'
-      preLoaderRoute: typeof ApiPublicChariowWebhookRouteImport
+    '/en/start-a-business-ivory-coast': {
+      id: '/en/start-a-business-ivory-coast'
+      path: '/en/start-a-business-ivory-coast'
+      fullPath: '/en/start-a-business-ivory-coast'
+      preLoaderRoute: typeof EnStartABusinessIvoryCoastRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/chariow-formation': {
-      id: '/api/public/chariow-formation'
-      path: '/api/public/chariow-formation'
-      fullPath: '/api/public/chariow-formation'
-      preLoaderRoute: typeof ApiPublicChariowFormationRouteImport
+    '/en/thank-you': {
+      id: '/en/thank-you'
+      path: '/en/thank-you'
+      fullPath: '/en/thank-you'
+      preLoaderRoute: typeof EnThankYouRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/business-plan-lead': {
-      id: '/api/public/business-plan-lead'
-      path: '/api/public/business-plan-lead'
-      fullPath: '/api/public/business-plan-lead'
-      preLoaderRoute: typeof ApiPublicBusinessPlanLeadRouteImport
+    '/en/website-offer': {
+      id: '/en/website-offer'
+      path: '/en/website-offer'
+      fullPath: '/en/website-offer'
+      preLoaderRoute: typeof EnWebsiteOfferRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guides/$slug': {
+      id: '/guides/$slug'
+      path: '/$slug'
+      fullPath: '/guides/$slug'
+      preLoaderRoute: typeof GuidesSlugRouteImport
+      parentRoute: typeof GuidesRoute
+    }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/invoke-tool/$tool': {
+      id: '/.mcp/invoke-tool/$tool'
+      path: '/.mcp/invoke-tool/$tool'
+      fullPath: '/.mcp/invoke-tool/$tool'
+      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/academie/$module/$slug': {
@@ -1615,102 +1552,88 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AcademieModuleSlugRouteImport
       parentRoute: typeof AcademieRoute
     }
-    '/.mcp/invoke-tool/$tool': {
-      id: '/.mcp/invoke-tool/$tool'
-      path: '/.mcp/invoke-tool/$tool'
-      fullPath: '/.mcp/invoke-tool/$tool'
-      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
+    '/api/public/business-plan-lead': {
+      id: '/api/public/business-plan-lead'
+      path: '/api/public/business-plan-lead'
+      fullPath: '/api/public/business-plan-lead'
+      preLoaderRoute: typeof ApiPublicBusinessPlanLeadRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/.lovable/oauth/consent': {
-      id: '/.lovable/oauth/consent'
-      path: '/.lovable/oauth/consent'
-      fullPath: '/.lovable/oauth/consent'
-      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
+    '/api/public/chariow-formation': {
+      id: '/api/public/chariow-formation'
+      path: '/api/public/chariow-formation'
+      fullPath: '/api/public/chariow-formation'
+      preLoaderRoute: typeof ApiPublicChariowFormationRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/lovable/email/transactional/send': {
-      id: '/lovable/email/transactional/send'
-      path: '/lovable/email/transactional/send'
-      fullPath: '/lovable/email/transactional/send'
-      preLoaderRoute: typeof LovableEmailTransactionalSendRouteImport
+    '/api/public/chariow-webhook': {
+      id: '/api/public/chariow-webhook'
+      path: '/api/public/chariow-webhook'
+      fullPath: '/api/public/chariow-webhook'
+      preLoaderRoute: typeof ApiPublicChariowWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/lovable/email/transactional/preview': {
-      id: '/lovable/email/transactional/preview'
-      path: '/lovable/email/transactional/preview'
-      fullPath: '/lovable/email/transactional/preview'
-      preLoaderRoute: typeof LovableEmailTransactionalPreviewRouteImport
+    '/api/public/contact': {
+      id: '/api/public/contact'
+      path: '/api/public/contact'
+      fullPath: '/api/public/contact'
+      preLoaderRoute: typeof ApiPublicContactRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/lovable/email/queue/process': {
-      id: '/lovable/email/queue/process'
-      path: '/lovable/email/queue/process'
-      fullPath: '/lovable/email/queue/process'
-      preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
+    '/api/public/financing-lead': {
+      id: '/api/public/financing-lead'
+      path: '/api/public/financing-lead'
+      fullPath: '/api/public/financing-lead'
+      preLoaderRoute: typeof ApiPublicFinancingLeadRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/lovable/email/auth/webhook': {
-      id: '/lovable/email/auth/webhook'
-      path: '/lovable/email/auth/webhook'
-      fullPath: '/lovable/email/auth/webhook'
-      preLoaderRoute: typeof LovableEmailAuthWebhookRouteImport
+    '/api/public/funnel-track': {
+      id: '/api/public/funnel-track'
+      path: '/api/public/funnel-track'
+      fullPath: '/api/public/funnel-track'
+      preLoaderRoute: typeof ApiPublicFunnelTrackRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/lovable/email/auth/preview': {
-      id: '/lovable/email/auth/preview'
-      path: '/lovable/email/auth/preview'
-      fullPath: '/lovable/email/auth/preview'
-      preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
+    '/api/public/lead': {
+      id: '/api/public/lead'
+      path: '/api/public/lead'
+      fullPath: '/api/public/lead'
+      preLoaderRoute: typeof ApiPublicLeadRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/hooks/unlimited-expiration-notify': {
-      id: '/api/public/hooks/unlimited-expiration-notify'
-      path: '/api/public/hooks/unlimited-expiration-notify'
-      fullPath: '/api/public/hooks/unlimited-expiration-notify'
-      preLoaderRoute: typeof ApiPublicHooksUnlimitedExpirationNotifyRouteImport
+    '/api/public/lead-upsell': {
+      id: '/api/public/lead-upsell'
+      path: '/api/public/lead-upsell'
+      fullPath: '/api/public/lead-upsell'
+      preLoaderRoute: typeof ApiPublicLeadUpsellRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/hooks/send-lead-digests': {
-      id: '/api/public/hooks/send-lead-digests'
-      path: '/api/public/hooks/send-lead-digests'
-      fullPath: '/api/public/hooks/send-lead-digests'
-      preLoaderRoute: typeof ApiPublicHooksSendLeadDigestsRouteImport
+    '/api/public/meta-capi': {
+      id: '/api/public/meta-capi'
+      path: '/api/public/meta-capi'
+      fullPath: '/api/public/meta-capi'
+      preLoaderRoute: typeof ApiPublicMetaCapiRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/hooks/send-growth-emails': {
-      id: '/api/public/hooks/send-growth-emails'
-      path: '/api/public/hooks/send-growth-emails'
-      fullPath: '/api/public/hooks/send-growth-emails'
-      preLoaderRoute: typeof ApiPublicHooksSendGrowthEmailsRouteImport
+    '/api/public/test-partner-webhook': {
+      id: '/api/public/test-partner-webhook'
+      path: '/api/public/test-partner-webhook'
+      fullPath: '/api/public/test-partner-webhook'
+      preLoaderRoute: typeof ApiPublicTestPartnerWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/hooks/promo-winback-dispatch': {
-      id: '/api/public/hooks/promo-winback-dispatch'
-      path: '/api/public/hooks/promo-winback-dispatch'
-      fullPath: '/api/public/hooks/promo-winback-dispatch'
-      preLoaderRoute: typeof ApiPublicHooksPromoWinbackDispatchRouteImport
+    '/lovable/email/suppression': {
+      id: '/lovable/email/suppression'
+      path: '/lovable/email/suppression'
+      fullPath: '/lovable/email/suppression'
+      preLoaderRoute: typeof LovableEmailSuppressionRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/hooks/pending-docs-reminder': {
-      id: '/api/public/hooks/pending-docs-reminder'
-      path: '/api/public/hooks/pending-docs-reminder'
-      fullPath: '/api/public/hooks/pending-docs-reminder'
-      preLoaderRoute: typeof ApiPublicHooksPendingDocsReminderRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/hooks/generate-growth-emails': {
-      id: '/api/public/hooks/generate-growth-emails'
-      path: '/api/public/hooks/generate-growth-emails'
-      fullPath: '/api/public/hooks/generate-growth-emails'
-      preLoaderRoute: typeof ApiPublicHooksGenerateGrowthEmailsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/hooks/email-health-alert': {
-      id: '/api/public/hooks/email-health-alert'
-      path: '/api/public/hooks/email-health-alert'
-      fullPath: '/api/public/hooks/email-health-alert'
-      preLoaderRoute: typeof ApiPublicHooksEmailHealthAlertRouteImport
+    '/api/public/hooks/academy-drip': {
+      id: '/api/public/hooks/academy-drip'
+      path: '/api/public/hooks/academy-drip'
+      fullPath: '/api/public/hooks/academy-drip'
+      preLoaderRoute: typeof ApiPublicHooksAcademyDripRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/hooks/auto-reboost': {
@@ -1720,11 +1643,88 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksAutoReboostRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/hooks/academy-drip': {
-      id: '/api/public/hooks/academy-drip'
-      path: '/api/public/hooks/academy-drip'
-      fullPath: '/api/public/hooks/academy-drip'
-      preLoaderRoute: typeof ApiPublicHooksAcademyDripRouteImport
+    '/api/public/hooks/email-health-alert': {
+      id: '/api/public/hooks/email-health-alert'
+      path: '/api/public/hooks/email-health-alert'
+      fullPath: '/api/public/hooks/email-health-alert'
+      preLoaderRoute: typeof ApiPublicHooksEmailHealthAlertRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/generate-growth-emails': {
+      id: '/api/public/hooks/generate-growth-emails'
+      path: '/api/public/hooks/generate-growth-emails'
+      fullPath: '/api/public/hooks/generate-growth-emails'
+      preLoaderRoute: typeof ApiPublicHooksGenerateGrowthEmailsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/pending-docs-reminder': {
+      id: '/api/public/hooks/pending-docs-reminder'
+      path: '/api/public/hooks/pending-docs-reminder'
+      fullPath: '/api/public/hooks/pending-docs-reminder'
+      preLoaderRoute: typeof ApiPublicHooksPendingDocsReminderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/promo-winback-dispatch': {
+      id: '/api/public/hooks/promo-winback-dispatch'
+      path: '/api/public/hooks/promo-winback-dispatch'
+      fullPath: '/api/public/hooks/promo-winback-dispatch'
+      preLoaderRoute: typeof ApiPublicHooksPromoWinbackDispatchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/send-growth-emails': {
+      id: '/api/public/hooks/send-growth-emails'
+      path: '/api/public/hooks/send-growth-emails'
+      fullPath: '/api/public/hooks/send-growth-emails'
+      preLoaderRoute: typeof ApiPublicHooksSendGrowthEmailsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/send-lead-digests': {
+      id: '/api/public/hooks/send-lead-digests'
+      path: '/api/public/hooks/send-lead-digests'
+      fullPath: '/api/public/hooks/send-lead-digests'
+      preLoaderRoute: typeof ApiPublicHooksSendLeadDigestsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/unlimited-expiration-notify': {
+      id: '/api/public/hooks/unlimited-expiration-notify'
+      path: '/api/public/hooks/unlimited-expiration-notify'
+      fullPath: '/api/public/hooks/unlimited-expiration-notify'
+      preLoaderRoute: typeof ApiPublicHooksUnlimitedExpirationNotifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/auth/preview': {
+      id: '/lovable/email/auth/preview'
+      path: '/lovable/email/auth/preview'
+      fullPath: '/lovable/email/auth/preview'
+      preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/auth/webhook': {
+      id: '/lovable/email/auth/webhook'
+      path: '/lovable/email/auth/webhook'
+      fullPath: '/lovable/email/auth/webhook'
+      preLoaderRoute: typeof LovableEmailAuthWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/queue/process': {
+      id: '/lovable/email/queue/process'
+      path: '/lovable/email/queue/process'
+      fullPath: '/lovable/email/queue/process'
+      preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/transactional/preview': {
+      id: '/lovable/email/transactional/preview'
+      path: '/lovable/email/transactional/preview'
+      fullPath: '/lovable/email/transactional/preview'
+      preLoaderRoute: typeof LovableEmailTransactionalPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/transactional/send': {
+      id: '/lovable/email/transactional/send'
+      path: '/lovable/email/transactional/send'
+      fullPath: '/lovable/email/transactional/send'
+      preLoaderRoute: typeof LovableEmailTransactionalSendRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
