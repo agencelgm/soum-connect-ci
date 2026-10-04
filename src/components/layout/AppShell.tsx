@@ -35,7 +35,8 @@ type NavItem = {
     | "/admin"
     | "/tutoriel-partenaire"
     | "/academie"
-    | "/stats-formation";
+    | "/stats-formation"
+    | "/commercial";
   search?: Record<string, string>;
   label: string;
   icon: typeof Briefcase;
