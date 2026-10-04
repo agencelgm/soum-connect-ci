@@ -90,6 +90,7 @@ import { Route as ApiPublicHooksPromoWinbackDispatchRouteImport } from './routes
 import { Route as ApiPublicHooksPendingDocsReminderRouteImport } from './routes/api/public/hooks/pending-docs-reminder'
 import { Route as ApiPublicHooksGenerateGrowthEmailsRouteImport } from './routes/api/public/hooks/generate-growth-emails'
 import { Route as ApiPublicHooksEmailHealthAlertRouteImport } from './routes/api/public/hooks/email-health-alert'
+import { Route as ApiPublicHooksAutoReboostRouteImport } from './routes/api/public/hooks/auto-reboost'
 import { Route as ApiPublicHooksAcademyDripRouteImport } from './routes/api/public/hooks/academy-drip'
 
 const UnsubscribeRoute = UnsubscribeRouteImport.update({
@@ -527,6 +528,12 @@ const ApiPublicHooksEmailHealthAlertRoute =
     path: '/api/public/hooks/email-health-alert',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksAutoReboostRoute =
+  ApiPublicHooksAutoReboostRouteImport.update({
+    id: '/api/public/hooks/auto-reboost',
+    path: '/api/public/hooks/auto-reboost',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksAcademyDripRoute =
   ApiPublicHooksAcademyDripRouteImport.update({
     id: '/api/public/hooks/academy-drip',
@@ -604,6 +611,7 @@ export interface FileRoutesByFullPath {
   '/api/public/test-partner-webhook': typeof ApiPublicTestPartnerWebhookRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/api/public/hooks/academy-drip': typeof ApiPublicHooksAcademyDripRoute
+  '/api/public/hooks/auto-reboost': typeof ApiPublicHooksAutoReboostRoute
   '/api/public/hooks/email-health-alert': typeof ApiPublicHooksEmailHealthAlertRoute
   '/api/public/hooks/generate-growth-emails': typeof ApiPublicHooksGenerateGrowthEmailsRoute
   '/api/public/hooks/pending-docs-reminder': typeof ApiPublicHooksPendingDocsReminderRoute
@@ -686,6 +694,7 @@ export interface FileRoutesByTo {
   '/api/public/test-partner-webhook': typeof ApiPublicTestPartnerWebhookRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/api/public/hooks/academy-drip': typeof ApiPublicHooksAcademyDripRoute
+  '/api/public/hooks/auto-reboost': typeof ApiPublicHooksAutoReboostRoute
   '/api/public/hooks/email-health-alert': typeof ApiPublicHooksEmailHealthAlertRoute
   '/api/public/hooks/generate-growth-emails': typeof ApiPublicHooksGenerateGrowthEmailsRoute
   '/api/public/hooks/pending-docs-reminder': typeof ApiPublicHooksPendingDocsReminderRoute
@@ -771,6 +780,7 @@ export interface FileRoutesById {
   '/api/public/test-partner-webhook': typeof ApiPublicTestPartnerWebhookRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/api/public/hooks/academy-drip': typeof ApiPublicHooksAcademyDripRoute
+  '/api/public/hooks/auto-reboost': typeof ApiPublicHooksAutoReboostRoute
   '/api/public/hooks/email-health-alert': typeof ApiPublicHooksEmailHealthAlertRoute
   '/api/public/hooks/generate-growth-emails': typeof ApiPublicHooksGenerateGrowthEmailsRoute
   '/api/public/hooks/pending-docs-reminder': typeof ApiPublicHooksPendingDocsReminderRoute
@@ -856,6 +866,7 @@ export interface FileRouteTypes {
     | '/api/public/test-partner-webhook'
     | '/lovable/email/suppression'
     | '/api/public/hooks/academy-drip'
+    | '/api/public/hooks/auto-reboost'
     | '/api/public/hooks/email-health-alert'
     | '/api/public/hooks/generate-growth-emails'
     | '/api/public/hooks/pending-docs-reminder'
@@ -938,6 +949,7 @@ export interface FileRouteTypes {
     | '/api/public/test-partner-webhook'
     | '/lovable/email/suppression'
     | '/api/public/hooks/academy-drip'
+    | '/api/public/hooks/auto-reboost'
     | '/api/public/hooks/email-health-alert'
     | '/api/public/hooks/generate-growth-emails'
     | '/api/public/hooks/pending-docs-reminder'
@@ -1022,6 +1034,7 @@ export interface FileRouteTypes {
     | '/api/public/test-partner-webhook'
     | '/lovable/email/suppression'
     | '/api/public/hooks/academy-drip'
+    | '/api/public/hooks/auto-reboost'
     | '/api/public/hooks/email-health-alert'
     | '/api/public/hooks/generate-growth-emails'
     | '/api/public/hooks/pending-docs-reminder'
@@ -1097,6 +1110,7 @@ export interface RootRouteChildren {
   ApiPublicTestPartnerWebhookRoute: typeof ApiPublicTestPartnerWebhookRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ApiPublicHooksAcademyDripRoute: typeof ApiPublicHooksAcademyDripRoute
+  ApiPublicHooksAutoReboostRoute: typeof ApiPublicHooksAutoReboostRoute
   ApiPublicHooksEmailHealthAlertRoute: typeof ApiPublicHooksEmailHealthAlertRoute
   ApiPublicHooksGenerateGrowthEmailsRoute: typeof ApiPublicHooksGenerateGrowthEmailsRoute
   ApiPublicHooksPendingDocsReminderRoute: typeof ApiPublicHooksPendingDocsReminderRoute
@@ -1680,6 +1694,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksEmailHealthAlertRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/auto-reboost': {
+      id: '/api/public/hooks/auto-reboost'
+      path: '/api/public/hooks/auto-reboost'
+      fullPath: '/api/public/hooks/auto-reboost'
+      preLoaderRoute: typeof ApiPublicHooksAutoReboostRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/academy-drip': {
       id: '/api/public/hooks/academy-drip'
       path: '/api/public/hooks/academy-drip'
@@ -1802,6 +1823,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicTestPartnerWebhookRoute: ApiPublicTestPartnerWebhookRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ApiPublicHooksAcademyDripRoute: ApiPublicHooksAcademyDripRoute,
+  ApiPublicHooksAutoReboostRoute: ApiPublicHooksAutoReboostRoute,
   ApiPublicHooksEmailHealthAlertRoute: ApiPublicHooksEmailHealthAlertRoute,
   ApiPublicHooksGenerateGrowthEmailsRoute:
     ApiPublicHooksGenerateGrowthEmailsRoute,

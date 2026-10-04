@@ -40,7 +40,7 @@ export const listTeam = createServerFn({ method: "GET" })
     const { data: rolesRows, error: rolesErr } = await supabaseAdmin
       .from("user_roles")
       .select("user_id, role, created_at")
-      .in("role", ["admin", "agent"]);
+      .in("role", ["admin", "agent", "commercial"]);
     if (rolesErr) throw new Error(rolesErr.message);
 
     const userIds = Array.from(new Set((rolesRows ?? []).map((r) => r.user_id)));
@@ -77,7 +77,7 @@ export const listTeam = createServerFn({ method: "GET" })
         user_id: uid,
         email: p?.email ?? "",
         full_name: p?.full_name ?? "",
-        role: userRoles.includes("admin") ? "admin" : "agent",
+        role: userRoles.includes("admin") ? "admin" : userRoles.includes("agent") ? "agent" : "commercial",
         must_change_password: !!p?.must_change_password,
         suspended: suspensionMap.get(uid) ?? false,
         created_at: p?.created_at ?? null,
@@ -92,7 +92,7 @@ const AddMemberSchema = z.object({
   email: z.string().trim().email().max(255),
   first_name: z.string().trim().min(1).max(100),
   last_name: z.string().trim().min(1).max(100),
-  role: z.enum(["admin", "agent"]),
+  role: z.enum(["admin", "agent", "commercial"]),
 });
 
 export const addTeamMember = createServerFn({ method: "POST" })
@@ -133,7 +133,7 @@ export const updateTeamRole = createServerFn({ method: "POST" })
   .inputValidator((input) =>
     z.object({
       user_id: z.string().uuid(),
-      role: z.enum(["admin", "agent"]),
+      role: z.enum(["admin", "agent", "commercial"]),
     }).parse(input),
   )
   .handler(async ({ data, context }) => {
@@ -141,7 +141,7 @@ export const updateTeamRole = createServerFn({ method: "POST" })
     if (data.user_id === context.userId && data.role !== "admin") {
       throw new Error("Vous ne pouvez pas vous rétrograder vous-même.");
     }
-    if (data.role === "agent") {
+    if (data.role !== "admin") {
       const adminCount = await countAdmins();
       const { data: isAdmin } = await supabaseAdmin
         .from("user_roles")
@@ -158,7 +158,7 @@ export const updateTeamRole = createServerFn({ method: "POST" })
       .from("user_roles")
       .delete()
       .eq("user_id", data.user_id)
-      .in("role", ["admin", "agent"]);
+      .in("role", ["admin", "agent", "commercial"]);
     if (delErr) throw new Error(delErr.message);
     const { error: insErr } = await supabaseAdmin
       .from("user_roles")
