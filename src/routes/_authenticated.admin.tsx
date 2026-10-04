@@ -183,15 +183,16 @@ import { EmailsPanel } from "@/components/admin/EmailsPanel";
 import { SuppressionPanel } from "@/components/admin/SuppressionPanel";
 import { PartnerActivityPanel } from "@/components/admin/PartnerActivityPanel";
 import { ProspectUnlockersPanel } from "@/components/admin/ProspectUnlockersPanel";
+import { ReboostPanel, ProspectCommercialPanel } from "@/components/admin/ReboostPanel";
 import { PartnerUnlocksDialog } from "@/components/admin/PartnerUnlocksDialog";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({ meta: [{ title: "Admin" }, { name: "robots", content: "noindex,nofollow" }] }),
-  validateSearch: (search: Record<string, unknown>): { tab?: "partners" | "prospects" | "activite" | "create" | "team" | "paiements" | "emails" | "suppression" } => ({
+  validateSearch: (search: Record<string, unknown>): { tab?: "partners" | "prospects" | "activite" | "create" | "team" | "paiements" | "emails" | "suppression" | "reboost" } => ({
     tab:
       typeof search.tab === "string" &&
-      ["partners", "prospects", "activite", "create", "team", "paiements", "emails", "suppression"].includes(search.tab)
-        ? (search.tab as "partners" | "prospects" | "activite" | "create" | "team" | "paiements" | "emails" | "suppression")
+      ["partners", "prospects", "activite", "create", "team", "paiements", "emails", "suppression", "reboost"].includes(search.tab)
+        ? (search.tab as "partners" | "prospects" | "activite" | "create" | "team" | "paiements" | "emails" | "suppression" | "reboost")
         : undefined,
   }),
   component: AdminPage,
@@ -275,6 +276,7 @@ function AdminPageInner({ roles }: { roles: string[] }) {
             <ProspectQualificationPanel isAdmin={roles.includes("admin")} />
           )}
           {activeTab === "activite" && <PartnerActivityPanel />}
+          {activeTab === "reboost" && <ReboostPanel />}
           {activeTab === "create" && <CreatePartnerPanel key={FORM_VERSION} />}
           {activeTab === "paiements" && <PaymentsPanel />}
           {activeTab === "team" && roles.includes("admin") && <TeamPanel />}
@@ -1706,6 +1708,7 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
 
             {isPublishedProspect(selected.status) && (
               <div className="border-b p-5">
+                <ProspectCommercialPanel prospectId={selected.id} />
                 <ProspectUnlockersPanel prospectId={selected.id} />
               </div>
             )}
@@ -2179,7 +2182,7 @@ function TeamPanel() {
     email: "",
     first_name: "",
     last_name: "",
-    role: "agent" as "admin" | "agent",
+    role: "agent" as "admin" | "agent" | "commercial",
   });
 
   function up<K extends keyof typeof form>(k: K, v: string) {
@@ -2297,6 +2300,14 @@ function TeamPanel() {
               <Button
                 type="button"
                 size="sm"
+                variant={form.role === "commercial" ? "default" : "outline"}
+                onClick={() => up("role", "commercial")}
+              >
+                Commercial
+              </Button>
+              <Button
+                type="button"
+                size="sm"
                 variant={form.role === "admin" ? "default" : "outline"}
                 onClick={() => up("role", "admin")}
               >
@@ -2328,7 +2339,7 @@ function TeamPanel() {
                     <span
                       className={`inline-block rounded px-2 py-0.5 text-xs ${m.role === "admin" ? "bg-primary text-primary-foreground" : "bg-muted"}`}
                     >
-                      {m.role === "admin" ? "Administrateur" : "Agent"}
+                      {m.role === "admin" ? "Administrateur" : m.role === "agent" ? "Agent" : "Commercial"}
                     </span>
                     {m.suspended && (
                       <span className="inline-block rounded bg-destructive text-destructive-foreground px-2 py-0.5 text-xs">
@@ -2349,7 +2360,7 @@ function TeamPanel() {
                   <p className="text-sm text-muted-foreground mt-1">{m.email}</p>
                 </div>
                 <div className="flex flex-wrap gap-2 items-start">
-                  {!isMe && (
+                  {!isMe && m.role !== "commercial" && (
                     <Button
                       size="sm"
                       variant="outline"
