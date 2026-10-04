@@ -61,6 +61,7 @@ import { Route as AuthenticatedRechargerRouteImport } from './routes/_authentica
 import { Route as AuthenticatedMarketplaceRouteImport } from './routes/_authenticated.marketplace'
 import { Route as AuthenticatedHistoriqueRouteImport } from './routes/_authenticated.historique'
 import { Route as AuthenticatedEspacePartenaireRouteImport } from './routes/_authenticated.espace-partenaire'
+import { Route as AuthenticatedCommercialRouteImport } from './routes/_authenticated.commercial'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated.admin'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
@@ -367,6 +368,11 @@ const AuthenticatedEspacePartenaireRoute =
     path: '/espace-partenaire',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedCommercialRoute = AuthenticatedCommercialRouteImport.update({
+  id: '/commercial',
+  path: '/commercial',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -578,6 +584,7 @@ export interface FileRoutesByFullPath {
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/commercial': typeof AuthenticatedCommercialRoute
   '/espace-partenaire': typeof AuthenticatedEspacePartenaireRoute
   '/historique': typeof AuthenticatedHistoriqueRoute
   '/marketplace': typeof AuthenticatedMarketplaceRoute
@@ -661,6 +668,7 @@ export interface FileRoutesByTo {
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/commercial': typeof AuthenticatedCommercialRoute
   '/espace-partenaire': typeof AuthenticatedEspacePartenaireRoute
   '/historique': typeof AuthenticatedHistoriqueRoute
   '/marketplace': typeof AuthenticatedMarketplaceRoute
@@ -747,6 +755,7 @@ export interface FileRoutesById {
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/commercial': typeof AuthenticatedCommercialRoute
   '/_authenticated/espace-partenaire': typeof AuthenticatedEspacePartenaireRoute
   '/_authenticated/historique': typeof AuthenticatedHistoriqueRoute
   '/_authenticated/marketplace': typeof AuthenticatedMarketplaceRoute
@@ -833,6 +842,7 @@ export interface FileRouteTypes {
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/admin'
+    | '/commercial'
     | '/espace-partenaire'
     | '/historique'
     | '/marketplace'
@@ -916,6 +926,7 @@ export interface FileRouteTypes {
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/admin'
+    | '/commercial'
     | '/espace-partenaire'
     | '/historique'
     | '/marketplace'
@@ -1001,6 +1012,7 @@ export interface FileRouteTypes {
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/_authenticated/admin'
+    | '/_authenticated/commercial'
     | '/_authenticated/espace-partenaire'
     | '/_authenticated/historique'
     | '/_authenticated/marketplace'
@@ -1491,6 +1503,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedEspacePartenaireRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/commercial': {
+      id: '/_authenticated/commercial'
+      path: '/commercial'
+      fullPath: '/commercial'
+      preLoaderRoute: typeof AuthenticatedCommercialRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
       path: '/admin'
@@ -1713,6 +1732,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedCommercialRoute: typeof AuthenticatedCommercialRoute
   AuthenticatedEspacePartenaireRoute: typeof AuthenticatedEspacePartenaireRoute
   AuthenticatedHistoriqueRoute: typeof AuthenticatedHistoriqueRoute
   AuthenticatedMarketplaceRoute: typeof AuthenticatedMarketplaceRoute
@@ -1723,6 +1743,7 @@ interface AuthenticatedRouteChildren {
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedCommercialRoute: AuthenticatedCommercialRoute,
   AuthenticatedEspacePartenaireRoute: AuthenticatedEspacePartenaireRoute,
   AuthenticatedHistoriqueRoute: AuthenticatedHistoriqueRoute,
   AuthenticatedMarketplaceRoute: AuthenticatedMarketplaceRoute,
