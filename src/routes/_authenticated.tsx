@@ -42,8 +42,10 @@ function AuthLayout() {
     }
   }, [me?.mustChangePassword, navigate]);
 
-  const isStaff = (me?.roles ?? []).some((r) => r === "admin" || r === "agent");
+  const isStaffRaw = (me?.roles ?? []).some((r) => r === "admin" || r === "agent");
+  const isStaff = isStaffRaw || (me?.roles ?? []).includes("commercial");
   const isAdmin = (me?.roles ?? []).includes("admin");
+  const isCommercial = !isStaffRaw && (me?.roles ?? []).includes("commercial");
 
   // Tutoriel obligatoire : accessible en permanence via le menu et rappelé
   // par un bandeau tant que la vidéo n'a pas été terminée.
@@ -54,7 +56,14 @@ function AuthLayout() {
 
   // Le staff n'a pas accès aux pages partenaires (marketplace/recharger/historique)
   useEffect(() => {
-    if (!isStaff) return;
+    if (!isCommercial) return;
+    if (pathname !== "/commercial" && pathname !== "/changer-mot-de-passe") {
+      navigate({ to: "/commercial", replace: true });
+    }
+  }, [isCommercial, pathname, navigate]);
+
+  useEffect(() => {
+    if (!isStaff || isCommercial) return;
     if (
       pathname === "/marketplace" ||
       pathname.startsWith("/marketplace/") ||
@@ -95,6 +104,7 @@ function AuthLayout() {
       creditsBalance={creditsBalance}
       isStaff={isStaff}
       isAdmin={isAdmin}
+      isCommercial={isCommercial}
       showTutorialLink={!isStaff && !!me?.partner}
       onSignOut={signOut}
     >
