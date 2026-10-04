@@ -295,7 +295,7 @@ function SectionHeader({
   pendingPartners,
   pendingProspects,
 }: {
-  tab: "partners" | "prospects" | "activite" | "create" | "team" | "paiements" | "emails" | "suppression";
+  tab: "partners" | "prospects" | "activite" | "create" | "team" | "paiements" | "emails" | "suppression" | "reboost";
   pendingPartners: number;
   pendingProspects: number;
 }) {
@@ -311,6 +311,10 @@ function SectionHeader({
       subtitle: pendingProspects
         ? `${pendingProspects} prospect${pendingProspects > 1 ? "s" : ""} à qualifier`
         : "Aucun prospect en attente.",
+    },
+    reboost: {
+      title: "À rebooster",
+      subtitle: "Prospects débloqués par moins de 2 cabinets.",
     },
     activite: {
       title: "Activité partenaires",
