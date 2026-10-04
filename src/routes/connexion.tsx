@@ -44,7 +44,11 @@ function ConnexionPage() {
       meFn().then((me) => {
         if (me.mustChangePassword) {
           navigate({ to: "/changer-mot-de-passe", replace: true });
-        } else if (me.roles.includes("admin") || me.roles.includes("agent")) {
+        } else if (me.roles.includes("commercial") && !me.roles.includes("admin") && !me.roles.includes("agent")) {
+          navigate({ to: "/commercial", replace: true });
+        } else if (me.roles.includes("commercial") && !me.roles.includes("admin") && !me.roles.includes("agent")) {
+        navigate({ to: "/commercial", replace: true });
+      } else if (me.roles.includes("admin") || me.roles.includes("agent")) {
           navigate({ to: "/admin", replace: true });
         } else {
           navigate({ to: "/marketplace", replace: true });
@@ -71,6 +75,8 @@ function ConnexionPage() {
       const me = await meFn();
       if (me.mustChangePassword) {
         navigate({ to: "/changer-mot-de-passe", replace: true });
+      } else if (me.roles.includes("commercial") && !me.roles.includes("admin") && !me.roles.includes("agent")) {
+        navigate({ to: "/commercial", replace: true });
       } else if (me.roles.includes("admin") || me.roles.includes("agent")) {
         navigate({ to: "/admin", replace: true });
       } else {

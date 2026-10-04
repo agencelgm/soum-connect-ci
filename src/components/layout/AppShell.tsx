@@ -1,4 +1,5 @@
-import { useState } from "react";
+import {
+  Rocket, useState } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   Briefcase,
@@ -66,6 +67,7 @@ const NAV_STAFF: NavItem[] = [
   { to: "/admin", search: { tab: "prospects" }, label: "Prospects", icon: Inbox },
   { to: "/admin", search: { tab: "partners" }, label: "Partenaires", icon: Users },
   { to: "/admin", search: { tab: "activite" }, label: "Activité partenaires", icon: BarChart3 },
+  { to: "/admin", search: { tab: "reboost" }, label: "À rebooster", icon: Rocket },
   { to: "/admin", search: { tab: "create" }, label: "Nouveau partenaire", icon: UserPlus },
   { to: "/admin", search: { tab: "paiements" }, label: "Paiements crédits", icon: Coins },
   { to: "/admin", search: { tab: "emails" }, label: "Emails", icon: Mail, adminOnly: true },
@@ -75,23 +77,28 @@ const NAV_STAFF: NavItem[] = [
   { to: "/espace-partenaire", label: "Mon compte", icon: UserCircle2 },
 ];
 
+const NAV_COMMERCIAL: NavItem[] = [
+  { to: "/commercial", label: "Mes prospects", icon: Inbox },
+];
+
 type Props = {
   email: string;
   creditsBalance: number | null;
   isStaff: boolean;
   isAdmin?: boolean;
+  isCommercial?: boolean;
   showTutorialLink?: boolean;
   onSignOut: () => void;
   children: React.ReactNode;
 };
 
-export function AppShell({ email, creditsBalance, isStaff, isAdmin = false, showTutorialLink = false, onSignOut, children }: Props) {
+export function AppShell({ email, creditsBalance, isStaff, isAdmin = false, isCommercial = false, showTutorialLink = false, onSignOut, children }: Props) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const search = useRouterState({ select: (s) => s.location.search as Record<string, unknown> });
   const navigate = useNavigate();
 
-  const baseItems = (isStaff ? NAV_STAFF : NAV_PARTNER).filter(
+  const baseItems = (isCommercial ? NAV_COMMERCIAL : isStaff ? NAV_STAFF : NAV_PARTNER).filter(
     (n) => !n.adminOnly || isAdmin,
   );
   const items = !isStaff && showTutorialLink
@@ -120,7 +127,7 @@ export function AppShell({ email, creditsBalance, isStaff, isAdmin = false, show
     .join("")
     .toUpperCase();
 
-  const homeHref = isStaff ? "/" : "/marketplace";
+  const homeHref = isCommercial ? "/commercial" : isStaff ? "/" : "/marketplace";
 
   return (
     <div className="min-h-screen flex bg-muted/30">
@@ -149,7 +156,7 @@ export function AppShell({ email, creditsBalance, isStaff, isAdmin = false, show
             <div className="flex items-center gap-2 text-xs uppercase text-muted-foreground font-semibold">
               <ShieldCheck className="h-3.5 w-3.5" /> Mode opérateur
             </div>
-            <div className="text-sm font-semibold mt-1">{isAdmin ? "Administrateur" : "Agent"} LGM</div>
+            <div className="text-sm font-semibold mt-1">{isAdmin ? "Administrateur" : isCommercial ? "Commercial" : "Agent"} LGM</div>
           </div>
         )}
 
