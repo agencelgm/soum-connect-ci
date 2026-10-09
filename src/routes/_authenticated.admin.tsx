@@ -1618,8 +1618,23 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
     }
   }, [prospects, selectedId]);
 
+  const prevSelRef = useRef<{ id: string | null; form: ProspectFormState }>({ id: null, form: emptyProspectForm });
   useEffect(() => {
-    setForm(selected ? getProspectForm(selected) : emptyProspectForm);
+    const fresh = selected ? getProspectForm(selected) : emptyProspectForm;
+    const prev = prevSelRef.current;
+    if (selected && prev.id === selected.id) {
+      // Même prospect rafraîchi : on garde les modifications non enregistrées des autres champs.
+      setForm((cur) => {
+        const n = { ...fresh } as any;
+        for (const k of Object.keys(cur) as (keyof ProspectFormState)[]) {
+          if (cur[k] !== prev.form[k]) n[k] = cur[k];
+        }
+        return n;
+      });
+    } else {
+      setForm(fresh);
+    }
+    prevSelRef.current = { id: selected?.id ?? null, form: fresh };
   }, [selected]);
 
   function updateField<K extends keyof ProspectFormState>(key: K, value: ProspectFormState[K]) {
