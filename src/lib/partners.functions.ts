@@ -851,7 +851,17 @@ export const listProspects = createServerFn({ method: "GET" })
       .order("created_at", { ascending: false })
       .limit(1000);
     if (error) throw new Error(error.message);
-    return { prospects: data ?? [] };
+    const { data: asg } = await supabaseAdmin
+      .from("prospect_assignments")
+      .select("prospect_id, commercial_id, commercial_name");
+    const byP = new Map((asg ?? []).map((a) => [a.prospect_id, a]));
+    return {
+      prospects: (data ?? []).map((p) => ({
+        ...p,
+        commercial_id: byP.get(p.id)?.commercial_id ?? null,
+        commercial_name: byP.get(p.id)?.commercial_name ?? null,
+      })),
+    };
   });
 
 // ---------------------- Admin: dashboard stats ----------------------
