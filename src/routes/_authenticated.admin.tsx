@@ -183,7 +183,7 @@ import { EmailsPanel } from "@/components/admin/EmailsPanel";
 import { SuppressionPanel } from "@/components/admin/SuppressionPanel";
 import { PartnerActivityPanel } from "@/components/admin/PartnerActivityPanel";
 import { ProspectUnlockersPanel } from "@/components/admin/ProspectUnlockersPanel";
-import { ReboostPanel, ProspectCommercialPanel } from "@/components/admin/ReboostPanel";
+import { ReboostPanel, ProspectCommercialPanel, AssignBacklogButton } from "@/components/admin/ReboostPanel";
 import { PartnerUnlocksDialog } from "@/components/admin/PartnerUnlocksDialog";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -1427,6 +1427,12 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
   const [formationFilter, setFormationFilter] = useState<BoolFilter>("all");
   const [ageFilter, setAgeFilter] = useState<AgeFilter>("all");
   const [duplicatesOnly, setDuplicatesOnly] = useState(false);
+  const [commercialFilter, setCommercialFilter] = useState<string>("all");
+  const commercialOptions = useMemo(() => {
+    const m = new Map<string, string>();
+    for (const p of all as any[]) if (p.commercial_id) m.set(p.commercial_id, p.commercial_name ?? "—");
+    return Array.from(m.entries());
+  }, [all]);
 
   const duplicates = useMemo(
     () =>
@@ -1447,6 +1453,8 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
       } else if (prospect.status !== filter) {
         return false;
       }
+      if (commercialFilter === "none" && prospect.commercial_id) return false;
+      if (commercialFilter !== "all" && commercialFilter !== "none" && prospect.commercial_id !== commercialFilter) return false;
       // Text search
       if (q) {
         const hay = normalizeText(
@@ -1476,7 +1484,7 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
       if (duplicatesOnly && !duplicates.has(prospect.id)) return false;
       return true;
     });
-  }, [all, filter, searchQ, siteFilter, formationFilter, ageFilter, duplicatesOnly, duplicates]);
+  }, [all, filter, searchQ, siteFilter, formationFilter, ageFilter, duplicatesOnly, duplicates, commercialFilter]);
 
   function resetFilters() {
     setSearchQ("");
@@ -1596,6 +1604,18 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
               <UpsellSelect label="Site" value={siteFilter} onChange={setSiteFilter} />
               <UpsellSelect label="Formation" value={formationFilter} onChange={setFormationFilter} />
               <AgeSelect value={ageFilter} onChange={setAgeFilter} />
+              <select
+                className="h-8 rounded-md border border-input bg-background px-2 text-xs"
+                value={commercialFilter}
+                onChange={(e) => setCommercialFilter(e.target.value)}
+              >
+                <option value="all">Tous commerciaux</option>
+                <option value="none">Non attribués</option>
+                {commercialOptions.map(([id, name]) => (
+                  <option key={id} value={id}>{name}</option>
+                ))}
+              </select>
+              <AssignBacklogButton />
             </div>
             <div className="flex items-center justify-between text-xs">
               <label className="inline-flex items-center gap-1.5 text-muted-foreground cursor-pointer">
@@ -1653,6 +1673,7 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
                     </p>
                     <p className="truncate text-xs text-muted-foreground">
                       {prospect.service || "Service a definir"}
+                      {prospect.commercial_name ? ` · ${prospect.commercial_name}` : ""}
                     </p>
                   </div>
                   <ProspectStatusBadge status={prospect.status} />
@@ -1710,12 +1731,10 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
               </div>
             </div>
 
-            {isPublishedProspect(selected.status) && (
-              <div className="border-b p-5">
-                <ProspectCommercialPanel prospectId={selected.id} />
-                <ProspectUnlockersPanel prospectId={selected.id} />
-              </div>
-            )}
+            <div className="border-b p-5">
+              <ProspectCommercialPanel prospectId={selected.id} />
+              {isPublishedProspect(selected.status) && <ProspectUnlockersPanel prospectId={selected.id} />}
+            </div>
 
             <div className="grid gap-6 p-5 lg:grid-cols-[1fr_280px]">
               <div className="space-y-6">

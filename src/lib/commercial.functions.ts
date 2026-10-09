@@ -2,7 +2,6 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-const COOLDOWN_MS = 5 * 60 * 1000;
 
 async function getRoles(userId: string): Promise<string[]> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -34,36 +33,12 @@ export const getCommercialDashboard = createServerFn({ method: "GET" })
     await assertCommercial(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    const { data: assigned } = await supabaseAdmin
-      .from("prospect_assignments")
-      .select("prospect_id");
-    const taken = new Set((assigned ?? []).map((a) => a.prospect_id));
-
-    const { data: pending, error } = await supabaseAdmin
-      .from("prospects")
-      .select("id, full_name, service, audience, created_at")
-      .eq("status", "pending_qualification")
-      .order("created_at", { ascending: false })
-      .limit(300);
-    if (error) throw new Error(error.message);
-
-    // Masqué : seulement le nom et la demande
-    const queue = (pending ?? [])
-      .filter((p) => !taken.has(p.id))
-      .map((p) => ({
-        id: p.id,
-        full_name: p.full_name,
-        service: p.service,
-        audience: p.audience,
-        created_at: p.created_at,
-      }));
-
     const { data: mine, error: mErr } = await supabaseAdmin
       .from("prospect_assignments")
       .select("*")
       .eq("commercial_id", context.userId)
-      .order("unlocked_at", { ascending: false })
-      .limit(200);
+      .order("assigned_at", { ascending: false })
+      .limit(500);
     if (mErr) throw new Error(mErr.message);
 
     const ids = (mine ?? []).map((m) => m.prospect_id);
@@ -100,11 +75,8 @@ export const getCommercialDashboard = createServerFn({ method: "GET" })
       };
     });
 
-    const open = myItems.find((m) => !m.decided_at) ?? null;
-    const last = myItems[0]?.unlocked_at ?? null;
-    const nextUnlockAt = last ? new Date(new Date(last).getTime() + COOLDOWN_MS).toISOString() : null;
-
-    return { queue, mine: myItems, openProspectId: open?.prospect_id ?? null, nextUnlockAt };
+    myItems.sort((x, y) => Number(!!x.decided_at) - Number(!!y.decided_at));
+    return { mine: myItems };
   });
 
 export const commercialUnlock = createServerFn({ method: "POST" })
@@ -168,7 +140,8 @@ export const getProspectAssignment = createServerFn({ method: "GET" })
       .select("*")
       .eq("prospect_id", data.prospect_id)
       .maybeSingle();
-    return { assignment: a ?? null };
+    const { listActiveCommercials } = await import("./assignment.server");
+    return { assignment: a ?? null, commercials: await listActiveCommercials() };
   });
 
 // ---------- Reboost ----------
@@ -220,5 +193,77 @@ export const reboostPublication = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     await assertStaff(context.userId);
     await reboostAndNotify(data.publication_id);
+    return { ok: true };
+  });
+
+export const reassignProspect = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((i) => z.object({ prospect_id: z.string().uuid(), commercial_id: z.string().uuid() }).parse(i))
+  .handler(async ({ data, context }) => {
+    await assertStaff(context.userId);
+    const roles = await getRoles(data.commercial_id);
+    if (!roles.includes("commercial")) throw new Error("Ce compte n'est pas commercial.");
+    const { assignProspectTo } = await import("./assignment.server");
+    await assignProspectTo(data.prospect_id, data.commercial_id, context.userId);
+    return { ok: true };
+  });
+
+export const assignUnassignedProspects = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertStaff(context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { autoAssignProspect } = await import("./assignment.server");
+    const { data: assigned } = await supabaseAdmin.from("prospect_assignments").select("prospect_id");
+    const taken = new Set((assigned ?? []).map((a) => a.prospect_id));
+    const { data: ps } = await supabaseAdmin
+      .from("prospects").select("id").eq("status", "pending_qualification")
+      .order("created_at", { ascending: true }).limit(1000);
+    let n = 0;
+    for (const p of ps ?? []) {
+      if (taken.has(p.id)) continue;
+      if (await autoAssignProspect(p.id)) n++;
+    }
+    return { assigned: n };
+  });
+
+async function assertCanAccessProspect(userId: string, prospectId: string) {
+  const roles = await getRoles(userId);
+  if (roles.includes("admin") || roles.includes("agent")) return;
+  if (roles.includes("commercial")) {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data } = await supabaseAdmin
+      .from("prospect_assignments").select("id")
+      .eq("prospect_id", prospectId).eq("commercial_id", userId).maybeSingle();
+    if (data) return;
+  }
+  throw new Error("Forbidden");
+}
+
+export const listProspectComments = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((i) => z.object({ prospect_id: z.string().uuid() }).parse(i))
+  .handler(async ({ data, context }) => {
+    await assertCanAccessProspect(context.userId, data.prospect_id);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: rows, error } = await supabaseAdmin
+      .from("prospect_comments").select("id, author_name, body, created_at")
+      .eq("prospect_id", data.prospect_id).order("created_at", { ascending: false });
+    if (error) throw new Error(error.message);
+    return { comments: rows ?? [] };
+  });
+
+export const addProspectComment = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((i) => z.object({ prospect_id: z.string().uuid(), body: z.string().trim().min(1).max(5000) }).parse(i))
+  .handler(async ({ data, context }) => {
+    await assertCanAccessProspect(context.userId, data.prospect_id);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: prof } = await supabaseAdmin.from("profiles").select("full_name, email").eq("id", context.userId).maybeSingle();
+    const { error } = await supabaseAdmin.from("prospect_comments").insert({
+      prospect_id: data.prospect_id, author_id: context.userId,
+      author_name: prof?.full_name || prof?.email || null, body: data.body,
+    });
+    if (error) throw new Error(error.message);
     return { ok: true };
   });

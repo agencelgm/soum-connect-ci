@@ -77,6 +77,10 @@ export async function recordProspect(input: RecordProspectInput): Promise<string
       console.error("[prospects] insert error", error.message, error.details);
       return null;
     }
+    if (data?.id) {
+      const { autoAssignProspect } = await import("./assignment.server");
+      await autoAssignProspect(data.id);
+    }
     return data?.id ?? null;
   } catch (err) {
     console.error("[prospects] insert threw", err);
