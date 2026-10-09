@@ -1484,7 +1484,7 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
       if (duplicatesOnly && !duplicates.has(prospect.id)) return false;
       return true;
     });
-  }, [all, filter, searchQ, siteFilter, formationFilter, ageFilter, duplicatesOnly, duplicates]);
+  }, [all, filter, searchQ, siteFilter, formationFilter, ageFilter, duplicatesOnly, duplicates, commercialFilter]);
 
   function resetFilters() {
     setSearchQ("");
