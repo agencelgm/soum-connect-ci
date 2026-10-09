@@ -1,7 +1,7 @@
 import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Search, Crown } from "lucide-react";
 import { computeDuplicates, normalizeText, type DuplicateInfo } from "@/lib/duplicates";
 
@@ -1350,6 +1350,111 @@ function ProspectStatusBadge({ status }: { status?: string | null }) {
   return <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${tone}`}>{label}</span>;
 }
 
+const CONTACT_KEYS = ["full_name", "email", "phone", "company_name", "statut", "audience", "status"] as (keyof ProspectFormState)[];
+const DEMANDE_KEYS = ["service", "city", "budget", "legal_form", "message"] as (keyof ProspectFormState)[];
+
+function UnsavedBadge() {
+  return (
+    <span className="rounded bg-accent px-2 py-0.5 text-xs font-medium text-accent-foreground">
+      Modifications non enregistrées
+    </span>
+  );
+}
+
+function ReadRow({ label, value, href, wide }: { label: string; value?: string | null; href?: string; wide?: boolean }) {
+  return (
+    <div className={`text-sm ${wide ? "sm:col-span-2" : ""}`}>
+      <div className="text-xs text-muted-foreground">{label}</div>
+      {value ? (
+        href ? (
+          <a href={href} className="font-medium text-primary hover:underline">{value}</a>
+        ) : (
+          <div className="whitespace-pre-wrap font-medium">{value}</div>
+        )
+      ) : (
+        <div className="text-muted-foreground">—</div>
+      )}
+    </div>
+  );
+}
+
+function EditableSection({
+  title, dirty, saving, onSave, onCancel, view, children,
+}: {
+  title: string;
+  dirty: boolean;
+  saving: boolean;
+  onSave: () => Promise<boolean>;
+  onCancel: () => void;
+  view: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  const [editing, setEditing] = useState(false);
+  return (
+    <section className="space-y-3 rounded-lg border p-4">
+      <div className="flex flex-wrap items-center gap-2">
+        <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">{title}</h3>
+        {dirty && <UnsavedBadge />}
+        <div className="ml-auto flex gap-2">
+          {editing ? (
+            <>
+              <Button size="sm" variant="ghost" onClick={() => { onCancel(); setEditing(false); }}>Annuler</Button>
+              <Button size="sm" disabled={!dirty || saving} onClick={async () => { if (await onSave()) setEditing(false); }}>
+                {saving ? "Enregistrement…" : "Enregistrer"}
+              </Button>
+            </>
+          ) : (
+            <Button size="sm" variant="outline" onClick={() => setEditing(true)}>Modifier</Button>
+          )}
+        </div>
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2">{editing ? children : view}</div>
+    </section>
+  );
+}
+
+function NoteField({
+  label, hint, value, onChange, dirty, saving, savedAt, onSave,
+}: {
+  label: string;
+  hint: string;
+  value: string;
+  onChange: (v: string) => void;
+  dirty: boolean;
+  saving: boolean;
+  savedAt?: string;
+  onSave: () => Promise<boolean>;
+}) {
+  return (
+    <div className="space-y-1.5 rounded-lg border p-3 text-sm">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="font-medium">{label}</span>
+        {dirty && <UnsavedBadge />}
+      </div>
+      <span className="block text-xs text-muted-foreground">{hint}</span>
+      <Textarea
+        value={value}
+        rows={5}
+        onChange={(e) => onChange(e.target.value)}
+        onKeyDown={(e) => {
+          if ((e.ctrlKey || e.metaKey) && e.key === "Enter" && dirty && !saving) {
+            e.preventDefault();
+            void onSave();
+          }
+        }}
+      />
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-xs text-muted-foreground">
+          {dirty ? "Ctrl/Cmd + Entrée pour enregistrer" : savedAt ? `Enregistré ✓ à ${savedAt}` : ""}
+        </span>
+        <Button size="sm" disabled={!dirty || saving} onClick={() => void onSave()}>
+          {saving ? "Enregistrement…" : "Enregistrer"}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 function FormSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="space-y-3">
@@ -1513,12 +1618,74 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
     }
   }, [prospects, selectedId]);
 
+  const prevSelRef = useRef<{ id: string | null; form: ProspectFormState }>({ id: null, form: emptyProspectForm });
   useEffect(() => {
-    setForm(selected ? getProspectForm(selected) : emptyProspectForm);
+    const fresh = selected ? getProspectForm(selected) : emptyProspectForm;
+    const prev = prevSelRef.current;
+    if (selected && prev.id === selected.id) {
+      // Même prospect rafraîchi : on garde les modifications non enregistrées des autres champs.
+      setForm((cur) => {
+        const n = { ...fresh } as any;
+        for (const k of Object.keys(cur) as (keyof ProspectFormState)[]) {
+          if (cur[k] !== prev.form[k]) n[k] = cur[k];
+        }
+        return n;
+      });
+    } else {
+      setForm(fresh);
+    }
+    prevSelRef.current = { id: selected?.id ?? null, form: fresh };
   }, [selected]);
 
   function updateField<K extends keyof ProspectFormState>(key: K, value: ProspectFormState[K]) {
     setForm((current) => ({ ...current, [key]: value }));
+  }
+
+  const savedForm = useMemo(
+    () => (selected ? getProspectForm(selected) : emptyProspectForm),
+    [selected],
+  );
+  const [savedAt, setSavedAt] = useState<Record<string, string>>({});
+  const isDirty = (keys: (keyof ProspectFormState)[]) =>
+    keys.some((k) => (form[k] ?? "") !== (savedForm[k] ?? ""));
+  const anyDirty = isDirty(Object.keys(form) as (keyof ProspectFormState)[]);
+
+  useEffect(() => {
+    if (!anyDirty) return;
+    const h = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", h);
+    return () => window.removeEventListener("beforeunload", h);
+  }, [anyDirty]);
+
+  function selectProspect(id: string) {
+    if (id === selected?.id) return;
+    if (anyDirty && !confirm("Des modifications ne sont pas enregistrées. Changer de prospect quand même ?")) return;
+    setSelectedId(id);
+  }
+
+  function resetFields(keys: (keyof ProspectFormState)[]) {
+    setForm((f) => {
+      const n = { ...f } as any;
+      for (const k of keys) n[k] = savedForm[k];
+      return n;
+    });
+  }
+
+  async function saveFields(keys: (keyof ProspectFormState)[], label: string) {
+    if (!selected) return false;
+    const next = { ...savedForm } as any;
+    for (const k of keys) next[k] = form[k];
+    let ok = false;
+    await run(`save-${label}:${selected.id}`, async () => {
+      await updateFn({ data: { prospect_id: selected.id, ...normalizeProspectForm(next) } });
+      setSavedAt((m) => ({ ...m, [label]: new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) }));
+      toast.success("Enregistré");
+      ok = true;
+    });
+    return ok;
   }
 
   async function refreshProspects() {
@@ -1650,7 +1817,7 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
               <button
                 key={prospect.id}
                 type="button"
-                onClick={() => setSelectedId(prospect.id)}
+                onClick={() => selectProspect(prospect.id)}
                 className={`w-full rounded-md border p-3 text-left transition-colors ${
                   selected?.id === prospect.id
                     ? "border-primary bg-primary/5"
@@ -1702,7 +1869,7 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
           </div>
         ) : (
           <>
-            <div className="flex flex-wrap items-start justify-between gap-3 border-b p-5">
+            <div className="sticky top-0 z-10 flex flex-wrap items-start justify-between gap-3 rounded-t-lg border-b bg-card p-5">
               <div>
                 <div className="flex items-center gap-2">
                   <h2 className="text-xl font-semibold">{form.full_name || "Prospect sans nom"}</h2>
@@ -1719,8 +1886,8 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
                 <Button variant="outline" onClick={() => setDetailsProspect(selected)}>
                   Voir details
                 </Button>
-                <Button variant="secondary" disabled={isSelectedBusy} onClick={saveSelected}>
-                  {busy?.startsWith("save:") ? "Enregistrement..." : "Enregistrer"}
+                <Button variant="secondary" disabled={isSelectedBusy || !anyDirty} onClick={saveSelected}>
+                  {busy?.startsWith("save:") ? "Enregistrement..." : "Tout enregistrer"}
                 </Button>
                 <Button
                   disabled={isSelectedBusy || isPublishedProspect(selected.status)}
@@ -1738,7 +1905,53 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
 
             <div className="grid gap-6 p-5 lg:grid-cols-[1fr_280px]">
               <div className="space-y-6">
-                <FormSection title="Contact">
+                <section className="space-y-3">
+                  <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                    Notes
+                  </h3>
+                  <div className="grid gap-3 md:grid-cols-2">
+                    <NoteField
+                      label="Note LGM"
+                      hint="Visible par les partenaires"
+                      value={form.external_notes}
+                      onChange={(value) => updateField("external_notes", value)}
+                      dirty={isDirty(["external_notes"])}
+                      saving={busy === `save-external:${selected.id}`}
+                      savedAt={savedAt.external}
+                      onSave={() => saveFields(["external_notes"], "external")}
+                    />
+                    <NoteField
+                      label="Note interne"
+                      hint="Visible uniquement par l'équipe LGM"
+                      value={form.internal_notes}
+                      onChange={(value) => updateField("internal_notes", value)}
+                      dirty={isDirty(["internal_notes"])}
+                      saving={busy === `save-internal:${selected.id}`}
+                      savedAt={savedAt.internal}
+                      onSave={() => saveFields(["internal_notes"], "internal")}
+                    />
+                  </div>
+                </section>
+
+                <EditableSection
+                  key={`contact-${selected.id}`}
+                  title="Contact"
+                  dirty={isDirty(CONTACT_KEYS)}
+                  saving={busy === `save-contact:${selected.id}`}
+                  onSave={() => saveFields(CONTACT_KEYS, "contact")}
+                  onCancel={() => resetFields(CONTACT_KEYS)}
+                  view={
+                    <>
+                      <ReadRow label="Nom" value={form.full_name} />
+                      <ReadRow label="Email" value={form.email} href={form.email ? `mailto:${form.email}` : undefined} />
+                      <ReadRow label="Téléphone" value={form.phone} href={form.phone ? `tel:${form.phone}` : undefined} />
+                      <ReadRow label="Entreprise" value={form.company_name} />
+                      <ReadRow label="Situation" value={form.statut} />
+                      <ReadRow label="Audience" value={{ unknown: "À qualifier", creation: "Création d'entreprise", gestion: "Gestion comptable" }[form.audience as string] ?? form.audience} />
+                    </>
+                  }
+                >
+
                   <ProspectInputField
                     label="Nom"
                     value={form.full_name}
@@ -1794,9 +2007,26 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
                       <option value="rejected">Rejete</option>
                     </select>
                   </label>
-                </FormSection>
+                                </EditableSection>
 
-                <FormSection title="Demande">
+                <EditableSection
+                  key={`demande-${selected.id}`}
+                  title="Demande"
+                  dirty={isDirty(DEMANDE_KEYS)}
+                  saving={busy === `save-demande:${selected.id}`}
+                  onSave={() => saveFields(DEMANDE_KEYS, "demande")}
+                  onCancel={() => resetFields(DEMANDE_KEYS)}
+                  view={
+                    <>
+                      <ReadRow label="Service" value={form.service} />
+                      <ReadRow label="Ville" value={form.city} />
+                      <ReadRow label="Budget" value={form.budget} />
+                      <ReadRow label="Forme juridique" value={form.legal_form} />
+                      <ReadRow label="Message du prospect" value={form.message} wide />
+                    </>
+                  }
+                >
+
                   <ProspectInputField
                     label="Service"
                     value={form.service}
@@ -1824,46 +2054,10 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
                     onChange={(value) => updateField("message", value)}
                     rows={5}
                   />
-                </FormSection>
-
-                <section className="space-y-3">
-                  <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-                    Notes
-                  </h3>
-                  <div className="grid gap-3 md:grid-cols-2">
-                    <ProspectTextareaField
-                      label="Note LGM"
-                      hint="Visible par les partenaires"
-                      value={form.external_notes}
-                      onChange={(value) => updateField("external_notes", value)}
-                      rows={6}
-                    />
-                    <ProspectTextareaField
-                      label="Note interne"
-                      hint="Visible uniquement par l'equipe LGM"
-                      value={form.internal_notes}
-                      onChange={(value) => updateField("internal_notes", value)}
-                      rows={6}
-                    />
-                  </div>
-                </section>
+                                </EditableSection>
               </div>
 
               <aside className="space-y-4">
-                <div className="rounded-md border bg-muted/30 p-4">
-                  <h3 className="font-semibold">Publication</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    La note LGM sera reprise comme resume public du lead. La marketplace ouvre 5
-                    places.
-                  </p>
-                  <Button
-                    className="mt-3 w-full"
-                    disabled={isSelectedBusy || isPublishedProspect(selected.status)}
-                    onClick={publishSelected}
-                  >
-                    Publier dans la marketplace
-                  </Button>
-                </div>
                 <div className="rounded-md border bg-background p-4">
                   <h3 className="font-semibold">Decision</h3>
                   <div className="mt-3 flex flex-wrap gap-2">
