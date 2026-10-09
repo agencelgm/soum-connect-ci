@@ -4,7 +4,10 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Rocket, UserCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ProspectComments } from "@/components/prospects/ProspectComments";
 import {
+  assignUnassignedProspects,
+  reassignProspect,
   getProspectAssignment,
   listLowContactPublications,
   reboostPublication,
@@ -74,28 +77,75 @@ export function ReboostPanel() {
 
 export function ProspectCommercialPanel({ prospectId }: { prospectId: string }) {
   const fn = useServerFn(getProspectAssignment);
+  const reassignFn = useServerFn(reassignProspect);
+  const qc = useQueryClient();
   const { data } = useQuery({
     queryKey: ["prospect-assignment", prospectId],
     queryFn: () => fn({ data: { prospect_id: prospectId } }),
   });
   const a = data?.assignment;
-  if (!a) return null;
+
+  async function reassign(commercialId: string) {
+    try {
+      await reassignFn({ data: { prospect_id: prospectId, commercial_id: commercialId } });
+      toast.success("Prospect attribué");
+      qc.invalidateQueries({ queryKey: ["prospect-assignment", prospectId] });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Erreur");
+    }
+  }
+
   return (
-    <div className="rounded-lg border bg-muted/30 p-3 text-sm space-y-1 mb-3">
-      <div className="flex items-center gap-2 font-semibold">
-        <UserCheck className="h-4 w-4" /> Commercial : {a.commercial_name ?? "—"}
+    <div className="rounded-lg border bg-muted/30 p-3 text-sm space-y-3 mb-3">
+      <div className="flex flex-wrap items-center gap-2">
+        <UserCheck className="h-4 w-4" />
+        <span className="font-semibold">Commercial : {a?.commercial_name ?? "Non attribué"}</span>
+        {a && <span className="text-muted-foreground">({a.assigned_by ? "manuel" : "auto"}, {fmt(a.assigned_at)})</span>}
+        {(data?.commercials.length ?? 0) > 0 && (
+          <select
+            className="ml-auto rounded border bg-background px-2 py-1"
+            value=""
+            onChange={(e) => e.target.value && reassign(e.target.value)}
+          >
+            <option value="">{a ? "Réattribuer à…" : "Attribuer à…"}</option>
+            {data?.commercials.filter((c) => c.id !== a?.commercial_id).map((c) => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </select>
+        )}
       </div>
-      <p className="text-muted-foreground">Débloqué le {fmt(a.unlocked_at)}</p>
-      {a.decided_at ? (
-        <>
-          <p>
-            Décision : <strong>{a.decision === "approved" ? "Approuvé" : "Refusé"}</strong> ({fmt(a.decided_at)})
-          </p>
+      {a?.decided_at && (
+        <div>
+          <p>Décision : <strong>{a.decision === "approved" ? "Approuvé" : "Refusé"}</strong> ({fmt(a.decided_at)})</p>
           <p className="whitespace-pre-wrap">{a.note}</p>
-        </>
-      ) : (
-        <p className="text-amber-700">En cours de traitement</p>
+        </div>
       )}
+      <ProspectComments prospectId={prospectId} />
     </div>
+  );
+}
+
+export function AssignBacklogButton() {
+  const fn = useServerFn(assignUnassignedProspects);
+  const [busy, setBusy] = useState(false);
+  return (
+    <Button
+      size="sm"
+      variant="outline"
+      disabled={busy}
+      onClick={async () => {
+        setBusy(true);
+        try {
+          const r = await fn();
+          toast.success(`${r.assigned} prospect(s) attribué(s)`);
+        } catch (e) {
+          toast.error(e instanceof Error ? e.message : "Erreur");
+        } finally {
+          setBusy(false);
+        }
+      }}
+    >
+      Attribuer les prospects non attribués
+    </Button>
   );
 }

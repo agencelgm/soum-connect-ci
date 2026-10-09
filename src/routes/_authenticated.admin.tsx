@@ -183,7 +183,7 @@ import { EmailsPanel } from "@/components/admin/EmailsPanel";
 import { SuppressionPanel } from "@/components/admin/SuppressionPanel";
 import { PartnerActivityPanel } from "@/components/admin/PartnerActivityPanel";
 import { ProspectUnlockersPanel } from "@/components/admin/ProspectUnlockersPanel";
-import { ReboostPanel, ProspectCommercialPanel } from "@/components/admin/ReboostPanel";
+import { ReboostPanel, ProspectCommercialPanel, AssignBacklogButton } from "@/components/admin/ReboostPanel";
 import { PartnerUnlocksDialog } from "@/components/admin/PartnerUnlocksDialog";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -1710,12 +1710,10 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
               </div>
             </div>
 
-            {isPublishedProspect(selected.status) && (
-              <div className="border-b p-5">
-                <ProspectCommercialPanel prospectId={selected.id} />
-                <ProspectUnlockersPanel prospectId={selected.id} />
-              </div>
-            )}
+            <div className="border-b p-5">
+              <ProspectCommercialPanel prospectId={selected.id} />
+              {isPublishedProspect(selected.status) && <ProspectUnlockersPanel prospectId={selected.id} />}
+            </div>
 
             <div className="grid gap-6 p-5 lg:grid-cols-[1fr_280px]">
               <div className="space-y-6">
