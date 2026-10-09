@@ -491,12 +491,6 @@ function PartnersPanel({ isAdmin }: { isAdmin: boolean }) {
   const [serviceFilter, setServiceFilter] = useState<string>("all");
   const [tierFilter, setTierFilter] = useState<"all" | "premium" | "regular">("all");
   const [duplicatesOnly, setDuplicatesOnly] = useState(false);
-  const [commercialFilter, setCommercialFilter] = useState<string>("all");
-  const commercialOptions = useMemo(() => {
-    const m = new Map<string, string>();
-    for (const p of all as any[]) if (p.commercial_id) m.set(p.commercial_id, p.commercial_name ?? "—");
-    return Array.from(m.entries());
-  }, [all]);
   const [siteFilter, setSiteFilter] = useState<"all" | "yes" | "no" | "unknown">("all");
   const [ageFilter, setAgeFilter] = useState<"all" | "new" | "recent" | "old">("all");
 
@@ -1433,6 +1427,12 @@ function ProspectQualificationPanel({ isAdmin }: { isAdmin: boolean }) {
   const [formationFilter, setFormationFilter] = useState<BoolFilter>("all");
   const [ageFilter, setAgeFilter] = useState<AgeFilter>("all");
   const [duplicatesOnly, setDuplicatesOnly] = useState(false);
+  const [commercialFilter, setCommercialFilter] = useState<string>("all");
+  const commercialOptions = useMemo(() => {
+    const m = new Map<string, string>();
+    for (const p of all as any[]) if (p.commercial_id) m.set(p.commercial_id, p.commercial_name ?? "—");
+    return Array.from(m.entries());
+  }, [all]);
 
   const duplicates = useMemo(
     () =>
