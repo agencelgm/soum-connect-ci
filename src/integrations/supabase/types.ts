@@ -872,6 +872,8 @@ export type Database = {
       }
       prospect_assignments: {
         Row: {
+          assigned_at: string
+          assigned_by: string | null
           commercial_id: string
           commercial_name: string | null
           decided_at: string | null
@@ -882,6 +884,8 @@ export type Database = {
           unlocked_at: string
         }
         Insert: {
+          assigned_at?: string
+          assigned_by?: string | null
           commercial_id: string
           commercial_name?: string | null
           decided_at?: string | null
@@ -892,6 +896,8 @@ export type Database = {
           unlocked_at?: string
         }
         Update: {
+          assigned_at?: string
+          assigned_by?: string | null
           commercial_id?: string
           commercial_name?: string | null
           decided_at?: string | null
@@ -906,6 +912,41 @@ export type Database = {
             foreignKeyName: "prospect_assignments_prospect_id_fkey"
             columns: ["prospect_id"]
             isOneToOne: true
+            referencedRelation: "prospects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prospect_comments: {
+        Row: {
+          author_id: string
+          author_name: string | null
+          body: string
+          created_at: string
+          id: string
+          prospect_id: string
+        }
+        Insert: {
+          author_id: string
+          author_name?: string | null
+          body: string
+          created_at?: string
+          id?: string
+          prospect_id: string
+        }
+        Update: {
+          author_id?: string
+          author_name?: string | null
+          body?: string
+          created_at?: string
+          id?: string
+          prospect_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prospect_comments_prospect_id_fkey"
+            columns: ["prospect_id"]
+            isOneToOne: false
             referencedRelation: "prospects"
             referencedColumns: ["id"]
           },
